@@ -1,8 +1,7 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2759
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+## 💚 Kpi로 국정감사 가는 그날까지 나인원 BFF Android 💚
 
-\f0\fs24 \cf0 \uc0\u51228 \u51060 \u53093 \u44284  \u48652 \u46972 \u50864 \u45768 \u51032  \u51004 \u49968 \u51004 \u49968  \u50545  \u44060 \u48156  }
+<div align="center">
+  <p align="center">
+      <img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/cfa35f86-a573-4b75-b1db-5ec513035693", height="500" />
+  </p>
+</div>
