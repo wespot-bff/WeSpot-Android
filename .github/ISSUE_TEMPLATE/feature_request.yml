@@ -1,0 +1,30 @@
+name: Feature Report
+description: Request new Feature
+title: "[FEATURE]: "
+labels: ["🌱기능🌱"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이번 이슈도 파이팅 화이팅 🔥
+  - type: textarea
+    id: new-feature
+    attributes:
+      label: 작업 사항 
+      description: 어떤 기능을 추가할건가요? 
+      placeholder: Splash API를 활용한 스플래쉬 화면 구현 
+    validations:
+      required: true
+  - type: textarea
+    id: todo
+    attributes:
+      label: Todo
+      description: 작업사항을 나누어 작성해주세요! 
+      value: |
+        - [ ] todo1
+  - type: textarea
+    id: etc
+    attributes:
+      label: 기타사항
+      description: 추가로 기록이 필요한 경우 작성해주세요!
+      placeholder: Splash API - Android Ver 12 이상부터 가능하다.
