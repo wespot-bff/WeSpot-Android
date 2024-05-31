@@ -1,0 +1,36 @@
+name: Opend PR Notification
+on:
+  pull_request:
+    branches:
+      - develop
+      - release
+      - main
+    types:
+      - opened
+      - reopened
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+        
+     # - name: add google-services.json
+     #   run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./app/google-services.json
+
+      #- name: add local.properties
+       # run: |
+        #  echo api_key=\"${{ secrets.API_KEY }}\" >> ./local.properties
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - name: Build with Gradle
+        run: ./gradlew build
