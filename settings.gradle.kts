@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -21,3 +22,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "WeSpot"
 include(":app")
+include(":feature:auth")
+include(":domain")
+include(":data")
+include(":designsystem")
+include(":core")
+include(":core:model")
