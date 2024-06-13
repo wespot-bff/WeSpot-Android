@@ -2,7 +2,8 @@
 
 <div align="center">
   <p align="center">
-      <img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/cfa35f86-a573-4b75-b1db-5ec513035693", height="500" />
+    <img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/cfa35f86-a573-4b75-b1db-5ec513035693", height="500" />
+    <img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/885117e7-5809-4630-9f37-ede855cdc8c8", height="500" />
   </p>
 </div>
 
