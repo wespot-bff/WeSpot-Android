@@ -14,7 +14,7 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: BFF WONDER FORVER SHADOW JENNY BOT
+          DISCORD_USERNAME: BFF BOT
           DISCORD_AVATAR: https://cdn-icons-png.flaticon.com/128/8290/8290674.png
           DISCORD_EMBEDS: |
             [
