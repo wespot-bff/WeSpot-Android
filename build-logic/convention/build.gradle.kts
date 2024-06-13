@@ -11,6 +11,8 @@ dependencies {
     compileOnly(libs.android.build)
     compileOnly(libs.kotlin.gradle)
     compileOnly(libs.compose.compiler.extension)
+    compileOnly(libs.ktlint.plugin)
+    compileOnly(libs.detekt.plugin)
 }
 
 gradlePlugin {
@@ -38,6 +40,10 @@ gradlePlugin {
         create("androidHilt") {
             id = "com.bff.wespot.hilt"
             implementationClass = "com.bff.wespot.plugin.AndroidHiltPlugin"
+        }
+        create("androidLint") {
+            id = "com.bff.wespot.lint"
+            implementationClass = "com.bff.wespot.plugin.AndroidLintPlugin"
         }
     }
 }
