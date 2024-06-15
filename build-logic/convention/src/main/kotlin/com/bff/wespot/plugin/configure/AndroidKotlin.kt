@@ -1,22 +1,20 @@
 package com.bff.wespot.plugin.configure
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
-internal fun Project.configureKotlinAndroid(){
-    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
-    extensions.getByType<BaseExtension>().apply {
-        setCompileSdkVersion(libs.findVersion("compileSdk").get().requiredVersion.toInt())
+internal fun Project.configureKotlinAndroid(
+    commonExtension: CommonExtension<*, *, *, *, *, *>
+) {
+    commonExtension.apply {
+        compileSdk = libs.findVersion("compileSdk").get().toString().toInt()
 
         defaultConfig {
             minSdk = libs.findVersion("minSdk").get().requiredVersion.toInt()
-            targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
         }
 
         compileOptions {
@@ -24,7 +22,7 @@ internal fun Project.configureKotlinAndroid(){
             targetCompatibility = JavaVersion.VERSION_17
         }
 
-        extensions.getByType<KotlinAndroidProjectExtension>().apply {
+        extensions.configure<KotlinAndroidProjectExtension> {
             compilerOptions {
                 jvmTarget.set(JvmTarget.JVM_17)
             }
@@ -33,13 +31,6 @@ internal fun Project.configureKotlinAndroid(){
         sourceSets {
             getByName("main") {
                 java.srcDir("src/main/kotlin")
-            }
-        }
-
-        packagingOptions {
-            resources.excludes.apply {
-                add("/META-INF/AL2.0")
-                add("/META-INF/LGPL2.1")
             }
         }
     }
