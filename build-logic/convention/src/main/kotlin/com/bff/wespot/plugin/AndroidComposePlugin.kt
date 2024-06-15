@@ -1,12 +1,11 @@
 package com.bff.wespot.plugin
 
 import com.android.build.gradle.BaseExtension
+import com.bff.wespot.plugin.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
 class AndroidComposePlugin: Plugin<Project> {
@@ -16,13 +15,12 @@ class AndroidComposePlugin: Plugin<Project> {
                 apply("org.jetbrains.kotlin.plugin.compose")
             }
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             dependencies {
                 "implementation"(platform(libs.findLibrary("androidx-compose-bom").get()))
                 "implementation"(libs.findBundle("androidx-compose").get())
             }
 
-            extensions.getByType<BaseExtension>().apply {
+            extensions.configure<BaseExtension> {
                 buildFeatures.compose = true
             }
 
