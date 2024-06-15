@@ -1,10 +1,3 @@
 plugins {
-    id("com.bff.wespot.library")
-}
-
-android {
-    namespace = "com.bff.wespot.model"
-}
-
-dependencies {
+    id("com.bff.wespot.jvm.library")
 }
