@@ -1,3 +1,3 @@
 plugins {
-    id("com.bff.wespot.jvm.library")
+    alias(libs.plugins.wespot.jvm.library)
 }

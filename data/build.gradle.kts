@@ -1,6 +1,6 @@
 plugins {
-    id("com.bff.wespot.library")
-    id("com.bff.wespot.hilt")
+    alias(libs.plugins.wespot.android.library)
+    alias(libs.plugins.wespot.android.hilt)
 }
 
 android {
@@ -9,5 +9,4 @@ android {
 
 dependencies {
     implementation(libs.junit)
-    implementation(libs.androidx.junit)
 }

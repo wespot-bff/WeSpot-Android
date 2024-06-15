@@ -1,8 +1,8 @@
 plugins {
-    id("com.bff.wespot.application")
-    id("com.bff.wespot.hilt")
-    id("com.bff.wespot.compose")
-    id("com.bff.wespot.firebase")
+    alias(libs.plugins.wespot.android.application)
+    alias(libs.plugins.wespot.android.hilt)
+    alias(libs.plugins.wespot.android.compose)
+    alias(libs.plugins.wespot.android.firebase)
 }
 
 android {

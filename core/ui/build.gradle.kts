@@ -1,6 +1,6 @@
 plugins {
-    id("com.bff.wespot.android.library")
-    id("com.bff.wespot.compose")
+    alias(libs.plugins.wespot.android.feature)
+    alias(libs.plugins.wespot.android.compose)
 }
 
 android {
