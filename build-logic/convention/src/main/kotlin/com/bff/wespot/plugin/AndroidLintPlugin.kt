@@ -2,11 +2,10 @@ package com.bff.wespot.plugin
 
 import com.bff.wespot.plugin.configure.configureDetekt
 import com.bff.wespot.plugin.configure.configureKtLint
+import com.bff.wespot.plugin.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 class AndroidLintPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -16,13 +15,12 @@ class AndroidLintPlugin : Plugin<Project> {
                 apply("io.gitlab.arturbosch.detekt")
             }
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            configureKtLint()
+            configureDetekt()
+
             dependencies {
                 "implementation"(libs.findLibrary("detekt-formatting").get())
             }
-
-            configureKtLint()
-            configureDetekt()
         }
     }
 }
