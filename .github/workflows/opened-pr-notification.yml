@@ -36,8 +36,8 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: BFF WONDER FORVER SHADOW JENNY BOT
-          DISCORD_AVATAR: https://cdn-icons-png.flaticon.com/128/8290/8290674.png
+          DISCORD_USERNAME: BFF BOT
+          DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b
           DISCORD_EMBEDS: |
             [
               { 
@@ -46,7 +46,7 @@ jobs:
                   "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
                   "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
                 },
-                "title": "PR 성공, 리뷰 자~ 두 과 자 ~! 🥳🥳\n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "title": "PR 성공, 리뷰 자~ 두 과 자 ~! 🥰🥰 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
                 "color": 10478271,
                 "description": "${{ github.event.pull_request.html_url }}",
                 "fields": [
@@ -69,8 +69,8 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: BFF WONDER FORVER SHADOW JENNY BOT
-          DISCORD_AVATAR: https://cdn-icons-png.flaticon.com/128/8290/8290674.png
+          DISCORD_USERNAME: BFF BOT
+          DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b
           DISCORD_EMBEDS: |
             [
               { 
@@ -79,7 +79,7 @@ jobs:
                   "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
                   "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
                 },
-                "title": "PR 실패, 이 친구 내 성격 까먹었나보네,, 👊👊 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "title": "PR 실패. 미쿠짱, 10번 아이언 가져와 🏌️‍♀️🏌️‍♀️ \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
                 "color": 13458524,
                 "description": "${{ github.event.pull_request.html_url }}",
                 "fields": [
