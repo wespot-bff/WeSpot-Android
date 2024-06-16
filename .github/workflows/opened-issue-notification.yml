@@ -1,4 +1,4 @@
-name: Opend Issue Notification
+name: Opened Issue Notification
 on:
   issues:
     types:
@@ -14,8 +14,8 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: BFF WONDER FORVER SHADOW JENNY BOT
-          DISCORD_AVATAR: https://cdn-icons-png.flaticon.com/128/8290/8290674.png
+          DISCORD_USERNAME: BFF BOT
+          DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/885117e7-5809-4630-9f37-ede855cdc8c8
           DISCORD_EMBEDS: |
             [
                 { 
