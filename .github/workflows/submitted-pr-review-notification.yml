@@ -15,23 +15,22 @@ jobs:
           DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b
           DISCORD_EMBEDS: |
             [
-                {
-                  "title": "PR 어프로브, 이건 매튜의 특급칭찬이야 ~ 😘😘 \n${{ github.event.pull_request.title }}",
-                  "color": 10478271,
-                  "description": "${{ github.event.review.html_url }}",
-                  "fields": [
-                    {
-                      "name": "Reviewer",
-                      "value": "${{ github.event.review.user }}",
-                      "inline": true
-                    },
-                    {
-                      "name": "Comment",
-                      "value": "${{ github.event.review.body }}",
-                      "inline": true
-                    }
-                  ]
-                }
+              {
+                "title": "PR 어프로브, 이건 매튜의 특급칭찬이야 ~ 😘😘 \n${{ github.event.pull_request.title }}",
+                "color": 10478271,
+                "description": "${{ github.event.review.html_url }}",
+                "fields": [
+                  {
+                    "name": "Reviewer",
+                    "value": "${{ github.event.review.user }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Comment",
+                    "value": "${{ github.event.review.body }}",
+                    "inline": true
+                  }
+                ]
               }
             ]
             
@@ -47,27 +46,26 @@ jobs:
           DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b
           DISCORD_EMBEDS: |
             [
-                {
-                  "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
-                  "color": 13458524,
-                  "description": "${{ github.event.review.html_url }}",
-                  "fields": [
-                    {
-                      "name": "Reviewer",
-                      "value": "${{ github.event.review.user.login }}",
-                      "inline": true
-                    },
-                    {
-                      "name": "Comment",
-                      "value": "${{ github.event.review.body }}",
-                      "inline": true
-                    },
-                    {
-                      "name": "State",
-                      "value": "${{ github.event.review.state }}",
-                      "inline": true
-                    }
-                  ]
-                }
+              {
+                "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
+                "color": 13458524,
+                "description": "${{ github.event.review.html_url }}",
+                "fields": [
+                  {
+                    "name": "Reviewer",
+                    "value": "${{ github.event.review.user.login }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Comment",
+                    "value": "${{ github.event.review.body }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "State",
+                    "value": "${{ github.event.review.state }}",
+                    "inline": true
+                  }
+                ]
               }
             ]
