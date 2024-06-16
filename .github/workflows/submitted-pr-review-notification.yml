@@ -38,6 +38,13 @@ jobs:
                 ]
               }
             ]
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: add label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 🌟머지 해주세요🌟
             
   commented_or_changes_requested:
     if: github.event.review.state == 'commented' || github.event.review.state == 'changes_requested'
@@ -74,3 +81,10 @@ jobs:
                 ]
               }
             ]
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: add label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: ✏️수정 요청✏️
