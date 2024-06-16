@@ -10,10 +10,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:auth"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":designsystem"))
     implementation(project(":core:model"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:common"))
     implementation(project(":feature:auth"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)

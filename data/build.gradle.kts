@@ -9,4 +9,6 @@ android {
 
 dependencies {
     implementation(libs.junit)
+    implementation(project(":domain"))
+    implementation(project(":core:model"))
 }

@@ -9,4 +9,6 @@ android {
 
 dependencies {
     implementation(libs.material)
+    implementation(project(":designsystem"))
+    implementation(project(":core:model"))
 }

@@ -5,3 +5,7 @@ plugins {
 dependencies {
     implementation(libs.junit)
 }
+
+dependencies {
+    implementation(project(":core:model"))
+}

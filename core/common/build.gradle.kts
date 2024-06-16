@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.bff.wespot.core.common"
 }
+
+dependencies {
+    implementation(project(":core:model"))
+}
