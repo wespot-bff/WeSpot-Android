@@ -10,6 +10,7 @@ class JvmLibraryPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.jvm")
+                apply("com.bff.wespot.lint")
             }
 
             tasks.withType(KotlinCompile::class.java).configureEach {
