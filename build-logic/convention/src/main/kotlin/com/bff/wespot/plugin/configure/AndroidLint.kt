@@ -1,3 +1,7 @@
+/**
+ * https://github.com/JLLeitschuh/ktlint-gradle
+ */
+
 package com.bff.wespot.plugin.configure
 
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
@@ -10,6 +14,14 @@ internal fun Project.configureKtLint() {
         android.set(true)
         verbose.set(true)
         outputToConsole.set(true)
+        additionalEditorconfig.set (
+            mapOf(
+                "ktlint_standard_no-wildcard-imports" to "disabled",
+                "ktlint_standard_filename" to "disabled",
+                "ktlint_standard_function-naming" to "disabled",
+                "ktlint_standard_class-naming" to "disabled",
+            )
+        )
         reporters {
             reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
         }
