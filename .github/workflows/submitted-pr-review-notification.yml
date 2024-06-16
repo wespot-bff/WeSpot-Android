@@ -22,12 +22,17 @@ jobs:
                 "fields": [
                   {
                     "name": "Reviewer",
-                    "value": "${{ github.event.review.user }}",
+                    "value": "${{ github.event.review.user.login }}",
                     "inline": true
                   },
                   {
                     "name": "Comment",
                     "value": "${{ github.event.review.body }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "State",
+                    "value": "${{ github.event.review.state }}",
                     "inline": true
                   }
                 ]
