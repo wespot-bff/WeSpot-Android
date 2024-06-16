@@ -1,7 +1,7 @@
 plugins {
-    id("com.bff.wespot.feature")
-    id("com.bff.wespot.compose")
-    id("com.bff.wespot.hilt")
+    alias(libs.plugins.wespot.android.feature)
+    alias(libs.plugins.wespot.android.compose)
+    alias(libs.plugins.wespot.android.hilt)
 }
 
 android {
@@ -10,6 +10,9 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":core:model"))
+    implementation(project(":core:ui"))
+    implementation(project(":designsystem"))
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)

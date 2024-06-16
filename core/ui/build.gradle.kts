@@ -4,9 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bff.wespot.designsystem"
+    namespace = "com.bff.wespot.ui"
 }
 
 dependencies {
     implementation(libs.material)
+    implementation(project(":designsystem"))
+    implementation(project(":core:model"))
 }

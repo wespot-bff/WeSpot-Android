@@ -4,11 +4,9 @@ plugins {
 }
 
 android {
-    namespace = "com.bff.wespot.data"
+    namespace = "com.bff.wespot.core.common"
 }
 
 dependencies {
-    implementation(libs.junit)
-    implementation(project(":domain"))
     implementation(project(":core:model"))
 }

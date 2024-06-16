@@ -1,10 +1,9 @@
 package com.bff.wespot.plugin
 
+import com.bff.wespot.plugin.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationFirebasePlugin: Plugin<Project> {
     override fun apply(target: Project) {
@@ -13,8 +12,6 @@ class AndroidApplicationFirebasePlugin: Plugin<Project> {
                 apply("com.google.gms.google-services")
                 apply("com.google.firebase.crashlytics")
             }
-
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {
                 "implementation"(platform(libs.findLibrary("firebase-bom").get()))

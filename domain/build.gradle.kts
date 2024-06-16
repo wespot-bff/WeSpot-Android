@@ -1,13 +1,11 @@
 plugins {
-    id("com.bff.wespot.library")
-    id("com.bff.wespot.hilt")
-}
-
-android {
-    namespace = "com.bff.wespot.domain"
+    alias(libs.plugins.wespot.jvm.library)
 }
 
 dependencies {
     implementation(libs.junit)
-    implementation(libs.androidx.junit)
+}
+
+dependencies {
+    implementation(project(":core:model"))
 }

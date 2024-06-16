@@ -1,8 +1,10 @@
 package com.bff.wespot.plugin
 
+import com.android.build.gradle.LibraryExtension
 import com.bff.wespot.plugin.configure.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 
 class AndroidLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -11,7 +13,28 @@ class AndroidLibraryPlugin : Plugin<Project> {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
             }
-            configureKotlinAndroid()
+
+            extensions.configure<LibraryExtension> {
+                configureKotlinAndroid(this)
+
+                defaultConfig.consumerProguardFiles("consumer-rules.pro")
+
+                packaging {
+                    resources {
+                        excludes += "/META-INF/LICENSE*"
+                    }
+                }
+
+                buildTypes {
+                    getByName("release") {
+                        isMinifyEnabled = true
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
+                    }
+                }
+            }
         }
     }
 }

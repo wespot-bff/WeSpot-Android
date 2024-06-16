@@ -1,8 +1,10 @@
 package com.bff.wespot.plugin
 
+import com.android.build.gradle.LibraryExtension
 import com.bff.wespot.plugin.configure.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.getByType
 
 class AndroidFeaturePlugin: Plugin<Project>{
     override fun apply(target: Project) {
@@ -11,7 +13,9 @@ class AndroidFeaturePlugin: Plugin<Project>{
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
             }
-            configureKotlinAndroid()
+
+            val extension = extensions.getByType<LibraryExtension>()
+            configureKotlinAndroid(extension)
         }
     }
 }
