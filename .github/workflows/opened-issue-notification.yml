@@ -1,4 +1,4 @@
-name: Opend Issue Notification
+name: Opened Issue Notification
 on:
   issues:
     types:
