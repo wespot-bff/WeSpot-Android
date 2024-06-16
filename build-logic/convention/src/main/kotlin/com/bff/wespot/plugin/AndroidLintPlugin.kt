@@ -19,7 +19,7 @@ class AndroidLintPlugin : Plugin<Project> {
             configureDetekt()
 
             dependencies {
-                "implementation"(libs.findLibrary("detekt-formatting").get())
+                "detektPlugins"(libs.findLibrary("detekt-formatting").get())
             }
         }
     }
