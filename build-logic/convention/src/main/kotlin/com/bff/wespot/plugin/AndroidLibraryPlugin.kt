@@ -12,6 +12,7 @@ class AndroidLibraryPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
+                apply("com.bff.wespot.lint")
             }
 
             extensions.configure<LibraryExtension> {

@@ -1,0 +1,95 @@
+# Docs : https://detekt.dev/docs/introduction/configurations
+# Created by : https://github.com/droidknights/DroidKnightsApp/
+
+console-reports:
+  active: true
+
+comments:
+  active: true
+
+# 복합 설정, 함수, 클래스, 조건문 설정
+complexity:
+  active: true
+
+coroutines:
+  active: true
+
+empty-blocks:
+  active: true
+
+formatting:
+  active: true
+  android: true
+  Filename:
+    active: false
+  ImportOrdering:
+    active: false
+  Indentation:
+    active: false
+  MaximumLineLength:
+    active: true
+    maxLineLength: 100
+  MultiLineIfElse:
+    active: true
+  NoBlankLineBeforeRbrace:
+    active: true
+  NoConsecutiveBlankLines:
+    active: true
+  NoEmptyClassBody:
+    active: true
+  NoLineBreakAfterElse:
+    active: true
+  NoLineBreakBeforeAssignment:
+    active: true
+  NoSemicolons:
+    active: true
+  NoTrailingSpaces:
+    active: true
+  NoUnitReturn:
+    active: true
+  NoUnusedImports:
+    active: true
+  NoWildcardImports:
+    active: false
+  PackageName:
+    active: true
+    autoCorrect: true
+  ParameterListWrapping:
+    active: true
+    maxLineLength: 100
+  ParameterWrapping:
+    active: true
+    maxLineLength: 100
+  PropertyWrapping:
+    active: true
+    maxLineLength: 100
+  Wrapping:
+    active: true
+    maxLineLength: 100
+  SpacingAroundColon:
+    active: true
+  SpacingAroundComma:
+    active: true
+  SpacingAroundCurly:
+    active: true
+  SpacingAroundDot:
+    active: true
+
+naming:
+  active: true
+  ConstructorParameterNaming:
+    active: false
+  FunctionNaming:
+    active: false
+  PackageNaming:
+    active: true
+    packagePattern: '[a-z]+(\.[a-z][A-Za-z0-9]*)*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Za-z][_A-Za-z0-9]*'
+    propertyPattern: '[A-Za-z][_A-Za-z0-9]*'
+    privatePropertyPattern: '_?[A-Za-z][_A-Za-z0-9]*' # Backing Properties
+
+# KtLint Style 적용
+style:
+  active: false

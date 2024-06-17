@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "Running git pre-push hook"
+
+./gradlew detekt --daemon
+
+# $? = ".gradlew ktlintFormat --daemon"에 대한 return 값
+STATUS=$?
+
+# 문제없이 끝났다면 exit 0, 아니면 1
+[ $STATUS -ne 0 ] && exit 1
+exit 0
