@@ -16,11 +16,8 @@ android {
 
     defaultConfig {
         buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
-        resValue(
-            "string",
-            "SCHEME_KAKAO_APP_KEY",
+        manifestPlaceholders["SCHEME_KAKAO_APP_KEY"] =
             properties.getProperty("SCHEME_KAKAO_APP_KEY")
-        )
     }
 
     buildFeatures {

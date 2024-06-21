@@ -6,6 +6,8 @@ import com.kakao.sdk.common.KakaoSdk
 class WeSpotApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        KakaoSdk.init(this, BuildConfig.KAKAO_APP_KEY)
+
+        val key = BuildConfig.KAKAO_APP_KEY
+        KakaoSdk.init(this, key)
     }
 }
