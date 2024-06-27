@@ -58,6 +58,14 @@ private val CustomLightColors = CustomColors(
     toggleColor = Positive
 )
 
+private val DarkColorScheme = darkColorScheme(
+    primary = CustomDarkColors.primaryColor,
+    secondary = CustomDarkColors.secondaryBtnColor,
+    tertiary = CustomDarkColors.tertiaryBtnColor,
+    background = CustomDarkColors.backgroundColor,
+    error = CustomDarkColors.dangerColor,
+)
+
 private val LocalColorsProvider = staticCompositionLocalOf {
     CustomLightColors
 }
@@ -76,7 +84,7 @@ private fun CustomLocalProvider(colors: CustomColors, content: @Composable () ->
 private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
     get() = when (this) {
         CustomTheme.LIGHT -> lightColorScheme() to CustomLightColors
-        CustomTheme.DARK -> darkColorScheme() to CustomDarkColors
+        CustomTheme.DARK -> DarkColorScheme to CustomDarkColors
     }
 
 object CustomThemeManager {
@@ -93,7 +101,7 @@ object CustomThemeManager {
         get() = MaterialTheme.shapes
 
 
-    var customTheme by mutableStateOf(CustomTheme.LIGHT)
+    var customTheme by mutableStateOf(CustomTheme.DARK)
 
     fun isSystemInDarkTheme(): Boolean {
         return customTheme == CustomTheme.DARK
