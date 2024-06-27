@@ -8,16 +8,18 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
-class AndroidComposePlugin: Plugin<Project> {
+class AndroidComposePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with(target){
+        with(target) {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.plugin.compose")
+                apply("com.google.devtools.ksp")
             }
 
             dependencies {
                 "implementation"(platform(libs.findLibrary("androidx-compose-bom").get()))
                 "implementation"(libs.findBundle("androidx-compose").get())
+                "ksp"(libs.findLibrary("androidx-compose-destination-compiler").get())
             }
 
             extensions.configure<BaseExtension> {

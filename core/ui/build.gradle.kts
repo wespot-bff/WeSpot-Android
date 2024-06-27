@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.wespot.android.feature)
+    alias(libs.plugins.wespot.android.library)
     alias(libs.plugins.wespot.android.compose)
 }
 
@@ -11,4 +11,5 @@ dependencies {
     implementation(libs.material)
     implementation(project(":designsystem"))
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
 }
