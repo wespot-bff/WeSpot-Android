@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 
 enum class CustomTheme {
-    LIGHT, DARK
+    LIGHT,
+    DARK,
 }
-
 
 val Primary100 = Color(0xFFFDFFDC)
 val Primary200 = Color(0xFFFBFFB7)
@@ -52,7 +52,7 @@ class CustomColors(
     backgroundColor: Color,
     dangerColor: Color,
     alertBadgeColor: Color,
-    toggleColor: Color
+    toggleColor: Color,
 ) {
     var primaryColor by mutableStateOf(primaryColor)
         private set
@@ -137,26 +137,27 @@ class CustomColors(
         this.toggleColor = colors.toggleColor
     }
 
-    fun copy() = CustomColors(
-        primaryColor = primaryColor,
-        toastColor = toastColor,
-        txtTitleColor = txtTitleColor,
-        abledTxtColor = abledTxtColor,
-        abledIconColor = abledIconColor,
-        txtSubColor = txtSubColor,
-        disableIcnColor = disableIcnColor,
-        disableBtnTxtColor = disableBtnTxtColor,
-        secondaryBtnColor = secondaryBtnColor,
-        primaryBtnColor = primaryBtnColor,
-        disableBtnColor = disableBtnColor,
-        badgeColor = badgeColor,
-        modalColor = modalColor,
-        cardBackgroundColor = cardBackgroundColor,
-        tertiaryBtnColor = tertiaryBtnColor,
-        naviColor = naviColor,
-        backgroundColor = backgroundColor,
-        dangerColor = dangerColor,
-        alertBadgeColor = alertBadgeColor,
-        toggleColor = toggleColor
-    )
+    fun copy() =
+        CustomColors(
+            primaryColor = primaryColor,
+            toastColor = toastColor,
+            txtTitleColor = txtTitleColor,
+            abledTxtColor = abledTxtColor,
+            abledIconColor = abledIconColor,
+            txtSubColor = txtSubColor,
+            disableIcnColor = disableIcnColor,
+            disableBtnTxtColor = disableBtnTxtColor,
+            secondaryBtnColor = secondaryBtnColor,
+            primaryBtnColor = primaryBtnColor,
+            disableBtnColor = disableBtnColor,
+            badgeColor = badgeColor,
+            modalColor = modalColor,
+            cardBackgroundColor = cardBackgroundColor,
+            tertiaryBtnColor = tertiaryBtnColor,
+            naviColor = naviColor,
+            backgroundColor = backgroundColor,
+            dangerColor = dangerColor,
+            alertBadgeColor = alertBadgeColor,
+            toggleColor = toggleColor,
+        )
 }

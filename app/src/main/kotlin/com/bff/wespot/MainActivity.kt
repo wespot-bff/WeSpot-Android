@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BffCustomTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     Text(text = "Hello, World!")
                 }

@@ -12,80 +12,88 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 
-private val CustomDarkColors = CustomColors(
-    primaryColor = Primary300,
-    toastColor = White,
-    txtTitleColor = Gray100,
-    abledTxtColor = Gray100,
-    abledIconColor = Gray200,
-    txtSubColor = Gray300,
-    disableIcnColor = Gray400,
-    disableBtnTxtColor = Gray400,
-    secondaryBtnColor = Gray400,
-    primaryBtnColor = Gray500,
-    disableBtnColor = Gray500,
-    badgeColor = Gray500,
-    modalColor = Gray600,
-    cardBackgroundColor = Gray700,
-    tertiaryBtnColor = Gray700,
-    naviColor = Gray800,
-    backgroundColor = Gray900,
-    dangerColor = Destructive,
-    alertBadgeColor = Destructive,
-    toggleColor = Positive
-)
+private val CustomDarkColors =
+    CustomColors(
+        primaryColor = Primary300,
+        toastColor = White,
+        txtTitleColor = Gray100,
+        abledTxtColor = Gray100,
+        abledIconColor = Gray200,
+        txtSubColor = Gray300,
+        disableIcnColor = Gray400,
+        disableBtnTxtColor = Gray400,
+        secondaryBtnColor = Gray400,
+        primaryBtnColor = Gray500,
+        disableBtnColor = Gray500,
+        badgeColor = Gray500,
+        modalColor = Gray600,
+        cardBackgroundColor = Gray700,
+        tertiaryBtnColor = Gray700,
+        naviColor = Gray800,
+        backgroundColor = Gray900,
+        dangerColor = Destructive,
+        alertBadgeColor = Destructive,
+        toggleColor = Positive,
+    )
 
-private val CustomLightColors = CustomColors(
-    primaryColor = Primary300,
-    toastColor = White,
-    txtTitleColor = Gray100,
-    abledTxtColor = Gray100,
-    abledIconColor = Gray200,
-    txtSubColor = Gray300,
-    disableIcnColor = Gray400,
-    disableBtnTxtColor = Gray400,
-    secondaryBtnColor = Gray400,
-    primaryBtnColor = Gray500,
-    disableBtnColor = Gray500,
-    badgeColor = Gray500,
-    modalColor = Gray600,
-    cardBackgroundColor = Gray700,
-    tertiaryBtnColor = Gray700,
-    naviColor = Gray800,
-    backgroundColor = Gray900,
-    dangerColor = Destructive,
-    alertBadgeColor = Destructive,
-    toggleColor = Positive
-)
+private val CustomLightColors =
+    CustomColors(
+        primaryColor = Primary300,
+        toastColor = White,
+        txtTitleColor = Gray100,
+        abledTxtColor = Gray100,
+        abledIconColor = Gray200,
+        txtSubColor = Gray300,
+        disableIcnColor = Gray400,
+        disableBtnTxtColor = Gray400,
+        secondaryBtnColor = Gray400,
+        primaryBtnColor = Gray500,
+        disableBtnColor = Gray500,
+        badgeColor = Gray500,
+        modalColor = Gray600,
+        cardBackgroundColor = Gray700,
+        tertiaryBtnColor = Gray700,
+        naviColor = Gray800,
+        backgroundColor = Gray900,
+        dangerColor = Destructive,
+        alertBadgeColor = Destructive,
+        toggleColor = Positive,
+    )
 
-private val DarkColorScheme = darkColorScheme(
-    primary = CustomDarkColors.primaryColor,
-    secondary = CustomDarkColors.secondaryBtnColor,
-    tertiary = CustomDarkColors.tertiaryBtnColor,
-    background = CustomDarkColors.backgroundColor,
-    error = CustomDarkColors.dangerColor,
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = CustomDarkColors.primaryColor,
+        secondary = CustomDarkColors.secondaryBtnColor,
+        tertiary = CustomDarkColors.tertiaryBtnColor,
+        background = CustomDarkColors.backgroundColor,
+        error = CustomDarkColors.dangerColor,
+    )
 
-private val LocalColorsProvider = staticCompositionLocalOf {
-    CustomLightColors
-}
-
+private val LocalColorsProvider =
+    staticCompositionLocalOf {
+        CustomLightColors
+    }
 
 @Composable
-private fun CustomLocalProvider(colors: CustomColors, content: @Composable () -> Unit) {
-    val colorPalette = remember {
-        colors.copy()
-    }
+private fun CustomLocalProvider(
+    colors: CustomColors,
+    content: @Composable () -> Unit,
+) {
+    val colorPalette =
+        remember {
+            colors.copy()
+        }
 
     colorPalette.update(colors)
     CompositionLocalProvider(LocalColorsProvider provides colorPalette, content = content)
 }
 
 private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
-    get() = when (this) {
-        CustomTheme.LIGHT -> lightColorScheme() to CustomLightColors
-        CustomTheme.DARK -> DarkColorScheme to CustomDarkColors
-    }
+    get() =
+        when (this) {
+            CustomTheme.LIGHT -> lightColorScheme() to CustomLightColors
+            CustomTheme.DARK -> DarkColorScheme to CustomDarkColors
+        }
 
 object CustomThemeManager {
     val colors: CustomColors
@@ -100,7 +108,6 @@ object CustomThemeManager {
         @Composable
         get() = MaterialTheme.shapes
 
-
     var customTheme by mutableStateOf(CustomTheme.DARK)
 
     fun isSystemInDarkTheme(): Boolean {
@@ -111,7 +118,7 @@ object CustomThemeManager {
 @Composable
 fun BffCustomTheme(
     customTheme: CustomTheme = CustomThemeManager.customTheme,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val (colorPlatte, colors) = customTheme.colors
     CustomLocalProvider(colors = colors) {
