@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import com.bff.wespot.ui.theme.BffCustomTheme
+import com.bff.wespot.ui.theme.WeSpotTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BffCustomTheme {
+            WeSpotTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {

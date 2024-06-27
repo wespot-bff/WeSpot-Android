@@ -95,7 +95,7 @@ private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
             CustomTheme.DARK -> DarkColorScheme to CustomDarkColors
         }
 
-object CustomThemeManager {
+object WeSpotThemeManager {
     val colors: CustomColors
         @Composable
         get() = LocalColorsProvider.current
@@ -116,8 +116,8 @@ object CustomThemeManager {
 }
 
 @Composable
-fun BffCustomTheme(
-    customTheme: CustomTheme = CustomThemeManager.customTheme,
+fun WeSpotTheme(
+    customTheme: CustomTheme = WeSpotThemeManager.customTheme,
     content: @Composable () -> Unit,
 ) {
     val (colorPlatte, colors) = customTheme.colors
