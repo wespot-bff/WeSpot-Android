@@ -11,6 +11,13 @@ comments:
 complexity:
   active: true
 
+  ComplexCondition:
+    active: true
+    threshold: 30
+
+  LongParameterList:
+    active: false
+
 coroutines:
   active: true
 

@@ -11,7 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.util.textDp
 
-
 internal val plainTextFont =
     FontFamily(
         Font(R.font.pretendard_r),
