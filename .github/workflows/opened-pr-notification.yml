@@ -24,7 +24,8 @@ jobs:
 
       - name: add local.properties
         run: |
-          echo api_key=\"${{ secrets.KAKAO_API_KEY }}\" >> ./local.properties
+          echo KAKAO_API_KEY=\"${{ secrets.KAKAO_API_KEY }}\" >> ./local.properties
+          echo SCHEME_KAKAO_APP_KEY=\"${{ secrets.SCHEME_KAKAO_APP_KEY }}\" >> ./local.properties
 
       - name: add google-services.json
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./app/google-services.json
