@@ -5,7 +5,7 @@ targetSdk = "34"
 versionName = "1.0.0"
 versionCode = "1"
 
-gradle-plugin = "8.5.0-rc02"
+gradle-plugin = "8.5.0"
 kotlin = "2.0.0"
 kotlinx-serialization-json = "1.7.0"
 kotlinx-collections-immutable = "0.3.7"
@@ -14,10 +14,10 @@ ksp = "2.0.0-1.0.22"
 ktlint = "12.1.1"
 detekt = "1.23.6"
 
-lifecycle-runtime-ktx = "2.8.1"
+lifecycle-runtime-ktx = "2.8.2"
 activity-compose = "1.9.0"
-compose-bom = "2024.05.00"
-lifecycle = "2.8.1"
+compose-bom = "2024.06.00"
+lifecycle = "2.8.2"
 navigation = "2.7.7"
 hilt = "2.51.1"
 hilt-navigation-compose = "1.2.0"
@@ -27,13 +27,15 @@ ktor-client = "2.3.11"
 orbit = "8.0.0"
 material = "1.12.0"
 google-services = "4.4.2"
-crashlytics = "3.0.1"
-firebase = "33.1.0"
+crashlytics = "3.0.2"
+firebase = "33.1.1"
 
 junit = "4.13.2"
-junit-version = "1.1.5"
-espresso-core = "3.5.1"
+junit-version = "1.2.1"
+espresso-core = "3.6.1"
 appcompat = "1.7.0"
+
+compose-destination = "1.10.2"
 
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
@@ -138,10 +140,10 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
 # Gradle Plugin
-wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified"}
-wespot-android-library = { id = "com.bff.wespot.android.library", version = "unspecified"}
-wespot-android-feature = { id = "com.bff.wespot.feature", version = "unspecified"}
-wespot-android-firebase = { id = "com.bff.wespot.firebase", version = "unspecified"}
-wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified"}
-wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified"}
-wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified"}
+wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified" }
+wespot-android-library = { id = "com.bff.wespot.android.library", version = "unspecified" }
+wespot-android-feature = { id = "com.bff.wespot.feature", version = "unspecified" }
+wespot-android-firebase = { id = "com.bff.wespot.firebase", version = "unspecified" }
+wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified" }
+wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified" }
+wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified" }
