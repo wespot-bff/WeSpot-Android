@@ -9,10 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":core:model"))
-    implementation(project(":core:ui"))
-    implementation(project(":designsystem"))
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)

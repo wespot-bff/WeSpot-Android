@@ -5,7 +5,9 @@ import com.bff.wespot.plugin.configure.configureKotlinAndroid
 import com.bff.wespot.plugin.configure.configureKtLint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.project
 
 class AndroidFeaturePlugin: Plugin<Project>{
     override fun apply(target: Project) {
@@ -19,6 +21,14 @@ class AndroidFeaturePlugin: Plugin<Project>{
             val extension = extensions.getByType<LibraryExtension>()
             configureKotlinAndroid(extension)
             configureKtLint()
+
+            dependencies {
+                "implementation"(project(":domain"))
+                "implementation"(project(":core:model"))
+                "implementation"(project(":core:ui"))
+                "implementation"(project(":designsystem"))
+                "implementation"(project(":core:common"))
+            }
         }
     }
 }

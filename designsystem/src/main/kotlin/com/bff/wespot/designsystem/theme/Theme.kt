@@ -1,4 +1,4 @@
-package com.bff.wespot.ui.theme
+package com.bff.wespot.designsystem.theme
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme

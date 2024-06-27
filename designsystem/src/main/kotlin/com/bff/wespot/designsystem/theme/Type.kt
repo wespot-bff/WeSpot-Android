@@ -1,4 +1,4 @@
-package com.bff.wespot.ui.theme
+package com.bff.wespot.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -8,8 +8,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.bff.wespot.ui.R
-import util.textDp
+import com.bff.wespot.designsystem.R
+import com.bff.wespot.designsystem.util.textDp
+
 
 internal val plainTextFont =
     FontFamily(

@@ -1,4 +1,4 @@
-package com.bff.wespot.ui.theme
+package com.bff.wespot.designsystem.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

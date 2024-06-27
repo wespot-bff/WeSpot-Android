@@ -1,4 +1,4 @@
-package util
+package com.bff.wespot.designsystem.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
