@@ -1,4 +1,4 @@
-package com.bff.wespot.designsystem.component
+package com.bff.wespot.designsystem.component.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,46 +41,49 @@ fun WSButton(
     borderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
+    val interactionSource =
+        remember {
+            MutableInteractionSource()
+        }
 
     val isPressed by interactionSource.collectIsPressedAsState()
 
     Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(vertical = 12.dp, horizontal = 20.dp)
+        modifier =
+            Modifier
+                .wrapContentSize()
+                .padding(vertical = 12.dp, horizontal = 20.dp),
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                contentColor = buttonType.textColor(),
-                containerColor = if (isPressed) {
-                    buttonType.pressColor()
-                } else {
-                    buttonType.background()
-                },
-                disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor,
-                disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor
-            ),
+            colors =
+                ButtonDefaults.buttonColors(
+                    contentColor = buttonType.textColor(),
+                    containerColor =
+                        if (isPressed) {
+                            buttonType.pressColor()
+                        } else {
+                            buttonType.background()
+                        },
+                    disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor,
+                    disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
+                ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
             enabled = enabled,
-            border = borderStroke
+            border = borderStroke,
         ) {
             content {
                 Text(
                     text = text,
                     style = buttonType.fontStyle(),
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 16.dp),
                 )
             }
         }
     }
 }
-
 
 sealed interface WSButtonType {
     @Composable
@@ -145,7 +148,7 @@ private fun WSButtonPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(text = PREVIEW_TEXT, buttonType = WSButtonType.Primary, onClick = {}) {
                     it()
@@ -170,13 +173,13 @@ private fun WSButtonDisablePreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(
                     text = PREVIEW_TEXT,
                     buttonType = WSButtonType.Primary,
                     onClick = {},
-                    enabled = false
+                    enabled = false,
                 ) {
                     it()
                 }
@@ -185,7 +188,7 @@ private fun WSButtonDisablePreview() {
                     text = PREVIEW_TEXT,
                     buttonType = WSButtonType.Secondary,
                     onClick = {},
-                    enabled = false
+                    enabled = false,
                 ) {
                     it()
                 }
@@ -194,7 +197,7 @@ private fun WSButtonDisablePreview() {
                     text = PREVIEW_TEXT,
                     buttonType = WSButtonType.Tertiary,
                     onClick = {},
-                    enabled = false
+                    enabled = false,
                 ) {
                     it()
                 }
@@ -210,7 +213,7 @@ private fun WSButtonIconPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(
                     buttonType = WSButtonType.Primary,
@@ -220,7 +223,7 @@ private fun WSButtonIconPreview() {
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add",
                         tint = WeSpotThemeManager.colors.backgroundColor,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
 
@@ -232,7 +235,7 @@ private fun WSButtonIconPreview() {
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add",
                         tint = WeSpotThemeManager.colors.backgroundColor,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
 
@@ -244,7 +247,7 @@ private fun WSButtonIconPreview() {
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add",
                         tint = WeSpotThemeManager.colors.backgroundColor,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
 
@@ -257,19 +260,17 @@ private fun WSButtonIconPreview() {
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add",
                         tint = WeSpotThemeManager.colors.backgroundColor,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                     it()
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add",
                         tint = WeSpotThemeManager.colors.backgroundColor,
-                        modifier = Modifier.padding(vertical = 16.dp)
+                        modifier = Modifier.padding(vertical = 16.dp),
                     )
                 }
             }
         }
     }
 }
-
-

@@ -1,4 +1,4 @@
-package com.bff.wespot.designsystem.component
+package com.bff.wespot.designsystem.component.button
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,9 +31,10 @@ fun WSTextButton(
     buttonType: WSTextButtonType = WSTextButtonType.Primary,
 ) {
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .wrapContentSize()
-            .padding(8.dp)
+            .padding(8.dp),
     ) {
         TextButton(onClick = onClick, enabled = enabled) {
             Text(text = text, color = buttonType.textColor(), style = buttonType.fontStyle())
@@ -71,14 +72,22 @@ sealed interface WSTextButtonType {
 private fun WSTextButtonPreview() {
     WeSpotTheme {
         Surface(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                WSTextButton(text = PREVIEW_TEXT, onClick = {}, buttonType = WSTextButtonType.Primary)
-                WSTextButton(text = PREVIEW_TEXT, onClick = {}, buttonType = WSTextButtonType.Underline)
+                WSTextButton(
+                    text = PREVIEW_TEXT,
+                    onClick = {},
+                    buttonType = WSTextButtonType.Primary
+                )
+                WSTextButton(
+                    text = PREVIEW_TEXT,
+                    onClick = {},
+                    buttonType = WSTextButtonType.Underline
+                )
             }
         }
     }

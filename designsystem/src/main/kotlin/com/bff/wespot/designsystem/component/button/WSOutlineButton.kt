@@ -1,4 +1,4 @@
-package com.bff.wespot.designsystem.component
+package com.bff.wespot.designsystem.component.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.WeSpotTheme
-import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
 private const val PREVIEW_TEXT = "친구랑 같이 하기"
@@ -29,7 +28,7 @@ fun WSOutlineButton(
         onClick = onClick,
         buttonType = buttonType.buttonType(),
         borderStroke = BorderStroke(1.dp, buttonType.borderColor()),
-        enabled = enabled
+        enabled = enabled,
     ) {
         content(it)
     }
@@ -40,7 +39,6 @@ sealed interface WSOutlineButtonType {
 
     @Composable
     fun borderColor(): Color
-
 
     data object Primary : WSOutlineButtonType {
         override fun buttonType() = WSButtonType.Tertiary
@@ -55,13 +53,13 @@ sealed interface WSOutlineButtonType {
 private fun WSOutlineButtonPreview() {
     WeSpotTheme {
         Surface(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column {
                 WSOutlineButton(
                     onClick = {},
                     text = PREVIEW_TEXT,
-                    buttonType = WSOutlineButtonType.Primary
+                    buttonType = WSOutlineButtonType.Primary,
                 ) {
                     it()
                 }
