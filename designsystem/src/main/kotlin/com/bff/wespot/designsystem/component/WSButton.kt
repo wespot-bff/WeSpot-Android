@@ -1,5 +1,6 @@
 package com.bff.wespot.designsystem.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ fun WSButton(
     text: String = "",
     buttonType: WSButtonType = WSButtonType.Primary,
     enabled: Boolean = true,
+    borderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
     val interactionSource = remember {
@@ -65,7 +67,8 @@ fun WSButton(
             ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
-            enabled = enabled
+            enabled = enabled,
+            border = borderStroke
         ) {
             content {
                 Text(
