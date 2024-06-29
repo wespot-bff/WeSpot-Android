@@ -3,10 +3,15 @@ description: Request new Feature
 title: "[FEATURE]: "
 labels: ["🌱기능🌱"]
 body:
-  - type: markdown
+  - type: input
+    id: parentKey
     attributes:
-      value: |
-        이번 이슈도 파이팅 화이팅 🔥
+      label: Epic Ticket Number
+      description: WS-38 - 회원가입/로그인 | WS-42 - 투표 | WS-51 - 마음 | WS-46 - 보관함 | WS-66 - 전체 | WS-74 알림
+      placeholder: WS-38
+    validations:
+      required: true
+
   - type: textarea
     id: new-feature
     attributes:
@@ -15,6 +20,7 @@ body:
       placeholder: Splash API를 활용한 스플래쉬 화면 구현 
     validations:
       required: true
+
   - type: textarea
     id: todo
     attributes:
@@ -22,6 +28,7 @@ body:
       description: 작업사항을 나누어 작성해주세요! 
       value: |
         - [ ] todo1
+
   - type: textarea
     id: etc
     attributes:
