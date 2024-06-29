@@ -22,7 +22,7 @@ jobs:
           if [ "$AUTHOR" == "jeongjaino" ]; then
             echo "::set-output name=accountId::${{ secrets.JACOB_ACCOUNT_ID }}"
           else
-            echo "::set-output name=accountId::${{ secrets.JACOB_ACCOUNT_ID }}"
+            echo "::set-output name=accountId::${{ secrets.BROWNIES_ACCOUNT_ID }}"
           fi
 
       - name: Login
