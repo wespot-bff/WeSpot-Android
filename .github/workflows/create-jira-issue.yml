@@ -10,6 +10,11 @@ jobs:
     name: Create Jira issue
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout develop code
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          
       - name: Get Jira Assignee From PR Author
         id: jira-assignee
         run: |
@@ -26,11 +31,6 @@ jobs:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-
-      - name: Checkout main code
-        uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Issue Parser
         uses: stefanbuck/github-issue-praser@v3
@@ -73,11 +73,6 @@ jobs:
 
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
-
-      - name: Checkout develop code
-        uses: actions/checkout@v4
-        with:
-          ref: develop
 
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
