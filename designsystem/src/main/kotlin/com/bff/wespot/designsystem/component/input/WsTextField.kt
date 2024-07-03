@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -19,12 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
-import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -45,12 +44,10 @@ fun WsTextField(
 ) {
     Box(modifier = Modifier.wrapContentSize()) {
         OutlinedTextField(
-            modifier = Modifier
-                .heightIn(
-                    min = textFieldType.minHeight(),
-                    max = textFieldType.maxHeight()
-                )
-                .fillMaxWidth(),
+            modifier = Modifier.heightIn(
+                min = textFieldType.minHeight(),
+                max = textFieldType.maxHeight()
+            ),
             value = value,
             onValueChange = onValueChange,
             isError = isError,
@@ -61,8 +58,8 @@ fun WsTextField(
             trailingIcon = if (textFieldType.trailingIcon() != null) {
                 {
                     Icon(
-                        painter = textFieldType.trailingIcon()!!,
-                        contentDescription = StringSet.TEXTFIELD_TRAILING_ICON
+                        imageVector = textFieldType.trailingIcon()!!,
+                        contentDescription = "TextField trailing icon"
                     )
                 }
             } else {
@@ -71,8 +68,8 @@ fun WsTextField(
             leadingIcon = if (textFieldType.leadingIcon() != null) {
                 {
                     Icon(
-                        painter = textFieldType.leadingIcon()!!,
-                        contentDescription = StringSet.TEXTFIELD_LEADING_ICON
+                        imageVector = textFieldType.leadingIcon()!!,
+                        contentDescription = "TextField Leading icon"
                     )
                 }
             } else {
@@ -100,11 +97,9 @@ fun WsTextField(
 
 sealed interface WsTextFieldType {
 
-    @Composable
-    fun trailingIcon(): Painter?
+    fun trailingIcon(): ImageVector?
 
-    @Composable
-    fun leadingIcon(): Painter?
+    fun leadingIcon(): ImageVector?
 
     fun minHeight(): Dp = Dp.Unspecified
 
@@ -112,35 +107,27 @@ sealed interface WsTextFieldType {
 
     data object Normal : WsTextFieldType {
 
-        @Composable
         override fun trailingIcon() = null
 
-        @Composable
         override fun leadingIcon() = null
     }
 
     data object Search : WsTextFieldType {
 
-        @Composable
         override fun trailingIcon() = null
 
-        @Composable
-        override fun leadingIcon() = painterResource(id = R.drawable.search)
+        override fun leadingIcon() = Icons.Default.Search
     }
 
     data object Lock : WsTextFieldType {
-        @Composable
-        override fun trailingIcon() = painterResource(id = R.drawable.lock)
+        override fun trailingIcon() = Icons.Default.Lock
 
-        @Composable
         override fun leadingIcon() = null
     }
 
     data object Message : WsTextFieldType {
-        @Composable
         override fun trailingIcon() = null
 
-        @Composable
         override fun leadingIcon() = null
 
         override fun minHeight() = 170.dp
@@ -164,28 +151,28 @@ private fun WsTextFieldPreview() {
                 WsTextField(
                     value = value,
                     onValueChange = onValueChanged,
-                    placeholder = StringSet.SEARCH,
+                    placeholder = "Search",
                     textFieldType = WsTextFieldType.Normal
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = "Search",
                     textFieldType = WsTextFieldType.Search
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = "Search",
                     textFieldType = WsTextFieldType.Lock
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = "Search",
                     isError = true,
                     textFieldType = WsTextFieldType.Normal
                 )

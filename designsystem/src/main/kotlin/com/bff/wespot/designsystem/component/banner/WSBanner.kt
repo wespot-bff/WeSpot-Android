@@ -28,12 +28,14 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
+
+private const val PREVIEW_TITLE = "익명의 마음이 도착했어요"
+private const val PREVIEW_SUB_TITLE = "지금 쪽지함을 열어 확인해 보세요"
 
 @Composable
 fun WSBannerType(
@@ -102,7 +104,7 @@ fun WSBanner(
             icon?.let {
                 Icon(
                     painter = icon,
-                    contentDescription = StringSet.BANNER_ICON,
+                    contentDescription = "Banner Icon",
                     modifier = Modifier
                         .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
                 )
@@ -135,7 +137,7 @@ fun WSBanner(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.right_arrow),
+                    painter = painterResource(id = R.drawable.left_arrow),
                     contentDescription = "Arrow Icon",
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier
@@ -209,25 +211,25 @@ private fun WSBannerPreview() {
             Column {
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Send,
-                    title = StringSet.MESSAGE_ARRIVED,
-                    subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
+                    title = PREVIEW_TITLE,
+                    subTitle = PREVIEW_SUB_TITLE,
                     bannerType = WSBannerType.Primary
                 )
 
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Accessible,
-                    title = StringSet.MESSAGE_ARRIVED,
+                    title = PREVIEW_TITLE,
                 )
 
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Accessible,
-                    title = StringSet.MESSAGE_ARRIVED,
+                    title = PREVIEW_TITLE,
                     bannerType = WSBannerType.Secondary
                 )
 
                 WSBanner(
-                    title = StringSet.MESSAGE_ARRIVED,
-                    subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
+                    title = PREVIEW_TITLE,
+                    subTitle = PREVIEW_SUB_TITLE,
                     bannerType = WSBannerType.Secondary
                 )
             }
