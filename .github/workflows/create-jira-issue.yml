@@ -3,6 +3,7 @@ on:
   issues:
     types:
       - opened
+      - reopened
       
 jobs:
   create-issue:
@@ -57,7 +58,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: WS
-          issuetype: Android
+          issuetype: SubTask
           summary: "${{ github.event.issue.title }}"
           description: "${{ steps.md2jira.outputs.output-text }}"
           fields: |
