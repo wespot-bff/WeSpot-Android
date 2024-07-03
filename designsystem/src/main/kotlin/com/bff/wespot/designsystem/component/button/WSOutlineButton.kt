@@ -27,6 +27,7 @@ fun WSOutlineButton(
         onClick = onClick,
         buttonType = buttonType.buttonType(),
         borderStroke = BorderStroke(1.dp, buttonType.borderColor()),
+        pressedBorderStroke = BorderStroke(1.dp, buttonType.borderPressedColor()),
         enabled = enabled,
     ) {
         content(it)
@@ -39,11 +40,17 @@ sealed interface WSOutlineButtonType {
     @Composable
     fun borderColor(): Color
 
+    @Composable
+    fun borderPressedColor(): Color
+
     data object Primary : WSOutlineButtonType {
         override fun buttonType() = WSButtonType.Tertiary
 
         @Composable
         override fun borderColor() = Primary400
+
+        @Composable
+        override fun borderPressedColor() = Color(0xFFADB08D)
     }
 }
 

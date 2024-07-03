@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.Primary400
@@ -43,6 +45,10 @@ fun WsTextField(
 ) {
     Box(modifier = Modifier.wrapContentSize()) {
         OutlinedTextField(
+            modifier = Modifier.heightIn(
+                min = textFieldType.minHeight(),
+                max = textFieldType.maxHeight()
+            ),
             value = value,
             onValueChange = onValueChange,
             isError = isError,
@@ -96,6 +102,10 @@ sealed interface WsTextFieldType {
 
     fun leadingIcon(): ImageVector?
 
+    fun minHeight(): Dp = Dp.Unspecified
+
+    fun maxHeight(): Dp = Dp.Unspecified
+
     data object Normal : WsTextFieldType {
 
         override fun trailingIcon() = null
@@ -114,6 +124,16 @@ sealed interface WsTextFieldType {
         override fun trailingIcon() = Icons.Default.Lock
 
         override fun leadingIcon() = null
+    }
+
+    data object Message : WsTextFieldType {
+        override fun trailingIcon() = null
+
+        override fun leadingIcon() = null
+
+        override fun minHeight() = 170.dp
+
+        override fun maxHeight() = 228.dp
     }
 }
 
@@ -158,6 +178,29 @@ private fun WsTextFieldPreview() {
                     textFieldType = WsTextFieldType.Normal
                 )
 
+            }
+        }
+    }
+}
+
+@OrientationPreviews
+@Composable
+private fun MessagePreview() {
+    val (value, onValueChanged) = remember { mutableStateOf("") }
+
+    WeSpotTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                WsTextField(
+                    value = value,
+                    onValueChange = onValueChanged,
+                    placeholder = "Message",
+                    textFieldType = WsTextFieldType.Message
+                )
             }
         }
     }

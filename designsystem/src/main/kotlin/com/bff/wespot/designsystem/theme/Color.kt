@@ -46,6 +46,7 @@ class CustomColors(
     disableBtnColor: Color,
     badgeColor: Color,
     modalColor: Color,
+    bottomSheetColor: Color,
     cardBackgroundColor: Color,
     tertiaryBtnColor: Color,
     naviColor: Color,
@@ -93,6 +94,9 @@ class CustomColors(
     var modalColor by mutableStateOf(modalColor)
         private set
 
+    var bottomSheetColor by mutableStateOf(bottomSheetColor)
+        private set
+
     var cardBackgroundColor by mutableStateOf(cardBackgroundColor)
         private set
 
@@ -128,6 +132,7 @@ class CustomColors(
         this.disableBtnColor = colors.disableBtnColor
         this.badgeColor = colors.badgeColor
         this.modalColor = colors.modalColor
+        this.bottomSheetColor = colors.bottomSheetColor
         this.cardBackgroundColor = colors.cardBackgroundColor
         this.tertiaryBtnColor = colors.tertiaryBtnColor
         this.naviColor = colors.naviColor
@@ -152,6 +157,7 @@ class CustomColors(
             disableBtnColor = disableBtnColor,
             badgeColor = badgeColor,
             modalColor = modalColor,
+            bottomSheetColor = bottomSheetColor,
             cardBackgroundColor = cardBackgroundColor,
             tertiaryBtnColor = tertiaryBtnColor,
             naviColor = naviColor,

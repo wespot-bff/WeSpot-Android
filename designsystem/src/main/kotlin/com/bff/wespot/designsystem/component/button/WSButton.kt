@@ -38,6 +38,7 @@ fun WSButton(
     buttonType: WSButtonType = WSButtonType.Primary,
     enabled: Boolean = true,
     borderStroke: BorderStroke? = null,
+    pressedBorderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
     val interactionSource =
@@ -49,29 +50,33 @@ fun WSButton(
 
     Box(
         modifier =
-            Modifier
-                .wrapContentSize()
-                .padding(vertical = 12.dp, horizontal = 20.dp),
+        Modifier
+            .wrapContentSize()
+            .padding(vertical = 12.dp, horizontal = 20.dp),
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
             colors =
-                ButtonDefaults.buttonColors(
-                    contentColor = buttonType.textColor(),
-                    containerColor =
-                        if (isPressed) {
-                            buttonType.pressColor()
-                        } else {
-                            buttonType.background()
-                        },
-                    disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor,
-                    disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
-                ),
+            ButtonDefaults.buttonColors(
+                contentColor = buttonType.textColor(),
+                containerColor =
+                if (isPressed) {
+                    buttonType.pressColor()
+                } else {
+                    buttonType.background()
+                },
+                disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
+                disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
+            ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
             enabled = enabled,
-            border = borderStroke,
+            border = if (isPressed) {
+                pressedBorderStroke
+            } else {
+                borderStroke
+            },
         ) {
             content {
                 Text(
