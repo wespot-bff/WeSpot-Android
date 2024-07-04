@@ -6,7 +6,7 @@ body:
   - type: input
     id: parentKey
     attributes:
-      label: Story Ticket Number
+      label: Epic/Story Ticket Number
       description: WS-38 - 회원가입/로그인 | WS-42 - 투표 | WS-51 - 마음 | WS-46 - 보관함 | WS-66 - 전체 | WS-74 알림
       placeholder: WS-38
     validations:
