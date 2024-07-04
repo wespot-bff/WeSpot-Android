@@ -88,7 +88,12 @@ private fun WSDialogTwoButton(
     okButtonClick: () -> Unit,
     cancelButtonClick: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Box(modifier = Modifier.weight(1f)) {
             WSButton(
                 onClick = cancelButtonClick,
