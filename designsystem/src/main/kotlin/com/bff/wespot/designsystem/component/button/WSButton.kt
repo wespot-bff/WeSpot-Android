@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ fun WSButton(
     onClick: () -> Unit,
     text: String = "",
     buttonType: WSButtonType = WSButtonType.Primary,
+    paddingValues: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
     enabled: Boolean = true,
     borderStroke: BorderStroke? = null,
     pressedBorderStroke: BorderStroke? = null,
@@ -50,10 +52,9 @@ fun WSButton(
     val isPressed by interactionSource.collectIsPressedAsState()
 
     Box(
-        modifier =
-        Modifier
+        modifier = Modifier
             .wrapContentSize()
-            .padding(vertical = 12.dp, horizontal = 20.dp),
+            .padding(paddingValues),
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
@@ -78,12 +79,13 @@ fun WSButton(
             } else {
                 borderStroke
             },
+            contentPadding = PaddingValues(0.dp)
         ) {
             content {
                 Text(
                     text = text,
                     style = buttonType.fontStyle(),
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 14.dp),
                 )
             }
         }
