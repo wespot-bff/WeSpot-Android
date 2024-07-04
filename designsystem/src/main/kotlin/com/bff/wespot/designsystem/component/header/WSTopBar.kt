@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -28,6 +27,8 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
+private const val PREVIEW_TITLE = "회원가입"
+private const val ACTION_TEXT = "홈으로"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,9 +82,9 @@ private fun WSTopBarPreview() {
     WeSpotTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column {
-                WSTopBar(title = StringSet.REGISTER)
-                WSTopBar(title = StringSet.REGISTER, canNavigateBack = true)
-                WSTopBar(title = StringSet.REGISTER, action = {
+                WSTopBar(title = PREVIEW_TITLE)
+                WSTopBar(title = PREVIEW_TITLE, canNavigateBack = true)
+                WSTopBar(title = PREVIEW_TITLE, action = {
                     IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -93,7 +94,7 @@ private fun WSTopBarPreview() {
                 })
                 WSTopBar(title = "", canNavigateBack = true, action = {
                     Text(
-                        text = StringSet.TO_HOME,
+                        text = ACTION_TEXT,
                         style = it,
                         color = WeSpotThemeManager.colors.txtTitleColor
                     )
