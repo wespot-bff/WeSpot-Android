@@ -19,6 +19,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -39,6 +41,7 @@ fun WsTextField(
     isError: Boolean = false,
     singleLine: Boolean = false,
     readOnly: Boolean = false,
+    focusRequester: FocusRequester = remember { FocusRequester() },
     keyBoardOption: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldType: WsTextFieldType = WsTextFieldType.Normal
@@ -50,7 +53,7 @@ fun WsTextField(
                     min = textFieldType.minHeight(),
                     max = textFieldType.maxHeight()
                 )
-                .fillMaxWidth(),
+                .fillMaxWidth().focusRequester(focusRequester),
             value = value,
             onValueChange = onValueChange,
             isError = isError,
