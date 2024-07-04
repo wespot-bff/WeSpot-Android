@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -23,8 +24,6 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-private const val PREVIEW_TITLE = "익명 쪽지 전송을 예약할까요?"
-private const val PREVIEW_SUBTITLE = "익명 쪽지 전송을 예약하면, 지정한 시간에 쪽지가 전송됩니다."
 
 @Composable
 fun WSDialog(
@@ -125,10 +124,10 @@ private fun WSDialogPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             WSDialog(
                 onDismissRequest = {},
-                title = PREVIEW_TITLE,
-                subTitle = PREVIEW_SUBTITLE,
-                okButtonText = "확인",
-                cancelButtonText = "취소",
+                title = StringSet.RESERVE_MESSAGE,
+                subTitle = StringSet.SEND_RESERVED_MESSAGE_ON_SPECIFIC_TIME,
+                okButtonText = StringSet.OK,
+                cancelButtonText = StringSet.CANCEL,
             )
         }
     }

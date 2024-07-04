@@ -13,4 +13,10 @@ object StringSet {
     const val TEXTFIELD_TRAILING_ICON = "TextField trailing icon"
     const val TEXTFIELD_LEADING_ICON = "TextField Leading icon"
     const val SEARCH = "Search"
+    const val REGISTER = "회원가입"
+    const val TO_HOME = "홈으로"
+    const val RESERVE_MESSAGE = "익명 쪽지 전송을 예약할까요?"
+    const val SEND_RESERVED_MESSAGE_ON_SPECIFIC_TIME = "익명 쪽지 전송을 예약하면, 지정한 시간에 쪽지가 전송됩니다."
+    const val OK = "확인"
+    const val CANCEL = "취소"
 }
