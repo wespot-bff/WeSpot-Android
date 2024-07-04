@@ -91,7 +91,7 @@ jobs:
             }
 
       - name: Update issue title
-        if: steps.create-subtask.conclusion == 'success' || steps.create-issue.conclusion == 'success'
+        if: always() && (steps.create-subtask.conclusion == 'success' || steps.create-issue.conclusion == 'success')
         uses: actions-cool/issues-helper@v3
         with:
           actions: "update-issue"
