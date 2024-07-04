@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -53,7 +54,7 @@ fun WsTextField(
                 {
                     Icon(
                         imageVector = textFieldType.trailingIcon()!!,
-                        contentDescription = "TextField trailing icon"
+                        contentDescription = StringSet.TEXTFIELD_TRAILING_ICON
                     )
                 }
             } else {
@@ -63,7 +64,7 @@ fun WsTextField(
                 {
                     Icon(
                         imageVector = textFieldType.leadingIcon()!!,
-                        contentDescription = "TextField Leading icon"
+                        contentDescription = StringSet.TEXTFIELD_LEADING_ICON
                     )
                 }
             } else {
@@ -131,28 +132,28 @@ private fun WsTextFieldPreview() {
                 WsTextField(
                     value = value,
                     onValueChange = onValueChanged,
-                    placeholder = "Search",
+                    placeholder = StringSet.SEARCH,
                     textFieldType = WsTextFieldType.Normal
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = "Search",
+                    placeholder = StringSet.SEARCH,
                     textFieldType = WsTextFieldType.Search
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = "Search",
+                    placeholder = StringSet.SEARCH,
                     textFieldType = WsTextFieldType.Lock
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = "Search",
+                    placeholder = StringSet.SEARCH,
                     isError = true,
                     textFieldType = WsTextFieldType.Normal
                 )

@@ -9,11 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.util.OrientationPreviews
-
-private const val PREVIEW_TEXT = "친구랑 같이 하기"
 
 @Composable
 fun WSOutlineButton(
@@ -58,7 +57,7 @@ private fun WSOutlineButtonPreview() {
             Column {
                 WSOutlineButton(
                     onClick = {},
-                    text = PREVIEW_TEXT,
+                    text = StringSet.WITH_FRIEND,
                     buttonType = WSOutlineButtonType.Primary,
                 ) {
                     it()

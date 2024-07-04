@@ -27,13 +27,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
-
-private const val PREVIEW_TITLE = "익명의 마음이 도착했어요"
-private const val PREVIEW_SUB_TITLE = "지금 쪽지함을 열어 확인해 보세요"
 
 @Composable
 fun WSBanner(
@@ -88,7 +86,7 @@ fun WSBanner(
         ) {
             Icon(
                 painter = icon,
-                contentDescription = "Banner Icon",
+                contentDescription = StringSet.BANNER_ICON,
                 modifier = Modifier
                     .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
             )
@@ -117,7 +115,7 @@ fun WSBanner(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                    contentDescription = "Arrow Icon",
+                    contentDescription = StringSet.RIGHT_ARROW,
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier.size(40.dp)
                 )
@@ -171,8 +169,8 @@ private fun WSBannerPreview() {
         ) {
             WSBanner(
                 icon = Icons.AutoMirrored.Default.Send,
-                title = PREVIEW_TITLE,
-                subTitle = PREVIEW_SUB_TITLE,
+                title = StringSet.MESSAGE_ARRIVED,
+                subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
                 bannerType = WSBannerType.Primary
             )
         }

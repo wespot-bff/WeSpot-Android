@@ -16,12 +16,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-private const val PREVIEW_TEXT = "등록되어 있지 않은 반 친구가 있나요?"
 
 @Composable
 fun WSTextButton(
@@ -79,24 +79,16 @@ private fun WSTextButtonPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSTextButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.ANY_FRIEND_NOT_REGISTERED,
                     onClick = {},
                     buttonType = WSTextButtonType.Primary
                 )
                 WSTextButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.ANY_FRIEND_NOT_REGISTERED,
                     onClick = {},
                     buttonType = WSTextButtonType.Underline
                 )
             }
         }
-    }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    TextButton(onClick = { }) {
-        Text(text = "Hello, World!")
     }
 }
