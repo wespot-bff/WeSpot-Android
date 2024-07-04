@@ -135,7 +135,7 @@ fun WSBanner(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.left_arrow),
+                    painter = painterResource(id = R.drawable.right_arrow),
                     contentDescription = "Arrow Icon",
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier
