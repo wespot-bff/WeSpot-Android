@@ -54,7 +54,7 @@ fun WSTopBar(
                     onClick = { navigateUp.invoke() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.left_arrow),
-                        contentDescription = "navigate_back"
+                        contentDescription = StringSet.NAVIGATE_BACK
                     )
                 }
             } else {
@@ -87,7 +87,7 @@ private fun WSTopBarPreview() {
                     IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "search"
+                            contentDescription = StringSet.SEARCH
                         )
                     }
                 })

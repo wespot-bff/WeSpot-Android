@@ -136,7 +136,7 @@ fun WSBanner(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.right_arrow),
-                    contentDescription = "Arrow Icon",
+                    contentDescription = StringSet.ARROW_ICON,
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier
                         .padding(end = 24.dp)

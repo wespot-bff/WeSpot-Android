@@ -19,4 +19,6 @@ object StringSet {
     const val SEND_RESERVED_MESSAGE_ON_SPECIFIC_TIME = "익명 쪽지 전송을 예약하면, 지정한 시간에 쪽지가 전송됩니다."
     const val OK = "확인"
     const val CANCEL = "취소"
+    const val NAVIGATE_BACK = "navigate back"
+    const val ARROW_ICON = "Arrow Icon"
 }

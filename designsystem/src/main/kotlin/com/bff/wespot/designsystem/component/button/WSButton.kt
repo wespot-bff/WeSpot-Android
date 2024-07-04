@@ -26,12 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
-
-private const val PREVIEW_TEXT = "우리 반 친구로 등록하기"
 
 @Composable
 fun WSButton(
@@ -157,15 +156,15 @@ private fun WSButtonPreview() {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                WSButton(text = PREVIEW_TEXT, buttonType = WSButtonType.Primary, onClick = {}) {
+                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Primary, onClick = {}) {
                     it()
                 }
 
-                WSButton(text = PREVIEW_TEXT, buttonType = WSButtonType.Secondary, onClick = {}) {
+                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Secondary, onClick = {}) {
                     it()
                 }
 
-                WSButton(text = PREVIEW_TEXT, buttonType = WSButtonType.Tertiary, onClick = {}) {
+                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Tertiary, onClick = {}) {
                     it()
                 }
             }
@@ -183,7 +182,7 @@ private fun WSButtonDisablePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.REGISTER_CLASSMATE,
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                     enabled = false,
@@ -192,7 +191,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.REGISTER_CLASSMATE,
                     buttonType = WSButtonType.Secondary,
                     onClick = {},
                     enabled = false,
@@ -201,7 +200,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.REGISTER_CLASSMATE,
                     buttonType = WSButtonType.Tertiary,
                     onClick = {},
                     enabled = false,
@@ -228,7 +227,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = StringSet.ADD,
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -240,7 +239,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = StringSet.ADD,
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -252,27 +251,27 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = StringSet.ADD,
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                 }
 
                 WSButton(
-                    text = PREVIEW_TEXT,
+                    text = StringSet.REGISTER_CLASSMATE,
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = StringSet.ADD,
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                     it()
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = StringSet.ADD,
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(vertical = 16.dp),
                     )
