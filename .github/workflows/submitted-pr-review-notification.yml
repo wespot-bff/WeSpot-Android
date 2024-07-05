@@ -60,7 +60,7 @@ jobs:
             [
               {
                 "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
-                "color": 13458524,
+                "color": 4294836188,
                 "description": "${{ github.event.review.html_url }}",
                 "fields": [
                   {
