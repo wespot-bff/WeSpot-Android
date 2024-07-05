@@ -46,8 +46,8 @@ jobs:
         with:
           labels: 🌟머지 해주세요🌟
             
-  commented_or_changes_requested:
-    if: github.event.review.state == 'commented' || github.event.review.state == 'changes_requested'
+  changes_requested:
+    if: github.event.review.state == 'changes_requested'
     runs-on: ubuntu-latest
     steps:
       - name: Send Comment Message
