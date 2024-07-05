@@ -14,9 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -129,10 +130,10 @@ private fun WSDialogPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             WSDialog(
                 onDismissRequest = {},
-                title = StringSet.RESERVE_MESSAGE,
-                subTitle = StringSet.SEND_RESERVED_MESSAGE_ON_SPECIFIC_TIME,
-                okButtonText = StringSet.OK,
-                cancelButtonText = StringSet.CANCEL,
+                title = stringResource(id = R.string.reserve_message),
+                subTitle = stringResource(id = R.string.send_reserved_message_on_specific_time),
+                okButtonText = stringResource(id = R.string.ok),
+                cancelButtonText = stringResource(id = R.string.cancel),
             )
         }
     }

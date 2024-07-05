@@ -18,9 +18,9 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -54,7 +54,7 @@ fun WSTopBar(
                     onClick = { navigateUp.invoke() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.left_arrow),
-                        contentDescription = StringSet.NAVIGATE_BACK
+                        contentDescription = stringResource(id = R.string.navigate_back)
                     )
                 }
             } else {
@@ -81,19 +81,19 @@ private fun WSTopBarPreview() {
     WeSpotTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column {
-                WSTopBar(title = StringSet.REGISTER)
-                WSTopBar(title = StringSet.REGISTER, canNavigateBack = true)
-                WSTopBar(title = StringSet.REGISTER, action = {
+                WSTopBar(title = stringResource(id = R.string.register))
+                WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+                WSTopBar(title = stringResource(id = R.string.register), action = {
                     IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = StringSet.SEARCH
+                            contentDescription = stringResource(id = R.string.search)
                         )
                     }
                 })
                 WSTopBar(title = "", canNavigateBack = true, action = {
                     Text(
-                        text = StringSet.TO_HOME,
+                        text = stringResource(id = R.string.to_home),
                         style = it,
                         color = WeSpotThemeManager.colors.txtTitleColor
                     )

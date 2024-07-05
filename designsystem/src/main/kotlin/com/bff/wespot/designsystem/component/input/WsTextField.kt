@@ -23,9 +23,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -65,7 +65,7 @@ fun WsTextField(
                 {
                     Icon(
                         painter = textFieldType.trailingIcon()!!,
-                        contentDescription = StringSet.TEXTFIELD_TRAILING_ICON
+                        contentDescription = stringResource(id = R.string.textfield_trailing_icon)
                     )
                 }
             } else {
@@ -75,7 +75,7 @@ fun WsTextField(
                 {
                     Icon(
                         painter = textFieldType.leadingIcon()!!,
-                        contentDescription = StringSet.TEXTFIELD_LEADING_ICON
+                        contentDescription = stringResource(id = R.string.textfield_leading_icon)
                     )
                 }
             } else {
@@ -167,28 +167,28 @@ private fun WsTextFieldPreview() {
                 WsTextField(
                     value = value,
                     onValueChange = onValueChanged,
-                    placeholder = StringSet.SEARCH,
+                    placeholder = stringResource(id = R.string.search),
                     textFieldType = WsTextFieldType.Normal
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = stringResource(id = R.string.search),
                     textFieldType = WsTextFieldType.Search
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = stringResource(id = R.string.search),
                     textFieldType = WsTextFieldType.Lock
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = StringSet.SEARCH,
+                    placeholder = stringResource(id = R.string.search),
                     isError = true,
                     textFieldType = WsTextFieldType.Normal
                 )

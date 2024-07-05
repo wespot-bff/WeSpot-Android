@@ -24,9 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -156,15 +157,24 @@ private fun WSButtonPreview() {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Primary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Primary,
+                    onClick = {}) {
                     it()
                 }
 
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Secondary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Secondary,
+                    onClick = {}) {
                     it()
                 }
 
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Tertiary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Tertiary,
+                    onClick = {}) {
                     it()
                 }
             }
@@ -182,7 +192,7 @@ private fun WSButtonDisablePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                     enabled = false,
@@ -191,7 +201,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Secondary,
                     onClick = {},
                     enabled = false,
@@ -200,7 +210,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Tertiary,
                     onClick = {},
                     enabled = false,
@@ -227,7 +237,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -239,7 +249,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -251,27 +261,27 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                     it()
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(vertical = 16.dp),
                     )

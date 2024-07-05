@@ -12,11 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -79,12 +79,12 @@ private fun WSTextButtonPreview() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSTextButton(
-                    text = StringSet.ANY_FRIEND_NOT_REGISTERED,
+                    text = stringResource(id = R.string.any_friend_not_registered),
                     onClick = {},
                     buttonType = WSTextButtonType.Primary
                 )
                 WSTextButton(
-                    text = StringSet.ANY_FRIEND_NOT_REGISTERED,
+                    text = stringResource(id = R.string.any_friend_not_registered),
                     onClick = {},
                     buttonType = WSTextButtonType.Underline
                 )

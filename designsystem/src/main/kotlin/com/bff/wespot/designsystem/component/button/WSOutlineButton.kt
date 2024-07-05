@@ -8,8 +8,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.util.OrientationPreviews
@@ -64,7 +65,7 @@ private fun WSOutlineButtonPreview() {
             Column {
                 WSOutlineButton(
                     onClick = {},
-                    text = StringSet.WITH_FRIEND,
+                    text = stringResource(id = R.string.with_friend),
                     buttonType = WSOutlineButtonType.Primary,
                 ) {
                     it()

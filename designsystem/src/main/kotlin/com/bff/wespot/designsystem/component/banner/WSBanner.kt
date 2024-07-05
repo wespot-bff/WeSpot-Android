@@ -26,9 +26,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -102,7 +102,7 @@ fun WSBanner(
             icon?.let {
                 Icon(
                     painter = icon,
-                    contentDescription = StringSet.BANNER_ICON,
+                    contentDescription = stringResource(id = R.string.banner_icon),
                     modifier = Modifier
                         .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
                 )
@@ -136,7 +136,7 @@ fun WSBanner(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.right_arrow),
-                    contentDescription = StringSet.ARROW_ICON,
+                    contentDescription = stringResource(id = R.string.right_arrow),
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier
                         .padding(end = 24.dp)
@@ -209,25 +209,25 @@ private fun WSBannerPreview() {
             Column {
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Send,
-                    title = StringSet.MESSAGE_ARRIVED,
-                    subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
+                    title = stringResource(id = R.string.message_arrived),
+                    subTitle = stringResource(id = R.string.open_inbox_for_message),
                     bannerType = WSBannerType.Primary
                 )
 
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Accessible,
-                    title = StringSet.MESSAGE_ARRIVED,
+                    title = stringResource(id = R.string.message_arrived),
                 )
 
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Accessible,
-                    title = StringSet.MESSAGE_ARRIVED,
+                    title = stringResource(id = R.string.message_arrived),
                     bannerType = WSBannerType.Secondary
                 )
 
                 WSBanner(
-                    title = StringSet.MESSAGE_ARRIVED,
-                    subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
+                    title = stringResource(id = R.string.message_arrived),
+                    subTitle = stringResource(id = R.string.open_inbox_for_message),
                     bannerType = WSBannerType.Secondary
                 )
             }
