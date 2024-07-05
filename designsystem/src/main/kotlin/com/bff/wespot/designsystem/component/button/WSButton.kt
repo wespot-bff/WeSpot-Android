@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -36,8 +38,10 @@ fun WSButton(
     onClick: () -> Unit,
     text: String = "",
     buttonType: WSButtonType = WSButtonType.Primary,
+    paddingValues: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
     enabled: Boolean = true,
     borderStroke: BorderStroke? = null,
+    pressedBorderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
     val interactionSource =
@@ -48,36 +52,40 @@ fun WSButton(
     val isPressed by interactionSource.collectIsPressedAsState()
 
     Box(
-        modifier =
-            Modifier
-                .wrapContentSize()
-                .padding(vertical = 12.dp, horizontal = 20.dp),
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(paddingValues),
     ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
             colors =
-                ButtonDefaults.buttonColors(
-                    contentColor = buttonType.textColor(),
-                    containerColor =
-                        if (isPressed) {
-                            buttonType.pressColor()
-                        } else {
-                            buttonType.background()
-                        },
-                    disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor,
-                    disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
-                ),
+            ButtonDefaults.buttonColors(
+                contentColor = buttonType.textColor(),
+                containerColor =
+                if (isPressed) {
+                    buttonType.pressColor()
+                } else {
+                    buttonType.background()
+                },
+                disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
+                disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
+            ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
             enabled = enabled,
-            border = borderStroke,
+            border = if (isPressed) {
+                pressedBorderStroke
+            } else {
+                borderStroke
+            },
+            contentPadding = PaddingValues(0.dp)
         ) {
             content {
                 Text(
                     text = text,
                     style = buttonType.fontStyle(),
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 14.dp),
                 )
             }
         }
@@ -149,15 +157,24 @@ private fun WSButtonPreview() {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Primary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Primary,
+                    onClick = {}) {
                     it()
                 }
 
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Secondary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Secondary,
+                    onClick = {}) {
                     it()
                 }
 
-                WSButton(text = StringSet.REGISTER_CLASSMATE, buttonType = WSButtonType.Tertiary, onClick = {}) {
+                WSButton(
+                    text = stringResource(id = R.string.register_classmate),
+                    buttonType = WSButtonType.Tertiary,
+                    onClick = {}) {
                     it()
                 }
             }
@@ -175,7 +192,7 @@ private fun WSButtonDisablePreview() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                     enabled = false,
@@ -184,7 +201,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Secondary,
                     onClick = {},
                     enabled = false,
@@ -193,7 +210,7 @@ private fun WSButtonDisablePreview() {
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Tertiary,
                     onClick = {},
                     enabled = false,
@@ -220,7 +237,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -232,7 +249,7 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -244,27 +261,27 @@ private fun WSButtonIconPreview() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                 }
 
                 WSButton(
-                    text = StringSet.REGISTER_CLASSMATE,
+                    text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Primary,
                     onClick = {},
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(16.dp),
                     )
                     it()
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = StringSet.ADD,
+                        contentDescription = stringResource(id = R.string.add),
                         tint = WeSpotThemeManager.colors.backgroundColor,
                         modifier = Modifier.padding(vertical = 16.dp),
                     )

@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Accessible
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -25,19 +25,34 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
 @Composable
-fun WSBanner(
-    icon: ImageVector,
+fun WSBannerType(
     title: String,
-    subTitle: String,
+    subTitle: String? = null,
+    bannerType: WSBannerType = WSBannerType.Primary
+) {
+    WSBanner(
+        title = title,
+        subTitle = subTitle,
+        bannerType = bannerType
+    )
+}
+
+@Composable
+fun WSBanner(
+    title: String,
+    icon: ImageVector,
+    subTitle: String? = null,
     bannerType: WSBannerType = WSBannerType.Primary
 ) {
     WSBanner(
@@ -50,9 +65,9 @@ fun WSBanner(
 
 @Composable
 fun WSBanner(
-    icon: ImageBitmap,
     title: String,
-    subTitle: String,
+    icon: ImageBitmap,
+    subTitle: String? = null,
     bannerType: WSBannerType = WSBannerType.Primary
 ) {
     WSBanner(
@@ -66,33 +81,37 @@ fun WSBanner(
 
 @Composable
 fun WSBanner(
-    icon: Painter,
     title: String,
-    subTitle: String,
+    icon: Painter? = null,
+    subTitle: String? = null,
     bannerType: WSBannerType = WSBannerType.Primary
 ) {
     Box(
         modifier = Modifier
             .padding(16.dp)
-            .wrapContentHeight()
+            .height(80.dp)
             .fillMaxWidth()
             .clip(WeSpotThemeManager.shapes.medium)
             .background(bannerType.backgroundColor())
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = icon,
-                contentDescription = StringSet.BANNER_ICON,
-                modifier = Modifier
-                    .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
-            )
+            icon?.let {
+                Icon(
+                    painter = icon,
+                    contentDescription = stringResource(id = R.string.banner_icon),
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
+                )
+            }
 
             Column(
-                modifier = Modifier.padding(vertical = 18.dp)
+                modifier = Modifier
+                    .padding(vertical = 18.dp)
+                    .padding(start = if (icon != null) 0.dp else 20.dp)
             ) {
                 Text(
                     text = title,
@@ -100,11 +119,13 @@ fun WSBanner(
                     style = bannerType.titleTextStyle()
                 )
 
-                Text(
-                    text = subTitle,
-                    color = bannerType.subTitleColor(),
-                    style = bannerType.subTitleTextStyle()
-                )
+                subTitle?.let { subTitle ->
+                    Text(
+                        text = subTitle,
+                        color = bannerType.subTitleColor().copy(alpha = 0.8f),
+                        style = bannerType.subTitleTextStyle()
+                    )
+                }
             }
 
             Box(
@@ -114,10 +135,11 @@ fun WSBanner(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                    contentDescription = StringSet.RIGHT_ARROW,
+                    painter = painterResource(id = R.drawable.right_arrow),
+                    contentDescription = stringResource(id = R.string.right_arrow),
                     tint = WeSpotThemeManager.colors.abledIconColor,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier
+                        .padding(end = 24.dp)
                 )
             }
         }
@@ -144,13 +166,30 @@ sealed interface WSBannerType {
 
     data object Primary : WSBannerType {
         @Composable
-        override fun backgroundColor() = WeSpotThemeManager.colors.cardBackgroundColor
+        override fun backgroundColor() = WeSpotThemeManager.colors.modalColor
 
         @Composable
         override fun titleColor() = WeSpotThemeManager.colors.txtTitleColor
 
         @Composable
         override fun subTitleColor(): Color = WeSpotThemeManager.colors.primaryColor
+
+        @Composable
+        override fun titleTextStyle(): TextStyle = StaticTypeScale.Default.body4
+
+        @Composable
+        override fun subTitleTextStyle(): TextStyle = StaticTypeScale.Default.body7
+    }
+
+    data object Secondary : WSBannerType {
+        @Composable
+        override fun backgroundColor() = WeSpotThemeManager.colors.tertiaryBtnColor
+
+        @Composable
+        override fun titleColor() = WeSpotThemeManager.colors.abledTxtColor
+
+        @Composable
+        override fun subTitleColor(): Color = WeSpotThemeManager.colors.disableBtnTxtColor
 
         @Composable
         override fun titleTextStyle(): TextStyle = StaticTypeScale.Default.body4
@@ -167,12 +206,31 @@ private fun WSBannerPreview() {
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
-            WSBanner(
-                icon = Icons.AutoMirrored.Default.Send,
-                title = StringSet.MESSAGE_ARRIVED,
-                subTitle = StringSet.OPEN_INBOX_FOR_MESSAGE,
-                bannerType = WSBannerType.Primary
-            )
+            Column {
+                WSBanner(
+                    icon = Icons.AutoMirrored.Default.Send,
+                    title = stringResource(id = R.string.message_arrived),
+                    subTitle = stringResource(id = R.string.open_inbox_for_message),
+                    bannerType = WSBannerType.Primary
+                )
+
+                WSBanner(
+                    icon = Icons.AutoMirrored.Default.Accessible,
+                    title = stringResource(id = R.string.message_arrived),
+                )
+
+                WSBanner(
+                    icon = Icons.AutoMirrored.Default.Accessible,
+                    title = stringResource(id = R.string.message_arrived),
+                    bannerType = WSBannerType.Secondary
+                )
+
+                WSBanner(
+                    title = stringResource(id = R.string.message_arrived),
+                    subTitle = stringResource(id = R.string.open_inbox_for_message),
+                    bannerType = WSBannerType.Secondary
+                )
+            }
         }
     }
 }

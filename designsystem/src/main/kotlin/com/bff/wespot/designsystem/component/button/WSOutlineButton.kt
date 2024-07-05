@@ -8,8 +8,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.bff.wespot.common.StringSet
+import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.util.OrientationPreviews
@@ -27,6 +28,7 @@ fun WSOutlineButton(
         onClick = onClick,
         buttonType = buttonType.buttonType(),
         borderStroke = BorderStroke(1.dp, buttonType.borderColor()),
+        pressedBorderStroke = BorderStroke(1.dp, buttonType.borderPressedColor()),
         enabled = enabled,
     ) {
         content(it)
@@ -39,11 +41,17 @@ sealed interface WSOutlineButtonType {
     @Composable
     fun borderColor(): Color
 
+    @Composable
+    fun borderPressedColor(): Color
+
     data object Primary : WSOutlineButtonType {
         override fun buttonType() = WSButtonType.Tertiary
 
         @Composable
         override fun borderColor() = Primary400
+
+        @Composable
+        override fun borderPressedColor() = Color(0xFFADB08D)
     }
 }
 
@@ -57,7 +65,7 @@ private fun WSOutlineButtonPreview() {
             Column {
                 WSOutlineButton(
                     onClick = {},
-                    text = StringSet.WITH_FRIEND,
+                    text = stringResource(id = R.string.with_friend),
                     buttonType = WSOutlineButtonType.Primary,
                 ) {
                     it()

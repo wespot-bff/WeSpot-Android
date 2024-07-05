@@ -118,10 +118,16 @@ class StaticTypeScale private constructor(
                 _body10 =
                     StaticTypeScale(
                         fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 10,
                         lineHeight = 10 * LINE_HEIGHT_PERCENT,
                     ),
+                _body11 = StaticTypeScale(
+                    fontFamily = plainTextFont,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 10,
+                    lineHeight = 10 * LINE_HEIGHT_PERCENT,
+                ),
                 _badge =
                     StaticTypeScale(
                         fontFamily = plainTextFont,
@@ -157,6 +163,7 @@ data class TypeScale constructor(
     private val _body8: StaticTypeScale,
     private val _body9: StaticTypeScale,
     private val _body10: StaticTypeScale,
+    private val _body11: StaticTypeScale,
     private val _badge: StaticTypeScale,
 ) {
     val header1: TextStyle @Composable get() = _header1.textStyle
@@ -173,6 +180,7 @@ data class TypeScale constructor(
     val body8: TextStyle @Composable get() = _body8.textStyle
     val body9: TextStyle @Composable get() = _body9.textStyle
     val body10: TextStyle @Composable get() = _body10.textStyle
+    val body11: TextStyle @Composable get() = _body11.textStyle
 
     val badge: TextStyle @Composable get() = _badge.textStyle
 
