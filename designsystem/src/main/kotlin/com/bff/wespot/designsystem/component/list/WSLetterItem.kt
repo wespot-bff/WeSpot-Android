@@ -40,13 +40,15 @@ fun WSLetterItem(
     userInfo: String,
     date: String,
     wsLetterItemType: WSLetterItemType,
+    letterItemClick: () -> Unit,
     optionButtonClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .clip(WeSpotThemeManager.shapes.medium)
             .size(width = 154.dp, height = 200.dp)
-            .background(Gray700),
+            .background(Gray700)
+            .clickable { letterItemClick() },
     ) {
         Column {
             WSLetterItemOptionButton(optionButtonClick)
@@ -204,6 +206,7 @@ private fun WSBannerPreview() {
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
                     wsLetterItemType = WSLetterItemType.OpenedSenderLetter,
+                    letterItemClick = { },
                     optionButtonClick = { },
                 )
 
@@ -212,6 +215,7 @@ private fun WSBannerPreview() {
                     date = "2024.07.07",
                     wsLetterItemType = WSLetterItemType.OpenedReceiverLetter,
                     optionButtonClick = { },
+                    letterItemClick = { },
                 )
 
                 WSLetterItem(
@@ -219,6 +223,7 @@ private fun WSBannerPreview() {
                     date = "2024.07.07",
                     wsLetterItemType = WSLetterItemType.ClosedReceiverLetter,
                     optionButtonClick = { },
+                    letterItemClick = { },
                 )
 
                 WSLetterItem(
@@ -226,6 +231,7 @@ private fun WSBannerPreview() {
                     date = "2024.07.07",
                     wsLetterItemType = WSLetterItemType.ClosedSenderLetter,
                     optionButtonClick = { },
+                    letterItemClick = { },
                 )
             }
         }
