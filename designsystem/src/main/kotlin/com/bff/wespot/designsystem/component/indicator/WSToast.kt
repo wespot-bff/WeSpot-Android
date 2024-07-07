@@ -104,12 +104,12 @@ private fun WSToastPreview() {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 WSToast(
-                    text = stringResource(id = R.string.age_restriction_message),
+                    text = stringResource(id = R.string.succeed_reserve_message),
                     toastType = WSToastType.Success,
                 )
 
                 WSToast(
-                    text = stringResource(id = R.string.succeed_reserve_message),
+                    text = stringResource(id = R.string.age_restriction_message),
                     toastType = WSToastType.Error,
                 )
             }
