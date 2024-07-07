@@ -25,7 +25,6 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-
 @Composable
 fun WSDialog(
     dialogType: WSDialogType = WSDialogType.TowButton,
@@ -35,14 +34,14 @@ fun WSDialog(
     okButtonClick: () -> Unit = {},
     cancelButtonClick: () -> Unit = {},
     subTitle: String = "",
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
                 .clip(WeSpotThemeManager.shapes.medium)
                 .background(WeSpotThemeManager.colors.modalColor)
-                .padding(top = 32.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                .padding(top = 32.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
         ) {
             WSDialogContent(title = title, subTitle = subTitle)
 
@@ -52,7 +51,7 @@ fun WSDialog(
                         okButtonText = okButtonText,
                         cancelButtonText = cancelButtonText,
                         okButtonClick = okButtonClick,
-                        cancelButtonClick = cancelButtonClick
+                        cancelButtonClick = cancelButtonClick,
                     )
                 }
             }
@@ -66,18 +65,18 @@ private fun WSDialogContent(
     subTitle: String,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = title,
             style = StaticTypeScale.Default.header1,
-            color = WeSpotThemeManager.colors.txtTitleColor
+            color = WeSpotThemeManager.colors.txtTitleColor,
         )
 
         Text(
             text = subTitle,
             style = StaticTypeScale.Default.body6,
-            color = WeSpotThemeManager.colors.txtSubColor
+            color = WeSpotThemeManager.colors.txtSubColor,
         )
     }
 }
@@ -87,20 +86,20 @@ private fun WSDialogTwoButton(
     okButtonText: String,
     cancelButtonText: String,
     okButtonClick: () -> Unit,
-    cancelButtonClick: () -> Unit
+    cancelButtonClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(modifier = Modifier.weight(1f)) {
             WSButton(
                 onClick = cancelButtonClick,
                 buttonType = WSButtonType.Secondary,
                 text = cancelButtonText,
-                paddingValues = PaddingValues(0.dp)
+                paddingValues = PaddingValues(0.dp),
             ) {
                 it()
             }
@@ -111,7 +110,7 @@ private fun WSDialogTwoButton(
                 onClick = okButtonClick,
                 buttonType = WSButtonType.Primary,
                 text = okButtonText,
-                paddingValues = PaddingValues(0.dp)
+                paddingValues = PaddingValues(0.dp),
             ) {
                 it()
             }

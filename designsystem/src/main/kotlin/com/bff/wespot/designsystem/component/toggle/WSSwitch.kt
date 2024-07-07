@@ -29,7 +29,7 @@ fun WSSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             uncheckedTrackColor = WSSwitchType.Primary.uncheckedTrackColor(),
             uncheckedBorderColor = Color.Transparent,
         ),
-        thumbContent = {}
+        thumbContent = {},
     )
 }
 
