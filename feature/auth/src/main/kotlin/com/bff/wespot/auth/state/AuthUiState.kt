@@ -7,4 +7,6 @@ data class AuthUiState(
     val schoolList: List<SchoolItem> = emptyList(),
     val schoolSearchList: List<SchoolItem> = emptyList(),
     val selectedSchool: SchoolItem? = null,
+    val grade: Int = -1,
+    val gradeBottomSheet: Boolean = true,
 )

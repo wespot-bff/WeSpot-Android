@@ -7,4 +7,9 @@
     <string name="search_with_school_name">학교 이름으로 검색해 보세요</string>
     <string name="no_school_found">찾는 학교가 없다면?</string>
     <string name="next">다음</string>
+    <string name="grade">학년</string>
+    <string name="cannot_change_after_register">회원가입 이후에는 변경할 수 없어요</string>
+    <string name="select_grade">햔재 학년을 선택해 주세요</string>
+    <string name="more_than_14_to_register">만 14세 미만 학생은 가입이 어려워요</string>
+    <string name="check_icon">체크 아이콘</string>
 </resources>
