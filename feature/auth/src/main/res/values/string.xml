@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="register">회원가입</string>
+    <string name="search_school">학교 검색</string>
+    <string name="search_base_on_your_school">현재 재학 중인 학교 기준으로 검색해 주세요</string>
+    <string name="within_20_characters">20자 이내로 검색해 주세요</string>
+    <string name="search_with_school_name">학교 이름으로 검색해 보세요</string>
+    <string name="no_school_found">찾는 학교가 없다면?</string>
+    <string name="next">다음</string>
+</resources>
