@@ -9,4 +9,5 @@ data class AuthUiState(
     val selectedSchool: SchoolItem? = null,
     val grade: Int = -1,
     val gradeBottomSheet: Boolean = true,
+    val classNumber: Int = -1,
 )

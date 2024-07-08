@@ -7,4 +7,5 @@ sealed class AuthAction {
     data class OnSchoolSelected(val school: SchoolItem) : AuthAction()
     data class OnGradeChanged(val grade: Int) : AuthAction()
     data class OnGradeBottomSheetChanged(val isOpen: Boolean) : AuthAction()
+    data class OnClassNumberChanged(val number: Int) : AuthAction()
 }

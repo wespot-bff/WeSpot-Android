@@ -19,6 +19,7 @@ class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
             is AuthAction.OnSchoolSelected -> handleSchoolSelected(action.school)
             is AuthAction.OnGradeBottomSheetChanged -> handleGradeBottomSheetChanged(action.isOpen)
             is AuthAction.OnGradeChanged -> handleGradeChanged(action.grade)
+            is AuthAction.OnClassNumberChanged -> handleClassNumberChanged(action.number)
             else -> {}
         }
     }
@@ -52,6 +53,14 @@ class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
         reduce {
             state.copy(
                 grade = grade
+            )
+        }
+    }
+
+    private fun handleClassNumberChanged(number: Int) = intent {
+        reduce {
+            state.copy(
+                classNumber = number
             )
         }
     }

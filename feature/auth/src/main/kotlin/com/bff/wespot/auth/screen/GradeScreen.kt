@@ -59,7 +59,7 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             )
 
             Text(
-                text = stringResource(id = R.string.cannot_change_after_register),
+                text = stringResource(id = R.string.cannot_change_grade_after_register),
                 style = StaticTypeScale.Default.body6,
                 color = Color(0xFF7A7A7A),
                 modifier = Modifier.padding(horizontal = 20.dp)
