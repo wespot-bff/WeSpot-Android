@@ -10,7 +10,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
+class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
     fun onAction(action: AuthAction) {
@@ -20,6 +20,7 @@ class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
             is AuthAction.OnGradeBottomSheetChanged -> handleGradeBottomSheetChanged(action.isOpen)
             is AuthAction.OnGradeChanged -> handleGradeChanged(action.grade)
             is AuthAction.OnClassNumberChanged -> handleClassNumberChanged(action.number)
+            is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
             else -> {}
         }
     }
@@ -28,7 +29,12 @@ class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
         reduce {
             state.copy(
                 schoolName = text,
-                schoolSearchList = state.schoolList.filter { it.name.contains(text, ignoreCase = true) }
+                schoolSearchList = state.schoolList.filter {
+                    it.name.contains(
+                        text,
+                        ignoreCase = true
+                    )
+                }
             )
         }
     }
@@ -61,6 +67,14 @@ class AuthViewModel: ViewModel() , ContainerHost<AuthUiState, AuthSideEffect> {
         reduce {
             state.copy(
                 classNumber = number
+            )
+        }
+    }
+
+    private fun handleGenderChanged(gender: String) = intent {
+        reduce {
+            state.copy(
+                gender = gender
             )
         }
     }
