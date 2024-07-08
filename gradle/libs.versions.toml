@@ -78,8 +78,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor-client" }
 ktor-client-engine-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-client" }
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor-client"}
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor-client" }
-ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor-client" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor-client" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor-client" }
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor-client" }
@@ -126,7 +126,7 @@ ktor-client = [
     "ktor-client-core",
     "ktor-client-engine-cio",
     "ktor-client-content-negotiation",
-    "ktor-client-okhttp",
+    "ktor-client-auth",
     "ktor-client-json",
     "ktor-client-logging",
     "ktor-serialization",
@@ -138,6 +138,7 @@ orbit = ["orbit-core", "orbit-compose", "orbit-viewmodel"]
 android-application = { id = "com.android.application", version.ref = "gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
