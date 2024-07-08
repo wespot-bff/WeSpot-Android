@@ -10,5 +10,6 @@ data class AuthUiState(
     val grade: Int = -1,
     val gradeBottomSheet: Boolean = true,
     val classNumber: Int = -1,
-    val gender: String = ""
+    val gender: String = "",
+    val name: String = ""
 )

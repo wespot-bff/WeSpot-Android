@@ -21,6 +21,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             is AuthAction.OnGradeChanged -> handleGradeChanged(action.grade)
             is AuthAction.OnClassNumberChanged -> handleClassNumberChanged(action.number)
             is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
+            is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             else -> {}
         }
     }
@@ -75,6 +76,14 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
         reduce {
             state.copy(
                 gender = gender
+            )
+        }
+    }
+
+    private fun handleNameChanged(name: String) = intent {
+        reduce {
+            state.copy(
+                name = name
             )
         }
     }

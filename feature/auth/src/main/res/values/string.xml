@@ -21,4 +21,8 @@
     <string name="gender_icon">성별 아이콘</string>
     <string name="male_student">남학생</string>
     <string name="female_student">여학생</string>
+    <string name="name">이름</string>
+    <string name="cannot_change_name_after_register">회원가입 이후에는 이름을 변경할 수 없어요</string>
+    <string name="enter_name">실명을 입력해 주세요</string>
+    <string name="name_error">2~5자의 한글만 입력 가능해요</string>
 </resources>

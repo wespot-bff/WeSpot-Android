@@ -9,4 +9,5 @@ sealed class AuthAction {
     data class OnGradeBottomSheetChanged(val isOpen: Boolean) : AuthAction()
     data class OnClassNumberChanged(val number: Int) : AuthAction()
     data class OnGenderChanged(val gender: String) : AuthAction()
+    data class OnNameChanged(val name: String) : AuthAction()
 }
