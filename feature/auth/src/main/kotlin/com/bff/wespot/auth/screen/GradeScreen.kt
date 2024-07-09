@@ -107,10 +107,6 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             if (state.gradeBottomSheet) {
                 WSBottomSheet(
                     closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
-                    sheetState =
-                        rememberModalBottomSheetState(
-                            skipPartiallyExpanded = true,
-                        ),
                 ) {
                     BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
                         action(AuthAction.OnGradeChanged(grade))
