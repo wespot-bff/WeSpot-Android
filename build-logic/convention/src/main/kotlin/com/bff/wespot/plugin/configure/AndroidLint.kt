@@ -20,6 +20,8 @@ internal fun Project.configureKtLint() {
                 "ktlint_standard_filename" to "disabled",
                 "ktlint_standard_function-naming" to "disabled",
                 "ktlint_standard_class-naming" to "disabled",
+                "ktlint_standard_annotation" to "disabled",
+                "ktlint_standard_blank-line-before-declaration" to "disabled",
             )
         )
         reporters {
