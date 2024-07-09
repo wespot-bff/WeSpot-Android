@@ -45,15 +45,15 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
         topBar = {
             WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
         },
-        modifier = Modifier.padding(horizontal = 20.dp)
+        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
             modifier = Modifier.padding(it),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.gender),
-                style = StaticTypeScale.Default.header1
+                style = StaticTypeScale.Default.header1,
             )
             Text(
                 text = stringResource(id = R.string.cannot_change_gender_after_register),
@@ -62,27 +62,29 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
             )
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 GenderBox(
                     title = stringResource(id = R.string.male_student),
-                    icon = painterResource(
-                        id = com.bff.wespot.ui.R.drawable.male_student
-                    ),
+                    icon =
+                        painterResource(
+                            id = com.bff.wespot.ui.R.drawable.male_student,
+                        ),
                     selected = "male" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("male"))
-                    }
+                    },
                 )
                 GenderBox(
                     title = stringResource(id = R.string.female_student),
-                    icon = painterResource(
-                        id = com.bff.wespot.ui.R.drawable.female_student
-                    ),
+                    icon =
+                        painterResource(
+                            id = com.bff.wespot.ui.R.drawable.female_student,
+                        ),
                     selected = "female" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("female"))
-                    }
+                    },
                 )
             }
         }
@@ -97,26 +99,27 @@ private fun RowScope.GenderBox(
     onClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .weight(1f)
-            .clip(WeSpotThemeManager.shapes.medium)
-            .border(
-                width = 1.dp,
-                color = if (selected) WeSpotThemeManager.colors.primaryColor else Color.Transparent,
-                shape = WeSpotThemeManager.shapes.medium
-            )
-            .clickable { onClicked() }
-            .background(WeSpotThemeManager.colors.cardBackgroundColor),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .weight(1f)
+                .clip(WeSpotThemeManager.shapes.medium)
+                .border(
+                    width = 1.dp,
+                    color = if (selected) WeSpotThemeManager.colors.primaryColor else Color.Transparent,
+                    shape = WeSpotThemeManager.shapes.medium,
+                )
+                .clickable { onClicked() }
+                .background(WeSpotThemeManager.colors.cardBackgroundColor),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 30.dp, bottom = 17.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = icon,
                 contentDescription = stringResource(id = R.string.gender_icon),
-                modifier = Modifier.size(90.dp)
+                modifier = Modifier.size(90.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = title, style = StaticTypeScale.Default.header2)

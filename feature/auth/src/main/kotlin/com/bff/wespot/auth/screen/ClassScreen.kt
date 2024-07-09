@@ -36,9 +36,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClassScreen(
-    viewModel: AuthViewModel = viewModel()
-) {
+fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
     val keyboard = LocalSoftwareKeyboardController.current
 
     val state by viewModel.collectAsState()
@@ -49,31 +47,33 @@ fun ClassScreen(
         topBar = {
             WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
         },
-        modifier = Modifier.padding(horizontal = 20.dp)
+        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.get_class),
-                style = StaticTypeScale.Default.header1
+                style = StaticTypeScale.Default.header1,
             )
 
             Text(
                 text = stringResource(id = R.string.cannot_change_class_after_register),
                 style = StaticTypeScale.Default.body6,
-                color = Color(0xFF7A7A7A)
+                color = Color(0xFF7A7A7A),
             )
 
             WsTextField(
-                value = if (state.classNumber != -1) {
-                    state.classNumber.toString()
-                } else {
-                    ""
-                },
+                value =
+                    if (state.classNumber != -1) {
+                        state.classNumber.toString()
+                    } else {
+                        ""
+                    },
                 onValueChange = { classNumber ->
                     if (classNumber.isEmpty()) {
                         action(AuthAction.OnClassNumberChanged(-1))
@@ -83,29 +83,30 @@ fun ClassScreen(
                 },
                 placeholder = stringResource(id = R.string.enter_number),
                 focusRequester = focusRequester,
-                keyBoardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyBoardOption = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
 
             if (state.classNumber != -1 && state.classNumber !in 1..20) {
                 Text(
                     text = stringResource(id = R.string.class_number_error),
                     color = WeSpotThemeManager.colors.dangerColor,
-                    style = StaticTypeScale.Default.body8
+                    style = StaticTypeScale.Default.body8,
                 )
             }
         }
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding(),
-        contentAlignment = Alignment.BottomCenter
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
+        contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
             onClick = { },
             text = stringResource(id = R.string.next),
-            enabled = state.classNumber in 1..20
+            enabled = state.classNumber in 1..20,
         ) {
             it.invoke()
         }

@@ -26,65 +26,73 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
         }
     }
 
-    private fun handleSchoolSearchChanged(text: String) = intent {
-        reduce {
-            state.copy(
-                schoolName = text,
-                schoolSearchList = state.schoolList.filter {
-                    it.name.contains(
-                        text,
-                        ignoreCase = true
-                    )
-                }
-            )
+    private fun handleSchoolSearchChanged(text: String) =
+        intent {
+            reduce {
+                state.copy(
+                    schoolName = text,
+                    schoolSearchList =
+                        state.schoolList.filter {
+                            it.name.contains(
+                                text,
+                                ignoreCase = true,
+                            )
+                        },
+                )
+            }
         }
-    }
 
-    private fun handleSchoolSelected(school: SchoolItem) = intent {
-        reduce {
-            state.copy(
-                selectedSchool = school
-            )
+    private fun handleSchoolSelected(school: SchoolItem) =
+        intent {
+            reduce {
+                state.copy(
+                    selectedSchool = school,
+                )
+            }
         }
-    }
 
-    private fun handleGradeBottomSheetChanged(isOpen: Boolean) = intent {
-        reduce {
-            state.copy(
-                gradeBottomSheet = isOpen
-            )
+    private fun handleGradeBottomSheetChanged(isOpen: Boolean) =
+        intent {
+            reduce {
+                state.copy(
+                    gradeBottomSheet = isOpen,
+                )
+            }
         }
-    }
 
-    private fun handleGradeChanged(grade: Int) = intent {
-        reduce {
-            state.copy(
-                grade = grade
-            )
+    private fun handleGradeChanged(grade: Int) =
+        intent {
+            reduce {
+                state.copy(
+                    grade = grade,
+                )
+            }
         }
-    }
 
-    private fun handleClassNumberChanged(number: Int) = intent {
-        reduce {
-            state.copy(
-                classNumber = number
-            )
+    private fun handleClassNumberChanged(number: Int) =
+        intent {
+            reduce {
+                state.copy(
+                    classNumber = number,
+                )
+            }
         }
-    }
 
-    private fun handleGenderChanged(gender: String) = intent {
-        reduce {
-            state.copy(
-                gender = gender
-            )
+    private fun handleGenderChanged(gender: String) =
+        intent {
+            reduce {
+                state.copy(
+                    gender = gender,
+                )
+            }
         }
-    }
 
-    private fun handleNameChanged(name: String) = intent {
-        reduce {
-            state.copy(
-                name = name
-            )
+    private fun handleNameChanged(name: String) =
+        intent {
+            reduce {
+                state.copy(
+                    name = name,
+                )
+            }
         }
-    }
 }

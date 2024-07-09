@@ -36,17 +36,16 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NameScreen(
-    viewModel: AuthViewModel = viewModel()
-) {
+fun NameScreen(viewModel: AuthViewModel = viewModel()) {
     val keyboard = LocalSoftwareKeyboardController.current
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    val focusRequester = remember {
-        FocusRequester()
-    }
+    val focusRequester =
+        remember {
+            FocusRequester()
+        }
 
     var error by remember {
         mutableStateOf(false)
@@ -56,15 +55,15 @@ fun NameScreen(
         topBar = {
             WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
         },
-        modifier = Modifier.padding(horizontal = 20.dp)
+        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
             modifier = Modifier.padding(it),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.name),
-                style = StaticTypeScale.Default.header1
+                style = StaticTypeScale.Default.header1,
             )
 
             Text(
@@ -91,7 +90,7 @@ fun NameScreen(
                 Text(
                     text = stringResource(id = R.string.name_error),
                     color = WeSpotThemeManager.colors.dangerColor,
-                    style = StaticTypeScale.Default.body6
+                    style = StaticTypeScale.Default.body6,
                 )
             }
 
@@ -99,7 +98,7 @@ fun NameScreen(
                 Text(
                     text = "${state.name.length} / 5",
                     color = Color(0xFF7A7A7A),
-                    style = StaticTypeScale.Default.body7
+                    style = StaticTypeScale.Default.body7,
                 )
             }
         }
@@ -109,7 +108,7 @@ fun NameScreen(
         WSButton(
             onClick = {},
             text = stringResource(id = R.string.next),
-            enabled = state.name.length in 2..5
+            enabled = state.name.length in 2..5,
         ) {
             it.invoke()
         }

@@ -54,23 +54,24 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
     Scaffold(
         topBar = {
             WSTopBar(title = stringResource(id = R.string.register))
-        }
+        },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(horizontal = 24.dp),
         ) {
             Text(
                 stringResource(id = R.string.search_school),
-                style = StaticTypeScale.Default.header1
+                style = StaticTypeScale.Default.header1,
             )
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
                 stringResource(id = R.string.search_base_on_your_school),
                 style = StaticTypeScale.Default.body8,
-                color = Color(0xFF7A7A7A)
+                color = Color(0xFF7A7A7A),
             )
             Spacer(modifier = Modifier.padding(12.dp))
 
@@ -82,7 +83,7 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
                 placeholder = stringResource(id = R.string.search_with_school_name),
                 textFieldType = WsTextFieldType.Search,
                 focusRequester = focusRequester,
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(modifier = Modifier.padding(vertical = 8.dp))
@@ -90,7 +91,7 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
                 Text(
                     stringResource(id = R.string.within_20_characters),
                     style = StaticTypeScale.Default.body8,
-                    color = WeSpotThemeManager.colors.dangerColor
+                    color = WeSpotThemeManager.colors.dangerColor,
                 )
             }
 
@@ -99,19 +100,19 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
                     WSTextButton(
                         text = stringResource(id = R.string.no_school_found),
                         onClick = { },
-                        buttonType = WSTextButtonType.Underline
+                        buttonType = WSTextButtonType.Underline,
                     )
                 }
             }
 
-            LazyColumn() {
+            LazyColumn {
                 items(state.schoolSearchList, key = { school ->
                     school.id
                 }) { school ->
                     SchoolListItem(
                         schoolName = school.name,
                         address = school.address,
-                        selected = state.selectedSchool?.name == school.name
+                        selected = state.selectedSchool?.name == school.name,
                     ) {
                         action(AuthAction.OnSchoolSelected(school))
                     }
@@ -121,10 +122,11 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding(),
-        contentAlignment = Alignment.BottomCenter
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
+        contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(onClick = { }, enabled = false, text = stringResource(id = R.string.next)) {
             it()
