@@ -1,5 +1,6 @@
 package com.bff.wespot.network.model.message
 
+import com.bff.wespot.model.message.Message
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,4 +11,13 @@ data class MessageDto (
     val receivedAt: String,
     val read: Boolean,
     val readAt: String,
-)
+) {
+    fun toMessage(): Message = Message(
+        id = id,
+        senderName = senderName,
+        content = content,
+        receivedAt = receivedAt,
+        read = read,
+        readAt = readAt,
+    )
+}
