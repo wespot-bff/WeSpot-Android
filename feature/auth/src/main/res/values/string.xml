@@ -37,4 +37,6 @@
     <string name="privacy_term">(필수) 개인정보 수집 및 이용 안내</string>
     <string name="marketing_term">(선택) 이벤트 및 마케팅 수신 동의</string>
     <string name="accept_and_start">동의하고 시작하기</string>
+    <string name="invite_friend_and_start">친구 초대하고 시작하기</string>
+    <string name="start">바로 시작하기</string>
 </resources>
