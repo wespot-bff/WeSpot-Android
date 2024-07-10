@@ -30,7 +30,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavOptions
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
+import com.bff.wespot.auth.screen.destinations.SchoolScreenDestination
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -39,12 +42,16 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun EditScreen(viewModel: AuthViewModel) {
+fun EditScreen(
+    viewModel: AuthViewModel,
+    navigator: DestinationsNavigator
+) {
     val state by viewModel.collectAsState()
     Log.d("TESTING", viewModel.toString())
 
@@ -118,7 +125,15 @@ fun EditScreen(viewModel: AuthViewModel) {
 
     if (register) {
         WSBottomSheet(closeSheet = { register = true }) {
-            RegisterBottomSheetContent()
+            RegisterBottomSheetContent {
+                navigator.navigate(
+                    CompleteScreenDestination,
+                    navOptions = NavOptions
+                        .Builder()
+                        .setPopUpTo(SchoolScreenDestination.route, inclusive = true)
+                        .build()
+                )
+            }
         }
     }
 }
@@ -251,7 +266,9 @@ private fun ConfirmBottomSheetContent(
 }
 
 @Composable
-private fun RegisterBottomSheetContent() {
+private fun RegisterBottomSheetContent(
+    onClicked: () -> Unit
+) {
     var checked by remember {
         mutableStateOf(listOf(false, false, false, false))
     }
@@ -359,7 +376,7 @@ private fun RegisterBottomSheetContent() {
         }
 
         WSButton(
-            onClick = { },
+            onClick = onClicked,
             text = stringResource(id = R.string.accept_and_start),
             enabled = checked.drop(1).take(2).all { it },
         ) {

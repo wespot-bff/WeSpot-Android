@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.EditScreenDestination
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -32,13 +32,17 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun NameScreen(viewModel: AuthViewModel = viewModel()) {
+fun NameScreen(
+    viewModel: AuthViewModel,
+    navigator: DestinationsNavigator
+) {
     val keyboard = LocalSoftwareKeyboardController.current
 
     val state by viewModel.collectAsState()
@@ -107,7 +111,9 @@ fun NameScreen(viewModel: AuthViewModel = viewModel()) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
-            onClick = {},
+            onClick = {
+                navigator.navigate(EditScreenDestination)
+            },
             text = stringResource(id = R.string.next),
             enabled = state.name.length in 2..5,
         ) {

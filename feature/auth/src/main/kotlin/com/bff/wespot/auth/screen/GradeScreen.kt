@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,25 +21,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
+fun GradeScreen(
+    viewModel: AuthViewModel,
+    navigator: DestinationsNavigator
+) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -68,7 +68,8 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             )
 
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .clickable {
                         action(AuthAction.OnGradeBottomSheetChanged(true))
@@ -81,18 +82,21 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
                     },
                 ) {
                     Box(
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .fillMaxWidth()
                             .padding(20.dp),
                     ) {
                         Text(
-                            text = if (state.grade == -1) {
+                            text =
+                            if (state.grade == -1) {
                                 stringResource(id = R.string.select_grade)
                             } else {
                                 "${state.grade}${stringResource(id = R.string.grade)}"
                             },
                             style = StaticTypeScale.Default.body4,
-                            color = if (state.grade == -1) {
+                            color =
+                            if (state.grade == -1) {
                                 WeSpotThemeManager.colors.disableBtnColor
                             } else {
                                 WeSpotThemeManager.colors.txtTitleColor
@@ -105,9 +109,6 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             if (state.gradeBottomSheet) {
                 WSBottomSheet(
                     closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
-                    sheetState = rememberModalBottomSheetState(
-                        skipPartiallyExpanded = true,
-                    ),
                 ) {
                     BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
                         action(AuthAction.OnGradeChanged(grade))
@@ -117,7 +118,11 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            WSButton(onClick = { }, text = stringResource(id = R.string.next)) {
+            WSButton(
+                onClick = { navigator.navigate(ClassScreenDestination) },
+                text = stringResource(id = R.string.next),
+                enabled = state.grade != -1,
+            ) {
                 it.invoke()
             }
         }
@@ -152,7 +157,8 @@ private fun BottomSheetContent(
             repeat(3) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .clickable { onGradeSelected(it + 1) }
                         .padding(vertical = 12.dp)
                         .fillMaxWidth(),
@@ -165,7 +171,8 @@ private fun BottomSheetContent(
                     Icon(
                         painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
                         contentDescription = stringResource(id = R.string.check_icon),
-                        tint = if (it == currentGrade - 1) {
+                        tint =
+                        if (it == currentGrade - 1) {
                             WeSpotThemeManager.colors.primaryColor
                         } else {
                             WeSpotThemeManager.colors.disableBtnColor
@@ -173,18 +180,6 @@ private fun BottomSheetContent(
                     )
                 }
             }
-        }
-    }
-}
-
-@OrientationPreviews
-@Composable
-private fun GradeScreenPreview() {
-    WeSpotTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            GradeScreen()
         }
     }
 }

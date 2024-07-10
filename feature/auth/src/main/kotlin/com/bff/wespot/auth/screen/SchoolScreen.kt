@@ -135,7 +135,7 @@ fun SchoolScreen(
     ) {
         WSButton(
             onClick = { navigator?.navigate(GradeScreenDestination) },
-            enabled = true,
+            enabled = state.selectedSchool != null,
             text = stringResource(id = R.string.next)
         ) {
             it()

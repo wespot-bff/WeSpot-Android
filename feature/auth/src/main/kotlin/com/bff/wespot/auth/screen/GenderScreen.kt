@@ -26,20 +26,24 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.NameScreenDestination
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
+fun GenderScreen(
+    viewModel: AuthViewModel,
+    navigator: DestinationsNavigator
+) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -68,22 +72,26 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
             ) {
                 GenderBox(
                     title = stringResource(id = R.string.male_student),
-                    icon = painterResource(
+                    icon =
+                    painterResource(
                         id = com.bff.wespot.ui.R.drawable.male_student,
                     ),
                     selected = "male" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("male"))
+                        navigator.navigate(NameScreenDestination)
                     },
                 )
                 GenderBox(
                     title = stringResource(id = R.string.female_student),
-                    icon = painterResource(
+                    icon =
+                    painterResource(
                         id = com.bff.wespot.ui.R.drawable.female_student,
                     ),
                     selected = "female" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("female"))
+                        navigator.navigate(NameScreenDestination)
                     },
                 )
             }
@@ -99,7 +107,8 @@ private fun RowScope.GenderBox(
     onClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .weight(1f)
             .clip(WeSpotThemeManager.shapes.medium)
             .border(
