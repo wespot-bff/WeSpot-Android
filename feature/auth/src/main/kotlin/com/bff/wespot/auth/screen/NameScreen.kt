@@ -41,6 +41,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun NameScreen(
     viewModel: AuthViewModel,
+    edit: Boolean,
     navigator: DestinationsNavigator
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -112,9 +113,19 @@ fun NameScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
             onClick = {
+                if (edit) {
+                    navigator.popBackStack()
+                    return@WSButton
+                }
                 navigator.navigate(EditScreenDestination)
             },
-            text = stringResource(id = R.string.next),
+            text = stringResource(
+                id = if (edit) {
+                    R.string.edit_complete
+                } else {
+                    R.string.next
+                }
+            ),
             enabled = state.name.length in 2..5,
         ) {
             it.invoke()

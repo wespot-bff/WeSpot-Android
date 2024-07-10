@@ -37,17 +37,16 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.SchoolListItem
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RootNavGraph(start = true)
 @Destination
 @Composable
 fun SchoolScreen(
-    navigator: DestinationsNavigator? = null,
+    navigator: DestinationsNavigator,
+    edit: Boolean,
     viewModel: AuthViewModel
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -134,9 +133,21 @@ fun SchoolScreen(
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
-            onClick = { navigator?.navigate(GradeScreenDestination) },
+            onClick = {
+                if (edit) {
+                    navigator.popBackStack()
+                    return@WSButton
+                }
+                navigator.navigate(GradeScreenDestination(edit = false))
+            },
             enabled = state.selectedSchool != null,
-            text = stringResource(id = R.string.next)
+            text = stringResource(
+                id = if (edit) {
+                    R.string.edit_complete
+                } else {
+                    R.string.next
+                }
+            )
         ) {
             it()
         }

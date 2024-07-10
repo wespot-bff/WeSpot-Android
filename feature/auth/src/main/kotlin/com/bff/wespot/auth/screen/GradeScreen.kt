@@ -40,6 +40,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun GradeScreen(
     viewModel: AuthViewModel,
+    edit: Boolean,
     navigator: DestinationsNavigator
 ) {
     val state by viewModel.collectAsState()
@@ -119,8 +120,20 @@ fun GradeScreen(
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             WSButton(
-                onClick = { navigator.navigate(ClassScreenDestination) },
-                text = stringResource(id = R.string.next),
+                onClick = {
+                    if (edit) {
+                        navigator.popBackStack()
+                        return@WSButton
+                    }
+                    navigator.navigate(ClassScreenDestination(edit = false))
+                },
+                text = stringResource(
+                    id = if (edit) {
+                        R.string.edit_complete
+                    } else {
+                        R.string.next
+                    }
+                ),
                 enabled = state.grade != -1,
             ) {
                 it.invoke()

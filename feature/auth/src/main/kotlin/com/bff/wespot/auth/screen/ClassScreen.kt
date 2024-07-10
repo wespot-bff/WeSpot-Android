@@ -41,6 +41,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun ClassScreen(
     viewModel: AuthViewModel,
+    edit: Boolean,
     navigator: DestinationsNavigator
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -85,7 +86,7 @@ fun ClassScreen(
                         action(AuthAction.OnClassNumberChanged(-1))
                         return@WsTextField
                     }
-                    if(classNumber.toIntOrNull() == null) {
+                    if (classNumber.toIntOrNull() == null) {
                         return@WsTextField
                     }
 
@@ -115,9 +116,19 @@ fun ClassScreen(
     ) {
         WSButton(
             onClick = {
-                navigator.navigate(GenderScreenDestination)
+                if (edit) {
+                    navigator.popBackStack()
+                    return@WSButton
+                }
+                navigator.navigate(GenderScreenDestination(edit = false))
             },
-            text = stringResource(id = R.string.next),
+            text = stringResource(
+                id = if (edit) {
+                    R.string.edit_complete
+                } else {
+                    R.string.next
+                }
+            ),
             enabled = state.classNumber in 1..20,
         ) {
             it.invoke()

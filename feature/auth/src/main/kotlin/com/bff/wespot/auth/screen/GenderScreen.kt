@@ -42,6 +42,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun GenderScreen(
     viewModel: AuthViewModel,
+    edit: Boolean,
     navigator: DestinationsNavigator
 ) {
     val state by viewModel.collectAsState()
@@ -78,8 +79,12 @@ fun GenderScreen(
                     ),
                     selected = "male" == state.gender,
                     onClicked = {
+                        if (edit) {
+                            navigator.popBackStack()
+                            return@GenderBox
+                        }
                         action(AuthAction.OnGenderChanged("male"))
-                        navigator.navigate(NameScreenDestination)
+                        navigator.navigate(NameScreenDestination(edit = false))
                     },
                 )
                 GenderBox(
@@ -91,7 +96,11 @@ fun GenderScreen(
                     selected = "female" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("female"))
-                        navigator.navigate(NameScreenDestination)
+                        if (edit) {
+                            navigator.popBackStack()
+                            return@GenderBox
+                        }
+                        navigator.navigate(NameScreenDestination(edit = false))
                     },
                 )
             }

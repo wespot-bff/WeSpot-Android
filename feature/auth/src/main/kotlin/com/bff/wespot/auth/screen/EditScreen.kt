@@ -1,6 +1,5 @@
 package com.bff.wespot.auth.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavOptions
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
+import com.bff.wespot.auth.screen.destinations.GenderScreenDestination
+import com.bff.wespot.auth.screen.destinations.GradeScreenDestination
+import com.bff.wespot.auth.screen.destinations.NameScreenDestination
 import com.bff.wespot.auth.screen.destinations.SchoolScreenDestination
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -53,7 +56,6 @@ fun EditScreen(
     navigator: DestinationsNavigator
 ) {
     val state by viewModel.collectAsState()
-    Log.d("TESTING", viewModel.toString())
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -74,27 +76,37 @@ fun EditScreen(
             EditField(
                 title = stringResource(id = R.string.name),
                 value = state.name,
-            )
+            ) {
+                navigator.navigate(NameScreenDestination(edit = true))
+            }
 
             EditField(
                 title = stringResource(id = R.string.gender),
                 value = state.gender,
-            )
+            ) {
+                navigator.navigate(GenderScreenDestination(edit = true))
+            }
 
             EditField(
                 title = stringResource(id = R.string.get_class),
                 value = state.classNumber.toString(),
-            )
+            ) {
+                navigator.navigate(ClassScreenDestination(edit = true))
+            }
 
             EditField(
                 title = stringResource(id = R.string.grade),
                 value = "${state.grade}학년",
-            )
+            ) {
+                navigator.navigate(GradeScreenDestination(edit = true))
+            }
 
             EditField(
                 title = stringResource(id = R.string.school),
                 value = state.selectedSchool?.name ?: "",
-            )
+            ) {
+                navigator.navigate(SchoolScreenDestination(edit = true))
+            }
         }
     }
 
@@ -142,6 +154,7 @@ fun EditScreen(
 private fun EditField(
     title: String,
     value: String,
+    onClicked: () -> Unit
 ) {
     Column {
         Text(
@@ -151,7 +164,7 @@ private fun EditField(
         )
 
         WSButton(
-            onClick = {},
+            onClick = onClicked,
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(

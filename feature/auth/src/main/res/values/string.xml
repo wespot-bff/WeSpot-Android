@@ -39,4 +39,5 @@
     <string name="accept_and_start">동의하고 시작하기</string>
     <string name="invite_friend_and_start">친구 초대하고 시작하기</string>
     <string name="start">바로 시작하기</string>
+    <string name="edit_complete">수정 완료</string>
 </resources>
