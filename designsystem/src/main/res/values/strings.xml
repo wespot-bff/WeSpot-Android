@@ -6,8 +6,10 @@
     <string name="with_friend">친구랑 같이 하기</string>
     <string name="any_friend_not_registered">등록되어 있지 않은 반 친구가 있나요?</string>
     <string name="banner_icon">Banner Icon</string>
+    <string name="toast_icon">Toast Icon</string>
     <string name="left_arrow">Left Arrow</string>
     <string name="right_arrow">Right Arrow</string>
+    <string name="option_button">Option Button</string>
     <string name="add">Add</string>
     <string name="textfield_trailing_icon">TextField trailing icon</string>
     <string name="textfield_leading_icon">TextField Leading icon</string>
@@ -20,4 +22,10 @@
     <string name="cancel">취소</string>
     <string name="navigate_back">navigate back</string>
     <string name="arrow_icon">Arrow Icon</string>
+    <string name="succeed_reserve_message">전송 예약 완료</string>
+    <string name="age_restriction_message">만 14세 미만은 가입이 불가합니다</string>
+    <string name="letter_receiver">To.</string>
+    <string name="letter_sender">From.</string>
+    <string name="letter_opened">읽음</string>
+    <string name="letter_image">Letter Image</string>
 </resources>

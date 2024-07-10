@@ -44,14 +44,14 @@ fun WsTextField(
     focusRequester: FocusRequester = remember { FocusRequester() },
     keyBoardOption: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    textFieldType: WsTextFieldType = WsTextFieldType.Normal
+    textFieldType: WsTextFieldType = WsTextFieldType.Normal,
 ) {
     Box(modifier = Modifier.wrapContentSize()) {
         OutlinedTextField(
             modifier = Modifier
                 .heightIn(
                     min = textFieldType.minHeight(),
-                    max = textFieldType.maxHeight()
+                    max = textFieldType.maxHeight(),
                 )
                 .fillMaxWidth().focusRequester(focusRequester),
             value = value,
@@ -65,7 +65,7 @@ fun WsTextField(
                 {
                     Icon(
                         painter = textFieldType.trailingIcon()!!,
-                        contentDescription = stringResource(id = R.string.textfield_trailing_icon)
+                        contentDescription = stringResource(id = R.string.textfield_trailing_icon),
                     )
                 }
             } else {
@@ -75,7 +75,7 @@ fun WsTextField(
                 {
                     Icon(
                         painter = textFieldType.leadingIcon()!!,
-                        contentDescription = stringResource(id = R.string.textfield_leading_icon)
+                        contentDescription = stringResource(id = R.string.textfield_leading_icon),
                     )
                 }
             } else {
@@ -102,7 +102,6 @@ fun WsTextField(
 }
 
 sealed interface WsTextFieldType {
-
     @Composable
     fun trailingIcon(): Painter?
 
@@ -114,7 +113,6 @@ sealed interface WsTextFieldType {
     fun maxHeight(): Dp = Dp.Unspecified
 
     data object Normal : WsTextFieldType {
-
         @Composable
         override fun trailingIcon() = null
 
@@ -123,7 +121,6 @@ sealed interface WsTextFieldType {
     }
 
     data object Search : WsTextFieldType {
-
         @Composable
         override fun trailingIcon() = null
 
@@ -162,27 +159,27 @@ private fun WsTextFieldPreview() {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 WsTextField(
                     value = value,
                     onValueChange = onValueChanged,
                     placeholder = stringResource(id = R.string.search),
-                    textFieldType = WsTextFieldType.Normal
+                    textFieldType = WsTextFieldType.Normal,
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
                     placeholder = stringResource(id = R.string.search),
-                    textFieldType = WsTextFieldType.Search
+                    textFieldType = WsTextFieldType.Search,
                 )
 
                 WsTextField(
                     value = "",
                     onValueChange = {},
                     placeholder = stringResource(id = R.string.search),
-                    textFieldType = WsTextFieldType.Lock
+                    textFieldType = WsTextFieldType.Lock,
                 )
 
                 WsTextField(
@@ -190,9 +187,8 @@ private fun WsTextFieldPreview() {
                     onValueChange = {},
                     placeholder = stringResource(id = R.string.search),
                     isError = true,
-                    textFieldType = WsTextFieldType.Normal
+                    textFieldType = WsTextFieldType.Normal,
                 )
-
             }
         }
     }
@@ -208,13 +204,13 @@ private fun MessagePreview() {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 WsTextField(
                     value = value,
                     onValueChange = onValueChanged,
                     placeholder = "Message",
-                    textFieldType = WsTextFieldType.Message
+                    textFieldType = WsTextFieldType.Message,
                 )
             }
         }

@@ -39,12 +39,12 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 fun WSBannerType(
     title: String,
     subTitle: String? = null,
-    bannerType: WSBannerType = WSBannerType.Primary
+    bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     WSBanner(
         title = title,
         subTitle = subTitle,
-        bannerType = bannerType
+        bannerType = bannerType,
     )
 }
 
@@ -53,13 +53,13 @@ fun WSBanner(
     title: String,
     icon: ImageVector,
     subTitle: String? = null,
-    bannerType: WSBannerType = WSBannerType.Primary
+    bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     WSBanner(
         icon = rememberVectorPainter(image = icon),
         title = title,
         subTitle = subTitle,
-        bannerType = bannerType
+        bannerType = bannerType,
     )
 }
 
@@ -68,23 +68,22 @@ fun WSBanner(
     title: String,
     icon: ImageBitmap,
     subTitle: String? = null,
-    bannerType: WSBannerType = WSBannerType.Primary
+    bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     WSBanner(
         icon = BitmapPainter(icon),
         title = title,
         subTitle = subTitle,
-        bannerType = bannerType
+        bannerType = bannerType,
     )
 }
-
 
 @Composable
 fun WSBanner(
     title: String,
     icon: Painter? = null,
     subTitle: String? = null,
-    bannerType: WSBannerType = WSBannerType.Primary
+    bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     Box(
         modifier = Modifier
@@ -92,12 +91,12 @@ fun WSBanner(
             .height(80.dp)
             .fillMaxWidth()
             .clip(WeSpotThemeManager.shapes.medium)
-            .background(bannerType.backgroundColor())
+            .background(bannerType.backgroundColor()),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {
                 Icon(
@@ -111,19 +110,19 @@ fun WSBanner(
             Column(
                 modifier = Modifier
                     .padding(vertical = 18.dp)
-                    .padding(start = if (icon != null) 0.dp else 20.dp)
+                    .padding(start = if (icon != null) 0.dp else 20.dp),
             ) {
                 Text(
                     text = title,
                     color = bannerType.titleColor(),
-                    style = bannerType.titleTextStyle()
+                    style = bannerType.titleTextStyle(),
                 )
 
                 subTitle?.let { subTitle ->
                     Text(
                         text = subTitle,
                         color = bannerType.subTitleColor().copy(alpha = 0.8f),
-                        style = bannerType.subTitleTextStyle()
+                        style = bannerType.subTitleTextStyle(),
                     )
                 }
             }
@@ -132,23 +131,21 @@ fun WSBanner(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.CenterEnd,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.right_arrow),
                     contentDescription = stringResource(id = R.string.right_arrow),
                     tint = WeSpotThemeManager.colors.abledIconColor,
                     modifier = Modifier
-                        .padding(end = 24.dp)
+                        .padding(end = 24.dp),
                 )
             }
         }
-
     }
 }
 
 sealed interface WSBannerType {
-
     @Composable
     fun backgroundColor(): Color
 
@@ -211,7 +208,7 @@ private fun WSBannerPreview() {
                     icon = Icons.AutoMirrored.Default.Send,
                     title = stringResource(id = R.string.message_arrived),
                     subTitle = stringResource(id = R.string.open_inbox_for_message),
-                    bannerType = WSBannerType.Primary
+                    bannerType = WSBannerType.Primary,
                 )
 
                 WSBanner(
@@ -222,13 +219,13 @@ private fun WSBannerPreview() {
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Accessible,
                     title = stringResource(id = R.string.message_arrived),
-                    bannerType = WSBannerType.Secondary
+                    bannerType = WSBannerType.Secondary,
                 )
 
                 WSBanner(
                     title = stringResource(id = R.string.message_arrived),
                     subTitle = stringResource(id = R.string.open_inbox_for_message),
-                    bannerType = WSBannerType.Secondary
+                    bannerType = WSBannerType.Secondary,
                 )
             }
         }

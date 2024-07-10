@@ -55,5 +55,9 @@ gradlePlugin {
             id = "com.bff.wespot.jvm.library"
             implementationClass = "com.bff.wespot.plugin.JvmLibraryPlugin"
         }
+        create("androidKtLint") {
+            id = "com.bff.wespot.ktlint"
+            implementationClass = "com.bff.wespot.plugin.AndroidKtLintPlugin"
+        }
     }
 }
