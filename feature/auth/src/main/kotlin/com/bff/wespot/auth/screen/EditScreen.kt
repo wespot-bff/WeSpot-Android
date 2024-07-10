@@ -111,7 +111,7 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
                 moveSheet = {
                     register = true
                     firstEnter = false
-                }
+                },
             )
         }
     }
@@ -161,14 +161,17 @@ private fun ConfirmBottomSheetContent(
     grade: Int,
     school: String,
     closeSheet: () -> Unit,
-    moveSheet: () -> Unit
+    moveSheet: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = 28.dp, end = 28.dp, top = 28.dp, bottom = 8.dp
-            )
+                start = 28.dp,
+                end = 28.dp,
+                top = 28.dp,
+                bottom = 8.dp,
+            ),
     ) {
         Text(
             text = stringResource(id = R.string.register_confirm),
@@ -178,7 +181,7 @@ private fun ConfirmBottomSheetContent(
         Text(
             text = stringResource(id = R.string.register_confirm_detail),
             style = StaticTypeScale.Default.body6,
-            color = WeSpotThemeManager.colors.disableBtnTxtColor
+            color = WeSpotThemeManager.colors.disableBtnTxtColor,
         )
 
         Row(
@@ -186,12 +189,12 @@ private fun ConfirmBottomSheetContent(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 28.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Icon",
-                modifier = Modifier.size(56.dp)
+                modifier = Modifier.size(56.dp),
             )
             Column {
                 Text(
@@ -207,7 +210,7 @@ private fun ConfirmBottomSheetContent(
 
                 Text(
                     text = "$school ${grade}학년 ${classNumber}반",
-                    style = StaticTypeScale.Default.body2
+                    style = StaticTypeScale.Default.body2,
                 )
             }
         }
@@ -217,28 +220,28 @@ private fun ConfirmBottomSheetContent(
                 .fillMaxWidth()
                 .navigationBarsPadding()
                 .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 WSButton(
                     onClick = { closeSheet.invoke() },
                     text = stringResource(id = R.string.edit),
                     paddingValues = PaddingValues(0.dp),
-                    buttonType = WSButtonType.Secondary
+                    buttonType = WSButtonType.Secondary,
                 ) {
                     it.invoke()
                 }
             }
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 WSButton(
                     onClick = { moveSheet.invoke() },
                     text = stringResource(id = R.string.register_complete),
                     paddingValues = PaddingValues(0.dp),
-                    buttonType = WSButtonType.Primary
+                    buttonType = WSButtonType.Primary,
                 ) {
                     it.invoke()
                 }
@@ -257,12 +260,12 @@ private fun RegisterBottomSheetContent() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 24.dp, top = 28.dp)
-            .navigationBarsPadding()
+            .navigationBarsPadding(),
     ) {
         Text(
             text = stringResource(id = R.string.terms_title),
             style = StaticTypeScale.Default.body1,
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 18.dp)
+            modifier = Modifier.padding(horizontal = 28.dp, vertical = 18.dp),
         )
         Box(
             modifier = Modifier
@@ -271,12 +274,12 @@ private fun RegisterBottomSheetContent() {
                 .clip(WeSpotThemeManager.shapes.medium)
                 .background(
                     WeSpotThemeManager.colors.cardBackgroundColor,
-                    shape = WeSpotThemeManager.shapes.medium
-                )
+                    shape = WeSpotThemeManager.shapes.medium,
+                ),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(18.dp),
             ) {
                 Icon(
                     painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
@@ -292,19 +295,19 @@ private fun RegisterBottomSheetContent() {
                         } else {
                             checked = listOf(true, true, true, true)
                         }
-                    }
+                    },
                 )
 
                 Text(
                     text = stringResource(id = R.string.accept_all),
-                    style = StaticTypeScale.Default.body4
+                    style = StaticTypeScale.Default.body4,
                 )
             }
         }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(30.dp),
-            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 36.dp)
+            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 36.dp),
         ) {
             TermRow(
                 title = stringResource(id = R.string.service_term),
@@ -319,7 +322,7 @@ private fun RegisterBottomSheetContent() {
                             this[1] = true
                         }
                     }
-                }
+                },
             )
 
             TermRow(
@@ -335,7 +338,7 @@ private fun RegisterBottomSheetContent() {
                             this[2] = true
                         }
                     }
-                }
+                },
             )
 
             TermRow(
@@ -351,14 +354,15 @@ private fun RegisterBottomSheetContent() {
                             this[3] = true
                         }
                     }
-                }
+                },
             )
         }
 
         WSButton(
             onClick = { },
             text = stringResource(id = R.string.accept_and_start),
-            enabled = checked.drop(1).take(2).all { it }) {
+            enabled = checked.drop(1).take(2).all { it },
+        ) {
             it.invoke()
         }
     }
@@ -375,7 +379,7 @@ private fun TermRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 22.dp)
+            .padding(start = 8.dp, end = 22.dp),
     ) {
         Icon(
             painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
@@ -387,7 +391,7 @@ private fun TermRow(
             },
             modifier = Modifier.clickable {
                 onClicked.invoke()
-            }
+            },
         )
 
         Text(text = title, style = StaticTypeScale.Default.body6)
@@ -396,7 +400,7 @@ private fun TermRow(
             Icon(
                 painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
                 contentDescription = "화살 아이콘",
-                tint = WeSpotThemeManager.colors.disableIcnColor
+                tint = WeSpotThemeManager.colors.disableIcnColor,
             )
         }
     }

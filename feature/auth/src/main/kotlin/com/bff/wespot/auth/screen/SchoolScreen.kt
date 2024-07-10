@@ -58,9 +58,9 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
     ) {
         Column(
             modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(horizontal = 24.dp),
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 24.dp),
         ) {
             Text(
                 stringResource(id = R.string.search_school),
@@ -122,8 +122,8 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
 
     Box(
         modifier = Modifier
-                .fillMaxSize()
-                .imePadding(),
+            .fillMaxSize()
+            .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(onClick = { }, enabled = false, text = stringResource(id = R.string.next)) {

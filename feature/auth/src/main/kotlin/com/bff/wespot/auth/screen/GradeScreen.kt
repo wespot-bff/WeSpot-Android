@@ -67,10 +67,10 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
 
             Box(
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            action(AuthAction.OnGradeBottomSheetChanged(true))
-                        },
+                    .fillMaxWidth()
+                    .clickable {
+                        action(AuthAction.OnGradeBottomSheetChanged(true))
+                    },
             ) {
                 WSOutlineButton(
                     text = "",
@@ -80,21 +80,21 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
                 ) {
                     Box(
                         modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp),
+                            .fillMaxWidth()
+                            .padding(20.dp),
                     ) {
                         Text(
                             text = if (state.grade == -1) {
-                                    stringResource(id = R.string.select_grade)
-                                } else {
-                                    "${state.grade}${stringResource(id = R.string.grade)}"
-                                },
+                                stringResource(id = R.string.select_grade)
+                            } else {
+                                "${state.grade}${stringResource(id = R.string.grade)}"
+                            },
                             style = StaticTypeScale.Default.body4,
                             color = if (state.grade == -1) {
-                                    WeSpotThemeManager.colors.disableBtnColor
-                                } else {
-                                    WeSpotThemeManager.colors.txtTitleColor
-                                },
+                                WeSpotThemeManager.colors.disableBtnColor
+                            } else {
+                                WeSpotThemeManager.colors.txtTitleColor
+                            },
                         )
                     }
                 }
@@ -104,8 +104,8 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
                 WSBottomSheet(
                     closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
                     sheetState = rememberModalBottomSheetState(
-                            skipPartiallyExpanded = true,
-                        ),
+                        skipPartiallyExpanded = true,
+                    ),
                 ) {
                     BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
                         action(AuthAction.OnGradeChanged(grade))
@@ -151,9 +151,9 @@ private fun BottomSheetContent(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                            .clickable { onGradeSelected(it + 1) }
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth(),
+                        .clickable { onGradeSelected(it + 1) }
+                        .padding(vertical = 12.dp)
+                        .fillMaxWidth(),
                 ) {
                     Text(
                         text = "${it + 1}${stringResource(id = R.string.grade)}",
@@ -164,10 +164,10 @@ private fun BottomSheetContent(
                         painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
                         contentDescription = stringResource(id = R.string.check_icon),
                         tint = if (it == currentGrade - 1) {
-                                WeSpotThemeManager.colors.primaryColor
-                            } else {
-                                WeSpotThemeManager.colors.disableBtnColor
-                            },
+                            WeSpotThemeManager.colors.primaryColor
+                        } else {
+                            WeSpotThemeManager.colors.disableBtnColor
+                        },
                     )
                 }
             }

@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.bff.wespot.auth.screen.EditScreen
+import com.bff.wespot.auth.screen.CompleteScreen
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    EditScreen()
+                    CompleteScreen()
                 }
             }
         }

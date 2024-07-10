@@ -45,8 +45,8 @@ fun WSButton(
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
     val interactionSource = remember {
-            MutableInteractionSource()
-        }
+        MutableInteractionSource()
+    }
 
     val isPressed by interactionSource.collectIsPressedAsState()
 
@@ -59,15 +59,15 @@ fun WSButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
-                    contentColor = buttonType.textColor(),
-                    containerColor = if (isPressed) {
-                            buttonType.pressColor()
-                        } else {
-                            buttonType.background()
-                        },
-                    disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
-                    disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
-                ),
+                contentColor = buttonType.textColor(),
+                containerColor = if (isPressed) {
+                    buttonType.pressColor()
+                } else {
+                    buttonType.background()
+                },
+                disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
+                disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
+            ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
             enabled = enabled,

@@ -12,11 +12,11 @@ import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.util.textDp
 
 internal val plainTextFont = FontFamily(
-        Font(R.font.pretendard_r),
-        Font(R.font.pretendard_m),
-        Font(R.font.pretendard_bold, weight = FontWeight.Bold),
-        Font(R.font.pretendard_semibold, weight = FontWeight.SemiBold),
-    )
+    Font(R.font.pretendard_r),
+    Font(R.font.pretendard_m),
+    Font(R.font.pretendard_bold, weight = FontWeight.Bold),
+    Font(R.font.pretendard_semibold, weight = FontWeight.SemiBold),
+)
 
 private const val LINE_HEIGHT_PERCENT = 1.5f
 
@@ -29,107 +29,107 @@ class StaticTypeScale private constructor(
 ) {
     companion object {
         val Default = TypeScale(
-                _header1 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20,
-                        lineHeight = 20 * LINE_HEIGHT_PERCENT,
-                    ),
-                _header2 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18,
-                        lineHeight = 18 * LINE_HEIGHT_PERCENT,
-                    ),
-                _header3 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16,
-                        lineHeight = 16 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body1 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18,
-                        lineHeight = 18 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body2 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18,
-                        lineHeight = 18 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body3 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16,
-                        lineHeight = 16 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body4 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16,
-                        lineHeight = 16 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body5 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14,
-                        lineHeight = 14 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body6 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14,
-                        lineHeight = 14 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body7 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13,
-                        lineHeight = 13 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body8 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 13,
-                        lineHeight = 13 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body9 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 12,
-                        lineHeight = 12 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body10 = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 10,
-                        lineHeight = 10 * LINE_HEIGHT_PERCENT,
-                    ),
-                _body11 = StaticTypeScale(
-                    fontFamily = plainTextFont,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 10,
-                    lineHeight = 10 * LINE_HEIGHT_PERCENT,
-                ),
-                _badge = StaticTypeScale(
-                        fontFamily = plainTextFont,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12,
-                        lineHeight = 12 * LINE_HEIGHT_PERCENT,
-                    ),
-            )
+            _header1 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20,
+                lineHeight = 20 * LINE_HEIGHT_PERCENT,
+            ),
+            _header2 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18,
+                lineHeight = 18 * LINE_HEIGHT_PERCENT,
+            ),
+            _header3 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16,
+                lineHeight = 16 * LINE_HEIGHT_PERCENT,
+            ),
+            _body1 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18,
+                lineHeight = 18 * LINE_HEIGHT_PERCENT,
+            ),
+            _body2 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18,
+                lineHeight = 18 * LINE_HEIGHT_PERCENT,
+            ),
+            _body3 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16,
+                lineHeight = 16 * LINE_HEIGHT_PERCENT,
+            ),
+            _body4 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16,
+                lineHeight = 16 * LINE_HEIGHT_PERCENT,
+            ),
+            _body5 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14,
+                lineHeight = 14 * LINE_HEIGHT_PERCENT,
+            ),
+            _body6 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14,
+                lineHeight = 14 * LINE_HEIGHT_PERCENT,
+            ),
+            _body7 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 13,
+                lineHeight = 13 * LINE_HEIGHT_PERCENT,
+            ),
+            _body8 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Normal,
+                fontSize = 13,
+                lineHeight = 13 * LINE_HEIGHT_PERCENT,
+            ),
+            _body9 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12,
+                lineHeight = 12 * LINE_HEIGHT_PERCENT,
+            ),
+            _body10 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 10,
+                lineHeight = 10 * LINE_HEIGHT_PERCENT,
+            ),
+            _body11 = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 10,
+                lineHeight = 10 * LINE_HEIGHT_PERCENT,
+            ),
+            _badge = StaticTypeScale(
+                fontFamily = plainTextFont,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 12,
+                lineHeight = 12 * LINE_HEIGHT_PERCENT,
+            ),
+        )
     }
 }
 
 private val StaticTypeScale.textStyle: TextStyle
     @Composable get() = TextStyle(
-            fontFamily = fontFamily,
-            fontWeight = fontWeight,
-            fontSize = fontSize.textDp,
-            lineHeight = lineHeight.textDp,
-        )
+        fontFamily = fontFamily,
+        fontWeight = fontWeight,
+        fontSize = fontSize.textDp,
+        lineHeight = lineHeight.textDp,
+    )
 
 @Immutable
 data class TypeScale constructor(
@@ -169,20 +169,20 @@ data class TypeScale constructor(
 
     @Composable
     fun Copy() = Typography(
-            displayLarge = header1,
-            displayMedium = header2,
-            displaySmall = header3,
-            headlineLarge = header1,
-            headlineMedium = header2,
-            headlineSmall = header3,
-            titleLarge = header1,
-            titleMedium = header2,
-            titleSmall = header3,
-            bodyLarge = body1,
-            bodyMedium = body2,
-            bodySmall = body3,
-            labelLarge = body4,
-            labelMedium = body4,
-            labelSmall = body5,
-        )
+        displayLarge = header1,
+        displayMedium = header2,
+        displaySmall = header3,
+        headlineLarge = header1,
+        headlineMedium = header2,
+        headlineSmall = header3,
+        titleLarge = header1,
+        titleMedium = header2,
+        titleSmall = header3,
+        bodyLarge = body1,
+        bodyMedium = body2,
+        bodySmall = body3,
+        labelLarge = body4,
+        labelMedium = body4,
+        labelSmall = body5,
+    )
 }
