@@ -48,7 +48,13 @@ fun GradeScreen(
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    navigator.navigateUp()
+                }
+            )
         },
     ) {
         Column(

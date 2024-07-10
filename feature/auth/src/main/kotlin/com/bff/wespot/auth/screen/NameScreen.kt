@@ -59,7 +59,13 @@ fun NameScreen(
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    navigator.navigateUp()
+                }
+            )
         },
         modifier = Modifier.padding(horizontal = 20.dp),
     ) {
