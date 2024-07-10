@@ -60,13 +60,13 @@ fun ClassScreen(
                 }
             )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
             modifier =
             Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(

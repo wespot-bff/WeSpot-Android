@@ -67,10 +67,9 @@ fun NameScreen(
                 }
             )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(it).padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(

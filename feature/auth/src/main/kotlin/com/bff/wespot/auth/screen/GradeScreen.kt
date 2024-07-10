@@ -117,9 +117,17 @@ fun GradeScreen(
                 WSBottomSheet(
                     closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
                 ) {
-                    BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
-                        action(AuthAction.OnGradeChanged(grade))
-                    })
+                    BottomSheetContent(
+                        currentGrade = state.grade,
+                        onGradeSelected = { grade ->
+                            action(AuthAction.OnGradeChanged(grade))
+                            if (edit) {
+                                navigator.popBackStack()
+                                return@BottomSheetContent
+                            }
+                            navigator.navigate(ClassScreenDestination(edit = false))
+                        }
+                    )
                 }
             }
         }

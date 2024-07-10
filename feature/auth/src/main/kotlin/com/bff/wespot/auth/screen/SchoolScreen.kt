@@ -57,7 +57,13 @@ fun SchoolScreen(
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register))
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = edit,
+                navigateUp = {
+                    navigator.popBackStack()
+                }
+            )
         },
     ) {
         Column(

@@ -58,10 +58,11 @@ fun GenderScreen(
                 }
             )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -85,11 +86,11 @@ fun GenderScreen(
                     ),
                     selected = "male" == state.gender,
                     onClicked = {
+                        action(AuthAction.OnGenderChanged("male"))
                         if (edit) {
                             navigator.popBackStack()
                             return@GenderBox
                         }
-                        action(AuthAction.OnGenderChanged("male"))
                         navigator.navigate(NameScreenDestination(edit = false))
                     },
                 )
