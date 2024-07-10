@@ -37,7 +37,7 @@ fun WSToast(
     Box(
         modifier = Modifier
             .clip(WeSpotThemeManager.shapes.extraLarge)
-            .background(color = Color.White)
+            .background(color = WeSpotThemeManager.colors.toastColor)
             .height(45.dp),
     ) {
         Row(
