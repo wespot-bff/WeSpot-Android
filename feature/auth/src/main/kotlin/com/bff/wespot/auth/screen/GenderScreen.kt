@@ -66,8 +66,7 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
             ) {
                 GenderBox(
                     title = stringResource(id = R.string.male_student),
-                    icon =
-                        painterResource(
+                    icon = painterResource(
                             id = com.bff.wespot.ui.R.drawable.male_student,
                         ),
                     selected = "male" == state.gender,
@@ -77,8 +76,7 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
                 )
                 GenderBox(
                     title = stringResource(id = R.string.female_student),
-                    icon =
-                        painterResource(
+                    icon = painterResource(
                             id = com.bff.wespot.ui.R.drawable.female_student,
                         ),
                     selected = "female" == state.gender,
@@ -99,8 +97,7 @@ private fun RowScope.GenderBox(
     onClicked: () -> Unit,
 ) {
     Box(
-        modifier =
-            Modifier
+        modifier = Modifier
                 .weight(1f)
                 .clip(WeSpotThemeManager.shapes.medium)
                 .border(

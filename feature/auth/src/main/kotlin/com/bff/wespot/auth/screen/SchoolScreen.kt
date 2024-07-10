@@ -57,8 +57,7 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
         },
     ) {
         Column(
-            modifier =
-                Modifier
+            modifier = Modifier
                     .fillMaxSize()
                     .padding(it)
                     .padding(horizontal = 24.dp),
@@ -122,8 +121,7 @@ fun SchoolScreen(viewModel: AuthViewModel = viewModel()) {
     }
 
     Box(
-        modifier =
-            Modifier
+        modifier = Modifier
                 .fillMaxSize()
                 .imePadding(),
         contentAlignment = Alignment.BottomCenter,

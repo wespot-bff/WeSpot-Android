@@ -44,8 +44,7 @@ fun WSButton(
     pressedBorderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
-    val interactionSource =
-        remember {
+    val interactionSource = remember {
             MutableInteractionSource()
         }
 
@@ -59,11 +58,9 @@ fun WSButton(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
-            colors =
-                ButtonDefaults.buttonColors(
+            colors = ButtonDefaults.buttonColors(
                     contentColor = buttonType.textColor(),
-                    containerColor =
-                        if (isPressed) {
+                    containerColor = if (isPressed) {
                             buttonType.pressColor()
                         } else {
                             buttonType.background()

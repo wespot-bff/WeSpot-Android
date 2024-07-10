@@ -142,8 +142,7 @@ class CustomColors(
         this.toggleColor = colors.toggleColor
     }
 
-    fun copy() =
-        CustomColors(
+    fun copy() = CustomColors(
             primaryColor = primaryColor,
             toastColor = toastColor,
             txtTitleColor = txtTitleColor,

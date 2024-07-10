@@ -11,8 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.util.textDp
 
-internal val plainTextFont =
-    FontFamily(
+internal val plainTextFont = FontFamily(
         Font(R.font.pretendard_r),
         Font(R.font.pretendard_m),
         Font(R.font.pretendard_bold, weight = FontWeight.Bold),
@@ -29,94 +28,80 @@ class StaticTypeScale private constructor(
     val lineHeight: Float,
 ) {
     companion object {
-        val Default =
-            TypeScale(
-                _header1 =
-                    StaticTypeScale(
+        val Default = TypeScale(
+                _header1 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20,
                         lineHeight = 20 * LINE_HEIGHT_PERCENT,
                     ),
-                _header2 =
-                    StaticTypeScale(
+                _header2 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 18,
                         lineHeight = 18 * LINE_HEIGHT_PERCENT,
                     ),
-                _header3 =
-                    StaticTypeScale(
+                _header3 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16,
                         lineHeight = 16 * LINE_HEIGHT_PERCENT,
                     ),
-                _body1 =
-                    StaticTypeScale(
+                _body1 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18,
                         lineHeight = 18 * LINE_HEIGHT_PERCENT,
                     ),
-                _body2 =
-                    StaticTypeScale(
+                _body2 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 18,
                         lineHeight = 18 * LINE_HEIGHT_PERCENT,
                     ),
-                _body3 =
-                    StaticTypeScale(
+                _body3 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16,
                         lineHeight = 16 * LINE_HEIGHT_PERCENT,
                     ),
-                _body4 =
-                    StaticTypeScale(
+                _body4 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16,
                         lineHeight = 16 * LINE_HEIGHT_PERCENT,
                     ),
-                _body5 =
-                    StaticTypeScale(
+                _body5 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14,
                         lineHeight = 14 * LINE_HEIGHT_PERCENT,
                     ),
-                _body6 =
-                    StaticTypeScale(
+                _body6 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14,
                         lineHeight = 14 * LINE_HEIGHT_PERCENT,
                     ),
-                _body7 =
-                    StaticTypeScale(
+                _body7 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Medium,
                         fontSize = 13,
                         lineHeight = 13 * LINE_HEIGHT_PERCENT,
                     ),
-                _body8 =
-                    StaticTypeScale(
+                _body8 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13,
                         lineHeight = 13 * LINE_HEIGHT_PERCENT,
                     ),
-                _body9 =
-                    StaticTypeScale(
+                _body9 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.Medium,
                         fontSize = 12,
                         lineHeight = 12 * LINE_HEIGHT_PERCENT,
                     ),
-                _body10 =
-                    StaticTypeScale(
+                _body10 = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 10,
@@ -128,8 +113,7 @@ class StaticTypeScale private constructor(
                     fontSize = 10,
                     lineHeight = 10 * LINE_HEIGHT_PERCENT,
                 ),
-                _badge =
-                    StaticTypeScale(
+                _badge = StaticTypeScale(
                         fontFamily = plainTextFont,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12,
@@ -140,8 +124,7 @@ class StaticTypeScale private constructor(
 }
 
 private val StaticTypeScale.textStyle: TextStyle
-    @Composable get() =
-        TextStyle(
+    @Composable get() = TextStyle(
             fontFamily = fontFamily,
             fontWeight = fontWeight,
             fontSize = fontSize.textDp,
@@ -185,8 +168,7 @@ data class TypeScale constructor(
     val badge: TextStyle @Composable get() = _badge.textStyle
 
     @Composable
-    fun Copy() =
-        Typography(
+    fun Copy() = Typography(
             displayLarge = header1,
             displayMedium = header2,
             displaySmall = header3,

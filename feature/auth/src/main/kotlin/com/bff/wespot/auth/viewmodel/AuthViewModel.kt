@@ -26,13 +26,11 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
         }
     }
 
-    private fun handleSchoolSearchChanged(text: String) =
-        intent {
+    private fun handleSchoolSearchChanged(text: String) = intent {
             reduce {
                 state.copy(
                     schoolName = text,
-                    schoolSearchList =
-                        state.schoolList.filter {
+                    schoolSearchList = state.schoolList.filter {
                             it.name.contains(
                                 text,
                                 ignoreCase = true,
@@ -42,8 +40,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleSchoolSelected(school: SchoolItem) =
-        intent {
+    private fun handleSchoolSelected(school: SchoolItem) = intent {
             reduce {
                 state.copy(
                     selectedSchool = school,
@@ -51,8 +48,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleGradeBottomSheetChanged(isOpen: Boolean) =
-        intent {
+    private fun handleGradeBottomSheetChanged(isOpen: Boolean) = intent {
             reduce {
                 state.copy(
                     gradeBottomSheet = isOpen,
@@ -60,8 +56,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleGradeChanged(grade: Int) =
-        intent {
+    private fun handleGradeChanged(grade: Int) = intent {
             reduce {
                 state.copy(
                     grade = grade,
@@ -69,8 +64,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleClassNumberChanged(number: Int) =
-        intent {
+    private fun handleClassNumberChanged(number: Int) = intent {
             reduce {
                 state.copy(
                     classNumber = number,
@@ -78,8 +72,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleGenderChanged(gender: String) =
-        intent {
+    private fun handleGenderChanged(gender: String) = intent {
             reduce {
                 state.copy(
                     gender = gender,
@@ -87,8 +80,7 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             }
         }
 
-    private fun handleNameChanged(name: String) =
-        intent {
+    private fun handleNameChanged(name: String) = intent {
             reduce {
                 state.copy(
                     name = name,

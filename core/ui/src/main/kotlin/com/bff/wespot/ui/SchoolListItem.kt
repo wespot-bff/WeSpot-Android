@@ -36,7 +36,7 @@ fun SchoolListItem(
     schoolName: String,
     address: String,
     selected: Boolean,
-    onClick: () -> Unit = { }
+    onClick: () -> Unit = { },
 ) {
     Box(
         modifier = Modifier
@@ -46,15 +46,15 @@ fun SchoolListItem(
             .clip(WeSpotThemeManager.shapes.medium)
             .border(
                 width = 1.dp,
-                color = if(selected) {
+                color = if (selected) {
                     WeSpotThemeManager.colors.primaryColor
                 } else {
                     WeSpotThemeManager.colors.cardBackgroundColor
                 },
-                shape = WeSpotThemeManager.shapes.medium
+                shape = WeSpotThemeManager.shapes.medium,
             )
             .background(WeSpotThemeManager.colors.cardBackgroundColor)
-            .clickable { onClick.invoke()  }
+            .clickable { onClick.invoke() },
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
@@ -64,24 +64,24 @@ fun SchoolListItem(
                     .size(56.dp)
                     .clip(CircleShape)
                     .background(Color.White),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Default.School,
-                    contentDescription = stringResource(id = R.string.school_icon)
+                    contentDescription = stringResource(id = R.string.school_icon),
                 )
             }
 
             Column(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(text = schoolName, style = StaticTypeScale.Default.body2, maxLines = 1)
                 Text(
                     text = address,
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtSubColor,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             }
         }
@@ -89,7 +89,7 @@ fun SchoolListItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 14.dp, top = 14.dp),
-            contentAlignment = Alignment.TopEnd
+            contentAlignment = Alignment.TopEnd,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.exclude),
@@ -98,7 +98,7 @@ fun SchoolListItem(
                     WeSpotThemeManager.colors.primaryColor
                 } else {
                     WeSpotThemeManager.colors.disableIcnColor
-                }
+                },
             )
         }
     }
@@ -114,7 +114,7 @@ private fun SchoolListItemPreview() {
                     SchoolListItem(
                         schoolName = "역삼 중학교",
                         address = "서울특별시 강남구 도곡로 43길 10",
-                        selected = false
+                        selected = false,
                     )
                 }
             }

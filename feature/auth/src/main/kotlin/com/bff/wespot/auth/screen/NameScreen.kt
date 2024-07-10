@@ -42,8 +42,7 @@ fun NameScreen(viewModel: AuthViewModel = viewModel()) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    val focusRequester =
-        remember {
+    val focusRequester = remember {
             FocusRequester()
         }
 

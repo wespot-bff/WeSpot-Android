@@ -50,8 +50,7 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
         modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier =
-                Modifier
+            modifier = Modifier
                     .fillMaxSize()
                     .padding(it),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -68,8 +67,7 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
             )
 
             WsTextField(
-                value =
-                    if (state.classNumber != -1) {
+                value = if (state.classNumber != -1) {
                         state.classNumber.toString()
                     } else {
                         ""
@@ -97,8 +95,7 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
     }
 
     Box(
-        modifier =
-            Modifier
+        modifier = Modifier
                 .fillMaxSize()
                 .imePadding(),
         contentAlignment = Alignment.BottomCenter,

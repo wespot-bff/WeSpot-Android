@@ -140,8 +140,7 @@ private fun EditField(
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp),
             ) {

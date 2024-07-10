@@ -26,7 +26,7 @@ fun WSBottomSheet(
         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         containerColor = WeSpotThemeManager.colors.bottomSheetColor,
         dragHandle = null,
-        modifier = Modifier.navigationBarsPadding()
+        modifier = Modifier.navigationBarsPadding(),
     ) {
         content.invoke()
     }

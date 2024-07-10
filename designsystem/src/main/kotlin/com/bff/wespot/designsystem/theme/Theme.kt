@@ -12,8 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 
-private val CustomDarkColors =
-    CustomColors(
+private val CustomDarkColors = CustomColors(
         primaryColor = Primary300,
         toastColor = White,
         txtTitleColor = Gray100,
@@ -37,8 +36,7 @@ private val CustomDarkColors =
         toggleColor = Positive,
     )
 
-private val CustomLightColors =
-    CustomColors(
+private val CustomLightColors = CustomColors(
         primaryColor = Primary300,
         toastColor = White,
         txtTitleColor = Gray100,
@@ -62,8 +60,7 @@ private val CustomLightColors =
         toggleColor = Positive,
     )
 
-private val DarkColorScheme =
-    darkColorScheme(
+private val DarkColorScheme = darkColorScheme(
         primary = CustomDarkColors.primaryColor,
         secondary = CustomDarkColors.secondaryBtnColor,
         tertiary = CustomDarkColors.tertiaryBtnColor,
@@ -71,8 +68,7 @@ private val DarkColorScheme =
         error = CustomDarkColors.dangerColor,
     )
 
-private val LocalColorsProvider =
-    staticCompositionLocalOf {
+private val LocalColorsProvider = staticCompositionLocalOf {
         CustomLightColors
     }
 
@@ -81,8 +77,7 @@ private fun CustomLocalProvider(
     colors: CustomColors,
     content: @Composable () -> Unit,
 ) {
-    val colorPalette =
-        remember {
+    val colorPalette = remember {
             colors.copy()
         }
 
@@ -91,8 +86,7 @@ private fun CustomLocalProvider(
 }
 
 private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
-    get() =
-        when (this) {
+    get() = when (this) {
             CustomTheme.LIGHT -> lightColorScheme() to CustomLightColors
             CustomTheme.DARK -> DarkColorScheme to CustomDarkColors
         }
