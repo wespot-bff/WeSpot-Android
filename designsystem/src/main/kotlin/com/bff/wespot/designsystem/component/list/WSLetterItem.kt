@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.Gray300
-import com.bff.wespot.designsystem.theme.Gray700
 import com.bff.wespot.designsystem.theme.Positive
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -47,7 +46,7 @@ fun WSLetterItem(
         modifier = Modifier
             .clip(WeSpotThemeManager.shapes.medium)
             .size(width = 154.dp, height = 200.dp)
-            .background(Gray700)
+            .background(WeSpotThemeManager.colors.cardBackgroundColor)
             .clickable { letterItemClick() },
     ) {
         Column {

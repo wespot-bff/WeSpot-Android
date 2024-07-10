@@ -23,7 +23,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
-import com.bff.wespot.designsystem.theme.Gray900
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -75,7 +74,7 @@ sealed interface WSToastType {
         override fun icon(): ImageVector = ImageVector.vectorResource(R.drawable.check)
 
         @Composable
-        override fun textColor(): Color = Gray900
+        override fun textColor(): Color = WeSpotThemeManager.colors.backgroundColor
 
         @Composable
         override fun fontStyle(): TextStyle = StaticTypeScale.Default.body6
@@ -86,7 +85,7 @@ sealed interface WSToastType {
         override fun icon(): ImageVector = ImageVector.vectorResource(R.drawable.error)
 
         @Composable
-        override fun textColor(): Color = Gray900
+        override fun textColor(): Color = WeSpotThemeManager.colors.backgroundColor
 
         @Composable
         override fun fontStyle(): TextStyle = StaticTypeScale.Default.body6
