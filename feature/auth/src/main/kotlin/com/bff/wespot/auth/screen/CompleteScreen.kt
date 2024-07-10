@@ -10,8 +10,10 @@ import androidx.compose.ui.res.stringResource
 import com.bff.wespot.auth.R
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
+import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
+@Destination
 fun CompleteScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Column {

@@ -1,5 +1,6 @@
 package com.bff.wespot.auth.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,23 +30,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.ui.WSBottomSheet
+import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun EditScreen(viewModel: AuthViewModel = viewModel()) {
+fun EditScreen(viewModel: AuthViewModel) {
     val state by viewModel.collectAsState()
+    Log.d("TESTING", viewModel.toString())
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -402,16 +402,6 @@ private fun TermRow(
                 contentDescription = "화살 아이콘",
                 tint = WeSpotThemeManager.colors.disableIcnColor,
             )
-        }
-    }
-}
-
-@Composable
-@OrientationPreviews
-private fun EditScreenPreview() {
-    WeSpotTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            EditScreen()
         }
     }
 }
