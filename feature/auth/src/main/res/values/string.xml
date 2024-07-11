@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="register">회원가입</string>
+    <string name="search_school">학교 검색</string>
+    <string name="search_base_on_your_school">현재 재학 중인 학교 기준으로 검색해 주세요</string>
+    <string name="within_20_characters">20자 이내로 검색해 주세요</string>
+    <string name="search_with_school_name">학교 이름으로 검색해 보세요</string>
+    <string name="no_school_found">찾는 학교가 없다면?</string>
+    <string name="school">학교</string>
+    <string name="next">다음</string>
+    <string name="grade">학년</string>
+    <string name="cannot_change_grade_after_register">회원가입 이후에는 학년을 변경할 수 없어요</string>
+    <string name="select_grade">햔재 학년을 선택해 주세요</string>
+    <string name="more_than_14_to_register">만 14세 미만 학생은 가입이 어려워요</string>
+    <string name="check_icon">체크 아이콘</string>
+    <string name="get_class">반</string>
+    <string name="cannot_change_class_after_register">회원가입 이후에는 반을 변경할 수 없어요</string>
+    <string name="enter_number">숫자로 입력해 주세요</string>
+    <string name="class_number_error">정확한 반을 입력해주세요</string>
+    <string name="gender">성별</string>
+    <string name="cannot_change_gender_after_register">회원가입 이후에는 성별을 변경할 수 없어요</string>
+    <string name="gender_icon">성별 아이콘</string>
+    <string name="male_student">남학생</string>
+    <string name="female_student">여학생</string>
+    <string name="name">이름</string>
+    <string name="cannot_change_name_after_register">회원가입 이후에는 이름을 변경할 수 없어요</string>
+    <string name="enter_name">실명을 입력해 주세요</string>
+    <string name="name_error">2~5자의 한글만 입력 가능해요</string>
+    <string name="confirm">확인</string>
+</resources>

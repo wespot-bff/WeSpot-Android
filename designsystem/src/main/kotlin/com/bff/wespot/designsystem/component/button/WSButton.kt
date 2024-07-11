@@ -60,17 +60,17 @@ fun WSButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClick,
             colors =
-            ButtonDefaults.buttonColors(
-                contentColor = buttonType.textColor(),
-                containerColor =
-                if (isPressed) {
-                    buttonType.pressColor()
-                } else {
-                    buttonType.background()
-                },
-                disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
-                disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
-            ),
+                ButtonDefaults.buttonColors(
+                    contentColor = buttonType.textColor(),
+                    containerColor =
+                        if (isPressed) {
+                            buttonType.pressColor()
+                        } else {
+                            buttonType.background()
+                        },
+                    disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
+                    disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,
+                ),
             interactionSource = interactionSource,
             shape = WeSpotThemeManager.shapes.small,
             enabled = enabled,
@@ -79,7 +79,7 @@ fun WSButton(
             } else {
                 borderStroke
             },
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
         ) {
             content {
                 Text(
@@ -160,21 +160,24 @@ private fun WSButtonPreview() {
                 WSButton(
                     text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Primary,
-                    onClick = {}) {
+                    onClick = {},
+                ) {
                     it()
                 }
 
                 WSButton(
                     text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Secondary,
-                    onClick = {}) {
+                    onClick = {},
+                ) {
                     it()
                 }
 
                 WSButton(
                     text = stringResource(id = R.string.register_classmate),
                     buttonType = WSButtonType.Tertiary,
-                    onClick = {}) {
+                    onClick = {},
+                ) {
                     it()
                 }
             }

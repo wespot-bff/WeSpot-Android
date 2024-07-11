@@ -28,7 +28,6 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WSTopBar(
@@ -37,24 +36,25 @@ fun WSTopBar(
     canNavigateBack: Boolean = false,
     navigateUp: () -> Unit = {},
     action: @Composable RowScope.(textStyle: TextStyle) -> Unit = { },
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     CenterAlignedTopAppBar(
         title = {
             Text(
                 text = title,
                 style = StaticTypeScale.Default.header2,
-                color = WeSpotThemeManager.colors.txtTitleColor
+                color = WeSpotThemeManager.colors.txtTitleColor,
             )
         },
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(
                     modifier = Modifier.padding(start = 4.dp),
-                    onClick = { navigateUp.invoke() }) {
+                    onClick = { navigateUp.invoke() },
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.left_arrow),
-                        contentDescription = stringResource(id = R.string.navigate_back)
+                        contentDescription = stringResource(id = R.string.navigate_back),
                     )
                 }
             } else {
@@ -69,8 +69,8 @@ fun WSTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = WeSpotThemeManager.colors.backgroundColor,
             navigationIconContentColor = Gray400,
-            actionIconContentColor = Gray400
-        )
+            actionIconContentColor = Gray400,
+        ),
     )
 }
 
@@ -87,7 +87,7 @@ private fun WSTopBarPreview() {
                     IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(id = R.string.search)
+                            contentDescription = stringResource(id = R.string.search),
                         )
                     }
                 })
@@ -95,7 +95,7 @@ private fun WSTopBarPreview() {
                     Text(
                         text = stringResource(id = R.string.to_home),
                         style = it,
-                        color = WeSpotThemeManager.colors.txtTitleColor
+                        color = WeSpotThemeManager.colors.txtTitleColor,
                     )
                 })
             }

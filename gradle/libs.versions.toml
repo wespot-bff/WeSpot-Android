@@ -157,4 +157,5 @@ wespot-android-feature = { id = "com.bff.wespot.feature", version = "unspecified
 wespot-android-firebase = { id = "com.bff.wespot.firebase", version = "unspecified" }
 wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified" }
 wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified" }
+wespot-android-ktlint = { id = "com.bff.wespot.ktlint", version = "unspecified" }
 wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified" }

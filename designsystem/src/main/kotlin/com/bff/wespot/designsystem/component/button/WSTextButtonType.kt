@@ -22,7 +22,6 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-
 @Composable
 fun WSTextButton(
     text: String,
@@ -31,8 +30,7 @@ fun WSTextButton(
     buttonType: WSTextButtonType = WSTextButtonType.Primary,
 ) {
     Box(
-        modifier =
-        Modifier
+        modifier = Modifier
             .wrapContentSize()
             .padding(8.dp),
     ) {
@@ -81,12 +79,12 @@ private fun WSTextButtonPreview() {
                 WSTextButton(
                     text = stringResource(id = R.string.any_friend_not_registered),
                     onClick = {},
-                    buttonType = WSTextButtonType.Primary
+                    buttonType = WSTextButtonType.Primary,
                 )
                 WSTextButton(
                     text = stringResource(id = R.string.any_friend_not_registered),
                     onClick = {},
-                    buttonType = WSTextButtonType.Underline
+                    buttonType = WSTextButtonType.Underline,
                 )
             }
         }
