@@ -5,6 +5,10 @@ sealed interface Result<out D, out E : BaseError> {
     data class Error<out E : BaseError>(val error: E) : Result<Nothing, E>
 }
 
+fun <T, E : BaseError> Result<T, E>.asEmptyDataResult(): EmptyResult<E> {
+    return map { }
+}
+
 inline fun <T, E : BaseError, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
     return when (this) {
         is Result.Error -> Result.Error(error)
@@ -41,3 +45,5 @@ inline fun <T, E : BaseError> Result<T, E>.onError(action: (E) -> Unit): Result<
         is Result.Success -> this
     }
 }
+
+typealias EmptyResult<E> = Result<Unit, E>
