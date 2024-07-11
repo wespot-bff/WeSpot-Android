@@ -1,4 +1,4 @@
-package com.bff.wespot.model.message
+package com.bff.wespot.model.message.response
 
 data class Message(
     val id: Int,
@@ -6,5 +6,5 @@ data class Message(
     val content: String,
     val receivedAt: String,
     val read: Boolean,
-    val readAt: String,
+    val readAt: String?,
 )

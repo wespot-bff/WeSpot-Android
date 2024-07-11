@@ -1,6 +1,6 @@
-package com.bff.wespot.network.model.message
+package com.bff.wespot.network.model.message.response
 
-import com.bff.wespot.model.message.MessageList
+import com.bff.wespot.model.message.response.MessageList
 import kotlinx.serialization.Serializable
 
 @Serializable
