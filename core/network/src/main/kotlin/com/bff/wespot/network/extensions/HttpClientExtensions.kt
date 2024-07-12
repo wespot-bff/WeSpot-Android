@@ -1,16 +1,20 @@
-package com.bff.wespot.network.model.result
+package com.bff.wespot.network.extensions
 
 import android.util.Log
 import com.bff.wespot.model.result.Result
+import com.bff.wespot.network.model.result.ErrorDto
+import io.ktor.client.*
 import io.ktor.client.call.body
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.request.*
 import io.ktor.http.isSuccess
 
-suspend inline fun <reified T> parseResponse(
-    httpRequest: () -> HttpResponse,
-): Result<T, ErrorDto> {
-    return runCatching {
-        val response = httpRequest()
+suspend inline fun <reified T> HttpClient.safeRequest(
+    block: HttpRequestBuilder.() -> Unit,
+): Result<T, ErrorDto> =
+    runCatching {
+        val response = request {
+            block()
+        }
         return if (response.status.isSuccess()) {
             val responseBody = response.body<T>()
             Result.Success(responseBody)
@@ -23,4 +27,3 @@ suspend inline fun <reified T> parseResponse(
     }.getOrDefault(
         Result.Error(ErrorDto())
     )
-}
