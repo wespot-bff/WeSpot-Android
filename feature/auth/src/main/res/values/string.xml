@@ -27,4 +27,16 @@
     <string name="enter_name">실명을 입력해 주세요</string>
     <string name="name_error">2~5자의 한글만 입력 가능해요</string>
     <string name="confirm">확인</string>
+    <string name="register_confirm">해당 정보로 가입하시겠습니다?</string>
+    <string name="register_confirm_detail">가입 이후 개인 정보 변경은 1:1 문의로 요청해주세요</string>
+    <string name="edit">수정할래요</string>
+    <string name="register_complete">네 가입할래요</string>
+    <string name="terms_title">서비스 사용을 위한\n약관에 등의해 주세요</string>
+    <string name="accept_all">전체 동의하기</string>
+    <string name="service_term">(필수) 서비스 이용약관</string>
+    <string name="privacy_term">(필수) 개인정보 수집 및 이용 안내</string>
+    <string name="marketing_term">(선택) 이벤트 및 마케팅 수신 동의</string>
+    <string name="accept_and_start">동의하고 시작하기</string>
+    <string name="invite_friend_and_start">친구 초대하고 시작하기</string>
+    <string name="start">바로 시작하기</string>
 </resources>

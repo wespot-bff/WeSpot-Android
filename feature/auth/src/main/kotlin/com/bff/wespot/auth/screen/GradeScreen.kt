@@ -66,12 +66,11 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             )
 
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            action(AuthAction.OnGradeBottomSheetChanged(true))
-                        },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        action(AuthAction.OnGradeBottomSheetChanged(true))
+                    },
             ) {
                 WSOutlineButton(
                     text = "",
@@ -80,25 +79,22 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
                     },
                 ) {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
                     ) {
                         Text(
-                            text =
-                                if (state.grade == -1) {
-                                    stringResource(id = R.string.select_grade)
-                                } else {
-                                    "${state.grade}${stringResource(id = R.string.grade)}"
-                                },
+                            text = if (state.grade == -1) {
+                                stringResource(id = R.string.select_grade)
+                            } else {
+                                "${state.grade}${stringResource(id = R.string.grade)}"
+                            },
                             style = StaticTypeScale.Default.body4,
-                            color =
-                                if (state.grade == -1) {
-                                    WeSpotThemeManager.colors.disableBtnColor
-                                } else {
-                                    WeSpotThemeManager.colors.txtTitleColor
-                                },
+                            color = if (state.grade == -1) {
+                                WeSpotThemeManager.colors.disableBtnColor
+                            } else {
+                                WeSpotThemeManager.colors.txtTitleColor
+                            },
                         )
                     }
                 }
@@ -107,10 +103,9 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
             if (state.gradeBottomSheet) {
                 WSBottomSheet(
                     closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
-                    sheetState =
-                        rememberModalBottomSheetState(
-                            skipPartiallyExpanded = true,
-                        ),
+                    sheetState = rememberModalBottomSheetState(
+                        skipPartiallyExpanded = true,
+                    ),
                 ) {
                     BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
                         action(AuthAction.OnGradeChanged(grade))
@@ -155,11 +150,10 @@ private fun BottomSheetContent(
             repeat(3) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier =
-                        Modifier
-                            .clickable { onGradeSelected(it + 1) }
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth(),
+                    modifier = Modifier
+                        .clickable { onGradeSelected(it + 1) }
+                        .padding(vertical = 12.dp)
+                        .fillMaxWidth(),
                 ) {
                     Text(
                         text = "${it + 1}${stringResource(id = R.string.grade)}",
@@ -169,12 +163,11 @@ private fun BottomSheetContent(
                     Icon(
                         painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
                         contentDescription = stringResource(id = R.string.check_icon),
-                        tint =
-                            if (it == currentGrade - 1) {
-                                WeSpotThemeManager.colors.primaryColor
-                            } else {
-                                WeSpotThemeManager.colors.disableBtnColor
-                            },
+                        tint = if (it == currentGrade - 1) {
+                            WeSpotThemeManager.colors.primaryColor
+                        } else {
+                            WeSpotThemeManager.colors.disableBtnColor
+                        },
                     )
                 }
             }
