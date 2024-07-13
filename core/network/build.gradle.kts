@@ -24,6 +24,7 @@ android {
 
 dependencies {
     implementation(libs.junit)
+    implementation(libs.logger)
     implementation(libs.bundles.ktor.client)
     implementation(libs.kotlin.serialization.json)
     implementation(project(":core:model"))

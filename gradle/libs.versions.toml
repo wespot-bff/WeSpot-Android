@@ -38,6 +38,7 @@ appcompat = "1.7.0"
 
 compose-destination = "1.10.2"
 lottie = "6.4.1"
+logger = "2.2.0"
 datastore = "1.1.1"
 
 [libraries]
@@ -92,7 +93,6 @@ orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref =
 
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 crashlytics-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
@@ -104,6 +104,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+logger = { module = "com.orhanobut:logger", version.ref = "logger"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
