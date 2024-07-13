@@ -42,7 +42,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun ClassScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
@@ -57,16 +57,16 @@ fun ClassScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
         },
     ) {
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 20.dp),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -82,11 +82,11 @@ fun ClassScreen(
 
             WsTextField(
                 value =
-                if (state.classNumber != -1) {
-                    state.classNumber.toString()
-                } else {
-                    ""
-                },
+                    if (state.classNumber != -1) {
+                        state.classNumber.toString()
+                    } else {
+                        ""
+                    },
                 onValueChange = { classNumber ->
                     if (classNumber.isEmpty()) {
                         action(AuthAction.OnClassNumberChanged(-1))
@@ -115,9 +115,9 @@ fun ClassScreen(
 
     Box(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .imePadding(),
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
@@ -133,7 +133,7 @@ fun ClassScreen(
                     R.string.edit_complete
                 } else {
                     R.string.next
-                }
+                },
             ),
             enabled = state.classNumber in 1..20,
         ) {

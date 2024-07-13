@@ -43,7 +43,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun GenderScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -55,7 +55,7 @@ fun GenderScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
         },
     ) {
@@ -81,9 +81,9 @@ fun GenderScreen(
                 GenderBox(
                     title = stringResource(id = R.string.male_student),
                     icon =
-                    painterResource(
-                        id = com.bff.wespot.ui.R.drawable.male_student,
-                    ),
+                        painterResource(
+                            id = com.bff.wespot.ui.R.drawable.male_student,
+                        ),
                     selected = "male" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("male"))
@@ -97,9 +97,9 @@ fun GenderScreen(
                 GenderBox(
                     title = stringResource(id = R.string.female_student),
                     icon =
-                    painterResource(
-                        id = com.bff.wespot.ui.R.drawable.female_student,
-                    ),
+                        painterResource(
+                            id = com.bff.wespot.ui.R.drawable.female_student,
+                        ),
                     selected = "female" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("female"))
@@ -124,16 +124,16 @@ private fun RowScope.GenderBox(
 ) {
     Box(
         modifier =
-        Modifier
-            .weight(1f)
-            .clip(WeSpotThemeManager.shapes.medium)
-            .border(
-                width = 1.dp,
-                color = if (selected) WeSpotThemeManager.colors.primaryColor else Color.Transparent,
-                shape = WeSpotThemeManager.shapes.medium,
-            )
-            .clickable { onClicked() }
-            .background(WeSpotThemeManager.colors.cardBackgroundColor),
+            Modifier
+                .weight(1f)
+                .clip(WeSpotThemeManager.shapes.medium)
+                .border(
+                    width = 1.dp,
+                    color = if (selected) WeSpotThemeManager.colors.primaryColor else Color.Transparent,
+                    shape = WeSpotThemeManager.shapes.medium,
+                )
+                .clickable { onClicked() }
+                .background(WeSpotThemeManager.colors.cardBackgroundColor),
         contentAlignment = Alignment.Center,
     ) {
         Column(

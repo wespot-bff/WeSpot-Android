@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                         engine = engine,
                         dependenciesContainerBuilder = {
                             dependency(viewModel)
-                        }
+                        },
                     )
                 }
             }

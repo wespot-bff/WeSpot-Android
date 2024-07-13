@@ -53,7 +53,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun EditScreen(
     viewModel: AuthViewModel,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.collectAsState()
 
@@ -71,7 +71,7 @@ fun EditScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
         },
     ) {
@@ -149,7 +149,7 @@ fun EditScreen(
                     navOptions = NavOptions
                         .Builder()
                         .setPopUpTo(SchoolScreenDestination.route, inclusive = true)
-                        .build()
+                        .build(),
                 )
             }
         }
@@ -160,7 +160,7 @@ fun EditScreen(
 private fun EditField(
     title: String,
     value: String,
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) {
     Column {
         Text(
@@ -286,7 +286,7 @@ private fun ConfirmBottomSheetContent(
 
 @Composable
 private fun RegisterBottomSheetContent(
-    onClicked: () -> Unit
+    onClicked: () -> Unit,
 ) {
     var checked by remember {
         mutableStateOf(listOf(false, false, false, false))

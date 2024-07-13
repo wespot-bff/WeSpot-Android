@@ -47,7 +47,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun SchoolScreen(
     navigator: DestinationsNavigator,
     edit: Boolean,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -62,16 +62,16 @@ fun SchoolScreen(
                 canNavigateBack = edit,
                 navigateUp = {
                     navigator.popBackStack()
-                }
+                },
             )
         },
     ) {
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 24.dp),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(horizontal = 24.dp),
         ) {
             Text(
                 stringResource(id = R.string.search_school),
@@ -133,9 +133,9 @@ fun SchoolScreen(
 
     Box(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .imePadding(),
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
@@ -152,8 +152,8 @@ fun SchoolScreen(
                     R.string.edit_complete
                 } else {
                     R.string.next
-                }
-            )
+                },
+            ),
         ) {
             it()
         }
@@ -165,4 +165,3 @@ fun SchoolScreen(
         keyboard?.show()
     }
 }
-

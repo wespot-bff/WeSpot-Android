@@ -59,7 +59,7 @@ fun CompleteScreen() {
                 dialog = false
             },
             okButtonText = stringResource(id = R.string.ok),
-            cancelButtonText = stringResource(id = R.string.cancel)
+            cancelButtonText = stringResource(id = R.string.cancel),
         )
     }
 }

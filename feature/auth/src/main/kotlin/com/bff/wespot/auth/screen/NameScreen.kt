@@ -42,7 +42,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun NameScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
@@ -64,7 +64,7 @@ fun NameScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
         },
     ) {
@@ -129,7 +129,7 @@ fun NameScreen(
                     R.string.edit_complete
                 } else {
                     R.string.next
-                }
+                },
             ),
             enabled = state.name.length in 2..5,
         ) {

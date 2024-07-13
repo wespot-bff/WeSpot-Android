@@ -12,12 +12,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @RootNavGraph(start = true)
 @Composable
 fun AuthScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
-    navigator.navigate(SchoolScreenDestination(edit = false),
+    navigator.navigate(
+        SchoolScreenDestination(edit = false),
         navOptions = NavOptions
             .Builder()
             .setPopUpTo(AuthScreenDestination.route, inclusive = true)
-            .build()
+            .build(),
     )
 }

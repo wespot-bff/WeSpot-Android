@@ -41,7 +41,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun GradeScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -53,7 +53,7 @@ fun GradeScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
         },
     ) {
@@ -76,11 +76,11 @@ fun GradeScreen(
 
             Box(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        action(AuthAction.OnGradeBottomSheetChanged(true))
-                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            action(AuthAction.OnGradeBottomSheetChanged(true))
+                        },
             ) {
                 WSOutlineButton(
                     text = "",
@@ -90,24 +90,24 @@ fun GradeScreen(
                 ) {
                     Box(
                         modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
                     ) {
                         Text(
                             text =
-                            if (state.grade == -1) {
-                                stringResource(id = R.string.select_grade)
-                            } else {
-                                "${state.grade}${stringResource(id = R.string.grade)}"
-                            },
+                                if (state.grade == -1) {
+                                    stringResource(id = R.string.select_grade)
+                                } else {
+                                    "${state.grade}${stringResource(id = R.string.grade)}"
+                                },
                             style = StaticTypeScale.Default.body4,
                             color =
-                            if (state.grade == -1) {
-                                WeSpotThemeManager.colors.disableBtnColor
-                            } else {
-                                WeSpotThemeManager.colors.txtTitleColor
-                            },
+                                if (state.grade == -1) {
+                                    WeSpotThemeManager.colors.disableBtnColor
+                                } else {
+                                    WeSpotThemeManager.colors.txtTitleColor
+                                },
                         )
                     }
                 }
@@ -126,7 +126,7 @@ fun GradeScreen(
                                 return@BottomSheetContent
                             }
                             navigator.navigate(ClassScreenDestination(edit = false))
-                        }
+                        },
                     )
                 }
             }
@@ -146,7 +146,7 @@ fun GradeScreen(
                         R.string.edit_complete
                     } else {
                         R.string.next
-                    }
+                    },
                 ),
                 enabled = state.grade != -1,
             ) {
@@ -185,10 +185,10 @@ private fun BottomSheetContent(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier =
-                    Modifier
-                        .clickable { onGradeSelected(it + 1) }
-                        .padding(vertical = 12.dp)
-                        .fillMaxWidth(),
+                        Modifier
+                            .clickable { onGradeSelected(it + 1) }
+                            .padding(vertical = 12.dp)
+                            .fillMaxWidth(),
                 ) {
                     Text(
                         text = "${it + 1}${stringResource(id = R.string.grade)}",
@@ -199,11 +199,11 @@ private fun BottomSheetContent(
                         painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
                         contentDescription = stringResource(id = R.string.check_icon),
                         tint =
-                        if (it == currentGrade - 1) {
-                            WeSpotThemeManager.colors.primaryColor
-                        } else {
-                            WeSpotThemeManager.colors.disableBtnColor
-                        },
+                            if (it == currentGrade - 1) {
+                                WeSpotThemeManager.colors.primaryColor
+                            } else {
+                                WeSpotThemeManager.colors.disableBtnColor
+                            },
                     )
                 }
             }
