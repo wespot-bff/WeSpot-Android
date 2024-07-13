@@ -1,7 +1,7 @@
 package com.bff.wespot.network.di
 
-import android.util.Log
 import com.bff.wespot.network.BuildConfig
+import com.orhanobut.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ClientModule {
     private const val REQUEST_TIMEOUT_MILLIS = 50_000L
-    private const val CLIENT_TAG = "HttpClient"
 
     @Provides
     @Singleton
@@ -63,10 +62,10 @@ object ClientModule {
 
         install(Logging) {
             level = LogLevel.ALL
-            logger = object : Logger {
+            logger = object : KtorLogger {
                 override fun log(message: String) {
                     if (BuildConfig.DEBUG) {
-                        Log.i(CLIENT_TAG, message)
+                        Logger.i(message)
                     }
                 }
             }
