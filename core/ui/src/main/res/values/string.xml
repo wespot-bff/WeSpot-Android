@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="school_icon">school icon</string>
+    <string name="wespot_logo">WeSpot Logo</string>
+    <string name="notification_icon">Notification Icon</string>
 </resources>
