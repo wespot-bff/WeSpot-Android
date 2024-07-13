@@ -1,7 +1,5 @@
 package com.bff.wespot.network.source.message
 
-import com.bff.wespot.network.model.result.ErrorDto
-import com.bff.wespot.model.result.Result
 import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.network.model.message.request.MessageTypeDto
 import com.bff.wespot.network.model.message.request.SentMessageDto
@@ -20,7 +18,7 @@ class MessageDataSourceImpl @Inject constructor(
 ): MessageDataSource {
     override suspend fun getMessageList(
         messageTypeDto: MessageTypeDto,
-    ): Result<MessageListDto, ErrorDto> =
+    ): Result<MessageListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
@@ -31,7 +29,7 @@ class MessageDataSourceImpl @Inject constructor(
 
     override suspend fun postMessage(
         sentMessageDto: SentMessageDto,
-    ): Result<MessageIdDto, ErrorDto> =
+    ): Result<MessageIdDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
@@ -40,7 +38,7 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getMessageStatus(): Result<MessageStatusDto, ErrorDto> =
+    override suspend fun getMessageStatus(): Result<MessageStatusDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
