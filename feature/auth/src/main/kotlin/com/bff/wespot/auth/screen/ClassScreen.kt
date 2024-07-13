@@ -62,11 +62,10 @@ fun ClassScreen(
         },
     ) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(horizontal = 20.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -81,12 +80,11 @@ fun ClassScreen(
             )
 
             WsTextField(
-                value =
-                    if (state.classNumber != -1) {
-                        state.classNumber.toString()
-                    } else {
-                        ""
-                    },
+                value = if (state.classNumber != -1) {
+                    state.classNumber.toString()
+                } else {
+                    ""
+                },
                 onValueChange = { classNumber ->
                     if (classNumber.isEmpty()) {
                         action(AuthAction.OnClassNumberChanged(-1))
@@ -114,10 +112,9 @@ fun ClassScreen(
     }
 
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .imePadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(

@@ -88,7 +88,11 @@ fun EditScreen(
 
             EditField(
                 title = stringResource(id = R.string.gender),
-                value = state.gender,
+                value = if (state.gender == "male") {
+                    stringResource(id = R.string.male_student)
+                } else {
+                    stringResource(id = R.string.female_student)
+                },
             ) {
                 navigator.navigate(GenderScreenDestination(edit = true))
             }

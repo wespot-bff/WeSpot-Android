@@ -67,11 +67,10 @@ fun SchoolScreen(
         },
     ) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(horizontal = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 24.dp),
         ) {
             Text(
                 stringResource(id = R.string.search_school),
@@ -132,10 +131,9 @@ fun SchoolScreen(
     }
 
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .imePadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(

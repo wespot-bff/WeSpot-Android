@@ -133,7 +133,7 @@ private val StaticTypeScale.textStyle: TextStyle
         lineHeight = lineHeight.textDp,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
+            trim = LineHeightStyle.Trim.None,
         ),
         platformStyle = PlatformTextStyle(includeFontPadding = true),
     )

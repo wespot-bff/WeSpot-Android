@@ -15,6 +15,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +31,8 @@ import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToast
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.WSBottomSheet
@@ -45,6 +50,9 @@ fun GradeScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    var toast by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         topBar = {
@@ -75,12 +83,11 @@ fun GradeScreen(
             )
 
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            action(AuthAction.OnGradeBottomSheetChanged(true))
-                        },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        action(AuthAction.OnGradeBottomSheetChanged(true))
+                    },
             ) {
                 WSOutlineButton(
                     text = "",
@@ -89,46 +96,57 @@ fun GradeScreen(
                     },
                 ) {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
                     ) {
                         Text(
-                            text =
-                                if (state.grade == -1) {
-                                    stringResource(id = R.string.select_grade)
-                                } else {
-                                    "${state.grade}${stringResource(id = R.string.grade)}"
-                                },
+                            text = if (state.grade == -1) {
+                                stringResource(id = R.string.select_grade)
+                            } else {
+                                "${state.grade}${stringResource(id = R.string.grade)}"
+                            },
                             style = StaticTypeScale.Default.body4,
-                            color =
-                                if (state.grade == -1) {
-                                    WeSpotThemeManager.colors.disableBtnColor
-                                } else {
-                                    WeSpotThemeManager.colors.txtTitleColor
-                                },
+                            color = if (state.grade == -1) {
+                                WeSpotThemeManager.colors.disableBtnColor
+                            } else {
+                                WeSpotThemeManager.colors.txtTitleColor
+                            },
                         )
                     }
                 }
             }
+        }
 
-            if (state.gradeBottomSheet) {
-                WSBottomSheet(
-                    closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
-                ) {
-                    BottomSheetContent(
-                        currentGrade = state.grade,
-                        onGradeSelected = { grade ->
-                            action(AuthAction.OnGradeChanged(grade))
-                            if (edit) {
-                                navigator.popBackStack()
-                                return@BottomSheetContent
-                            }
-                            navigator.navigate(ClassScreenDestination(edit = false))
-                        },
-                    )
-                }
+        Box(modifier = Modifier.fillMaxSize().padding(it), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = stringResource(id = R.string.more_than_14_to_register),
+                toastType = WSToastType.Error,
+                showToast = toast,
+                closeToast = { toast = false },
+            )
+        }
+
+        if (state.gradeBottomSheet) {
+            WSBottomSheet(
+                closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
+            ) {
+                BottomSheetContent(
+                    currentGrade = state.grade,
+                    onGradeSelected = { grade ->
+                        if (grade == 1) {
+                            toast = true
+                            return@BottomSheetContent
+                        }
+
+                        action(AuthAction.OnGradeChanged(grade))
+                        if (edit) {
+                            navigator.popBackStack()
+                            return@BottomSheetContent
+                        }
+                        navigator.navigate(ClassScreenDestination(edit = false))
+                    },
+                )
             }
         }
 
@@ -184,11 +202,10 @@ private fun BottomSheetContent(
             repeat(3) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier =
-                        Modifier
-                            .clickable { onGradeSelected(it + 1) }
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth(),
+                    modifier = Modifier
+                        .clickable { onGradeSelected(it + 1) }
+                        .padding(vertical = 12.dp)
+                        .fillMaxWidth(),
                 ) {
                     Text(
                         text = "${it + 1}${stringResource(id = R.string.grade)}",
@@ -198,12 +215,11 @@ private fun BottomSheetContent(
                     Icon(
                         painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
                         contentDescription = stringResource(id = R.string.check_icon),
-                        tint =
-                            if (it == currentGrade - 1) {
-                                WeSpotThemeManager.colors.primaryColor
-                            } else {
-                                WeSpotThemeManager.colors.disableBtnColor
-                            },
+                        tint = if (it == currentGrade - 1) {
+                            WeSpotThemeManager.colors.primaryColor
+                        } else {
+                            WeSpotThemeManager.colors.disableBtnColor
+                        },
                     )
                 }
             }
