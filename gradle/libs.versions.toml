@@ -38,7 +38,7 @@ appcompat = "1.7.0"
 
 compose-destination = "1.10.2"
 lottie = "6.4.1"
-logger = "2.2.0"
+timber = "5.0.1"
 datastore = "1.1.1"
 
 [libraries]
@@ -104,7 +104,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-logger = { module = "com.orhanobut:logger", version.ref = "logger"}
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
