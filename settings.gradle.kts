@@ -23,10 +23,11 @@ dependencyResolutionManagement {
 rootProject.name = "WeSpot"
 include(":app")
 include(":feature:auth")
+include(":feature:message")
 include(":domain")
 include(":data")
 include(":designsystem")
 include(":core:model")
 include(":core:common")
 include(":core:ui")
-include(":feature:message")
+include(":core:network")

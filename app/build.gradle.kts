@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.wespot.android.application)
     alias(libs.plugins.wespot.android.hilt)
@@ -7,6 +9,10 @@ plugins {
 
 android {
     namespace = "com.bff.wespot"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -21,4 +27,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.junit)
+    implementation(libs.timber)
 }
