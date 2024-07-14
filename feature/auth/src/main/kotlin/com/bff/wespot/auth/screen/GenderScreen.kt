@@ -26,29 +26,43 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.screen.destinations.NameScreenDestination
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
+fun GenderScreen(
+    viewModel: AuthViewModel,
+    edit: Boolean,
+    navigator: DestinationsNavigator,
+) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    navigator.navigateUp()
+                },
+            )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -72,6 +86,11 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
                     selected = "male" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("male"))
+                        if (edit) {
+                            navigator.popBackStack()
+                            return@GenderBox
+                        }
+                        navigator.navigate(NameScreenDestination(edit = false))
                     },
                 )
                 GenderBox(
@@ -82,6 +101,11 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
                     selected = "female" == state.gender,
                     onClicked = {
                         action(AuthAction.OnGenderChanged("female"))
+                        if (edit) {
+                            navigator.popBackStack()
+                            return@GenderBox
+                        }
+                        navigator.navigate(NameScreenDestination(edit = false))
                     },
                 )
             }

@@ -4,10 +4,12 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.util.textDp
 
@@ -129,6 +131,11 @@ private val StaticTypeScale.textStyle: TextStyle
         fontWeight = fontWeight,
         fontSize = fontSize.textDp,
         lineHeight = lineHeight.textDp,
+        lineHeightStyle = LineHeightStyle(
+            alignment = LineHeightStyle.Alignment.Center,
+            trim = LineHeightStyle.Trim.None,
+        ),
+        platformStyle = PlatformTextStyle(includeFontPadding = true),
     )
 
 @Immutable
