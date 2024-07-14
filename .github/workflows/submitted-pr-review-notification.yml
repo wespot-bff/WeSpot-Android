@@ -103,8 +103,8 @@ jobs:
             DISCORD_EMBEDS: |
               [
                 {
-                  "title": "PR에 새로운 댓글이 달렸어요~! 제이콥/브라우니 대답. \n${{ github.event.pull_request.title }}",
-                  "color": 13458524,
+                  "title": "PR New Comment, 제이콥/브라우니 대답. 😮😮 \n${{ github.event.pull_request.title }}",
+                  "color": 16187019,
                   "description": "${{ github.event.review.html_url }}",
                   "fields": [
                     {
