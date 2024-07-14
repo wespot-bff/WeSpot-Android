@@ -47,7 +47,7 @@ jobs:
           labels: 🌟머지 해주세요🌟
             
   changes_requested:
-    if: github.event.review.state == 'changes_requested'
+    if: github.event.review.state == 'changes_requested' || github.event.review.state == 'commented'
     runs-on: ubuntu-latest
     steps:
       - name: Send Comment Message
@@ -60,7 +60,7 @@ jobs:
             [
               {
                 "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
-                "color": 4294836188,
+                "color": 42948361,
                 "description": "${{ github.event.review.html_url }}",
                 "fields": [
                   {
