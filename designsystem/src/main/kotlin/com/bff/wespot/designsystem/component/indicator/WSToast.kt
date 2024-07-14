@@ -70,7 +70,7 @@ fun WSToast(
     }
 
     LaunchedEffect(Unit) {
-        delay(5000)
+        delay(2000)
         closeToast.invoke()
     }
 }
