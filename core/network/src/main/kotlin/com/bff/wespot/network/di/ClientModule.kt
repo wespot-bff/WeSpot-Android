@@ -34,6 +34,7 @@ object ClientModule {
             url(BuildConfig.MOCK_BASE_URL)
         }
 
+        // TODO Token 연동
         /*install(Auth) {
             bearer {
                 refreshTokens {

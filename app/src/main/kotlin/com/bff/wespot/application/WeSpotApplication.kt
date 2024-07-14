@@ -28,7 +28,8 @@ class WeSpotApplication : Application() {
         Timber.plant(
             object : Timber.Tree() {
                 override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-                    /*if(t != null){
+                    /* TODO Release App Log Crashlytics 연동
+                    if (t != null) {
                         if(priority == Log.ERROR){
                             Crashlytics.logError(priority, tag, message)
                         }
