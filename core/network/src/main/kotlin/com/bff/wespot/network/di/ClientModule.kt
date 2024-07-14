@@ -1,7 +1,6 @@
 package com.bff.wespot.network.di
 
 import com.bff.wespot.network.BuildConfig
-import com.orhanobut.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,13 +11,14 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger as KtorLogger
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -62,10 +62,10 @@ object ClientModule {
 
         install(Logging) {
             level = LogLevel.ALL
-            logger = object : KtorLogger {
+            logger = object : Logger {
                 override fun log(message: String) {
                     if (BuildConfig.DEBUG) {
-                        Logger.i(message)
+                        Timber.i(message)
                     }
                 }
             }

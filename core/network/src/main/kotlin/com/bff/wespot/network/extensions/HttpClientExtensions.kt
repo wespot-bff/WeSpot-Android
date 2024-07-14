@@ -1,13 +1,13 @@
 package com.bff.wespot.network.extensions
 
 import com.bff.wespot.network.model.exception.NetworkException
-import com.orhanobut.logger.Logger
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.isSuccess
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
+import timber.log.Timber
 
 suspend inline fun <reified T> HttpClient.safeRequest(
     block: HttpRequestBuilder.() -> Unit,
@@ -24,7 +24,7 @@ suspend inline fun <reified T> HttpClient.safeRequest(
             Result.failure(errorBody)
         }
     }.getOrElse { exception ->
-        Logger.e(exception.message.toString())
+        Timber.e(exception)
         when (exception) {
             is SerializationException -> {
                 Result.failure(NetworkException().toSerializationException())
