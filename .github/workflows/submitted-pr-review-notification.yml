@@ -47,7 +47,7 @@ jobs:
           labels: 🌟머지 해주세요🌟
             
   changes_requested:
-    if: github.event.review.state == 'changes_requested' || github.event.review.state == 'commented'
+    if: github.event.review.state == 'changes_requested'
     runs-on: ubuntu-latest
     steps:
       - name: Send Comment Message
@@ -88,3 +88,35 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: ✏️수정 요청✏️
+
+
+  commented:
+      if: github.event.review.state == 'commented'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Send Comment Message
+          uses: Ilshidur/action-discord@0.3.2
+          env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+            DISCORD_USERNAME: BFF BOT
+            DISCORD_AVATAR: https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b
+            DISCORD_EMBEDS: |
+              [
+                {
+                  "title": "PR에 새로운 댓글이 달렸어요~! 제이콥/브라우니 대답. \n${{ github.event.pull_request.title }}",
+                  "color": 42948361,
+                  "description": "${{ github.event.review.html_url }}",
+                  "fields": [
+                    {
+                      "name": "Reviewer",
+                      "value": "${{ github.event.review.user.login }}",
+                      "inline": true
+                    },
+                    {
+                      "name": "State",
+                      "value": "${{ github.event.review.state }}",
+                      "inline": true
+                    }
+                  ]
+                }
+              ]
