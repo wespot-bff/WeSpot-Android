@@ -18,6 +18,7 @@ sealed class AuthAction {
     data class OnNameChanged(val name: String) : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()
+
 }
 
 sealed interface NavigationAction {
