@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.auth.R
-import com.bff.wespot.auth.screen.destinations.GradeScreenDestination
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
@@ -37,7 +37,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.SchoolListItem
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -45,7 +44,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Destination
 @Composable
 fun SchoolScreen(
-    navigator: DestinationsNavigator,
     edit: Boolean,
     viewModel: AuthViewModel,
 ) {
@@ -61,7 +59,7 @@ fun SchoolScreen(
                 title = stringResource(id = R.string.register),
                 canNavigateBack = edit,
                 navigateUp = {
-                    navigator.popBackStack()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                 },
             )
         },
@@ -139,10 +137,10 @@ fun SchoolScreen(
         WSButton(
             onClick = {
                 if (edit) {
-                    navigator.popBackStack()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                     return@WSButton
                 }
-                navigator.navigate(GradeScreenDestination(edit = false))
+                action(AuthAction.Navigation(NavigationAction.NavigateToGradeScreen(false)))
             },
             enabled = state.selectedSchool != null,
             text = stringResource(

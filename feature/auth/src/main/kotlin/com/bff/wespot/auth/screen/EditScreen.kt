@@ -29,14 +29,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavOptions
 import com.bff.wespot.auth.R
-import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
-import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
-import com.bff.wespot.auth.screen.destinations.GenderScreenDestination
-import com.bff.wespot.auth.screen.destinations.GradeScreenDestination
-import com.bff.wespot.auth.screen.destinations.NameScreenDestination
-import com.bff.wespot.auth.screen.destinations.SchoolScreenDestination
+import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -45,7 +40,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,9 +47,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun EditScreen(
     viewModel: AuthViewModel,
-    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.collectAsState()
+    val action = viewModel::onAction
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -70,7 +64,7 @@ fun EditScreen(
                 title = stringResource(id = R.string.register),
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                 },
             )
         },
@@ -83,7 +77,7 @@ fun EditScreen(
                 title = stringResource(id = R.string.name),
                 value = state.name,
             ) {
-                navigator.navigate(NameScreenDestination(edit = true))
+                action(AuthAction.Navigation(NavigationAction.NavigateToNameScreen(true)))
             }
 
             EditField(
@@ -94,28 +88,28 @@ fun EditScreen(
                     stringResource(id = R.string.female_student)
                 },
             ) {
-                navigator.navigate(GenderScreenDestination(edit = true))
+                action(AuthAction.Navigation(NavigationAction.NavigateToGenderScreen(true)))
             }
 
             EditField(
                 title = stringResource(id = R.string.get_class),
                 value = state.classNumber.toString(),
             ) {
-                navigator.navigate(ClassScreenDestination(edit = true))
+                action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(true)))
             }
 
             EditField(
                 title = stringResource(id = R.string.grade),
                 value = "${state.grade}학년",
             ) {
-                navigator.navigate(GradeScreenDestination(edit = true))
+                action(AuthAction.Navigation(NavigationAction.NavigateToGradeScreen(true)))
             }
 
             EditField(
                 title = stringResource(id = R.string.school),
                 value = state.selectedSchool?.name ?: "",
             ) {
-                navigator.navigate(SchoolScreenDestination(edit = true))
+                action(AuthAction.Navigation(NavigationAction.NavigateToSchoolScreen(true)))
             }
         }
     }
@@ -148,13 +142,7 @@ fun EditScreen(
     if (register) {
         WSBottomSheet(closeSheet = { register = true }) {
             RegisterBottomSheetContent {
-                navigator.navigate(
-                    CompleteScreenDestination,
-                    navOptions = NavOptions
-                        .Builder()
-                        .setPopUpTo(SchoolScreenDestination.route, inclusive = true)
-                        .build(),
-                )
+                action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
         }
     }

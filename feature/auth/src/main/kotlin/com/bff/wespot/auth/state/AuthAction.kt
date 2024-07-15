@@ -16,4 +16,18 @@ sealed class AuthAction {
     data class OnGenderChanged(val gender: String) : AuthAction()
 
     data class OnNameChanged(val name: String) : AuthAction()
+
+    data class Navigation(val navigate: NavigationAction) : AuthAction()
+
+}
+
+sealed interface NavigationAction {
+    data object PopBackStack : NavigationAction
+    data class NavigateToGradeScreen(val edit: Boolean) : NavigationAction
+    data class NavigateToSchoolScreen(val edit: Boolean) : NavigationAction
+    data class NavigateToClassScreen(val edit: Boolean) : NavigationAction
+    data class NavigateToGenderScreen(val edit: Boolean) : NavigationAction
+    data class NavigateToNameScreen(val edit: Boolean) : NavigationAction
+    data object NavigateToEditScreen : NavigationAction
+    data object NavigateToCompleteScreen : NavigationAction
 }

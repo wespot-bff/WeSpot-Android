@@ -20,24 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
-            val engine = rememberNavHostEngine()
-            val viewModel: AuthViewModel = viewModel()
 
-            WeSpotTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    DestinationsNavHost(
-                        navGraph = NavGraphs.root,
-                        navController = navController,
-                        engine = engine,
-                        dependenciesContainerBuilder = {
-                            dependency(viewModel)
-                        },
-                    )
-                }
-            }
         }
     }
 }

@@ -25,8 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.auth.R
-import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
@@ -37,7 +37,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +45,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun GradeScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -60,7 +58,7 @@ fun GradeScreen(
                 title = stringResource(id = R.string.register),
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                 },
             )
         },
@@ -141,10 +139,10 @@ fun GradeScreen(
 
                         action(AuthAction.OnGradeChanged(grade))
                         if (edit) {
-                            navigator.popBackStack()
+                            action(AuthAction.Navigation(NavigationAction.PopBackStack))
                             return@BottomSheetContent
                         }
-                        navigator.navigate(ClassScreenDestination(edit = false))
+                        action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(false)))
                     },
                 )
             }
@@ -154,10 +152,10 @@ fun GradeScreen(
             WSButton(
                 onClick = {
                     if (edit) {
-                        navigator.popBackStack()
+                        action(AuthAction.Navigation(NavigationAction.PopBackStack))
                         return@WSButton
                     }
-                    navigator.navigate(ClassScreenDestination(edit = false))
+                    action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(false)))
                 },
                 text = stringResource(
                     id = if (edit) {

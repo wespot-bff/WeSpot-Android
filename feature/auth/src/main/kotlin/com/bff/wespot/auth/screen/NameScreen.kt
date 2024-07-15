@@ -23,8 +23,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.auth.R
-import com.bff.wespot.auth.screen.destinations.EditScreenDestination
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -32,7 +32,6 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -42,7 +41,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun NameScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
@@ -63,7 +61,7 @@ fun NameScreen(
                 title = stringResource(id = R.string.register),
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                 },
             )
         },
@@ -119,10 +117,10 @@ fun NameScreen(
         WSButton(
             onClick = {
                 if (edit) {
-                    navigator.popBackStack()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                     return@WSButton
                 }
-                navigator.navigate(EditScreenDestination)
+                action(AuthAction.Navigation(NavigationAction.NavigateToEditScreen))
             },
             text = stringResource(
                 id = if (edit) {
