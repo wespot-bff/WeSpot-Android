@@ -109,19 +109,19 @@ class AuthViewModel @Inject constructor(
         val sideEffect = when (navigate) {
             NavigationAction.PopBackStack -> AuthSideEffect.PopBackStack
             is NavigationAction.NavigateToGradeScreen -> AuthSideEffect.NavigateToGradeScreen(
-                navigate.edit
+                navigate.edit,
             )
             is NavigationAction.NavigateToSchoolScreen -> AuthSideEffect.NavigateToSchoolScreen(
-                navigate.edit
+                navigate.edit,
             )
             is NavigationAction.NavigateToClassScreen -> AuthSideEffect.NavigateToClassScreen(
-                navigate.edit
+                navigate.edit,
             )
             is NavigationAction.NavigateToGenderScreen -> AuthSideEffect.NavigateToGenderScreen(
-                navigate.edit
+                navigate.edit,
             )
             is NavigationAction.NavigateToNameScreen -> AuthSideEffect.NavigateToNameScreen(
-                navigate.edit
+                navigate.edit,
             )
             NavigationAction.NavigateToEditScreen -> AuthSideEffect.NavigateToEditScreen
             NavigationAction.NavigateToCompleteScreen -> AuthSideEffect.NavigateToCompleteScreen

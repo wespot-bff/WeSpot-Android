@@ -68,7 +68,6 @@ class AuthActivity : ComponentActivity() {
                 }
             }
 
-
             WeSpotTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

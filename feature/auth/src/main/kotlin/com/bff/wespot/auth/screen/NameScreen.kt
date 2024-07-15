@@ -3,6 +3,7 @@ package com.bff.wespot.auth.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -67,7 +68,9 @@ fun NameScreen(
         },
     ) {
         Column(
-            modifier = Modifier.padding(it).padding(horizontal = 20.dp),
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -95,20 +98,25 @@ fun NameScreen(
                 focusRequester = focusRequester,
             )
 
-            if (error) {
-                Text(
-                    text = stringResource(id = R.string.name_error),
-                    color = WeSpotThemeManager.colors.dangerColor,
-                    style = StaticTypeScale.Default.body6,
-                )
-            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                if (error) {
+                    Text(
+                        text = stringResource(id = R.string.name_error),
+                        color = WeSpotThemeManager.colors.dangerColor,
+                        style = StaticTypeScale.Default.body6,
+                    )
+                }
 
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                Text(
-                    text = "${state.name.length} / 5",
-                    color = Color(0xFF7A7A7A),
-                    style = StaticTypeScale.Default.body7,
-                )
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    Text(
+                        text = "${state.name.length} / 5",
+                        color = Color(0xFF7A7A7A),
+                        style = StaticTypeScale.Default.body7,
+                    )
+                }
             }
         }
     }
