@@ -20,10 +20,9 @@ fun AuthScreen() {
     val coroutineScope = rememberCoroutineScope()
     val kakaoLoginManager = KakaoLoginManager(context)
 
-
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Button(onClick = {
             coroutineScope.launch {
