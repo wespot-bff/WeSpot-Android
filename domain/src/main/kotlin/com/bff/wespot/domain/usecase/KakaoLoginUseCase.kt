@@ -1,4 +1,4 @@
-package com.bff.wespot.domain.repository.usecase
+package com.bff.wespot.domain.usecase
 
 import com.bff.wespot.domain.repository.auth.KakaoLoginManager
 import javax.inject.Inject

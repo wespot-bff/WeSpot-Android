@@ -3,6 +3,7 @@ package com.bff.wespot.auth.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,8 +24,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.auth.R
-import com.bff.wespot.auth.screen.destinations.EditScreenDestination
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -32,7 +33,6 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -42,7 +42,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun NameScreen(
     viewModel: AuthViewModel,
     edit: Boolean,
-    navigator: DestinationsNavigator,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
@@ -63,13 +62,15 @@ fun NameScreen(
                 title = stringResource(id = R.string.register),
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                 },
             )
         },
     ) {
         Column(
-            modifier = Modifier.padding(it).padding(horizontal = 20.dp),
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -97,20 +98,25 @@ fun NameScreen(
                 focusRequester = focusRequester,
             )
 
-            if (error) {
-                Text(
-                    text = stringResource(id = R.string.name_error),
-                    color = WeSpotThemeManager.colors.dangerColor,
-                    style = StaticTypeScale.Default.body6,
-                )
-            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                if (error) {
+                    Text(
+                        text = stringResource(id = R.string.name_error),
+                        color = WeSpotThemeManager.colors.dangerColor,
+                        style = StaticTypeScale.Default.body6,
+                    )
+                }
 
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                Text(
-                    text = "${state.name.length} / 5",
-                    color = Color(0xFF7A7A7A),
-                    style = StaticTypeScale.Default.body7,
-                )
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    Text(
+                        text = "${state.name.length} / 5",
+                        color = Color(0xFF7A7A7A),
+                        style = StaticTypeScale.Default.body7,
+                    )
+                }
             }
         }
     }
@@ -119,10 +125,10 @@ fun NameScreen(
         WSButton(
             onClick = {
                 if (edit) {
-                    navigator.popBackStack()
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
                     return@WSButton
                 }
-                navigator.navigate(EditScreenDestination)
+                action(AuthAction.Navigation(NavigationAction.NavigateToEditScreen))
             },
             text = stringResource(
                 id = if (edit) {
