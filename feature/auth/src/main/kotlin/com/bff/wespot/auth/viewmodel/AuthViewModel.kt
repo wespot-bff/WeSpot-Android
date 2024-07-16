@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
-import com.bff.wespot.domain.repository.usecase.KakaoLoginUseCase
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.model.SchoolItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
