@@ -1,7 +1,9 @@
 package com.bff.wespot.data.di
 
+import com.bff.wespot.data.repository.auth.KakaoLoginManagerImpl
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.data.repository.message.MessageRepositoryImpl
+import com.bff.wespot.domain.repository.auth.KakaoLoginManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ abstract class DataModule {
     abstract fun bindsMessageRepository(
         messageRepository: MessageRepositoryImpl
     ): MessageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsKakaoLoginManager(
+        kakaoLoginManagerImpl: KakaoLoginManagerImpl
+    ): KakaoLoginManager
 }

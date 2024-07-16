@@ -2,6 +2,7 @@ package com.bff.wespot.application
 
 import android.app.Application
 import com.bff.wespot.BuildConfig
+import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -10,6 +11,12 @@ class WeSpotApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         initialTimber()
+        initKakaoSdk()
+    }
+
+    private fun initKakaoSdk() {
+        val key = BuildConfig.KAKAO_APP_KEY
+        KakaoSdk.init(this, key)
     }
 
     private fun initialTimber() {
