@@ -1,0 +1,386 @@
+package com.bff.wespot.message.screen
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.designsystem.component.banner.WSBanner
+import com.bff.wespot.designsystem.component.banner.WSBannerType
+import com.bff.wespot.designsystem.component.button.WSButton
+import com.bff.wespot.designsystem.component.button.WSButtonType
+import com.bff.wespot.designsystem.theme.Gray200
+import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.designsystem.theme.WeSpotTheme
+import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.designsystem.util.OrientationPreviews
+import com.bff.wespot.designsystem.util.textDp
+import com.bff.wespot.message.R
+import com.bff.wespot.message.model.TimePeriod
+import com.bff.wespot.message.state.MessageAction
+import com.bff.wespot.message.state.MessageSideEffect
+import com.bff.wespot.message.state.NavigationAction
+import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.model.message.response.MessageList
+import com.bff.wespot.model.message.response.MessageStatus
+import com.bff.wespot.ui.WSHomeTabRow
+import com.bff.wespot.ui.WSHomeTopAppBar
+import kotlinx.collections.immutable.persistentListOf
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+
+@Composable
+fun MessageScreen(
+    viewModel: MessageViewModel = hiltViewModel(),
+) {
+    val state by viewModel.collectAsState()
+    val action = viewModel::onAction
+    viewModel.collectSideEffect {
+        when (it) {
+            is MessageSideEffect.Error -> {
+            }
+
+            is MessageSideEffect.NavigateToStorageScreen -> {
+            }
+
+            is MessageSideEffect.NavigateToSendScreen -> {
+            }
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            WSHomeTopAppBar(onClick = {})
+        },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+        ) {
+            val tabList = persistentListOf(
+                stringResource(R.string.message_home_screen),
+                stringResource(R.string.message_storage_screen),
+            )
+            var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+            WSHomeTabRow(
+                selectedTabIndex = selectedTabIndex,
+                tabList = tabList,
+                onTabSelected = { index -> selectedTabIndex = index },
+            )
+
+            when (state.timePeriod) {
+                TimePeriod.DAWN_TO_EVENING -> {
+                    MessageCard(
+                        height = 352.dp,
+                        timePeriod = state.timePeriod,
+                        title = stringResource(R.string.message_card_title),
+                        buttonText = stringResource(R.string.message_card_button_text_dawn),
+                        image = painterResource(R.drawable.home_message_dawn),
+                        isButtonEnable = false,
+                        isBannerVisible = false,
+                        onButtonClick = { },
+                    )
+                }
+
+                TimePeriod.EVENING_TO_NIGHT -> {
+                    ReservedMessageBanner(
+                        messageStatus = state.messageStatus,
+                        onBannerClick = {
+                            action(
+                                MessageAction.Navigation(
+                                    NavigationAction.NavigateToStorageScreen,
+                                ),
+                            )
+                        },
+                    )
+
+                    MessageCard(
+                        height = 390.dp,
+                        timePeriod = state.timePeriod,
+                        title = stringResource(R.string.message_card_title),
+                        buttonText = if (state.messageStatus.canSend) {
+                            stringResource(R.string.message_card_button_text_evening)
+                        } else {
+                            stringResource(R.string.message_card_button_text_evening_disabled)
+                        },
+                        image = painterResource(R.drawable.home_message),
+                        isButtonEnable = state.messageStatus.canSend,
+                        isBannerVisible = state.messageStatus.hasReservedMessages(),
+                        onButtonClick = {
+                            action(
+                                MessageAction.Navigation(
+                                    NavigationAction.NavigateToSendScreen,
+                                ),
+                            )
+                        },
+                    )
+
+                    MessageHomeDescription(
+                        title = stringResource(R.string.message_card_description_evening),
+                    )
+                }
+
+                TimePeriod.NIGHT_TO_DAWN -> {
+                    ReceivedMessageBanner(
+                        messageList = state.receivedMessageList,
+                        onBannerClick = {
+                            action(
+                                MessageAction.Navigation(
+                                    NavigationAction.NavigateToStorageScreen,
+                                ),
+                            )
+                        },
+                    )
+
+                    MessageCard(
+                        height = 352.dp,
+                        timePeriod = state.timePeriod,
+                        title = stringResource(R.string.message_title_night),
+                        buttonText = stringResource(R.string.message_card_button_text_night),
+                        image = painterResource(R.drawable.home_message_night),
+                        isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
+                        isButtonEnable = false,
+                        onButtonClick = { },
+                    )
+
+                    MessageHomeDescription(
+                        title = stringResource(R.string.message_card_description_night),
+                    )
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        action(MessageAction.OnHomeScreenEntered)
+    }
+}
+
+@Composable
+private fun MessageCard(
+    height: Dp,
+    title: String,
+    buttonText: String,
+    image: Painter,
+    isButtonEnable: Boolean,
+    isBannerVisible: Boolean,
+    timePeriod: TimePeriod,
+    onButtonClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = true,
+        enter = slideInVertically { initialOffsetY -> -initialOffsetY },
+    ) {
+        Box(
+            modifier = Modifier
+                .height(height)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(
+                    top = if (isBannerVisible) 0.dp else 20.dp,
+                )
+                .clip(RoundedCornerShape(18.dp))
+                .background(WeSpotThemeManager.colors.modalColor),
+        ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = image,
+                contentDescription = stringResource(R.string.message_card_image),
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 21.dp),
+                    text = title,
+                    maxLines = 2,
+                    style = StaticTypeScale.Default.body1,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                    MessageTimer()
+                }
+
+                WSButton(
+                    text = buttonText,
+                    paddingValues = PaddingValues(vertical = 0.dp, horizontal = 15.dp),
+                    buttonType = WSButtonType.Primary,
+                    enabled = isButtonEnable,
+                    onClick = { onButtonClick() },
+                ) {
+                    it()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReservedMessageBanner(messageStatus: MessageStatus, onBannerClick: () -> Unit) {
+    AnimatedVisibility(
+        modifier = Modifier
+            .padding(top = 4.dp, start = 4.dp, end = 4.dp)
+            .clickable {
+                if (messageStatus.canSend) {
+                    onBannerClick()
+                }
+            },
+        visible = messageStatus.hasReservedMessages(),
+        enter = slideInHorizontally { initialOffsetX -> -initialOffsetX },
+    ) {
+        if (messageStatus.hasRemainingMessages()) {
+            WSBanner(
+                title = stringResource(
+                    R.string.reserved_message_banner_title,
+                    messageStatus.getReservedMessageCount(),
+                ),
+                subTitle = stringResource(
+                    R.string.reserved_message_banner_subtitle,
+                    messageStatus.remainingMessages,
+                ),
+                icon = painterResource(id = R.drawable.reserved_message),
+                bannerType = WSBannerType.Primary,
+            )
+        } else if (messageStatus.hasNoRemainingMessages()) {
+            WSBanner(
+                title = stringResource(
+                    R.string.reserved_message_banner_title_disabled,
+                    messageStatus.getReservedMessageCount(),
+                ),
+                icon = painterResource(id = R.drawable.reserved_message),
+                bannerType = WSBannerType.Secondary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () -> Unit) {
+    AnimatedVisibility(
+        modifier = Modifier
+            .padding(top = 4.dp, start = 4.dp, end = 4.dp)
+            .clickable { onBannerClick() },
+        visible = messageList.hasUnReadMessages(),
+        enter = slideInHorizontally { initialOffsetX -> -initialOffsetX },
+    ) {
+        WSBanner(
+            title = stringResource(R.string.received_message_banner_title),
+            subTitle = stringResource(R.string.received_message_banner_subtitle),
+            icon = painterResource(id = R.drawable.received_message),
+            bannerType = WSBannerType.Primary,
+        )
+    }
+}
+
+@Composable
+private fun MessageTimer() {
+    Column(
+        modifier = Modifier.padding(bottom = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.message_timer_title),
+            style = StaticTypeScale.Default.body9,
+            color = WeSpotThemeManager.colors.txtSubColor,
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                modifier = Modifier.size(40.dp),
+                painter = painterResource(id = R.drawable.timer),
+                contentDescription = "Timer Image",
+            )
+
+            // TODO Timer
+            Text(
+                text = "3:42:20",
+                style = StaticTypeScale.Default.header1.copy(
+                    fontSize = 28.textDp,
+                    lineHeight = (28 * 1.4f).textDp,
+                ),
+                color = WeSpotThemeManager.colors.txtTitleColor,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MessageHomeDescription(title: String) {
+    Text(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth(),
+        text = title,
+        style = StaticTypeScale.Default.body6,
+        color = Gray200,
+        textAlign = TextAlign.Center,
+        maxLines = 1,
+    )
+}
+
+@OrientationPreviews
+@Composable
+private fun WSBannerPreview() {
+    WeSpotTheme {
+        Surface {
+            Column {
+                MessageTimer()
+
+                MessageCard(
+                    height = 322.dp,
+                    timePeriod = TimePeriod.DAWN_TO_EVENING,
+                    title = stringResource(R.string.message_card_title),
+                    buttonText = stringResource(R.string.message_card_button_text_dawn),
+                    isButtonEnable = false,
+                    image = painterResource(R.drawable.home_message),
+                    isBannerVisible = true,
+                    onButtonClick = { },
+                )
+            }
+        }
+    }
+}
