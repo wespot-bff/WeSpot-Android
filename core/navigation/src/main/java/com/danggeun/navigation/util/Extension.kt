@@ -1,4 +1,4 @@
-package com.danggeun.common.util
+package com.danggeun.navigation.util
 
 import android.app.Activity
 import android.content.Context

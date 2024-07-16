@@ -2,8 +2,8 @@ package com.bff.wespot
 
 import android.content.Context
 import android.content.Intent
-import com.danggeun.common.util.buildIntent
 import com.danggeun.navigation.Navigator
+import com.danggeun.navigation.util.buildIntent
 
 class NavigatorImpl : Navigator {
     override fun navigateToMain(
