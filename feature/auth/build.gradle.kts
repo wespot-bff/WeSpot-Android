@@ -14,7 +14,6 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":designsystem"))
 
-    implementation(libs.kakao.sdk)
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)

@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:model"))
     implementation(libs.junit)
+    implementation(libs.kakao.sdk)
 }

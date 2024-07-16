@@ -1,38 +1,52 @@
-package com.bff.wespot.auth
+package com.bff.wespot.data.repository.auth
 
 import android.content.Context
+import com.bff.wespot.domain.repository.auth.KakaoLoginManager
+import com.bff.wespot.model.auth.KakaoAuthToken
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class KakaoLoginManager @Inject constructor(
-    @ActivityContext private val context: Context,
-) {
-    suspend fun loginWithKakao(): OAuthToken {
+class KakaoLoginManagerImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+): KakaoLoginManager {
+    override suspend fun loginWithKakao(): KakaoAuthToken {
         val loginState = getKakaoLoginState()
 
         return when (loginState) {
             KaKaoLoginState.KAKAO_TALK_LOGIN -> {
                 try {
-                    UserApiClient.loginWithKakaoTalk()
+                    val token = UserApiClient.loginWithKakaoTalk()
+                    KakaoAuthToken(
+                        accessToken = token.accessToken,
+                        idToken = token.idToken,
+                    )
                 } catch (error: Throwable) {
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                         throw error
                     }
 
-                    UserApiClient.loginWithKakaoAccount()
+                    val token = UserApiClient.loginWithKakaoAccount()
+                    KakaoAuthToken(
+                        accessToken = token.accessToken,
+                        idToken = token.idToken,
+                    )
                 }
             }
 
             KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> {
-                UserApiClient.loginWithKakaoAccount()
+                val token = UserApiClient.loginWithKakaoAccount()
+                KakaoAuthToken(
+                    accessToken = token.accessToken,
+                    idToken = token.idToken,
+                )
             }
         }
     }
