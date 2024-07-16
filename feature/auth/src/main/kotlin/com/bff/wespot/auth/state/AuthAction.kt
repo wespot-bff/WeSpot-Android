@@ -1,11 +1,11 @@
 package com.bff.wespot.auth.state
 
-import com.bff.wespot.model.SchoolItem
+import com.bff.wespot.model.auth.School
 
 sealed class AuthAction {
     data class OnSchoolSearchChanged(val text: String) : AuthAction()
 
-    data class OnSchoolSelected(val school: SchoolItem) : AuthAction()
+    data class OnSchoolSelected(val school: School) : AuthAction()
 
     data class OnGradeChanged(val grade: Int) : AuthAction()
 

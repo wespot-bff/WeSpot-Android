@@ -102,7 +102,7 @@ fun SchoolScreen(
                 )
             }
 
-            if (state.schoolSearchList.isEmpty()) {
+            if (state.schoolList.isEmpty()) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     WSTextButton(
                         text = stringResource(id = R.string.no_school_found),
@@ -113,7 +113,7 @@ fun SchoolScreen(
             }
 
             LazyColumn {
-                items(state.schoolSearchList, key = { school ->
+                items(state.schoolList, key = { school ->
                     school.id
                 }) { school ->
                     SchoolListItem(

@@ -6,22 +6,36 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
-import com.bff.wespot.model.SchoolItem
+import com.bff.wespot.model.auth.School
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
+    private val authRepository: AuthRepository,
+    private val dispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
+
+    private val userInput = MutableStateFlow("")
+
+    init {
+        monitorUserInput()
+    }
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -45,19 +59,42 @@ class AuthViewModel @Inject constructor(
 
     private fun handleSchoolSearchChanged(text: String) = intent {
         reduce {
+            userInput.value = text
             state.copy(
                 schoolName = text,
-                schoolSearchList = state.schoolList.filter {
-                    it.name.contains(
-                        text,
-                        ignoreCase = true,
-                    )
-                },
             )
         }
     }
 
-    private fun handleSchoolSelected(school: SchoolItem) = intent {
+    private fun monitorUserInput() {
+        viewModelScope.launch {
+            userInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect {
+                    fetchSchoolList(it)
+                }
+        }
+    }
+
+    private fun fetchSchoolList(search: String) = intent {
+        viewModelScope.launch(dispatcher) {
+            Timber.d("enter")
+            authRepository.getSchoolList(search)
+                .onSuccess {
+                    reduce {
+                        state.copy(
+                            schoolList = it,
+                        )
+                    }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun handleSchoolSelected(school: School) = intent {
         reduce {
             state.copy(
                 selectedSchool = school,
@@ -111,21 +148,30 @@ class AuthViewModel @Inject constructor(
             is NavigationAction.NavigateToGradeScreen -> AuthSideEffect.NavigateToGradeScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToSchoolScreen -> AuthSideEffect.NavigateToSchoolScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToClassScreen -> AuthSideEffect.NavigateToClassScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToGenderScreen -> AuthSideEffect.NavigateToGenderScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToNameScreen -> AuthSideEffect.NavigateToNameScreen(
                 navigate.edit,
             )
+
             NavigationAction.NavigateToEditScreen -> AuthSideEffect.NavigateToEditScreen
             NavigationAction.NavigateToCompleteScreen -> AuthSideEffect.NavigateToCompleteScreen
         }
         postSideEffect(sideEffect)
+    }
+
+    companion object {
+        private const val INPUT_DEBOUNCE_TIME = 500L
     }
 }
