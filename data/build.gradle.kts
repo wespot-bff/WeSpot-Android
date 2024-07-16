@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.junit)
     implementation(project(":domain"))
     implementation(project(":core:network"))
     implementation(project(":core:model"))
+    implementation(libs.junit)
 }
