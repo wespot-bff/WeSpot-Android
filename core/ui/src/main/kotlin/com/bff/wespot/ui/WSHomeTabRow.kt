@@ -2,7 +2,6 @@ package com.bff.wespot.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -53,7 +52,6 @@ fun WSHomeTabRow(
                 modifier = Modifier.padding(11.dp),
             ) {
                 Text(
-                    modifier = Modifier.height(24.dp),
                     text = tab,
                     style = StaticTypeScale.Default.body3,
                     color = if (selected) {
