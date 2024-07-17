@@ -21,6 +21,8 @@ sealed class AuthAction {
 
     data object signUp : AuthAction()
 
+    data object autoLogin : AuthAction()
+
     data class Navigation(val navigate: NavigationAction) : AuthAction()
 }
 

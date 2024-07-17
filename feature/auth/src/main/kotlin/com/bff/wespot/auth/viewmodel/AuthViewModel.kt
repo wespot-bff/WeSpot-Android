@@ -1,15 +1,20 @@
 package com.bff.wespot.auth.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.School
+import com.bff.wespot.model.constants.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +34,12 @@ class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val authRepository: AuthRepository,
     private val dispatcher: CoroutineDispatcher,
+    private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
+
+    private val loginState_: MutableLiveData<LoginState> = MutableLiveData()
+    val loginState: LiveData<LoginState> = loginState_
 
     private val userInput = MutableStateFlow("")
 
@@ -50,6 +59,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.Navigation -> handleNavigation(action.navigate)
             is AuthAction.LoginWithKakao -> loginWithKakao()
             is AuthAction.signUp -> signUp()
+            is AuthAction.autoLogin -> autoLogin()
             else -> {}
         }
     }
@@ -64,6 +74,17 @@ class AuthViewModel @Inject constructor(
                 }
                 .onFailure {
                     Timber.e(it)
+                }
+        }
+    }
+
+    private fun autoLogin()  {
+        viewModelScope.launch {
+            dataStoreRepository.getString(DataStoreKey.ACCESS_TOKEN)
+                .collect {
+                    if(it.isNotEmpty()) {
+                        loginState_.postValue(LoginState.LOGIN_SUCCESS)
+                    }
                 }
         }
     }
@@ -118,7 +139,6 @@ class AuthViewModel @Inject constructor(
 
     private fun fetchSchoolList(search: String) = intent {
         viewModelScope.launch(dispatcher) {
-            Timber.d("enter")
             authRepository.getSchoolList(search)
                 .onSuccess {
                     reduce {
