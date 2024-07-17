@@ -38,8 +38,8 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
-    private val loginState_: MutableLiveData<LoginState> = MutableLiveData()
-    val loginState: LiveData<LoginState> = loginState_
+    private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()
+    val loginState: LiveData<LoginState> = loginStateP
 
     private val userInput = MutableStateFlow("")
 
@@ -78,12 +78,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun autoLogin()  {
+    private fun autoLogin() {
         viewModelScope.launch {
             dataStoreRepository.getString(DataStoreKey.ACCESS_TOKEN)
                 .collect {
-                    if(it.isNotEmpty()) {
-                        loginState_.postValue(LoginState.LOGIN_SUCCESS)
+                    if (it.isNotEmpty()) {
+                        loginStateP.postValue(LoginState.LOGIN_SUCCESS)
                     }
                 }
         }
