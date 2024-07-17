@@ -1,4 +1,4 @@
-package com.bff.wespot.network.model.auth
+package com.bff.wespot.network.model.auth.response
 
 import kotlinx.serialization.Serializable
 

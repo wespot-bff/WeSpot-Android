@@ -1,6 +1,6 @@
-package com.bff.wespot.network.model.auth
+package com.bff.wespot.network.model.auth.response
 
-import com.bff.wespot.model.auth.School
+import com.bff.wespot.model.auth.response.School
 import kotlinx.serialization.Serializable
 
 @Serializable

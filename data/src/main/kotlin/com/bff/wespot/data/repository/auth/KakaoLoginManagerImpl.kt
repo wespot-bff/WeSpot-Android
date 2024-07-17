@@ -2,7 +2,7 @@ package com.bff.wespot.data.repository.auth
 
 import android.content.Context
 import com.bff.wespot.domain.repository.auth.KakaoLoginManager
-import com.bff.wespot.model.auth.KakaoAuthToken
+import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
