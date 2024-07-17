@@ -11,7 +11,6 @@ import com.bff.wespot.message.state.MessageUiState
 import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.model.message.request.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -73,7 +72,6 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.getMessageStatus()
                 .onSuccess { messageStatus ->
-                    delay(1000)
                     reduce {
                         state.copy(
                             messageStatus = messageStatus,
