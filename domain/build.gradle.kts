@@ -10,4 +10,5 @@ dependencies {
     implementation(project(":core:model"))
 
     implementation(libs.java.inject)
+    implementation(libs.kotlin.coroutines)
 }

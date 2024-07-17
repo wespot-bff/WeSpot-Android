@@ -13,6 +13,7 @@ core-ktx = "1.13.1"
 ksp = "2.0.0-1.0.22"
 ktlint = "12.1.1"
 detekt = "1.23.6"
+kotlinx-coroutines = "1.7.1"
 java-inject = "1"
 
 lifecycle-runtime-ktx = "2.8.2"
@@ -49,6 +50,7 @@ kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 java-inject = { module = "javax.inject:javax.inject", version.ref = "java-inject" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
