@@ -22,21 +22,26 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
+fun ClassScreen(
+    viewModel: AuthViewModel,
+    edit: Boolean,
+) {
     val keyboard = LocalSoftwareKeyboardController.current
 
     val state by viewModel.collectAsState()
@@ -45,14 +50,20 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                },
+            )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -77,6 +88,10 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
                         action(AuthAction.OnClassNumberChanged(-1))
                         return@WsTextField
                     }
+                    if (classNumber.toIntOrNull() == null) {
+                        return@WsTextField
+                    }
+
                     action(AuthAction.OnClassNumberChanged(classNumber.toInt()))
                 },
                 placeholder = stringResource(id = R.string.enter_number),
@@ -101,8 +116,20 @@ fun ClassScreen(viewModel: AuthViewModel = viewModel()) {
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
-            onClick = { },
-            text = stringResource(id = R.string.next),
+            onClick = {
+                if (edit) {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                    return@WSButton
+                }
+                action(AuthAction.Navigation(NavigationAction.NavigateToGenderScreen(false)))
+            },
+            text = stringResource(
+                id = if (edit) {
+                    R.string.edit_complete
+                } else {
+                    R.string.next
+                },
+            ),
             enabled = state.classNumber in 1..20,
         ) {
             it.invoke()

@@ -1,16 +1,26 @@
 package com.bff.wespot.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
+import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.model.SchoolItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val kakaoLoginUseCase: KakaoLoginUseCase,
+) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
     fun onAction(action: AuthAction) {
@@ -22,7 +32,14 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
             is AuthAction.OnClassNumberChanged -> handleClassNumberChanged(action.number)
             is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
+            is AuthAction.Navigation -> handleNavigation(action.navigate)
             else -> {}
+        }
+    }
+
+    fun loginWithKakao() {
+        viewModelScope.launch {
+            kakaoLoginUseCase.invoke()
         }
     }
 
@@ -86,5 +103,29 @@ class AuthViewModel : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
                 name = name,
             )
         }
+    }
+
+    private fun handleNavigation(navigate: NavigationAction) = intent {
+        val sideEffect = when (navigate) {
+            NavigationAction.PopBackStack -> AuthSideEffect.PopBackStack
+            is NavigationAction.NavigateToGradeScreen -> AuthSideEffect.NavigateToGradeScreen(
+                navigate.edit,
+            )
+            is NavigationAction.NavigateToSchoolScreen -> AuthSideEffect.NavigateToSchoolScreen(
+                navigate.edit,
+            )
+            is NavigationAction.NavigateToClassScreen -> AuthSideEffect.NavigateToClassScreen(
+                navigate.edit,
+            )
+            is NavigationAction.NavigateToGenderScreen -> AuthSideEffect.NavigateToGenderScreen(
+                navigate.edit,
+            )
+            is NavigationAction.NavigateToNameScreen -> AuthSideEffect.NavigateToNameScreen(
+                navigate.edit,
+            )
+            NavigationAction.NavigateToEditScreen -> AuthSideEffect.NavigateToEditScreen
+            NavigationAction.NavigateToCompleteScreen -> AuthSideEffect.NavigateToCompleteScreen
+        }
+        postSideEffect(sideEffect)
     }
 }

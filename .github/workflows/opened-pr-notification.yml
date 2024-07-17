@@ -24,7 +24,7 @@ jobs:
 
       - name: add local.properties
         run: |
-          echo KAKAO_API_KEY=\"${{ secrets.KAKAO_API_KEY }}\" >> ./local.properties
+          echo KAKAO_APP_KEY=\"${{ secrets.KAKAO_API_KEY }}\" >> ./local.properties
           echo SCHEME_KAKAO_APP_KEY=\"${{ secrets.SCHEME_KAKAO_APP_KEY }}\" >> ./local.properties
           echo MOCK_BASE_URL=\"${{ secrets.MOCK_BASE_URL }}\" >> ./local.properties
 

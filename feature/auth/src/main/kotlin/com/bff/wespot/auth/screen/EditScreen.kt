@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,23 +29,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.ui.WSBottomSheet
+import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun EditScreen(viewModel: AuthViewModel = viewModel()) {
+fun EditScreen(
+    viewModel: AuthViewModel,
+) {
     val state by viewModel.collectAsState()
+    val action = viewModel::onAction
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -57,7 +60,13 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                },
+            )
         },
     ) {
         Column(
@@ -67,27 +76,41 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
             EditField(
                 title = stringResource(id = R.string.name),
                 value = state.name,
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToNameScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.gender),
-                value = state.gender,
-            )
+                value = if (state.gender == "male") {
+                    stringResource(id = R.string.male_student)
+                } else {
+                    stringResource(id = R.string.female_student)
+                },
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToGenderScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.get_class),
                 value = state.classNumber.toString(),
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.grade),
                 value = "${state.grade}학년",
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToGradeScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.school),
                 value = state.selectedSchool?.name ?: "",
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToSchoolScreen(true)))
+            }
         }
     }
 
@@ -118,7 +141,9 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
 
     if (register) {
         WSBottomSheet(closeSheet = { register = true }) {
-            RegisterBottomSheetContent()
+            RegisterBottomSheetContent {
+                action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
+            }
         }
     }
 }
@@ -127,6 +152,7 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
 private fun EditField(
     title: String,
     value: String,
+    onClicked: () -> Unit,
 ) {
     Column {
         Text(
@@ -136,7 +162,7 @@ private fun EditField(
         )
 
         WSButton(
-            onClick = {},
+            onClick = onClicked,
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(
@@ -251,7 +277,9 @@ private fun ConfirmBottomSheetContent(
 }
 
 @Composable
-private fun RegisterBottomSheetContent() {
+private fun RegisterBottomSheetContent(
+    onClicked: () -> Unit,
+) {
     var checked by remember {
         mutableStateOf(listOf(false, false, false, false))
     }
@@ -359,7 +387,7 @@ private fun RegisterBottomSheetContent() {
         }
 
         WSButton(
-            onClick = { },
+            onClick = onClicked,
             text = stringResource(id = R.string.accept_and_start),
             enabled = checked.drop(1).take(2).all { it },
         ) {
@@ -402,16 +430,6 @@ private fun TermRow(
                 contentDescription = "화살 아이콘",
                 tint = WeSpotThemeManager.colors.disableIcnColor,
             )
-        }
-    }
-}
-
-@Composable
-@OrientationPreviews
-private fun EditScreenPreview() {
-    WeSpotTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            EditScreen()
         }
     }
 }

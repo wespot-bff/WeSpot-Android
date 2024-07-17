@@ -12,40 +12,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToast
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.ui.WSBottomSheet
+import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
+fun GradeScreen(
+    viewModel: AuthViewModel,
+    edit: Boolean,
+) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    var toast by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                },
+            )
         },
     ) {
         Column(
@@ -99,23 +114,58 @@ fun GradeScreen(viewModel: AuthViewModel = viewModel()) {
                     }
                 }
             }
+        }
 
-            if (state.gradeBottomSheet) {
-                WSBottomSheet(
-                    closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
-                    sheetState = rememberModalBottomSheetState(
-                        skipPartiallyExpanded = true,
-                    ),
-                ) {
-                    BottomSheetContent(currentGrade = state.grade, onGradeSelected = { grade ->
+        Box(modifier = Modifier.fillMaxSize().padding(it), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = stringResource(id = R.string.more_than_14_to_register),
+                toastType = WSToastType.Error,
+                showToast = toast,
+                closeToast = { toast = false },
+            )
+        }
+
+        if (state.gradeBottomSheet) {
+            WSBottomSheet(
+                closeSheet = { action(AuthAction.OnGradeBottomSheetChanged(false)) },
+            ) {
+                BottomSheetContent(
+                    currentGrade = state.grade,
+                    onGradeSelected = { grade ->
+                        if (grade == 1) {
+                            toast = true
+                            return@BottomSheetContent
+                        }
+
                         action(AuthAction.OnGradeChanged(grade))
-                    })
-                }
+                        if (edit) {
+                            action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                            return@BottomSheetContent
+                        }
+                        action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(false)))
+                    },
+                )
             }
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            WSButton(onClick = { }, text = stringResource(id = R.string.next)) {
+            WSButton(
+                onClick = {
+                    if (edit) {
+                        action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                        return@WSButton
+                    }
+                    action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(false)))
+                },
+                text = stringResource(
+                    id = if (edit) {
+                        R.string.edit_complete
+                    } else {
+                        R.string.next
+                    },
+                ),
+                enabled = state.grade != -1,
+            ) {
                 it.invoke()
             }
         }
@@ -171,18 +221,6 @@ private fun BottomSheetContent(
                     )
                 }
             }
-        }
-    }
-}
-
-@OrientationPreviews
-@Composable
-private fun GradeScreenPreview() {
-    WeSpotTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            GradeScreen()
         }
     }
 }
