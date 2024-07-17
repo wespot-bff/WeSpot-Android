@@ -2,6 +2,7 @@ package com.bff.wespot.network.source.auth
 
 import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.network.model.auth.request.KakaoAuthTokenDto
+import com.bff.wespot.network.model.auth.request.SignUpDto
 import com.bff.wespot.network.model.auth.response.AuthTokenDto
 import com.bff.wespot.network.model.auth.response.SchoolListDto
 import io.ktor.client.HttpClient
@@ -30,5 +31,14 @@ class AuthDataSourceImpl @Inject constructor(
                 path("api/v1/auth/login")
             }
             setBody(token)
+        }
+
+    override suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("api/v1/auth/signup")
+            }
+            setBody(signUp)
         }
 }

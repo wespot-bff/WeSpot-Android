@@ -19,6 +19,8 @@ sealed class AuthAction {
 
     data object LoginWithKakao : AuthAction()
 
+    data object signUp : AuthAction()
+
     data class Navigation(val navigate: NavigationAction) : AuthAction()
 }
 

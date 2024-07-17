@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.Intent
 import com.danggeun.navigation.Navigator
 import com.danggeun.navigation.util.buildIntent
+import javax.inject.Inject
 
-class NavigatorImpl : Navigator {
+class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToMain(
         context: Context,
     ): Intent {

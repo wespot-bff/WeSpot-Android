@@ -45,23 +45,23 @@ fun AuthScreen(
                 .clip(RoundedCornerShape(6.dp))
                 .background(Color(0xFFFEE500)),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFEE500)
+                containerColor = Color(0xFFFEE500),
             ),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.kakao),
                 contentDescription = stringResource(
-                    id = R.string.kakao_icon
+                    id = R.string.kakao_icon,
                 ),
-                tint = Color.Black
+                tint = Color.Black,
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
                 text = stringResource(id = R.string.continue_with_kakao),
                 style = StaticTypeScale.Default.body4.copy(fontWeight = FontWeight.Bold),
-                color = Color.Black
+                color = Color.Black,
             )
         }
     }

@@ -8,6 +8,7 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
+import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.School
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -48,6 +49,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             is AuthAction.Navigation -> handleNavigation(action.navigate)
             is AuthAction.LoginWithKakao -> loginWithKakao()
+            is AuthAction.signUp -> signUp()
             else -> {}
         }
     }
@@ -63,6 +65,34 @@ class AuthViewModel @Inject constructor(
                 .onFailure {
                     Timber.e(it)
                 }
+        }
+    }
+
+    private fun signUp() = intent {
+        reduce {
+            state.copy(
+                loading = true,
+            )
+        }
+        viewModelScope.launch(dispatcher) {
+            val result = authRepository.signUp(
+                SignUp(
+                    schoolId = state.selectedSchool!!.id,
+                    grade = state.grade,
+                    group = state.classNumber,
+                    gender = state.gender,
+                ),
+            )
+
+            reduce {
+                state.copy(
+                    loading = false,
+                )
+            }
+
+            if (result) {
+                postSideEffect(AuthSideEffect.NavigateToMainActivity)
+            }
         }
     }
 

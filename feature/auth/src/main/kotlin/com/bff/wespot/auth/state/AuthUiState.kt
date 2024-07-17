@@ -11,4 +11,5 @@ data class AuthUiState(
     val classNumber: Int = -1,
     val gender: String = "",
     val name: String = "",
+    val loading: Boolean = false,
 )

@@ -5,12 +5,11 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.auth.KakaoLoginManager
 import com.bff.wespot.domain.util.DataStoreKey
 import javax.inject.Inject
-import javax.xml.crypto.Data
 
 class KakaoLoginUseCase @Inject constructor(
     val kakaoLoginManager: KakaoLoginManager,
     val authRepository: AuthRepository,
-    val dataStoreRepository: DataStoreRepository
+    val dataStoreRepository: DataStoreRepository,
 ) {
     suspend inline fun invoke() {
         val result = kakaoLoginManager.loginWithKakao()

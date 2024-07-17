@@ -10,3 +10,9 @@ inline fun <reified T : Activity> Context.buildIntent(
 ) = Intent(this, T::class.java).apply {
     putExtras(bundleOf(*argument))
 }
+
+inline fun <reified T : Activity> Context.navigateActivity(
+    vararg argument: Pair<String, Any?>,
+) {
+    startActivity(buildIntent<T>(*argument))
+}
