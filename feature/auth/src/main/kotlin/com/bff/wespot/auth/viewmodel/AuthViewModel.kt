@@ -8,7 +8,7 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
-import com.bff.wespot.model.auth.School
+import com.bff.wespot.model.auth.response.School
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,13 +47,22 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             is AuthAction.Navigation -> handleNavigation(action.navigate)
+            is AuthAction.LoginWithKakao -> loginWithKakao()
             else -> {}
         }
     }
 
-    fun loginWithKakao() {
+    private fun loginWithKakao() = intent {
         viewModelScope.launch {
-            kakaoLoginUseCase.invoke()
+            runCatching {
+                kakaoLoginUseCase.invoke()
+            }
+                .onSuccess {
+                    postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 

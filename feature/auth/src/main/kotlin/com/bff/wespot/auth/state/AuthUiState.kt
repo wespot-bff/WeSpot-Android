@@ -1,6 +1,6 @@
 package com.bff.wespot.auth.state
 
-import com.bff.wespot.model.auth.School
+import com.bff.wespot.model.auth.response.School
 
 data class AuthUiState(
     val schoolName: String = "",

@@ -1,6 +1,6 @@
 package com.bff.wespot.auth.state
 
-import com.bff.wespot.model.auth.School
+import com.bff.wespot.model.auth.response.School
 
 sealed class AuthAction {
     data class OnSchoolSearchChanged(val text: String) : AuthAction()
@@ -16,6 +16,8 @@ sealed class AuthAction {
     data class OnGenderChanged(val gender: String) : AuthAction()
 
     data class OnNameChanged(val name: String) : AuthAction()
+
+    data object LoginWithKakao : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()
 }
