@@ -1,11 +1,9 @@
 package com.bff.wespot.message.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -109,8 +107,8 @@ fun MessageScreen(
                         title = stringResource(R.string.message_card_title),
                         buttonText = stringResource(R.string.message_card_button_text_dawn),
                         image = painterResource(R.drawable.home_message_dawn),
-                        isButtonEnable = false,
                         isBannerVisible = false,
+                        isButtonEnable = false,
                         onButtonClick = { },
                     )
                 }
@@ -137,8 +135,8 @@ fun MessageScreen(
                             stringResource(R.string.message_card_button_text_evening_disabled)
                         },
                         image = painterResource(R.drawable.home_message),
-                        isButtonEnable = state.messageStatus.canSend,
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
+                        isButtonEnable = state.messageStatus.canSend,
                         onButtonClick = {
                             action(
                                 MessageAction.Navigation(
@@ -195,63 +193,55 @@ private fun MessageCard(
     title: String,
     buttonText: String,
     image: Painter,
-    isButtonEnable: Boolean,
     isBannerVisible: Boolean,
+    isButtonEnable: Boolean,
     timePeriod: TimePeriod,
     onButtonClick: () -> Unit,
 ) {
-    AnimatedVisibility(
-        visible = true,
-        enter = slideInVertically { initialOffsetY -> -initialOffsetY },
+    Box(
+        modifier = Modifier
+            .height(height)
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 16.dp else 20.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(WeSpotThemeManager.colors.modalColor),
     ) {
-        Box(
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = image,
+            contentDescription = stringResource(R.string.message_card_image),
+        )
+
+        Column(
             modifier = Modifier
-                .height(height)
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(
-                    top = if (isBannerVisible) 0.dp else 20.dp,
-                )
-                .clip(RoundedCornerShape(18.dp))
-                .background(WeSpotThemeManager.colors.modalColor),
+                .fillMaxSize()
+                .padding(vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = image,
-                contentDescription = stringResource(R.string.message_card_image),
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 21.dp),
+                text = title,
+                maxLines = 2,
+                style = StaticTypeScale.Default.body1,
+                color = WeSpotThemeManager.colors.txtTitleColor,
             )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                MessageTimer()
+            }
+
+            WSButton(
+                text = buttonText,
+                paddingValues = PaddingValues(vertical = 0.dp, horizontal = 15.dp),
+                buttonType = WSButtonType.Primary,
+                enabled = isButtonEnable,
+                onClick = { onButtonClick() },
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 21.dp),
-                    text = title,
-                    maxLines = 2,
-                    style = StaticTypeScale.Default.body1,
-                    color = WeSpotThemeManager.colors.txtTitleColor,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                    MessageTimer()
-                }
-
-                WSButton(
-                    text = buttonText,
-                    paddingValues = PaddingValues(vertical = 0.dp, horizontal = 15.dp),
-                    buttonType = WSButtonType.Primary,
-                    enabled = isButtonEnable,
-                    onClick = { onButtonClick() },
-                ) {
-                    it()
-                }
+                it()
             }
         }
     }
@@ -260,15 +250,9 @@ private fun MessageCard(
 @Composable
 private fun ReservedMessageBanner(messageStatus: MessageStatus, onBannerClick: () -> Unit) {
     AnimatedVisibility(
-        modifier = Modifier
-            .padding(top = 4.dp, start = 4.dp, end = 4.dp)
-            .clickable {
-                if (messageStatus.canSend) {
-                    onBannerClick()
-                }
-            },
-        visible = messageStatus.hasReservedMessages(),
-        enter = slideInHorizontally { initialOffsetX -> -initialOffsetX },
+        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
+        visible = messageStatus.hasReservedMessages() && messageStatus.remainingMessages >= 0,
+        enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
         if (messageStatus.hasRemainingMessages()) {
             WSBanner(
@@ -280,7 +264,8 @@ private fun ReservedMessageBanner(messageStatus: MessageStatus, onBannerClick: (
                     R.string.reserved_message_banner_subtitle,
                     messageStatus.remainingMessages,
                 ),
-                icon = painterResource(id = R.drawable.reserved_message),
+                image = painterResource(id = R.drawable.reserved_message),
+                onBannerClick = { onBannerClick() },
                 bannerType = WSBannerType.Primary,
             )
         } else if (messageStatus.hasNoRemainingMessages()) {
@@ -289,7 +274,8 @@ private fun ReservedMessageBanner(messageStatus: MessageStatus, onBannerClick: (
                     R.string.reserved_message_banner_title_disabled,
                     messageStatus.getReservedMessageCount(),
                 ),
-                icon = painterResource(id = R.drawable.reserved_message),
+                image = painterResource(id = R.drawable.reserved_message),
+                onBannerClick = { onBannerClick() },
                 bannerType = WSBannerType.Secondary,
             )
         }
@@ -299,16 +285,15 @@ private fun ReservedMessageBanner(messageStatus: MessageStatus, onBannerClick: (
 @Composable
 private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () -> Unit) {
     AnimatedVisibility(
-        modifier = Modifier
-            .padding(top = 4.dp, start = 4.dp, end = 4.dp)
-            .clickable { onBannerClick() },
+        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
         visible = messageList.hasUnReadMessages(),
-        enter = slideInHorizontally { initialOffsetX -> -initialOffsetX },
+        enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
         WSBanner(
             title = stringResource(R.string.received_message_banner_title),
             subTitle = stringResource(R.string.received_message_banner_subtitle),
-            icon = painterResource(id = R.drawable.received_message),
+            image = painterResource(id = R.drawable.received_message),
+            onBannerClick = { onBannerClick() },
             bannerType = WSBannerType.Primary,
         )
     }
@@ -368,18 +353,6 @@ private fun WSBannerPreview() {
     WeSpotTheme {
         Surface {
             Column {
-                MessageTimer()
-
-                MessageCard(
-                    height = 322.dp,
-                    timePeriod = TimePeriod.DAWN_TO_EVENING,
-                    title = stringResource(R.string.message_card_title),
-                    buttonText = stringResource(R.string.message_card_button_text_dawn),
-                    isButtonEnable = false,
-                    image = painterResource(R.drawable.home_message),
-                    isBannerVisible = true,
-                    onButtonClick = { },
-                )
             }
         }
     }
