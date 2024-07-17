@@ -1,4 +1,4 @@
-package com.bff.wespot.model.auth
+package com.bff.wespot.model.auth.response
 
 data class School(
     val id: Int,
