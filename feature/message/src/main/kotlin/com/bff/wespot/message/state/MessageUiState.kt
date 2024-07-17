@@ -6,6 +6,6 @@ import com.bff.wespot.model.message.response.MessageStatus
 
 data class MessageUiState(
     val timePeriod: TimePeriod = TimePeriod.DAWN_TO_EVENING,
-    val messageStatus: MessageStatus = MessageStatus(),
-    val receivedMessageList: MessageList = MessageList(),
+    val messageStatus: MessageStatus = MessageStatus(false, -1),
+    val receivedMessageList: MessageList = MessageList(listOf(), true),
 )
