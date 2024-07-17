@@ -1,8 +1,8 @@
 package com.bff.wespot.model.message.response
 
 data class MessageStatus(
-    val canSend: Boolean = false,
-    val remainingMessages: Int = 0,
+    val canSend: Boolean,
+    val remainingMessages: Int,
 ) {
     companion object {
         private const val MESSAGE_COUNT_PER_DAY = 3
