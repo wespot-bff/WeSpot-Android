@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -45,6 +46,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
+import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
@@ -63,6 +65,7 @@ fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
+    val remainingTimeMillis = viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
     val action = viewModel::onAction
     viewModel.collectSideEffect {
         when (it) {
@@ -107,8 +110,6 @@ fun MessageScreen(
                         title = stringResource(R.string.message_card_title),
                         buttonText = stringResource(R.string.message_card_button_text_dawn),
                         image = painterResource(R.drawable.home_message_dawn),
-                        isBannerVisible = false,
-                        isButtonEnable = false,
                         onButtonClick = { },
                     )
                 }
@@ -137,6 +138,7 @@ fun MessageScreen(
                         image = painterResource(R.drawable.home_message),
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
+                        remainingTimeMillis = remainingTimeMillis.value,
                         onButtonClick = {
                             action(
                                 MessageAction.Navigation(
@@ -170,7 +172,6 @@ fun MessageScreen(
                         buttonText = stringResource(R.string.message_card_button_text_night),
                         image = painterResource(R.drawable.home_message_night),
                         isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
-                        isButtonEnable = false,
                         onButtonClick = { },
                     )
 
@@ -193,9 +194,10 @@ private fun MessageCard(
     title: String,
     buttonText: String,
     image: Painter,
-    isBannerVisible: Boolean,
-    isButtonEnable: Boolean,
     timePeriod: TimePeriod,
+    isBannerVisible: Boolean = false,
+    isButtonEnable: Boolean = false,
+    remainingTimeMillis: Long = 0,
     onButtonClick: () -> Unit,
 ) {
     Box(
@@ -231,7 +233,7 @@ private fun MessageCard(
             Spacer(modifier = Modifier.weight(1f))
 
             if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                MessageTimer()
+                MessageTimer(remainingTimeMillis = remainingTimeMillis)
             }
 
             WSButton(
@@ -300,7 +302,7 @@ private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () ->
 }
 
 @Composable
-private fun MessageTimer() {
+private fun MessageTimer(remainingTimeMillis: Long) {
     Column(
         modifier = Modifier.padding(bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -320,9 +322,8 @@ private fun MessageTimer() {
                 contentDescription = "Timer Image",
             )
 
-            // TODO Timer
             Text(
-                text = "3:42:20",
+                text = remainingTimeMillis.convertMillisToTime(),
                 style = StaticTypeScale.Default.header1.copy(
                     fontSize = 28.textDp,
                     lineHeight = (28 * 1.4f).textDp,
