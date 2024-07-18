@@ -11,7 +11,14 @@ import com.bff.wespot.message.state.MessageUiState
 import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.model.message.request.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -25,6 +32,23 @@ class MessageViewModel @Inject constructor(
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
+    private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
+    val remainingTimeMillis: StateFlow<Long> = _remainingTimeMillis.asStateFlow()
+
+    private var previousTimeMills: Long = 0
+    private val timerJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+        withContext(Dispatchers.IO) {
+            previousTimeMills = System.currentTimeMillis()
+            while (_remainingTimeMillis.value > 0L) {
+                val delayMills = System.currentTimeMillis() - previousTimeMills
+                if (delayMills == 1000L) {
+                    _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
+                    previousTimeMills = System.currentTimeMillis()
+                }
+            }
+        }
+    }
+
     fun onAction(action: MessageAction) {
         when (action) {
             is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
@@ -33,12 +57,14 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleHomeScreenEntered() = intent {
+    private fun handleHomeScreenEntered() {
         val currentTimePeriod = getCurrentTimePeriod()
-        reduce {
-            state.copy(
-                timePeriod = currentTimePeriod,
-            )
+        intent {
+            reduce {
+                state.copy(
+                    timePeriod = currentTimePeriod,
+                )
+            }
         }
 
         when (currentTimePeriod) {
@@ -47,6 +73,7 @@ class MessageViewModel @Inject constructor(
 
             TimePeriod.EVENING_TO_NIGHT -> {
                 getMessageStatus()
+                startTimer()
             }
 
             TimePeriod.NIGHT_TO_DAWN -> {
@@ -98,5 +125,25 @@ class MessageViewModel @Inject constructor(
                     postSideEffect(MessageSideEffect.Error(exception))
                 }
         }
+    }
+
+    private fun startTimer() {
+        _remainingTimeMillis.value = getRemainingTimeMillis()
+        if (!timerJob.isActive) {
+            timerJob.start()
+        }
+    }
+
+    private fun getRemainingTimeMillis(): Long {
+        val currentTimeMillis = System.currentTimeMillis() + MILLIS_KTC_OFFSET
+        val elapsedMillis = currentTimeMillis % MILLIS_PER_DAY
+
+        return if (elapsedMillis <= MILLIS_TO_TEN_PM) MILLIS_TO_TEN_PM - elapsedMillis else 0L
+    }
+
+    companion object {
+        private const val MILLIS_PER_DAY = 24 * 3600 * 1000
+        private const val MILLIS_TO_TEN_PM = 22 * 3600 * 1000
+        private const val MILLIS_KTC_OFFSET = 6 * 3600 * 1000
     }
 }
