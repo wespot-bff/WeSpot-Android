@@ -65,7 +65,6 @@ fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
-    val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
     val action = viewModel::onAction
     viewModel.collectSideEffect {
         when (it) {
@@ -105,11 +104,11 @@ fun MessageScreen(
             when (state.timePeriod) {
                 TimePeriod.DAWN_TO_EVENING -> {
                     MessageCard(
-                        height = 352.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_card_title),
+                        title = state.timePeriod.title,
                         buttonText = stringResource(R.string.message_card_button_text_dawn),
-                        image = painterResource(R.drawable.home_message_dawn),
+                        image = state.timePeriod.image,
                         onButtonClick = { },
                     )
                 }
@@ -127,18 +126,17 @@ fun MessageScreen(
                     )
 
                     MessageCard(
-                        height = 390.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_card_title),
+                        title = state.timePeriod.title,
                         buttonText = if (state.messageStatus.canSend) {
                             stringResource(R.string.message_card_button_text_evening)
                         } else {
                             stringResource(R.string.message_card_button_text_evening_disabled)
                         },
-                        image = painterResource(R.drawable.home_message),
+                        image = state.timePeriod.image,
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
-                        remainingTimeMillis = remainingTimeMillis,
                         onButtonClick = {
                             action(
                                 MessageAction.Navigation(
@@ -166,11 +164,11 @@ fun MessageScreen(
                     )
 
                     MessageCard(
-                        height = 352.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_title_night),
+                        title = state.timePeriod.title,
                         buttonText = stringResource(R.string.message_card_button_text_night),
-                        image = painterResource(R.drawable.home_message_night),
+                        image = state.timePeriod.image,
                         isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
                         onButtonClick = { },
                     )
@@ -197,7 +195,6 @@ private fun MessageCard(
     timePeriod: TimePeriod,
     isBannerVisible: Boolean = false,
     isButtonEnable: Boolean = false,
-    remainingTimeMillis: Long = 0,
     onButtonClick: () -> Unit,
 ) {
     Box(
@@ -233,7 +230,7 @@ private fun MessageCard(
             Spacer(modifier = Modifier.weight(1f))
 
             if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                MessageTimer(remainingTimeMillis = remainingTimeMillis)
+                MessageTimer()
             }
 
             WSButton(
@@ -302,7 +299,9 @@ private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () ->
 }
 
 @Composable
-private fun MessageTimer(remainingTimeMillis: Long) {
+private fun MessageTimer(viewModel: MessageViewModel = hiltViewModel()) {
+    val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.padding(bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
