@@ -44,4 +44,6 @@
     <string name="finish_check_detail">회원가입을 나가면 입력한 정보가 저장되지 않아요</string>
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
+    <string name="kakao_icon">카카오 아이콘</string>
+    <string name="continue_with_kakao">카카오톡으로 계속하기</string>
 </resources>

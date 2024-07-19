@@ -13,9 +13,11 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
     implementation(project(":designsystem"))
+    implementation(project(":core:navigation"))
 
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
+    implementation(libs.timber)
 }

@@ -1,7 +1,7 @@
 package com.bff.wespot.di
 
 import com.bff.wespot.NavigatorImpl
-import com.danggeun.navigation.Navigator
+import com.wespot.navigation.Navigator
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 interface NavigationModule {
     @Binds
     @Singleton
-    fun provideNavigator(navigator: NavigatorImpl): Navigator
+    fun bindsNavigator(navigator: NavigatorImpl): Navigator
 }

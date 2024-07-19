@@ -141,7 +141,10 @@ fun EditScreen(
 
     if (register) {
         WSBottomSheet(closeSheet = { register = true }) {
-            RegisterBottomSheetContent {
+            RegisterBottomSheetContent(
+                action = action,
+                checked = state.consents,
+            ) {
                 action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
         }
@@ -278,12 +281,10 @@ private fun ConfirmBottomSheetContent(
 
 @Composable
 private fun RegisterBottomSheetContent(
+    action: (AuthAction) -> Unit,
+    checked: List<Boolean>,
     onClicked: () -> Unit,
 ) {
-    var checked by remember {
-        mutableStateOf(listOf(false, false, false, false))
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -319,9 +320,9 @@ private fun RegisterBottomSheetContent(
                     },
                     modifier = Modifier.clickable {
                         if (checked[0]) {
-                            checked = listOf(false, false, false, false)
+                            action(AuthAction.OnConsentChanged(listOf(false, false, false, false)))
                         } else {
-                            checked = listOf(true, true, true, true)
+                            action(AuthAction.OnConsentChanged(listOf(true, true, true, true)))
                         }
                     },
                 )
@@ -342,14 +343,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[1],
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[1]) {
-                            this[1] = false
-                            this[0] = false
-                        } else {
-                            this[1] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[1]) {
+                                    this[1] = false
+                                    this[0] = false
+                                } else {
+                                    this[1] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
@@ -358,14 +363,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[2],
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[2]) {
-                            this[2] = false
-                            this[0] = false
-                        } else {
-                            this[2] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[2]) {
+                                    this[2] = false
+                                    this[0] = false
+                                } else {
+                                    this[2] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
@@ -374,14 +383,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[3],
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[3]) {
-                            this[3] = false
-                            this[0] = false
-                        } else {
-                            this[3] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[3]) {
+                                    this[3] = false
+                                    this[0] = false
+                                } else {
+                                    this[3] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
         }

@@ -1,12 +1,16 @@
 package com.bff.wespot.network.di
 
 import com.bff.wespot.network.BuildConfig
+import com.bff.wespot.network.model.auth.response.AuthTokenDto
+import com.bff.wespot.network.model.auth.response.SignUpTokenDto
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -14,9 +18,11 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
+import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.AttributeKey
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Singleton
@@ -45,6 +51,24 @@ object ClientModule {
                 }
             }
         }*/
+
+        HttpResponseValidator {
+            this.
+            validateResponse {
+                if(it.request.url.toString().contains("api/v1/auth/login")) {
+                    when(it.status.value) {
+                        200 -> {
+                            val parsedBody = it.body<AuthTokenDto>()
+                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
+                        }
+                        202 -> {
+                            val parsedBody = it.body<SignUpTokenDto>()
+                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
+                        }
+                    }
+                }
+            }
+        }
 
         install(HttpTimeout) {
             requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS

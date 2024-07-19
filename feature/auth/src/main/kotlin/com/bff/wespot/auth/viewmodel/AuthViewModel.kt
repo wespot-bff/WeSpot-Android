@@ -1,27 +1,49 @@
 package com.bff.wespot.auth.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
-import com.bff.wespot.model.SchoolItem
+import com.bff.wespot.model.auth.request.SignUp
+import com.bff.wespot.model.auth.response.Consents
+import com.bff.wespot.model.auth.response.School
+import com.bff.wespot.model.constants.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
+    private val authRepository: AuthRepository,
+    private val dispatcher: CoroutineDispatcher,
+    private val dataStoreRepository: DataStoreRepository,
+    private val autoLoginUseCase: AutoLoginUseCase,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
+
+    private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()
+    val loginState: LiveData<LoginState> = loginStateP
+
+    private val userInput = MutableStateFlow("")
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -33,31 +55,108 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             is AuthAction.Navigation -> handleNavigation(action.navigate)
+            is AuthAction.LoginWithKakao -> loginWithKakao()
+            is AuthAction.Signup -> signUp()
+            is AuthAction.AutoLogin -> autoLogin()
+            is AuthAction.OnStartSchoolScreen -> monitorUserInput()
+            is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
             else -> {}
         }
     }
 
-    fun loginWithKakao() {
+    private fun loginWithKakao() = intent {
         viewModelScope.launch {
-            kakaoLoginUseCase.invoke()
+            kakaoLoginUseCase()
+                .onSuccess {
+                    if (it == LoginState.LOGIN_SUCCESS) {
+                        postSideEffect(AuthSideEffect.NavigateToMainActivity)
+                    } else {
+                        postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+                    }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun autoLogin() {
+        viewModelScope.launch {
+            autoLoginUseCase().let {
+                loginStateP.postValue(it)
+            }
+        }
+    }
+
+    private fun signUp() = intent {
+        reduce {
+            state.copy(
+                loading = true,
+            )
+        }
+        viewModelScope.launch(dispatcher) {
+            val result = authRepository.signUp(
+                SignUp(
+                    name = state.name,
+                    schoolId = state.selectedSchool!!.id,
+                    grade = state.grade,
+                    classNumber = state.classNumber,
+                    gender = state.gender,
+                    consents = Consents(
+                        marketing = state.consents[3],
+                    ),
+                ),
+            )
+
+            reduce {
+                state.copy(
+                    loading = false,
+                )
+            }
+
+            if (result) {
+                postSideEffect(AuthSideEffect.NavigateToMainActivity)
+            }
         }
     }
 
     private fun handleSchoolSearchChanged(text: String) = intent {
         reduce {
+            userInput.value = text
             state.copy(
                 schoolName = text,
-                schoolSearchList = state.schoolList.filter {
-                    it.name.contains(
-                        text,
-                        ignoreCase = true,
-                    )
-                },
             )
         }
     }
 
-    private fun handleSchoolSelected(school: SchoolItem) = intent {
+    private fun monitorUserInput() {
+        viewModelScope.launch {
+            userInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect {
+                    fetchSchoolList(it)
+                }
+        }
+    }
+
+    private fun fetchSchoolList(search: String) = intent {
+        viewModelScope.launch(dispatcher) {
+            authRepository.getSchoolList(search)
+                .onSuccess {
+                    reduce {
+                        state.copy(
+                            schoolList = it,
+                        )
+                    }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun handleSchoolSelected(school: School) = intent {
         reduce {
             state.copy(
                 selectedSchool = school,
@@ -105,27 +204,44 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun handleConsentChanged(checks: List<Boolean>) = intent {
+        reduce {
+            state.copy(
+                consents = checks,
+            )
+        }
+    }
+
     private fun handleNavigation(navigate: NavigationAction) = intent {
         val sideEffect = when (navigate) {
             NavigationAction.PopBackStack -> AuthSideEffect.PopBackStack
             is NavigationAction.NavigateToGradeScreen -> AuthSideEffect.NavigateToGradeScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToSchoolScreen -> AuthSideEffect.NavigateToSchoolScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToClassScreen -> AuthSideEffect.NavigateToClassScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToGenderScreen -> AuthSideEffect.NavigateToGenderScreen(
                 navigate.edit,
             )
+
             is NavigationAction.NavigateToNameScreen -> AuthSideEffect.NavigateToNameScreen(
                 navigate.edit,
             )
+
             NavigationAction.NavigateToEditScreen -> AuthSideEffect.NavigateToEditScreen
             NavigationAction.NavigateToCompleteScreen -> AuthSideEffect.NavigateToCompleteScreen
         }
         postSideEffect(sideEffect)
+    }
+
+    companion object {
+        private const val INPUT_DEBOUNCE_TIME = 500L
     }
 }
