@@ -28,11 +28,11 @@ import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
-import com.danggeun.navigation.Navigator
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.rememberNavHostEngine
+import com.wespot.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -119,13 +119,13 @@ class AuthActivity : ComponentActivity() {
             }
 
             LaunchedEffect(key1 = Unit) {
-                action(AuthAction.autoLogin)
+                action(AuthAction.AutoLogin)
             }
         }
     }
 
     private fun login() {
-        viewModel.onAction(AuthAction.autoLogin)
+        viewModel.onAction(AuthAction.AutoLogin)
         viewModel.loginState.observe(this) {
             loginState = it
         }

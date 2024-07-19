@@ -1,4 +1,4 @@
-package com.danggeun.navigation.util
+package com.wespot.navigation.util
 
 import android.app.Activity
 import android.content.Context

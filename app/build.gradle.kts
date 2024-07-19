@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":feature:auth"))
+    implementation(project(":core:network"))
     implementation(project(":core:navigation"))
 
     implementation(libs.kakao.sdk)
