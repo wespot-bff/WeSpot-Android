@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,6 +50,15 @@ class MessageViewModel @Inject constructor(
         }
     }
 
+    private val timeChecker: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+        withContext(Dispatchers.IO) {
+            while (true) {
+                updateTimePeriod()
+                delay(1000)
+            }
+        }
+    }
+
     fun onAction(action: MessageAction) {
         when (action) {
             is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
@@ -58,6 +68,23 @@ class MessageViewModel @Inject constructor(
     }
 
     private fun handleHomeScreenEntered() {
+        timeChecker.start()
+    }
+
+    private fun handleNavigation(navigate: NavigationAction) = intent {
+        val sideEffect = when (navigate) {
+            NavigationAction.NavigateToSendScreen -> {
+                MessageSideEffect.NavigateToSendScreen
+            }
+
+            NavigationAction.NavigateToStorageScreen -> {
+                MessageSideEffect.NavigateToStorageScreen
+            }
+        }
+        postSideEffect(sideEffect)
+    }
+
+    private fun updateTimePeriod() {
         val currentTimePeriod = getCurrentTimePeriod()
         intent {
             reduce {
@@ -80,19 +107,6 @@ class MessageViewModel @Inject constructor(
                 getReceivedMessageList()
             }
         }
-    }
-
-    private fun handleNavigation(navigate: NavigationAction) = intent {
-        val sideEffect = when (navigate) {
-            NavigationAction.NavigateToSendScreen -> {
-                MessageSideEffect.NavigateToSendScreen
-            }
-
-            NavigationAction.NavigateToStorageScreen -> {
-                MessageSideEffect.NavigateToStorageScreen
-            }
-        }
-        postSideEffect(sideEffect)
     }
 
     private fun getMessageStatus() = intent {
