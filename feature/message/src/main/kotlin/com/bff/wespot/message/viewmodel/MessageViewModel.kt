@@ -11,8 +11,8 @@ import com.bff.wespot.message.state.MessageUiState
 import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.model.message.request.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MessageViewModel @Inject constructor(
+    private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
@@ -38,7 +39,7 @@ class MessageViewModel @Inject constructor(
 
     private var previousTimeMills: Long = 0
     private val timerJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-        withContext(Dispatchers.IO) {
+        withContext(coroutineDispatcher) {
             previousTimeMills = System.currentTimeMillis()
             while (_remainingTimeMillis.value > 0L) {
                 val delayMills = System.currentTimeMillis() - previousTimeMills
@@ -51,7 +52,7 @@ class MessageViewModel @Inject constructor(
     }
 
     private val timeChecker: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-        withContext(Dispatchers.IO) {
+        withContext(coroutineDispatcher) {
             while (true) {
                 updateTimePeriod()
                 delay(1000)
