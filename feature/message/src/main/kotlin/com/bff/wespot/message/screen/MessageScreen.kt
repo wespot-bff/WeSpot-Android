@@ -89,17 +89,7 @@ fun MessageScreen(
                 .fillMaxSize()
                 .padding(it),
         ) {
-            val tabList = persistentListOf(
-                stringResource(R.string.message_home_screen),
-                stringResource(R.string.message_storage_screen),
-            )
-            var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-            WSHomeTabRow(
-                selectedTabIndex = selectedTabIndex,
-                tabList = tabList,
-                onTabSelected = { index -> selectedTabIndex = index },
-            )
+            MessageTopBar()
 
             when (state.timePeriod) {
                 TimePeriod.DAWN_TO_EVENING -> {
@@ -184,6 +174,21 @@ fun MessageScreen(
     LaunchedEffect(Unit) {
         action(MessageAction.OnHomeScreenEntered)
     }
+}
+
+@Composable
+private fun MessageTopBar() {
+    val tabList = persistentListOf(
+        stringResource(R.string.message_home_screen),
+        stringResource(R.string.message_storage_screen),
+    )
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    WSHomeTabRow(
+        selectedTabIndex = selectedTabIndex,
+        tabList = tabList,
+        onTabSelected = { index -> selectedTabIndex = index },
+    )
 }
 
 @Composable
