@@ -8,5 +8,5 @@ data class SignUp(
     val grade: Int,
     val classNumber: Int,
     val gender: String,
-    val consents: Consents
+    val consents: Consents,
 )

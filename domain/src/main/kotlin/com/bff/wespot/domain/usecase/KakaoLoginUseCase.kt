@@ -24,7 +24,7 @@ class KakaoLoginUseCase @Inject constructor(
                         dataStoreRepository.saveString(DataStoreKey.REFRESH_TOKEN, it.refreshToken)
                         dataStoreRepository.saveString(
                             DataStoreKey.REFRESH_TOKEN_EXPIRED_AT,
-                            it.refreshTokenExpiredAt
+                            it.refreshTokenExpiredAt,
                         )
                         LoginState.LOGIN_SUCCESS
                     }

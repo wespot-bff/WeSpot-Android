@@ -12,5 +12,5 @@ data class AuthUiState(
     val gender: String = "",
     val name: String = "",
     val loading: Boolean = false,
-    val consents: List<Boolean> = listOf(false, false, false, false)
+    val consents: List<Boolean> = listOf(false, false, false, false),
 )

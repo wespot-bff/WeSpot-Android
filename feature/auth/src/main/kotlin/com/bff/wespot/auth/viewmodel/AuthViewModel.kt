@@ -10,8 +10,8 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
-import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
@@ -36,6 +36,7 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val dispatcher: CoroutineDispatcher,
     private val dataStoreRepository: DataStoreRepository,
+    private val autoLoginUseCase: AutoLoginUseCase,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
@@ -81,12 +82,9 @@ class AuthViewModel @Inject constructor(
 
     private fun autoLogin() {
         viewModelScope.launch {
-            dataStoreRepository.getString(DataStoreKey.ACCESS_TOKEN)
-                .collect {
-                    if (it.isNotEmpty()) {
-                        loginStateP.postValue(LoginState.LOGIN_SUCCESS)
-                    }
-                }
+            autoLoginUseCase().let {
+                loginStateP.postValue(it)
+            }
         }
     }
 
@@ -105,8 +103,8 @@ class AuthViewModel @Inject constructor(
                     classNumber = state.classNumber,
                     gender = state.gender,
                     consents = Consents(
-                        marketing = state.consents[3]
-                    )
+                        marketing = state.consents[3],
+                    ),
                 ),
             )
 

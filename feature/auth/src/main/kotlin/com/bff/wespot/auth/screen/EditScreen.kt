@@ -343,14 +343,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[1],
                 onClicked = {
-                    action(AuthAction.OnConsentChanged(checked.toMutableList().apply {
-                        if (this[1]) {
-                            this[1] = false
-                            this[0] = false
-                        } else {
-                            this[1] = true
-                        }
-                    }))
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[1]) {
+                                    this[1] = false
+                                    this[0] = false
+                                } else {
+                                    this[1] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
@@ -359,14 +363,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[2],
                 onClicked = {
-                     action(AuthAction.OnConsentChanged(checked.toMutableList().apply {
-                        if (this[2]) {
-                            this[2] = false
-                            this[0] = false
-                        } else {
-                            this[2] = true
-                        }
-                    }))
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[2]) {
+                                    this[2] = false
+                                    this[0] = false
+                                } else {
+                                    this[2] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
@@ -375,14 +383,18 @@ private fun RegisterBottomSheetContent(
                 url = "",
                 checked = checked[3],
                 onClicked = {
-                     action(AuthAction.OnConsentChanged(checked.toMutableList().apply {
-                        if (this[3]) {
-                            this[3] = false
-                            this[0] = false
-                        } else {
-                            this[3] = true
-                        }
-                    }))
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[3]) {
+                                    this[3] = false
+                                    this[0] = false
+                                } else {
+                                    this[3] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
         }
