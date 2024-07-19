@@ -65,7 +65,7 @@ fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
-    val remainingTimeMillis = viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
+    val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
     val action = viewModel::onAction
     viewModel.collectSideEffect {
         when (it) {
@@ -138,7 +138,7 @@ fun MessageScreen(
                         image = painterResource(R.drawable.home_message),
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
-                        remainingTimeMillis = remainingTimeMillis.value,
+                        remainingTimeMillis = remainingTimeMillis,
                         onButtonClick = {
                             action(
                                 MessageAction.Navigation(
