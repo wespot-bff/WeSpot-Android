@@ -7,6 +7,7 @@ sealed class AuthSideEffect {
     data class NavigateToClassScreen(val edit: Boolean) : AuthSideEffect()
     data class NavigateToGenderScreen(val edit: Boolean) : AuthSideEffect()
     data class NavigateToNameScreen(val edit: Boolean) : AuthSideEffect()
+    data object NavigateToMainActivity : AuthSideEffect()
     data object NavigateToEditScreen : AuthSideEffect()
     data object NavigateToCompleteScreen : AuthSideEffect()
 }

@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -22,7 +24,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
 @Destination
-fun CompleteScreen() {
+fun CompleteScreen(
+    viewModel: AuthViewModel,
+) {
     var dialog by remember {
         mutableStateOf(false)
     }
@@ -35,7 +39,9 @@ fun CompleteScreen() {
                 it.invoke()
             }
 
-            WSOutlineButton(onClick = { }, text = stringResource(id = R.string.start)) {
+            WSOutlineButton(onClick = {
+                viewModel.onAction(AuthAction.Signup)
+            }, text = stringResource(id = R.string.start)) {
                 it.invoke()
             }
         }
