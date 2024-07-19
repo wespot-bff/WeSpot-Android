@@ -24,7 +24,7 @@ class AuthDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<AuthTokenDto> =
+    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post

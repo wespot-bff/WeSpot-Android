@@ -7,6 +7,6 @@ import com.bff.wespot.network.model.auth.response.SchoolListDto
 
 interface AuthDataSource {
     suspend fun getSchoolList(search: String): Result<SchoolListDto>
-    suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<AuthTokenDto>
+    suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any>
     suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto>
 }

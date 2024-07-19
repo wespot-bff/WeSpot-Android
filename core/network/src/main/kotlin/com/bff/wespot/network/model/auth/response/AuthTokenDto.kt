@@ -7,9 +7,11 @@ import kotlinx.serialization.Serializable
 data class AuthTokenDto(
     val accessToken: String,
     val refreshToken: String,
+    val refreshTokenExpiredAt: String,
 ) {
     fun toAuthToken() = AuthToken(
         accessToken = accessToken,
         refreshToken = refreshToken,
+        refreshTokenExpiredAt = refreshTokenExpiredAt,
     )
 }
