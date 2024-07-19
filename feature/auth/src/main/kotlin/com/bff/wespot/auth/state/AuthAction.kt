@@ -19,9 +19,13 @@ sealed class AuthAction {
 
     data object LoginWithKakao : AuthAction()
 
-    data object signUp : AuthAction()
+    data object Signup : AuthAction()
 
-    data object autoLogin : AuthAction()
+    data object AutoLogin : AuthAction()
+
+    data object OnStartSchoolScreen : AuthAction()
+
+    data class OnConsentChanged(val checks: List<Boolean>) : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()
 }

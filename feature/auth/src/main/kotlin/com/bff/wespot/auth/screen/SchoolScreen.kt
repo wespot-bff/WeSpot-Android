@@ -160,4 +160,8 @@ fun SchoolScreen(
         delay(10)
         keyboard?.show()
     }
+
+    LaunchedEffect(Unit) {
+        action(AuthAction.OnStartSchoolScreen)
+    }
 }

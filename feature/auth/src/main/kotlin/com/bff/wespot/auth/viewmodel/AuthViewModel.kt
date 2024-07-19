@@ -13,6 +13,7 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.request.SignUp
+import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
 import com.bff.wespot.model.constants.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,10 +44,6 @@ class AuthViewModel @Inject constructor(
 
     private val userInput = MutableStateFlow("")
 
-    init {
-        monitorUserInput()
-    }
-
     fun onAction(action: AuthAction) {
         when (action) {
             is AuthAction.OnSchoolSearchChanged -> handleSchoolSearchChanged(action.text)
@@ -58,19 +55,23 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             is AuthAction.Navigation -> handleNavigation(action.navigate)
             is AuthAction.LoginWithKakao -> loginWithKakao()
-            is AuthAction.signUp -> signUp()
-            is AuthAction.autoLogin -> autoLogin()
+            is AuthAction.Signup -> signUp()
+            is AuthAction.AutoLogin -> autoLogin()
+            is AuthAction.OnStartSchoolScreen -> monitorUserInput()
+            is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
             else -> {}
         }
     }
 
     private fun loginWithKakao() = intent {
         viewModelScope.launch {
-            runCatching {
-                kakaoLoginUseCase.invoke()
-            }
+            kakaoLoginUseCase()
                 .onSuccess {
-                    postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+                    if (it == LoginState.LOGIN_SUCCESS) {
+                        postSideEffect(AuthSideEffect.NavigateToMainActivity)
+                    } else {
+                        postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+                    }
                 }
                 .onFailure {
                     Timber.e(it)
@@ -98,10 +99,14 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             val result = authRepository.signUp(
                 SignUp(
+                    name = state.name,
                     schoolId = state.selectedSchool!!.id,
                     grade = state.grade,
-                    group = state.classNumber,
+                    classNumber = state.classNumber,
                     gender = state.gender,
+                    consents = Consents(
+                        marketing = state.consents[3]
+                    )
                 ),
             )
 
@@ -197,6 +202,14 @@ class AuthViewModel @Inject constructor(
         reduce {
             state.copy(
                 name = name,
+            )
+        }
+    }
+
+    private fun handleConsentChanged(checks: List<Boolean>) = intent {
+        reduce {
+            state.copy(
+                consents = checks,
             )
         }
     }

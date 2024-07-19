@@ -40,7 +40,7 @@ fun CompleteScreen(
             }
 
             WSOutlineButton(onClick = {
-                viewModel.onAction(AuthAction.signUp)
+                viewModel.onAction(AuthAction.Signup)
             }, text = stringResource(id = R.string.start)) {
                 it.invoke()
             }
