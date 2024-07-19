@@ -1,4 +1,4 @@
-package com.danggeun.navigation.util
+package com.wespot.navigation.util
 
 import android.app.Activity
 import android.content.Context
@@ -9,4 +9,10 @@ inline fun <reified T : Activity> Context.buildIntent(
     vararg argument: Pair<String, Any?>,
 ) = Intent(this, T::class.java).apply {
     putExtras(bundleOf(*argument))
+}
+
+inline fun <reified T : Activity> Context.navigateActivity(
+    vararg argument: Pair<String, Any?>,
+) {
+    startActivity(buildIntent<T>(*argument))
 }

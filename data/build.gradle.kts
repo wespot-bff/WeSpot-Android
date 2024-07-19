@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":core:model"))
     implementation(libs.junit)
     implementation(libs.kakao.sdk)
+    implementation(libs.datastore)
 }
