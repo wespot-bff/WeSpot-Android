@@ -1,4 +1,4 @@
-package com.danggeun.entire.screen
+package com.bff.wespot.entire.screen
 
 import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination

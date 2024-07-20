@@ -1,11 +1,11 @@
 package com.bff.wespot
 
 import androidx.navigation.NavController
+import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.message.screen.MessageNavigator
-import com.danggeun.entire.screen.EntireNavigator
-import com.danggeun.vote.screen.VoteNavigator
-import com.danggeun.vote.screen.VotingNavigator
-import com.danggeun.vote.screen.destinations.VotingScreenDestination
+import com.bff.wespot.vote.screen.VoteNavigator
+import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec

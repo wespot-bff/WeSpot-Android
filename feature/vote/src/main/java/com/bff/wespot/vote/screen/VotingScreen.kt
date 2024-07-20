@@ -1,4 +1,4 @@
-package com.danggeun.vote.screen
+package com.bff.wespot.vote.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -20,7 +20,7 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.vote.R
-import com.danggeun.vote.viewmodel.VotingViewModel
+import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 
 interface VotingNavigator {

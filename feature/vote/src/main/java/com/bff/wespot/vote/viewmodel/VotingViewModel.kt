@@ -1,4 +1,4 @@
-package com.danggeun.vote.viewmodel
+package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

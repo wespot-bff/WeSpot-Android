@@ -1,4 +1,4 @@
-package com.danggeun.vote.screen
+package com.bff.wespot.vote.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -38,8 +38,8 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
-import com.danggeun.vote.state.VoteAction
-import com.danggeun.vote.viewmodel.VoteHomeViewModel
+import com.bff.wespot.vote.state.VoteAction
+import com.bff.wespot.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 

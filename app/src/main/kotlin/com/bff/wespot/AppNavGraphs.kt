@@ -12,10 +12,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
-import com.danggeun.entire.screen.destinations.EntireScreenDestination
-import com.danggeun.vote.screen.destinations.VoteHomeScreenDestination
-import com.danggeun.vote.screen.destinations.VotingScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
+import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.dynamic.routedIn

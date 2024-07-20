@@ -1,4 +1,4 @@
-package com.danggeun.common.util
+package com.bff.wespot.common.util
 
 import java.time.LocalDate
 
