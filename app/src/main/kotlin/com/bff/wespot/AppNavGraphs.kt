@@ -156,7 +156,7 @@ private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeOut()
     }
-    return fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start)
+    return fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
 }
 
 private val NavDestination.hostNavGraph: NavGraph
