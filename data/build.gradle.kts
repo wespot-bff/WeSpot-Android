@@ -9,7 +9,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":core:network"))
+    implementation(project(":data-remote"))
     implementation(project(":core:model"))
     implementation(libs.junit)
     implementation(libs.kakao.sdk)

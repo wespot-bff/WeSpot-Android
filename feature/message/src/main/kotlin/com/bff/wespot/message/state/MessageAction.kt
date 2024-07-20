@@ -8,4 +8,5 @@ sealed class MessageAction {
 sealed interface NavigationAction {
     data object NavigateToSendScreen : NavigationAction
     data object NavigateToStorageScreen : NavigationAction
+    data object NavigateToNotification : NavigationAction
 }

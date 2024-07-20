@@ -7,7 +7,7 @@ import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.request.SentMessage
 import com.bff.wespot.model.message.response.MessageStatus
-import com.bff.wespot.network.source.message.MessageDataSource
+import com.bff.wespot.data.remote.source.message.MessageDataSource
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(

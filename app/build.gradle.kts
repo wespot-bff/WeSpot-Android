@@ -28,11 +28,11 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":data-remote"))
     implementation(project(":designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
-    implementation(project(":core:network"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:message"))
