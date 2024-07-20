@@ -18,4 +18,5 @@ dependencies {
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
+    implementation(libs.timber)
 }

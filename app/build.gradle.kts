@@ -34,8 +34,11 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:network"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:vote"))
     implementation(project(":feature:message"))
+
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="invite_friend">위스팟에 친구 초대하기</string>
+    <string name="invite_friend_description">다양한 친구들과ㅏ 더 재미있게 사용해 보세요</string>
+    <string name="vote_ongoing">지금 우리반 투표가 진행 중이에요\n반 친구들에 대해 알려주세요</string>
+    <string name="vote_description">투표 사진</string>
+    <string name="vote">투표하기</string>
+</resources>
