@@ -16,6 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
+import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -37,6 +41,7 @@ import com.bff.wespot.vote.R
 import com.danggeun.vote.state.VoteAction
 import com.danggeun.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.collections.immutable.persistentListOf
 
 interface VoteNavigator {
     fun navigateUp()
@@ -49,7 +54,16 @@ internal fun VoteHomeScreen(
     viewModel: VoteHomeViewModel = hiltViewModel(),
     voteNavigator: VoteNavigator,
 ) {
-    Scaffold {
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    Scaffold(
+        topBar = {
+            VoteTopBar(
+                selectedTabIndex = selectedTabIndex,
+                onTabSelected = { selectedTabIndex = it },
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -143,5 +157,22 @@ private fun ClockTime(viewModel: VoteHomeViewModel) {
         style = StaticTypeScale.Default.body6,
         color = WeSpotThemeManager.colors.disableBtnTxtColor,
         modifier = Modifier.padding(horizontal = 28.dp),
+    )
+}
+
+@Composable
+private fun VoteTopBar(
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
+) {
+    val tabList = persistentListOf(
+        stringResource(R.string.vote_home_screen),
+        stringResource(R.string.vote_result_screen),
+    )
+
+    WSHomeTabRow(
+        selectedTabIndex = selectedTabIndex,
+        tabList = tabList,
+        onTabSelected = onTabSelected,
     )
 }

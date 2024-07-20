@@ -7,4 +7,6 @@
     <string name="voting">투표하기</string>
     <string name="vote">투표</string>
     <string name="report">제보하기</string>
+    <string name="vote_result_screen">투표 결과</string>
+    <string name="vote_home_screen">투표 홈</string>
 </resources>
