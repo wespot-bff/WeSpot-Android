@@ -11,4 +11,5 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(libs.material)
+    implementation(libs.kotlinx.collections.immutable)
 }

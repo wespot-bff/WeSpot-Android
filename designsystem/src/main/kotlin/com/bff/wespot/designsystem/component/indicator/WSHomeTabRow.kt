@@ -1,4 +1,4 @@
-package com.bff.wespot.ui
+package com.bff.wespot.designsystem.component.indicator
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
