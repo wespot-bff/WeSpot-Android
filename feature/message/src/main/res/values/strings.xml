@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_card_title">당신을 설레게 한 친구에게\n익명 쪽지로 마음을 표현해보세요</string>
+    <string name="message_card_button_text_dawn">매일 저녁 5시에 쪽지를 보낼 수 있어요</string>
+    <string name="message_card_button_text_evening">익명 쪽지로 마음 표현하기</string>
+    <string name="message_card_button_text_evening_disabled">하루에 3개까지 작성할 수 있어요</string>
+    <string name="message_card_description_evening">서로의 쪽지는 밤 10시에 전달해 드릴게요</string>
+    <string name="message_title_night">모두의 소중한 마음이\n상대에게 무사히 전달되었어요</string>
+    <string name="message_card_button_text_night">매일 저녁 5시에 쪽지를 보낼 수 있어요</string>
+    <string name="message_card_description_night">내일 저녁 5시에 새로운 쪽지를 보낼 수 있어요</string>
+    <string name="message_card_image">Message Card Image</string>
+    <string name="received_message_banner_title">익명의 쪽지가 도착했어요</string>
+    <string name="received_message_banner_subtitle">지금 쪽지함을 열어 확인해보세요</string>
+    <string name="reserved_message_banner_title">예약 중인 쪽지 %1$s개</string>
+    <string name="reserved_message_banner_subtitle">%1$s개의 쪽지를 더 보낼 수 있어요</string>
+    <string name="reserved_message_banner_title_disabled">예약 중인 쪽지 %1$s개</string>
+    <string name="message_timer_title">쪽지 전달까지 남은 시간</string>
+    <string name="message_home_screen">쪽지 홈</string>
+    <string name="message_storage_screen">쪽지 보관함</string>
+</resources>
