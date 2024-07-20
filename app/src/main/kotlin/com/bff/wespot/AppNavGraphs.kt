@@ -100,8 +100,6 @@ internal fun AppNavigation(
         rootDefaultAnimations = RootNavGraphDefaultAnimations(
             enterTransition = { defaultEnterTransition(initialState, targetState) },
             exitTransition = { defaultExitTransition(initialState, targetState) },
-            popEnterTransition = { defaultPopEnterTransition() },
-            popExitTransition = { defaultPopExitTransition() },
         ),
     )
 
@@ -140,11 +138,3 @@ private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
 
 private val NavDestination.hostNavGraph: NavGraph
     get() = hierarchy.first { it is NavGraph } as NavGraph
-
-private fun AnimatedContentTransitionScope<*>.defaultPopEnterTransition(): EnterTransition {
-    return fadeIn() + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End)
-}
-
-private fun AnimatedContentTransitionScope<*>.defaultPopExitTransition(): ExitTransition {
-    return fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
-}

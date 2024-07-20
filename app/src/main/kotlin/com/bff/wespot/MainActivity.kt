@@ -3,6 +3,7 @@ package com.bff.wespot
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.bff.wespot.designsystem.R
+import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -56,13 +61,38 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen() {
     val navController = rememberNavController()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {},
+        topBar = {
+            WSTopBar(
+                title = "",
+                navigation = {
+                    Image(
+                        modifier = Modifier
+                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                            .size(width = 112.dp, height = 44.dp),
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = stringResource(id = com.bff.wespot.message.R.string.wespot_logo),
+                    )
+                },
+                action = {
+                    IconButton(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                        onClick = {}
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.notification),
+                            contentDescription = stringResource(id = com.bff.wespot.message.R.string.notification_icon),
+                        )
+                    }
+                },
+            )
+        },
         bottomBar = {
             val currentSelectedItem by navController.currentScreenAsState()
             BottomNavigationTab(
