@@ -7,10 +7,10 @@ import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.School
-import com.bff.wespot.network.model.auth.response.AuthTokenDto
-import com.bff.wespot.network.model.auth.response.SchoolDto
-import com.bff.wespot.network.model.auth.response.SignUpTokenDto
-import com.bff.wespot.network.source.auth.AuthDataSource
+import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
+import com.bff.wespot.data.remote.model.auth.response.SchoolDto
+import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
+import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

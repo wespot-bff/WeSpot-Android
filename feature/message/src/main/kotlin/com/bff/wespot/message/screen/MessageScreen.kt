@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,10 +37,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
+import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -45,6 +51,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
+import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
@@ -52,12 +59,12 @@ import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
-import com.bff.wespot.ui.WSHomeTabRow
-import com.bff.wespot.ui.WSHomeTopAppBar
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import com.bff.wespot.designsystem.R.drawable as designSystemDrawable
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
@@ -74,12 +81,41 @@ fun MessageScreen(
 
             is MessageSideEffect.NavigateToSendScreen -> {
             }
+
+            is MessageSideEffect.NavigateToNotification -> {
+            }
         }
     }
 
     Scaffold(
         topBar = {
-            WSHomeTopAppBar(onClick = {})
+            WSTopBar(
+                title = "",
+                navigation = {
+                    Image(
+                        modifier = Modifier
+                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                            .size(width = 112.dp, height = 44.dp),
+                        painter = painterResource(id = designSystemDrawable.logo),
+                        contentDescription = stringResource(id = R.string.wespot_logo),
+                    )
+                },
+                action = {
+                    IconButton(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                        onClick = {
+                            action(
+                                MessageAction.Navigation(NavigationAction.NavigateToNotification),
+                            )
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = designSystemDrawable.notification),
+                            contentDescription = stringResource(id = R.string.notification_icon),
+                        )
+                    }
+                },
+            )
         },
     ) {
         Column(
@@ -87,28 +123,16 @@ fun MessageScreen(
                 .fillMaxSize()
                 .padding(it),
         ) {
-            val tabList = persistentListOf(
-                stringResource(R.string.message_home_screen),
-                stringResource(R.string.message_storage_screen),
-            )
-            var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-            WSHomeTabRow(
-                selectedTabIndex = selectedTabIndex,
-                tabList = tabList,
-                onTabSelected = { index -> selectedTabIndex = index },
-            )
+            MessageTopBar()
 
             when (state.timePeriod) {
                 TimePeriod.DAWN_TO_EVENING -> {
                     MessageCard(
-                        height = 352.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_card_title),
+                        title = state.timePeriod.title,
                         buttonText = stringResource(R.string.message_card_button_text_dawn),
-                        image = painterResource(R.drawable.home_message_dawn),
-                        isBannerVisible = false,
-                        isButtonEnable = false,
+                        image = state.timePeriod.image,
                         onButtonClick = { },
                     )
                 }
@@ -126,15 +150,15 @@ fun MessageScreen(
                     )
 
                     MessageCard(
-                        height = 390.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_card_title),
+                        title = state.timePeriod.title,
                         buttonText = if (state.messageStatus.canSend) {
                             stringResource(R.string.message_card_button_text_evening)
                         } else {
                             stringResource(R.string.message_card_button_text_evening_disabled)
                         },
-                        image = painterResource(R.drawable.home_message),
+                        image = state.timePeriod.image,
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
                         onButtonClick = {
@@ -164,13 +188,12 @@ fun MessageScreen(
                     )
 
                     MessageCard(
-                        height = 352.dp,
+                        height = state.timePeriod.height,
                         timePeriod = state.timePeriod,
-                        title = stringResource(R.string.message_title_night),
+                        title = state.timePeriod.title,
                         buttonText = stringResource(R.string.message_card_button_text_night),
-                        image = painterResource(R.drawable.home_message_night),
+                        image = state.timePeriod.image,
                         isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
-                        isButtonEnable = false,
                         onButtonClick = { },
                     )
 
@@ -188,14 +211,29 @@ fun MessageScreen(
 }
 
 @Composable
+private fun MessageTopBar() {
+    val tabList = persistentListOf(
+        stringResource(R.string.message_home_screen),
+        stringResource(R.string.message_storage_screen),
+    )
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    WSHomeTabRow(
+        selectedTabIndex = selectedTabIndex,
+        tabList = tabList,
+        onTabSelected = { index -> selectedTabIndex = index },
+    )
+}
+
+@Composable
 private fun MessageCard(
     height: Dp,
     title: String,
     buttonText: String,
     image: Painter,
-    isBannerVisible: Boolean,
-    isButtonEnable: Boolean,
     timePeriod: TimePeriod,
+    isBannerVisible: Boolean = false,
+    isButtonEnable: Boolean = false,
     onButtonClick: () -> Unit,
 ) {
     Box(
@@ -221,7 +259,7 @@ private fun MessageCard(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, end = 21.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 text = title,
                 maxLines = 2,
                 style = StaticTypeScale.Default.body1,
@@ -236,7 +274,7 @@ private fun MessageCard(
 
             WSButton(
                 text = buttonText,
-                paddingValues = PaddingValues(vertical = 0.dp, horizontal = 15.dp),
+                paddingValues = PaddingValues(vertical = 0.dp, horizontal = 20.dp),
                 buttonType = WSButtonType.Primary,
                 enabled = isButtonEnable,
                 onClick = { onButtonClick() },
@@ -300,7 +338,9 @@ private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () ->
 }
 
 @Composable
-private fun MessageTimer() {
+private fun MessageTimer(viewModel: MessageViewModel = hiltViewModel()) {
+    val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.padding(bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -320,9 +360,8 @@ private fun MessageTimer() {
                 contentDescription = "Timer Image",
             )
 
-            // TODO Timer
             Text(
-                text = "3:42:20",
+                text = remainingTimeMillis.convertMillisToTime(),
                 style = StaticTypeScale.Default.header1.copy(
                     fontSize = 28.textDp,
                     lineHeight = (28 * 1.4f).textDp,

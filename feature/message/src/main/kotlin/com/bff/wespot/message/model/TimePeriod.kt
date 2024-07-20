@@ -1,11 +1,44 @@
 package com.bff.wespot.message.model
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.bff.wespot.message.R
 import java.time.LocalTime
 
 enum class TimePeriod {
     DAWN_TO_EVENING,
     EVENING_TO_NIGHT,
     NIGHT_TO_DAWN,
+    ;
+
+    val height
+        @Composable
+        @ReadOnlyComposable
+        get() = when (this) {
+            DAWN_TO_EVENING -> 352.dp
+            EVENING_TO_NIGHT -> 390.dp
+            NIGHT_TO_DAWN -> 352.dp
+        }
+
+    val title
+        @Composable
+        @ReadOnlyComposable
+        get() = when (this) {
+            DAWN_TO_EVENING -> stringResource(R.string.message_card_title)
+            EVENING_TO_NIGHT -> stringResource(R.string.message_card_title)
+            NIGHT_TO_DAWN -> stringResource(R.string.message_title_night)
+        }
+
+    val image
+        @Composable
+        get() = when (this) {
+            DAWN_TO_EVENING -> painterResource(R.drawable.home_message_dawn)
+            EVENING_TO_NIGHT -> painterResource(R.drawable.home_message)
+            NIGHT_TO_DAWN -> painterResource(R.drawable.home_message_night)
+        }
 }
 
 internal fun getCurrentTimePeriod(): TimePeriod {
