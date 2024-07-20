@@ -32,10 +32,10 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
-    implementation(project(":feature:auth"))
     implementation(project(":core:network"))
     implementation(project(":core:navigation"))
-
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:message"))
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)

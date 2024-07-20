@@ -1,6 +1,7 @@
 package com.bff.wespot.network.model.message.response
 
 import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.network.extensions.toISOLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,8 +17,8 @@ data class MessageDto (
         id = id,
         senderName = senderName,
         content = content,
-        receivedAt = receivedAt,
+        receivedAt = receivedAt.toISOLocalDateTime(),
         read = read,
-        readAt = readAt,
+        readAt = readAt?.toISOLocalDateTime(),
     )
 }
