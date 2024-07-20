@@ -1,7 +1,5 @@
 package com.bff.wespot.data.di
 
-import com.bff.wespot.data.local.WeSpotDataStore
-import com.bff.wespot.data.local.WeSpotDataStoreImpl
 import com.bff.wespot.data.repository.DataStoreRepositoryImpl
 import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
 import com.bff.wespot.data.repository.auth.KakaoLoginManagerImpl
@@ -40,12 +38,6 @@ abstract class DataModule {
     abstract fun bindsAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindsWeSpotDataStore(
-        weSpotDataStoreImpl: WeSpotDataStoreImpl
-    ): WeSpotDataStore
 
     @Binds
     @Singleton

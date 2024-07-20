@@ -1,6 +1,6 @@
 package com.bff.wespot.data.repository
 
-import com.bff.wespot.data.local.WeSpotDataStore
+import com.bff.wespot.data.local.source.WeSpotDataStore
 import com.bff.wespot.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

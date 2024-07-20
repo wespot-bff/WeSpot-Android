@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.wespot.android.hilt)
 }
 
+android {
+    namespace = "com.bff.wespot.data.local"
+}
+
 dependencies {
     implementation(project(":core:model"))
 
