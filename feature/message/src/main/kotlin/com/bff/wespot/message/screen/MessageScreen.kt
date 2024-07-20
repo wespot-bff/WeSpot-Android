@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +42,7 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
+import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -55,11 +59,12 @@ import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
-import com.bff.wespot.ui.WSHomeTopAppBar
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import com.bff.wespot.designsystem.R.drawable as designSystemDrawable
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
@@ -76,12 +81,41 @@ fun MessageScreen(
 
             is MessageSideEffect.NavigateToSendScreen -> {
             }
+
+            is MessageSideEffect.NavigateToNotification -> {
+            }
         }
     }
 
     Scaffold(
         topBar = {
-            WSHomeTopAppBar(onClick = {})
+            WSTopBar(
+                title = "",
+                navigation = {
+                    Image(
+                        modifier = Modifier
+                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                            .size(width = 112.dp, height = 44.dp),
+                        painter = painterResource(id = designSystemDrawable.logo),
+                        contentDescription = stringResource(id = R.string.wespot_logo),
+                    )
+                },
+                action = {
+                    IconButton(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                        onClick = {
+                            action(
+                                MessageAction.Navigation(NavigationAction.NavigateToNotification),
+                            )
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = designSystemDrawable.notification),
+                            contentDescription = stringResource(id = R.string.notification_icon),
+                        )
+                    }
+                },
+            )
         },
     ) {
         Column(
@@ -225,7 +259,7 @@ private fun MessageCard(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, end = 21.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 text = title,
                 maxLines = 2,
                 style = StaticTypeScale.Default.body1,
@@ -240,7 +274,7 @@ private fun MessageCard(
 
             WSButton(
                 text = buttonText,
-                paddingValues = PaddingValues(vertical = 0.dp, horizontal = 15.dp),
+                paddingValues = PaddingValues(vertical = 0.dp, horizontal = 20.dp),
                 buttonType = WSButtonType.Primary,
                 enabled = isButtonEnable,
                 onClick = { onButtonClick() },
