@@ -6,6 +6,8 @@ import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.data.remote.source.message.MessageDataSourceImpl
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
+import com.bff.wespot.network.source.vote.VoteDataSource
+import com.bff.wespot.network.source.vote.VoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -26,6 +28,12 @@ abstract class DataRemoteModule {
     abstract fun bindsAuthDataSource(
         authDataSourceImpl: AuthDataSourceImpl
     ): AuthDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsVoteDataSource(
+        voteDataSourceImpl: VoteDataSourceImpl
+    ): VoteDataSource
 
     @Binds
     @Singleton
