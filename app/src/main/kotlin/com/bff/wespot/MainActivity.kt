@@ -41,9 +41,9 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.ramcosta.composedestinations.navigation.navigate
-import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -51,9 +51,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
-            val engine = rememberNavHostEngine()
-
             WeSpotTheme {
                 MainScreen()
             }
@@ -66,49 +63,55 @@ class MainActivity : ComponentActivity() {
 private fun MainScreen() {
     val navController = rememberNavController()
 
+    val checkScreen by navController.checkCurrentScreen()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            WSTopBar(
-                title = "",
-                navigation = {
-                    Image(
-                        modifier = Modifier
-                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                            .size(width = 112.dp, height = 44.dp),
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = stringResource(id = com.bff.wespot.message.R.string.wespot_logo),
-                    )
-                },
-                action = {
-                    IconButton(
-                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.notification),
-                            contentDescription = stringResource(id = com.bff.wespot.message.R.string.notification_icon),
+            if(checkScreen) {
+                WSTopBar(
+                    title = "",
+                    navigation = {
+                        Image(
+                            modifier = Modifier
+                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                                .size(width = 112.dp, height = 44.dp),
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = stringResource(id = com.bff.wespot.message.R.string.wespot_logo),
                         )
-                    }
-                },
-            )
+                    },
+                    action = {
+                        IconButton(
+                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                            onClick = {}
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.notification),
+                                contentDescription = stringResource(id = com.bff.wespot.message.R.string.notification_icon),
+                            )
+                        }
+                    },
+                )
+            }
         },
         bottomBar = {
-            val currentSelectedItem by navController.currentScreenAsState()
-            BottomNavigationTab(
-                selectedNavigation = currentSelectedItem,
-                onNavigationSelected = { selected ->
-                    navController.navigate(selected) {
-                        launchSingleTop = true
-                        restoreState = true
+            if(checkScreen) {
+                val currentSelectedItem by navController.currentScreenAsState()
+                BottomNavigationTab(
+                    selectedNavigation = currentSelectedItem,
+                    onNavigationSelected = { selected ->
+                        navController.navigate(selected) {
+                            launchSingleTop = true
+                            restoreState = true
 
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                         }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     ) {
         AppNavigation(navController = navController, modifier = Modifier.padding(it))
@@ -151,6 +154,7 @@ private fun NavController.currentScreenAsState(): State<NavGraphSpec> {
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            Timber.d("Destination changed to: ${destination.route}")
             selectedItem.value = destination.navGraph()
         }
         addOnDestinationChangedListener(listener)
@@ -161,6 +165,26 @@ private fun NavController.currentScreenAsState(): State<NavGraphSpec> {
     }
 
     return selectedItem
+}
+
+@Stable
+@Composable
+private fun NavController.checkCurrentScreen(): State<Boolean> {
+    val showBar = remember { mutableStateOf(false) }
+
+    DisposableEffect(this) {
+        val listener = NavController.OnDestinationChangedListener{_, destination, _ ->
+            showBar.value = destination.checkDestination()
+        }
+
+        addOnDestinationChangedListener(listener)
+
+        onDispose {
+            removeOnDestinationChangedListener(listener)
+        }
+    }
+
+    return showBar
 }
 
 

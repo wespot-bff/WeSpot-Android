@@ -35,13 +35,19 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
 import com.danggeun.vote.state.VoteAction
-import com.danggeun.vote.viewmodel.VoteViewModel
+import com.danggeun.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+
+interface VoteNavigator {
+    fun navigateUp()
+    fun navigateToVotingScreen()
+}
 
 @Destination
 @Composable
-fun VoteHomeScreen(
-    viewModel: VoteViewModel = hiltViewModel(),
+internal fun VoteHomeScreen(
+    viewModel: VoteHomeViewModel = hiltViewModel(),
+    voteNavigator: VoteNavigator,
 ) {
     Scaffold {
         Column(
@@ -101,7 +107,10 @@ fun VoteHomeScreen(
                             modifier = Modifier.padding(horizontal = 28.dp),
                         )
 
-                        WSButton(onClick = { }, text = stringResource(id = R.string.voting)) {
+                        WSButton(
+                            onClick = voteNavigator::navigateToVotingScreen,
+                            text = stringResource(id = R.string.voting)
+                        ) {
                             it.invoke()
                         }
                     }
@@ -115,16 +124,18 @@ fun VoteHomeScreen(
             Lifecycle.Event.ON_RESUME -> {
                 viewModel.onAction(VoteAction.StartDate)
             }
+
             Lifecycle.Event.ON_STOP -> {
                 viewModel.onAction(VoteAction.EndDate)
             }
+
             else -> {}
         }
     }
 }
 
 @Composable
-private fun ClockTime(viewModel: VoteViewModel) {
+private fun ClockTime(viewModel: VoteHomeViewModel) {
     val currentDate by viewModel.currentDate.collectAsStateWithLifecycle()
 
     Text(

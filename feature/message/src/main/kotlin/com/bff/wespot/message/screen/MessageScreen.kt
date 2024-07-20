@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -61,11 +60,15 @@ import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-@OptIn(ExperimentalMaterial3Api::class)
+interface MessageNavigator {
+    fun navigateUp()
+}
+
 @Destination
 @Composable
-fun MessageScreen(
+internal fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
+    messageNavigator: MessageNavigator
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction

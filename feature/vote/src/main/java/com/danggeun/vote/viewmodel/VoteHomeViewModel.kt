@@ -23,7 +23,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class VoteViewModel @Inject constructor(
+class VoteHomeViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(VoteUiState())

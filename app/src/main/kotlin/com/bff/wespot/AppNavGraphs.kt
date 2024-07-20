@@ -15,11 +15,13 @@ import androidx.navigation.NavHostController
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.danggeun.entire.screen.destinations.EntireScreenDestination
 import com.danggeun.vote.screen.destinations.VoteHomeScreenDestination
+import com.danggeun.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.dynamic.routedIn
+import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.rememberNavHostEngine
-import com.ramcosta.composedestinations.scope.DestinationScope
+import com.ramcosta.composedestinations.scope.DestinationScopeWithNoDependencies
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
@@ -30,7 +32,8 @@ object NavGraphs {
         override val startRoute = VoteHomeScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            VoteHomeScreenDestination
+            VoteHomeScreenDestination,
+            VotingScreenDestination
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -72,6 +75,12 @@ object NavGraphs {
     }
 }
 
+private val tabScreenNames = listOf(
+    "vote/vote_home_screen",
+    "message/message_screen",
+    "entire/entire_screen"
+)
+
 fun NavDestination.navGraph(): NavGraphSpec {
     hierarchy.forEach { destination ->
         NavGraphs.root.nestedNavGraphs.forEach { navGraph ->
@@ -84,7 +93,18 @@ fun NavDestination.navGraph(): NavGraphSpec {
     throw RuntimeException("Unknown nav graph for destination $route")
 }
 
-fun DestinationScope<*>.currentNavigator(openSettings: () -> Unit): CommonNavGraphNavigator {
+fun NavDestination.checkDestination(): Boolean {
+    hierarchy.forEach { destination ->
+        tabScreenNames.forEach { name ->
+            if (destination.route == name) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavigator {
     return CommonNavGraphNavigator(
         navBackStackEntry.destination.navGraph(),
         navController,
@@ -108,6 +128,9 @@ internal fun AppNavigation(
         navController = navController,
         engine = engine,
         modifier = modifier,
+        dependenciesContainerBuilder = {
+            dependency(currentNavigator())
+        }
     )
 }
 

@@ -9,7 +9,7 @@ android {
 }
 
 ksp {
-    arg("compose-destinations.moduleName", "message")
+    arg("compose-destinations.moduleName", "entire")
     arg("compose-destinations.mode", "destinations")
 }
 
