@@ -54,8 +54,14 @@ class MessageViewModel @Inject constructor(
     private val timeChecker: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
         withContext(coroutineDispatcher) {
             while (true) {
-                updateTimePeriod()
                 delay(1000)
+                intent {
+                    // TimePeriod가 변경되는 경우, UI 업데이트 수행
+                    val currentTimePeriod = getCurrentTimePeriod()
+                    if (state.timePeriod != currentTimePeriod) {
+                        updateTimePeriod(currentTimePeriod)
+                    }
+                }
             }
         }
     }
@@ -69,6 +75,8 @@ class MessageViewModel @Inject constructor(
     }
 
     private fun handleHomeScreenEntered() {
+        val currentTimePeriod = getCurrentTimePeriod()
+        updateTimePeriod(currentTimePeriod)
         timeChecker.start()
     }
 
@@ -89,8 +97,7 @@ class MessageViewModel @Inject constructor(
         postSideEffect(sideEffect)
     }
 
-    private fun updateTimePeriod() {
-        val currentTimePeriod = getCurrentTimePeriod()
+    private fun updateTimePeriod(currentTimePeriod: TimePeriod) {
         intent {
             reduce {
                 state.copy(
@@ -163,6 +170,6 @@ class MessageViewModel @Inject constructor(
     companion object {
         private const val MILLIS_PER_DAY = 24 * 3600 * 1000
         private const val MILLIS_TO_TEN_PM = 22 * 3600 * 1000
-        private const val MILLIS_KTC_OFFSET = 6 * 3600 * 1000
+        private const val MILLIS_KTC_OFFSET = 9 * 3600 * 1000
     }
 }
