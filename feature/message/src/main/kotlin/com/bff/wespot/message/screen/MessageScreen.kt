@@ -68,7 +68,7 @@ interface MessageNavigator {
 @Composable
 internal fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
-    messageNavigator: MessageNavigator
+    messageNavigator: MessageNavigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction

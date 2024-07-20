@@ -62,7 +62,7 @@ internal fun VoteHomeScreen(
                 selectedTabIndex = selectedTabIndex,
                 onTabSelected = { selectedTabIndex = it },
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier
@@ -123,7 +123,7 @@ internal fun VoteHomeScreen(
 
                         WSButton(
                             onClick = voteNavigator::navigateToVotingScreen,
-                            text = stringResource(id = R.string.voting)
+                            text = stringResource(id = R.string.voting),
                         ) {
                             it.invoke()
                         }

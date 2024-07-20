@@ -33,8 +33,7 @@ interface VotingNavigator {
 @Composable
 fun VotingScreen(
     votingNavigator: VotingNavigator,
-    viewModel: VotingViewModel = hiltViewModel()
-
+    viewModel: VotingViewModel = hiltViewModel(),
 ) {
     Scaffold(
         topBar = {
@@ -44,14 +43,14 @@ fun VotingScreen(
                     Text(text = stringResource(id = R.string.report), style = it)
                 },
                 canNavigateBack = true,
-                navigateUp = votingNavigator::navigateUp
+                navigateUp = votingNavigator::navigateUp,
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier
                 .padding(it)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
         ) {
             Text(text = "박주현님은 반에서 어떤 친구인가요?", style = StaticTypeScale.Default.header1)
 
@@ -59,12 +58,12 @@ fun VotingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp, bottom = 24.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Image(
                     painter = painterResource(id = com.bff.wespot.ui.R.drawable.male_student),
                     contentDescription = "male",
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier.size(120.dp),
                 )
             }
 

@@ -25,7 +25,7 @@ import com.ramcosta.composedestinations.scope.DestinationScopeWithNoDependencies
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
-object NavGraphs {
+object AppNavGraphs {
     val vote = object : NavGraphSpec {
         override val route = "vote"
 
@@ -33,7 +33,7 @@ object NavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             VoteHomeScreenDestination,
-            VotingScreenDestination
+            VotingScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -44,7 +44,7 @@ object NavGraphs {
         override val startRoute = MessageScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            MessageScreenDestination
+            MessageScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -55,7 +55,7 @@ object NavGraphs {
         override val startRoute = EntireScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            EntireScreenDestination
+            EntireScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -70,7 +70,7 @@ object NavGraphs {
         override val nestedNavGraphs = listOf(
             vote,
             message,
-            entire
+            entire,
         )
     }
 }
@@ -78,19 +78,19 @@ object NavGraphs {
 private val tabScreenNames = listOf(
     "vote/vote_home_screen",
     "message/message_screen",
-    "entire/entire_screen"
+    "entire/entire_screen",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {
     hierarchy.forEach { destination ->
-        NavGraphs.root.nestedNavGraphs.forEach { navGraph ->
+        AppNavGraphs.root.nestedNavGraphs.forEach { navGraph ->
             if (destination.route == navGraph.route) {
                 return navGraph
             }
         }
     }
 
-    throw RuntimeException("Unknown nav graph for destination $route")
+    throw ClassNotFoundException("Unknown nav graph for destination $route")
 }
 
 fun NavDestination.checkDestination(): Boolean {
@@ -124,16 +124,15 @@ internal fun AppNavigation(
     )
 
     DestinationsNavHost(
-        navGraph = NavGraphs.root,
+        navGraph = AppNavGraphs.root,
         navController = navController,
         engine = engine,
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
-        }
+        },
     )
 }
-
 
 private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,

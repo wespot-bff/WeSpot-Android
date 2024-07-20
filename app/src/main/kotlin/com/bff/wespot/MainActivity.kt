@@ -68,7 +68,7 @@ private fun MainScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if(checkScreen) {
+            if (checkScreen) {
                 WSTopBar(
                     title = "",
                     navigation = {
@@ -77,17 +77,21 @@ private fun MainScreen() {
                                 .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
                                 .size(width = 112.dp, height = 44.dp),
                             painter = painterResource(id = R.drawable.logo),
-                            contentDescription = stringResource(id = com.bff.wespot.message.R.string.wespot_logo),
+                            contentDescription = stringResource(
+                                id = com.bff.wespot.message.R.string.wespot_logo
+                            ),
                         )
                     },
                     action = {
                         IconButton(
                             modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                            onClick = {}
+                            onClick = {},
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.notification),
-                                contentDescription = stringResource(id = com.bff.wespot.message.R.string.notification_icon),
+                                contentDescription = stringResource(
+                                    id = com.bff.wespot.message.R.string.notification_icon
+                                ),
                             )
                         }
                     },
@@ -95,7 +99,7 @@ private fun MainScreen() {
             }
         },
         bottomBar = {
-            if(checkScreen) {
+            if (checkScreen) {
                 val currentSelectedItem by navController.currentScreenAsState()
                 BottomNavigationTab(
                     selectedNavigation = currentSelectedItem,
@@ -109,10 +113,10 @@ private fun MainScreen() {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
-        }
+        },
     ) {
         AppNavigation(navController = navController, modifier = Modifier.padding(it))
     }
@@ -131,7 +135,7 @@ private fun BottomNavigationTab(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             BottomBarDestinations.values().forEach { destination ->
                 TabItem(
@@ -150,7 +154,7 @@ private fun BottomNavigationTab(
 @Stable
 @Composable
 private fun NavController.currentScreenAsState(): State<NavGraphSpec> {
-    val selectedItem = remember { mutableStateOf(NavGraphs.vote) }
+    val selectedItem = remember { mutableStateOf(AppNavGraphs.vote) }
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
@@ -173,7 +177,7 @@ private fun NavController.checkCurrentScreen(): State<Boolean> {
     val showBar = remember { mutableStateOf(false) }
 
     DisposableEffect(this) {
-        val listener = NavController.OnDestinationChangedListener{_, destination, _ ->
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             showBar.value = destination.checkDestination()
         }
 
@@ -187,14 +191,13 @@ private fun NavController.checkCurrentScreen(): State<Boolean> {
     return showBar
 }
 
-
 @Composable
 private fun TabItem(
     icon: Painter,
     title: String,
     description: String,
     selected: Boolean = false,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -203,7 +206,7 @@ private fun TabItem(
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 painter = icon,
@@ -212,7 +215,7 @@ private fun TabItem(
                     WeSpotThemeManager.colors.abledIconColor
                 } else {
                     WeSpotThemeManager.colors.disableIcnColor
-                }
+                },
             )
 
             Text(
@@ -222,7 +225,7 @@ private fun TabItem(
                     WeSpotThemeManager.colors.abledIconColor
                 } else {
                     WeSpotThemeManager.colors.disableIcnColor
-                }
+                },
             )
         }
     }

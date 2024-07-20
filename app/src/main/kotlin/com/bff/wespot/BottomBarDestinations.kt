@@ -10,18 +10,18 @@ internal enum class BottomBarDestinations(
     @StringRes val title: Int,
 ) {
     Vote(
-        NavGraphs.vote,
+        AppNavGraphs.vote,
         com.bff.wespot.designsystem.R.drawable.vote_tab,
         com.bff.wespot.vote.R.string.vote,
     ),
     Message(
-        NavGraphs.message,
+        AppNavGraphs.message,
         com.bff.wespot.designsystem.R.drawable.message,
         com.bff.wespot.message.R.string.message,
     ),
     Entire(
-        NavGraphs.entire,
+        AppNavGraphs.entire,
         com.bff.wespot.designsystem.R.drawable.entire,
         com.bff.wespot.designsystem.R.string.entire,
-    );
+    ),
 }
