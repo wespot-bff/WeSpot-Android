@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:vote"))
     implementation(project(":feature:message"))
+    implementation(project(":feature:entire"))
 
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)
@@ -45,4 +46,5 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.junit)
     implementation(libs.timber)
+    implementation(libs.kotlinx.collections.immutable)
 }

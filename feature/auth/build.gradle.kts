@@ -8,13 +8,12 @@ android {
     namespace = "com.bff.wespot.auth"
 }
 
-dependencies {
-    implementation(project(":domain"))
-    implementation(project(":core:model"))
-    implementation(project(":core:ui"))
-    implementation(project(":designsystem"))
-    implementation(project(":core:navigation"))
+ksp {
+    arg("compose-destinations.mode", "navgraphs")
+    arg("compose-destinations.moduleName", "auth")
+}
 
+dependencies {
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)

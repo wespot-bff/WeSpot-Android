@@ -28,6 +28,7 @@ class AndroidFeaturePlugin: Plugin<Project>{
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":designsystem"))
                 "implementation"(project(":core:common"))
+                "implementation"(project(":core:navigation"))
             }
         }
     }

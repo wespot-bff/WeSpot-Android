@@ -8,13 +8,12 @@ android {
     namespace = "com.bff.wespot.vote"
 }
 
-dependencies {
-    implementation(project(":domain"))
-    implementation(project(":core:model"))
-    implementation(project(":core:ui"))
-    implementation(project(":designsystem"))
+ksp {
+    arg("compose-destinations.moduleName", "vote")
+    arg("compose-destinations.mode", "destinations")
+}
 
-    implementation(libs.bundles.androidx.compose)
+dependencies {
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
