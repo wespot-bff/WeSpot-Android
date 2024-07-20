@@ -17,4 +17,6 @@
     <string name="message_timer_title">쪽지 전달까지 남은 시간</string>
     <string name="message_home_screen">쪽지 홈</string>
     <string name="message_storage_screen">쪽지 보관함</string>
+    <string name="wespot_logo">WeSpot Logo</string>
+    <string name="notification_icon">Notification Icon</string>
 </resources>

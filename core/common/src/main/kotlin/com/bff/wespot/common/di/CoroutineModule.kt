@@ -1,4 +1,4 @@
-package com.danggeun.common.di
+package com.bff.wespot.common.di
 
 import dagger.Module
 import dagger.Provides
