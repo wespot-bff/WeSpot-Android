@@ -78,7 +78,7 @@ private fun MainScreen() {
                                 .size(width = 112.dp, height = 44.dp),
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = stringResource(
-                                id = com.bff.wespot.message.R.string.wespot_logo
+                                id = com.bff.wespot.message.R.string.wespot_logo,
                             ),
                         )
                     },
@@ -90,7 +90,7 @@ private fun MainScreen() {
                             Icon(
                                 painter = painterResource(id = R.drawable.notification),
                                 contentDescription = stringResource(
-                                    id = com.bff.wespot.message.R.string.notification_icon
+                                    id = com.bff.wespot.message.R.string.notification_icon,
                                 ),
                             )
                         }
