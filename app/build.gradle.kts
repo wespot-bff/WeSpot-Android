@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":data-remote"))
+    implementation(project(":data-local"))
     implementation(project(":designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
