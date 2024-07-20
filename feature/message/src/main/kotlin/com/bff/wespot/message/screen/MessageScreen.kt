@@ -59,12 +59,14 @@ import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import com.bff.wespot.designsystem.R.drawable as designSystemDrawable
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
 fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),

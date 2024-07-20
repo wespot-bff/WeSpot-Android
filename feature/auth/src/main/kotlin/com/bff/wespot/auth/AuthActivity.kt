@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.bff.wespot.auth.screen.NavGraphs
+import com.bff.wespot.auth.screen.AuthNavGraph
 import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
 import com.bff.wespot.auth.screen.destinations.EditScreenDestination
@@ -102,7 +102,7 @@ class AuthActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     DestinationsNavHost(
-                        navGraph = NavGraphs.root,
+                        navGraph = AuthNavGraph,
                         navController = navController,
                         engine = engine,
                         dependenciesContainerBuilder = {

@@ -28,4 +28,5 @@
     <string name="letter_sender">From.</string>
     <string name="letter_opened">읽음</string>
     <string name="letter_image">Letter Image</string>
+    <string name="entire">전체</string>
 </resources>

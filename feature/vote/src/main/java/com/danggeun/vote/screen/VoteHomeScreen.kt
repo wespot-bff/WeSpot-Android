@@ -36,7 +36,9 @@ import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
 import com.danggeun.vote.state.VoteAction
 import com.danggeun.vote.viewmodel.VoteViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 
+@Destination
 @Composable
 fun VoteHomeScreen(
     viewModel: VoteViewModel = hiltViewModel(),
@@ -96,10 +98,10 @@ fun VoteHomeScreen(
                         Text(
                             text = stringResource(id = R.string.vote_ongoing),
                             style = StaticTypeScale.Default.body1,
-                            modifier = Modifier.padding(horizontal = 20.dp),
+                            modifier = Modifier.padding(horizontal = 28.dp),
                         )
 
-                        WSButton(onClick = { }, text = stringResource(id = R.string.vote)) {
+                        WSButton(onClick = { }, text = stringResource(id = R.string.voting)) {
                             it.invoke()
                         }
                     }
@@ -129,6 +131,6 @@ private fun ClockTime(viewModel: VoteViewModel) {
         text = currentDate,
         style = StaticTypeScale.Default.body6,
         color = WeSpotThemeManager.colors.disableBtnTxtColor,
-        modifier = Modifier.padding(horizontal = 20.dp),
+        modifier = Modifier.padding(horizontal = 28.dp),
     )
 }
