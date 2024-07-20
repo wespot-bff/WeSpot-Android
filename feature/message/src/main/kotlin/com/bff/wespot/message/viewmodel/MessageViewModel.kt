@@ -81,6 +81,10 @@ class MessageViewModel @Inject constructor(
             NavigationAction.NavigateToStorageScreen -> {
                 MessageSideEffect.NavigateToStorageScreen
             }
+
+            NavigationAction.NavigateToNotification -> {
+                MessageSideEffect.NavigateToNotification
+            }
         }
         postSideEffect(sideEffect)
     }
