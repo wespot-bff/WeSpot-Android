@@ -4,6 +4,8 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.data.remote.source.message.MessageDataSourceImpl
+import com.bff.wespot.data.remote.source.user.UserDataSource
+import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,4 +26,10 @@ abstract class DataRemoteModule {
     abstract fun bindsAuthDataSource(
         authDataSourceImpl: AuthDataSourceImpl
     ): AuthDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsUserDataSource(
+        userDataSourceImpl: UserDataSourceImpl
+    ): UserDataSource
 }
