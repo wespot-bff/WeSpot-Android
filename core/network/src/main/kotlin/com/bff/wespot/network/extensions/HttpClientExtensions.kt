@@ -1,6 +1,6 @@
 package com.bff.wespot.network.extensions
 
-import com.bff.wespot.network.model.exception.NetworkException
+import com.bff.wespot.model.exception.NetworkException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
