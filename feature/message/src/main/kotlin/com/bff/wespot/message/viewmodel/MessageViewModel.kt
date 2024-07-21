@@ -82,8 +82,10 @@ class MessageViewModel @Inject constructor(
 
     private fun handleNavigation(navigate: NavigationAction) = intent {
         val sideEffect = when (navigate) {
-            NavigationAction.NavigateToSendScreen -> {
-                MessageSideEffect.NavigateToSendScreen
+            NavigationAction.PopBackStack -> MessageSideEffect.PopBackStack
+
+            is NavigationAction.NavigateToReceiverScreen -> {
+                MessageSideEffect.NavigateToReceiverScreen(navigate.isEditing)
             }
 
             NavigationAction.NavigateToStorageScreen -> {
@@ -132,7 +134,6 @@ class MessageViewModel @Inject constructor(
                     }
                 }
                 .onFailure { exception ->
-                    postSideEffect(MessageSideEffect.Error(exception))
                 }
         }
     }
@@ -148,7 +149,6 @@ class MessageViewModel @Inject constructor(
                     }
                 }
                 .onFailure { exception ->
-                    postSideEffect(MessageSideEffect.Error(exception))
                 }
         }
     }

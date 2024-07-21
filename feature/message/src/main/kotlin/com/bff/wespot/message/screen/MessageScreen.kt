@@ -54,14 +54,12 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
 import com.bff.wespot.designsystem.R.drawable as designSystemDrawable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,21 +69,6 @@ fun MessageScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
-    viewModel.collectSideEffect {
-        when (it) {
-            is MessageSideEffect.Error -> {
-            }
-
-            is MessageSideEffect.NavigateToStorageScreen -> {
-            }
-
-            is MessageSideEffect.NavigateToSendScreen -> {
-            }
-
-            is MessageSideEffect.NavigateToNotification -> {
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -164,7 +147,7 @@ fun MessageScreen(
                         onButtonClick = {
                             action(
                                 MessageAction.Navigation(
-                                    NavigationAction.NavigateToSendScreen,
+                                    NavigationAction.NavigateToReceiverScreen(false),
                                 ),
                             )
                         },

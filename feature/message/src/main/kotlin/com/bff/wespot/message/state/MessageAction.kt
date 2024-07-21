@@ -6,7 +6,8 @@ sealed class MessageAction {
 }
 
 sealed interface NavigationAction {
-    data object NavigateToSendScreen : NavigationAction
+    data object PopBackStack : NavigationAction
+    data class NavigateToReceiverScreen(val isEditing: Boolean) : NavigationAction
     data object NavigateToStorageScreen : NavigationAction
     data object NavigateToNotification : NavigationAction
 }
