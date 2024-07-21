@@ -9,13 +9,13 @@ data class UserDto (
     val name: String,
     val schoolName: String,
     val grade: Int,
-    val group: Int,
+    val classNumber: Int,
 ) {
     fun toUser(): User = User(
         id = id,
         name = name,
         schoolName = schoolName,
         grade = grade,
-        group = group,
+        classNumber = classNumber,
     )
 }
