@@ -10,4 +10,5 @@
     <string name="vote_result_screen">투표 결과</string>
     <string name="vote_home_screen">투표 홈</string>
     <string name="vote_question">님은 반에서 어떤 친구인가요?</string>
+    <string name="submit_vote_and_check_result">투표 완료하고 결과 확인하기</string>
 </resources>

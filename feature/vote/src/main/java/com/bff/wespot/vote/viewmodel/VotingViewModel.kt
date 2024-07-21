@@ -3,6 +3,7 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.model.vote.request.VoteResult
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
@@ -26,6 +27,8 @@ class VotingViewModel @Inject constructor(
     fun onAction(action: VotingAction) {
         when (action) {
             VotingAction.StartVoting -> startVoting()
+            VotingAction.GoBackVote -> goBackVote()
+            is VotingAction.GoToNextVote -> goToNextVote(action.optionId)
         }
     }
 
@@ -38,13 +41,46 @@ class VotingViewModel @Inject constructor(
                             voteItems = it.voteItems,
                             totalPage = it.voteItems.size,
                             pageNumber = 1,
-                            currentVote = it.voteItems.first()
+                            currentVote = it.voteItems.first(),
+                            start = false
                         )
                     }
                 }
                 .onFailure {
                     Timber.e(it)
                 }
+        }
+    }
+
+    private fun goToNextVote(optionId: Int) = intent {
+        if (state.pageNumber == state.totalPage) {
+            return@intent
+        }
+
+        reduce {
+            state.copy(
+                pageNumber = state.pageNumber + 1,
+                currentVote = state.voteItems[state.pageNumber],
+                selectedVote = state.selectedVote.toMutableList().apply {
+                    add(VoteResult(state.currentVote.voteUser.id, optionId))
+                }
+            )
+        }
+    }
+
+    private fun goBackVote() = intent {
+        if (state.pageNumber == 1) {
+            return@intent
+        }
+
+        reduce {
+            state.copy(
+                pageNumber = state.pageNumber - 1,
+                currentVote = state.voteItems[state.pageNumber - 2],
+                selectedVote = state.selectedVote.toMutableList().apply {
+                    removeLast()
+                }
+            )
         }
     }
 }

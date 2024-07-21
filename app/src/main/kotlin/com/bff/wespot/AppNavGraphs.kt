@@ -125,6 +125,8 @@ internal fun AppNavigation(
         ),
     )
 
+    val votingViewModel: VotingViewModel = hiltViewModel()
+
     DestinationsNavHost(
         navGraph = AppNavGraphs.root,
         navController = navController,
@@ -132,7 +134,7 @@ internal fun AppNavigation(
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
-            dependency(hiltViewModel<VotingViewModel>())
+            dependency(votingViewModel)
         },
     )
 }

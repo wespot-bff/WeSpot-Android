@@ -1,9 +1,11 @@
 package com.bff.wespot.vote.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +55,8 @@ fun VotingScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
+    var submitButton by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             WSTopBar(
@@ -58,7 +65,11 @@ fun VotingScreen(
                     Text(text = stringResource(id = R.string.report), style = it)
                 },
                 canNavigateBack = true,
-                navigateUp = votingNavigator::navigateUp,
+                navigateUp = {
+                    votingNavigator.navigateUp()
+                    action(VotingAction.GoBackVote)
+                    submitButton = false
+                },
             )
         },
     ) {
@@ -96,10 +107,17 @@ fun VotingScreen(
                     option.id
                 }) { voteItem ->
                     WSButton(
-                        onClick = { },
+                        onClick = {
+                            if (state.pageNumber != state.totalPage) {
+                                action(VotingAction.GoToNextVote(voteItem.id))
+                                votingNavigator.navigateToVotingScreen()
+                            } else {
+                                submitButton = !submitButton
+                            }
+                        },
                         text = voteItem.content,
                         buttonType = WSButtonType.Tertiary,
-                        paddingValues = PaddingValues(vertical = 8.dp)
+                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
                     ) { text ->
                         text.invoke()
                     }
@@ -107,8 +125,26 @@ fun VotingScreen(
             }
         }
 
-        LaunchedEffect(Unit) {
+        if (submitButton) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                WSButton(
+                    onClick = { },
+                    text = stringResource(id = R.string.submit_vote_and_check_result)
+                ) {
+                    it.invoke()
+                }
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (state.start) {
             action(VotingAction.StartVoting)
         }
+    }
+
+    BackHandler {
+        action(VotingAction.GoBackVote)
+        votingNavigator.navigateUp()
+        submitButton = false
     }
 }
