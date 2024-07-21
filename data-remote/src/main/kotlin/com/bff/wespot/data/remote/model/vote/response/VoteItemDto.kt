@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VoteItemDto(
-    val user: UserDto,
+    val user: VoteUserDto,
     val voteOptions: List<VoteOptionDto>
 ) {
     fun toVoteItem() = VoteItem(
-            user = user.toUser(),
+            voteUser = user.toVoteUser(),
             voteOption = voteOptions.map { it.toVoteOption() }
         )
 }

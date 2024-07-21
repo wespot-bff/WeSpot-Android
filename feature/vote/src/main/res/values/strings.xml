@@ -9,4 +9,5 @@
     <string name="report">제보하기</string>
     <string name="vote_result_screen">투표 결과</string>
     <string name="vote_home_screen">투표 홈</string>
+    <string name="vote_question">님은 반에서 어떤 친구인가요?</string>
 </resources>

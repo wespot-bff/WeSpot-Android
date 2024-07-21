@@ -1,17 +1,17 @@
 package com.bff.wespot.data.remote.model.vote.response
 
-import com.bff.wespot.model.vote.response.User
+import com.bff.wespot.model.vote.response.VoteUser
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDto(
+data class VoteUserDto(
     val id: Int,
-    val Name: String,
+    val name: String,
     val profile: ProfileDto
 ) {
-    fun toUser() = User(
+    fun toVoteUser() = VoteUser(
             id = id,
-            name = Name,
+            name = name,
             profile = profile.toProfile()
         )
 }

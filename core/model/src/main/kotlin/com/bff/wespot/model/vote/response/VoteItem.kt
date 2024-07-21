@@ -1,6 +1,8 @@
 package com.bff.wespot.model.vote.response
 
 data class VoteItem(
-    val user: User,
+    val voteUser: VoteUser,
     val voteOption: List<VoteOption>,
-)
+) {
+    constructor() : this(VoteUser(), emptyList())
+}

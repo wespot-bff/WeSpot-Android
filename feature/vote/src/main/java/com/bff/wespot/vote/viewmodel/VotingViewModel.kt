@@ -34,7 +34,12 @@ class VotingViewModel @Inject constructor(
             voteRepository.getVoteQuestions()
                 .onSuccess {
                     reduce {
-                        state.copy(voteItems = it)
+                        state.copy(
+                            voteItems = it.voteItems,
+                            totalPage = it.voteItems.size,
+                            pageNumber = 1,
+                            currentVote = it.voteItems.first()
+                        )
                     }
                 }
                 .onFailure {
