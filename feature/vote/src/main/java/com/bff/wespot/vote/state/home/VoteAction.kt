@@ -1,4 +1,4 @@
-package com.bff.wespot.vote.state
+package com.bff.wespot.vote.state.home
 
 sealed class VoteAction {
     data object StartDate : VoteAction()

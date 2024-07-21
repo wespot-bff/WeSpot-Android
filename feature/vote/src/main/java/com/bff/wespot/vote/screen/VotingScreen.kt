@@ -10,18 +10,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.vote.R
+import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectAsState
+import timber.log.Timber
 
 interface VotingNavigator {
     fun navigateUp()
@@ -33,8 +37,12 @@ interface VotingNavigator {
 @Composable
 fun VotingScreen(
     votingNavigator: VotingNavigator,
-    viewModel: VotingViewModel = hiltViewModel(),
+    viewModel: VotingViewModel,
 ) {
+    val state by viewModel.collectAsState()
+    val action = viewModel::onAction
+
+    Timber.d("VotingScreen: ${state.voteItems}")
     Scaffold(
         topBar = {
             WSTopBar(
@@ -73,5 +81,9 @@ fun VotingScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(VotingAction.StartVoting)
     }
 }
