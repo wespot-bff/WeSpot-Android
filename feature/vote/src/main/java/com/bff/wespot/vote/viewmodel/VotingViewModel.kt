@@ -42,7 +42,8 @@ class VotingViewModel @Inject constructor(
                             totalPage = it.voteItems.size,
                             pageNumber = 1,
                             currentVote = it.voteItems.first(),
-                            start = false
+                            start = false,
+                            selectedVote = List(it.voteItems.size) { VoteResult() }
                         )
                     }
                 }
@@ -54,6 +55,11 @@ class VotingViewModel @Inject constructor(
 
     private fun goToNextVote(optionId: Int) = intent {
         if (state.pageNumber == state.totalPage) {
+            state.copy(
+                selectedVote = state.selectedVote.toMutableList().apply {
+                    this[state.pageNumber - 1] = VoteResult(state.currentVote.voteUser.id, optionId)
+                }
+            )
             return@intent
         }
 
@@ -62,7 +68,7 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber + 1,
                 currentVote = state.voteItems[state.pageNumber],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    add(VoteResult(state.currentVote.voteUser.id, optionId))
+                    this[state.pageNumber - 1] = VoteResult(state.currentVote.voteUser.id, optionId)
                 }
             )
         }
@@ -78,7 +84,7 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber - 1,
                 currentVote = state.voteItems[state.pageNumber - 2],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    removeLast()
+                    this[state.pageNumber - 1] = VoteResult()
                 }
             )
         }

@@ -30,7 +30,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
-import com.bff.wespot.designsystem.component.button.WSButtonType
+import com.bff.wespot.designsystem.component.button.WSOutlineButton
+import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.util.hexToColor
@@ -56,6 +57,9 @@ fun VotingScreen(
     val action = viewModel::onAction
 
     var submitButton by remember { mutableStateOf(false) }
+    var selected by remember {
+        mutableStateOf(-1)
+    }
 
     Scaffold(
         topBar = {
@@ -101,25 +105,32 @@ fun VotingScreen(
                         .background(hexToColor(state.currentVote.voteUser.profile.backgroundColor)),
                 )
             }
-
             LazyColumn {
                 items(state.currentVote.voteOption, key = { option ->
                     option.id
                 }) { voteItem ->
-                    WSButton(
+                    WSOutlineButton(
                         onClick = {
+                            selected = voteItem.id
+                            action(VotingAction.GoToNextVote(voteItem.id))
                             if (state.pageNumber != state.totalPage) {
-                                action(VotingAction.GoToNextVote(voteItem.id))
                                 votingNavigator.navigateToVotingScreen()
                             } else {
-                                submitButton = !submitButton
+                                submitButton = true
                             }
                         },
                         text = voteItem.content,
-                        buttonType = WSButtonType.Tertiary,
+                        buttonType =
+                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                            selected == voteItem.id
+                        ) {
+                            WSOutlineButtonType.Highlight
+                        } else {
+                            WSOutlineButtonType.None
+                        },
                         paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
-                    ) { text ->
-                        text.invoke()
+                    ) {
+                        it.invoke()
                     }
                 }
             }
