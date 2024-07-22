@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -36,6 +37,7 @@ object AppNavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             VoteHomeScreenDestination,
             VotingScreenDestination,
+            VoteResultScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }

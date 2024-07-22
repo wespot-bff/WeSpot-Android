@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.model.vote.request.VoteResult
+import com.bff.wespot.model.vote.request.VoteResults
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
@@ -12,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -29,10 +31,14 @@ class VotingViewModel @Inject constructor(
             VotingAction.StartVoting -> startVoting()
             VotingAction.GoBackVote -> goBackVote()
             is VotingAction.GoToNextVote -> goToNextVote(action.optionId)
+            is VotingAction.SubmitVoteResult -> submitVoteResult()
         }
     }
 
     private fun startVoting() = intent {
+        reduce {
+            state.copy(loading = true)
+        }
         viewModelScope.launch(coroutineDispatcher) {
             voteRepository.getVoteQuestions()
                 .onSuccess {
@@ -43,7 +49,8 @@ class VotingViewModel @Inject constructor(
                             pageNumber = 1,
                             currentVote = it.voteItems.first(),
                             start = false,
-                            selectedVote = List(it.voteItems.size) { VoteResult() }
+                            selectedVote = List(it.voteItems.size) { VoteResult() },
+                            loading = false,
                         )
                     }
                 }
@@ -55,11 +62,14 @@ class VotingViewModel @Inject constructor(
 
     private fun goToNextVote(optionId: Int) = intent {
         if (state.pageNumber == state.totalPage) {
-            state.copy(
-                selectedVote = state.selectedVote.toMutableList().apply {
-                    this[state.pageNumber - 1] = VoteResult(state.currentVote.voteUser.id, optionId)
-                }
-            )
+            reduce {
+                state.copy(
+                    selectedVote = state.selectedVote.toMutableList().apply {
+                        this[state.pageNumber - 1] =
+                            VoteResult(state.currentVote.voteUser.id, optionId)
+                    },
+                )
+            }
             return@intent
         }
 
@@ -69,7 +79,7 @@ class VotingViewModel @Inject constructor(
                 currentVote = state.voteItems[state.pageNumber],
                 selectedVote = state.selectedVote.toMutableList().apply {
                     this[state.pageNumber - 1] = VoteResult(state.currentVote.voteUser.id, optionId)
-                }
+                },
             )
         }
     }
@@ -85,8 +95,26 @@ class VotingViewModel @Inject constructor(
                 currentVote = state.voteItems[state.pageNumber - 2],
                 selectedVote = state.selectedVote.toMutableList().apply {
                     this[state.pageNumber - 1] = VoteResult()
-                }
+                },
             )
+        }
+    }
+
+    private fun submitVoteResult() = intent {
+        reduce {
+            state.copy(loading = true)
+        }
+        viewModelScope.launch(coroutineDispatcher) {
+            val result = voteRepository.uploadVoteResults(VoteResults(state.selectedVote))
+
+            if (result) {
+                postSideEffect(VotingSideEffect.NavigateToResult)
+            } else {
+                postSideEffect(VotingSideEffect.ShowToast("투표 제출에 오류가 발생했습니다"))
+            }
+            reduce {
+                state.copy(loading = false)
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,21 +30,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToast
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
+import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+import java.time.LocalDate
 
 interface VotingNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
+    fun navigateToResultScreen(args: VoteResultScreenArgs)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,11 +68,39 @@ fun VotingScreen(
     var selected by remember {
         mutableStateOf(-1)
     }
+    var toast by remember {
+        mutableStateOf(false)
+    }
+    var toastMessage by remember {
+        mutableStateOf("")
+    }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            VotingSideEffect.NavigateToResult -> {
+                votingNavigator.navigateToResultScreen(
+                    VoteResultScreenArgs(
+                        date = LocalDate.now().toDateString(),
+                        isVoting = true,
+                    ),
+                )
+            }
+
+            is VotingSideEffect.ShowToast -> {
+                toast = true
+                toastMessage = it.message
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             WSTopBar(
-                title = "${state.pageNumber}/${state.totalPage}",
+                title = if (state.pageNumber == state.totalPage || state.loading.not()) {
+                    "${state.pageNumber}/${state.totalPage}"
+                } else {
+                    ""
+                },
                 action = {
                     Text(text = stringResource(id = R.string.report), style = it)
                 },
@@ -81,11 +117,14 @@ fun VotingScreen(
             modifier = Modifier
                 .padding(it),
         ) {
+            if (state.pageNumber != state.totalPage && state.loading) {
+                return@Column
+            }
             Text(
                 text =
-                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+                    "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
                 style = StaticTypeScale.Default.header1,
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier.padding(horizontal = 20.dp),
             )
 
             Box(
@@ -121,14 +160,14 @@ fun VotingScreen(
                         },
                         text = voteItem.content,
                         buttonType =
-                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                            selected == voteItem.id
-                        ) {
-                            WSOutlineButtonType.Highlight
-                        } else {
-                            WSOutlineButtonType.None
-                        },
-                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
+                            if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                                selected == voteItem.id
+                            ) {
+                                WSOutlineButtonType.Highlight
+                            } else {
+                                WSOutlineButtonType.None
+                            },
+                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                     ) {
                         it.invoke()
                     }
@@ -139,14 +178,35 @@ fun VotingScreen(
         if (submitButton) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                 WSButton(
-                    onClick = { },
-                    text = stringResource(id = R.string.submit_vote_and_check_result)
+                    onClick = {
+                        action(VotingAction.SubmitVoteResult)
+                    },
+                    text = stringResource(id = R.string.submit_vote_and_check_result),
+                    enabled = state.loading.not(),
                 ) {
                     it.invoke()
                 }
             }
         }
     }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 8.dp),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        WSToast(text = toastMessage, toastType = WSToastType.Success, showToast = toast) {
+            toast = false
+        }
+    }
+
+    if (state.loading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }
+
     LaunchedEffect(Unit) {
         if (state.start) {
             action(VotingAction.StartVoting)

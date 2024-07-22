@@ -2,9 +2,8 @@ package com.bff.wespot.util
 
 import androidx.compose.ui.graphics.Color
 
-
 fun hexToColor(hex: String): Color {
-    if(hex.isEmpty()) {
+    if (hex.isEmpty()) {
         return Color.Transparent
     }
 

@@ -89,7 +89,6 @@ sealed interface WSOutlineButtonType {
 
         @Composable
         override fun backgroundColor() = null
-
     }
 }
 
