@@ -4,12 +4,10 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.data.remote.source.message.MessageDataSourceImpl
-import com.bff.wespot.data.remote.source.vote.VoteDataSource
-import com.bff.wespot.data.remote.source.vote.VoteDataSourceImpl
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
-import com.bff.wespot.network.source.vote.VoteDataSource
-import com.bff.wespot.network.source.vote.VoteDataSourceImpl
+import com.bff.wespot.data.remote.source.vote.VoteDataSource
+import com.bff.wespot.data.remote.source.vote.VoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
