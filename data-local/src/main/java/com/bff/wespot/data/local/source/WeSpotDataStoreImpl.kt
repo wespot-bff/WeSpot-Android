@@ -1,4 +1,4 @@
-package com.bff.wespot.data.local
+package com.bff.wespot.data.local.source
 
 import android.content.Context
 import androidx.datastore.core.DataStore

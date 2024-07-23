@@ -66,17 +66,21 @@ class AuthViewModel @Inject constructor(
 
     private fun loginWithKakao() = intent {
         viewModelScope.launch {
-            kakaoLoginUseCase()
-                .onSuccess {
-                    if (it == LoginState.LOGIN_SUCCESS) {
-                        postSideEffect(AuthSideEffect.NavigateToMainActivity)
-                    } else {
-                        postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+            try {
+                kakaoLoginUseCase()
+                    .onSuccess {
+                        if (it == LoginState.LOGIN_SUCCESS) {
+                            postSideEffect(AuthSideEffect.NavigateToMainActivity)
+                        } else {
+                            postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
+                        }
                     }
-                }
-                .onFailure {
-                    Timber.e(it)
-                }
+                    .onFailure {
+                        Timber.e(it)
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

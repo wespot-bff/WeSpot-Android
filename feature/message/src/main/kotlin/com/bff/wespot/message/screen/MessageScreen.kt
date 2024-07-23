@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,7 +39,6 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
-import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -58,49 +54,24 @@ import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
-import com.bff.wespot.designsystem.R.drawable as designSystemDrawable
 
-@OptIn(ExperimentalMaterial3Api::class)
+interface MessageNavigator {
+    fun navigateUp()
+}
+
+@Destination
 @Composable
 fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
+    messageNavigator: MessageNavigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    Scaffold(
-        topBar = {
-            WSTopBar(
-                title = "",
-                navigation = {
-                    Image(
-                        modifier = Modifier
-                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                            .size(width = 112.dp, height = 44.dp),
-                        painter = painterResource(id = designSystemDrawable.logo),
-                        contentDescription = stringResource(id = R.string.wespot_logo),
-                    )
-                },
-                action = {
-                    IconButton(
-                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                        onClick = {
-                            action(
-                                MessageAction.Navigation(NavigationAction.NavigateToNotification),
-                            )
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = designSystemDrawable.notification),
-                            contentDescription = stringResource(id = R.string.notification_icon),
-                        )
-                    }
-                },
-            )
-        },
-    ) {
+    Scaffold {
         Column(
             modifier = Modifier
                 .fillMaxSize()

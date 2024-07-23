@@ -7,3 +7,7 @@ plugins {
 android {
     namespace = "com.bff.wespot.navigation"
 }
+
+dependencies {
+    implementation(libs.androidx.compose.destination)
+}

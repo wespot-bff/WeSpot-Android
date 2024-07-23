@@ -1,4 +1,4 @@
-package com.bff.wespot.data.local
+package com.bff.wespot.data.local.source
 
 import kotlinx.coroutines.flow.Flow
 
