@@ -13,6 +13,9 @@ class AutoLoginUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): LoginState =
         dataStoreRepository.getString(DataStoreKey.REFRESH_TOKEN_EXPIRED_AT).first().let {
+            if (it.isEmpty()) {
+                return LoginState.LOGIN_FAILURE
+            }
             val dateTime = LocalDateTime.parse(it, DateTimeFormatter.ISO_DATE_TIME)
             val now = LocalDateTime.now()
 

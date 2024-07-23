@@ -16,23 +16,22 @@ import kotlin.coroutines.resumeWithException
 
 class KakaoLoginManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-): KakaoLoginManager {
+) : KakaoLoginManager {
     override suspend fun loginWithKakao(): KakaoAuthToken {
         val loginState = getKakaoLoginState()
 
-        return when (loginState) {
-            KaKaoLoginState.KAKAO_TALK_LOGIN -> {
-                try {
+        return try {
+            when (loginState) {
+                KaKaoLoginState.KAKAO_TALK_LOGIN -> {
+
                     val token = UserApiClient.loginWithKakaoTalk()
                     KakaoAuthToken(
                         accessToken = token.accessToken,
                         idToken = token.idToken,
                     )
-                } catch (error: Throwable) {
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        throw error
-                    }
+                }
 
+                KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> {
                     val token = UserApiClient.loginWithKakaoAccount()
                     KakaoAuthToken(
                         accessToken = token.accessToken,
@@ -40,14 +39,16 @@ class KakaoLoginManagerImpl @Inject constructor(
                     )
                 }
             }
-
-            KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> {
-                val token = UserApiClient.loginWithKakaoAccount()
-                KakaoAuthToken(
-                    accessToken = token.accessToken,
-                    idToken = token.idToken,
-                )
+        } catch (error: Throwable) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                throw error
             }
+
+            val token = UserApiClient.loginWithKakaoAccount()
+            KakaoAuthToken(
+                accessToken = token.accessToken,
+                idToken = token.idToken,
+            )
         }
     }
 

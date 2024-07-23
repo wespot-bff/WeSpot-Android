@@ -8,9 +8,13 @@ android {
     namespace = "com.bff.wespot.message"
 }
 
+ksp {
+    arg("compose-destinations.moduleName", "message")
+    arg("compose-destinations.mode", "destinations")
+}
+
 dependencies {
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
