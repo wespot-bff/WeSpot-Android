@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen.send
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -36,18 +39,31 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.message.state.send.NavigationAction
+import com.bff.wespot.message.R
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.UserListItem
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
+interface ReceiverSelectionNavigator {
+    fun navigateUp()
+    fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
+    fun navigateMessageScreen()
+}
+
+data class ReceiverSelectionScreenArgs(
+    val isEditing: Boolean,
+)
+
+@Destination(navArgsDelegate = ReceiverSelectionScreenArgs::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceiverScreen(
-    isEditing: Boolean,
-    viewModel: SendViewModel = hiltViewModel(),
+fun ReceiverSelectionScreen(
+    navigator: ReceiverSelectionNavigator,
+    navArgs: ReceiverSelectionScreenArgs,
+    viewModel: SendViewModel,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -65,7 +81,7 @@ fun ReceiverScreen(
                         modifier = Modifier.clickable {
                             dialogState = true
                         },
-                        text = "닫기",
+                        text = stringResource(R.string.close),
                         style = StaticTypeScale.Default.body4,
                         color = WeSpotThemeManager.colors.abledTxtColor,
                     )
@@ -81,7 +97,7 @@ fun ReceiverScreen(
             Text(
                 modifier = Modifier
                     .padding(horizontal = 4.dp),
-                text = "오늘 당신의 마음을 설레게 한\n친구는 누구인가요?",
+                text = stringResource(R.string.receiver_screen_title),
                 style = StaticTypeScale.Default.header1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
@@ -93,7 +109,7 @@ fun ReceiverScreen(
                 onValueChange = {
                     action(SendAction.OnSearchContentChanged(it))
                 },
-                placeholder = "이름으로 검색해 보세요",
+                placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
                 textFieldType = WsTextFieldType.Search,
                 focusRequester = focusRequester,
                 singleLine = true,
@@ -119,7 +135,7 @@ fun ReceiverScreen(
                             .clickable {
                                 action(SendAction.OnInviteFriendTextClicked)
                             },
-                        text = "찾는 친구가 없다면",
+                        text = stringResource(R.string.invite_friend_text),
                         style = StaticTypeScale.Default.body5,
                         color = WeSpotThemeManager.colors.txtSubColor,
                     )
@@ -131,9 +147,11 @@ fun ReceiverScreen(
             ) {
                 items(state.userList, key = { user -> user.id }) { item ->
                     UserListItem(
-                        title = item.name,
-                        subTitle = item.toSchoolInfo(),
-                        selected = state.selectedUser?.id == item.id,
+                        name = item.name,
+                        schoolInfo = item.toSchoolInfo(),
+                        selected = state.selectedUser.id == item.id,
+                        backgroundColor = item.profileCharacter.backgroundColor,
+                        iconUrl = item.profileCharacter.iconUrl,
                         onClick = {
                             action(SendAction.OnUserSelected(item))
                         },
@@ -149,29 +167,47 @@ fun ReceiverScreen(
             .imePadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
-        WSButton(
-            onClick = {
-                if (isEditing) {
-                    action(SendAction.Navigation(NavigationAction.PopBackStack))
-                    return@WSButton
-                }
-                action(SendAction.Navigation(NavigationAction.NavigateToWriteScreen(false)))
-            },
-            enabled = state.selectedUser.name.isNotBlank(),
-            text = if (isEditing) "다음" else "수정 완료",
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            WeSpotThemeManager.colors.backgroundColor,
+                        ),
+                    ),
+                ),
+            contentAlignment = Alignment.BottomCenter,
         ) {
-            it()
+            WSButton(
+                onClick = {
+                    if (navArgs.isEditing) {
+                        navigator.navigateUp()
+                        return@WSButton
+                    }
+                    navigator.navigateMessageWriteScreen(
+                        args = MessageWriteScreenArgs(isEditing = false),
+                    )
+                },
+                enabled = state.selectedUser.name.isNotBlank(),
+                text = if (navArgs.isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
+            ) {
+                it()
+            }
         }
     }
 
     if (dialogState) {
         WSDialog(
-            title = "쪽지 작성을 중단하시나요",
-            subTitle = "작성 중인 내용은 저장되지 않아요",
-            okButtonText = "네 그만할래요",
-            cancelButtonText = "닫기",
+            title = stringResource(R.string.send_exit_dialog_title),
+            subTitle = stringResource(R.string.send_exit_dialog_subtitle),
+            okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
+            cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(SendAction.Navigation(NavigationAction.NavigateToMessageScreen))
+                action(SendAction.NavigateToMessageHome)
+                navigator.navigateMessageScreen()
             },
             cancelButtonClick = { dialogState = false },
             onDismissRequest = { dialogState = false },
