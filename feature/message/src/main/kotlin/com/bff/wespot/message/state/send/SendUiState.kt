@@ -10,7 +10,7 @@ data class SendUiState(
     val isRandomName: Boolean = false,
     val randomName: String = "",
     val userList: List<User> = listOf(),
-    val selectedUser: User = User(-1, "", "", -1, -1),
+    val selectedUser: User = User(-1, "", -1, -1, -1, "", ProfileCharacter("", "")),
     val hasProfanity: Boolean = false,
     val profile: Profile = Profile(-1, "", "", -1, -1, "", "", ProfileCharacter("", "")),
 )
