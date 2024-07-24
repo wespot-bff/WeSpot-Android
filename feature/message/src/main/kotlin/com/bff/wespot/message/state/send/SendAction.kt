@@ -9,8 +9,8 @@ sealed class SendAction {
     data class OnRandomNameToggled(val state: Boolean) : SendAction()
     data object SendMessage : SendAction()
     data object OnInviteFriendTextClicked : SendAction()
-    data object NavigateToMessageHome : SendAction()
+    data object NavigateToMessage : SendAction()
+    data object NavigateToEdit : SendAction()
     data object OnReceiverScreenEntered : SendAction()
     data object OnWriteScreenEntered : SendAction()
-    data object OnEditScreenEntered : SendAction()
 }
