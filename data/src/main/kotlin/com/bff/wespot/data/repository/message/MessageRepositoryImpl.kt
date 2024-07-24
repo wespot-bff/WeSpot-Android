@@ -2,6 +2,7 @@ package com.bff.wespot.data.repository.message
 
 import com.bff.wespot.data.mapper.message.toMessageTypeDto
 import com.bff.wespot.data.mapper.message.toSentMessageDto
+import com.bff.wespot.data.remote.model.message.request.MessageContentDto
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.request.MessageType
@@ -31,4 +32,7 @@ class MessageRepositoryImpl @Inject constructor(
             messageStatusDto.toMessageStatus()
         }
     }
+
+    override suspend fun checkProfanity(content: String): Result<Unit> =
+        messageDataSource.checkProfanity(MessageContentDto(message = content))
 }

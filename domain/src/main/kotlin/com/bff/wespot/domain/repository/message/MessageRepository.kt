@@ -11,4 +11,6 @@ interface MessageRepository {
     suspend fun postMessage(sentMessage: SentMessage): Result<String>
 
     suspend fun getMessageStatus(): Result<MessageStatus>
+
+    suspend fun checkProfanity(content: String): Result<Unit>
 }
