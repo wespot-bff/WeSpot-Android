@@ -89,7 +89,11 @@ fun WsTextField(
                 unfocusedContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 focusedPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
                 unfocusedPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
-                focusedBorderColor = Primary400,
+                focusedBorderColor = if (textFieldType == WsTextFieldType.Message) {
+                    WeSpotThemeManager.colors.cardBackgroundColor
+                } else {
+                    Primary400
+                },
                 unfocusedBorderColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 errorBorderColor = WeSpotThemeManager.colors.dangerColor,
                 errorContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
