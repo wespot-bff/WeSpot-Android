@@ -4,17 +4,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +63,7 @@ fun MessageEditScreen(
     var reserveDialog by remember { mutableStateOf(false) }
     var timeoutDialog by remember { mutableStateOf(false) }
     var toast by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -73,7 +76,7 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToMessage -> {
-                action(SendAction.NavigateToMessageHome)
+                action(SendAction.NavigateToMessage)
                 navigator.navigateMessageScreen()
             }
         }
@@ -100,7 +103,12 @@ fun MessageEditScreen(
             )
         },
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .verticalScroll(scrollState),
+        ) {
             EditField(
                 title = stringResource(R.string.receiver),
                 value = state.selectedUser.toDescription(),
@@ -172,13 +180,14 @@ fun MessageEditScreen(
                     action(SendAction.OnRandomNameToggled(it))
                 }
             }
-        }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Spacer(modifier = Modifier.weight(1f))
+
             WSButton(
                 onClick = {
                     reserveDialog = true
                 },
+                paddingValues = PaddingValues(horizontal = 20.dp, vertical = 32.dp),
                 text = stringResource(R.string.message_send),
             ) {
                 it()
@@ -192,7 +201,7 @@ fun MessageEditScreen(
                 okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
                 cancelButtonText = stringResource(id = R.string.close),
                 okButtonClick = {
-                    action(SendAction.NavigateToMessageHome)
+                    action(SendAction.NavigateToMessage)
                     navigator.navigateMessageScreen()
                 },
                 cancelButtonClick = { exitDialog = false },
@@ -219,7 +228,7 @@ fun MessageEditScreen(
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
-                    action(SendAction.NavigateToMessageHome)
+                    action(SendAction.NavigateToMessage)
                     navigator.navigateMessageScreen()
                 },
                 cancelButtonClick = { timeoutDialog = false },
@@ -237,10 +246,6 @@ fun MessageEditScreen(
                 closeToast = { toast = false },
             )
         }
-    }
-
-    LaunchedEffect(Unit) {
-        action(SendAction.OnEditScreenEntered)
     }
 }
 
