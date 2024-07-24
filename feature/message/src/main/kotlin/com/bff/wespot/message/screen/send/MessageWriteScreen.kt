@@ -31,6 +31,7 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
+import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
@@ -102,8 +103,8 @@ fun MessageWriteScreen(
 
             WsTextField(
                 value = state.messageInput,
-                onValueChange = {
-                    action(SendAction.OnMessageChanged(it))
+                onValueChange = { text ->
+                    action(SendAction.OnMessageChanged(text))
                 },
                 placeholder = stringResource(R.string.message_write_text_holder),
                 isError = false,
@@ -115,14 +116,23 @@ fun MessageWriteScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (state.hasProfanity) {
-                    Text(
-                        modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
-                        text = stringResource(R.string.has_profanity),
-                        style = StaticTypeScale.Default.body7,
-                        color = WeSpotThemeManager.colors.dangerColor,
-                    )
+                val warningMessage = when {
+                    state.hasProfanity && state.messageInput.length > MESSAGE_MAX_LENGTH -> {
+                        stringResource(R.string.message_length_limit)
+                    }
+                    state.messageInput.length > MESSAGE_MAX_LENGTH -> {
+                        stringResource(R.string.message_length_limit)
+                    }
+                    state.hasProfanity -> stringResource(R.string.has_profanity)
+                    else -> ""
                 }
+
+                Text(
+                    modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
+                    text = warningMessage,
+                    style = StaticTypeScale.Default.body7,
+                    color = WeSpotThemeManager.colors.dangerColor,
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -134,9 +144,10 @@ fun MessageWriteScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
             onClick = {
+                action(SendAction.NavigateToEdit)
                 navigator.navigateMessageEditScreen()
             },
-            enabled = state.messageInput.length in 0..200 && state.hasProfanity.not(),
+            enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
             text = stringResource(
                 if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
             ),
@@ -152,7 +163,7 @@ fun MessageWriteScreen(
             okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(SendAction.NavigateToMessageHome)
+                action(SendAction.NavigateToMessage)
                 navigator.navigateMessageScreen()
             },
             cancelButtonClick = { dialogState = false },

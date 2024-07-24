@@ -6,6 +6,7 @@ import com.bff.wespot.common.di.extensions.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
@@ -38,13 +39,13 @@ class SendViewModel @Inject constructor(
         when (action) {
             is SendAction.OnReceiverScreenEntered -> observeNameInput()
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
-            is SendAction.OnEditScreenEntered -> handleEditScreenEntered()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.SendMessage -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
-            is SendAction.NavigateToMessageHome -> clearSendUiState()
+            is SendAction.NavigateToMessage -> clearSendUiState()
+            is SendAction.NavigateToEdit -> getProfile()
             else -> {}
         }
     }
@@ -91,13 +92,15 @@ class SendViewModel @Inject constructor(
             messageInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
-                .collect {
-                    hasProfanity(it)
+                .collect { message ->
+                    if (message.length <= MESSAGE_MAX_LENGTH) {
+                        hasProfanity(message)
+                    }
                 }
         }
     }
 
-    private fun handleEditScreenEntered() = intent {
+    private fun getProfile() = intent {
         viewModelScope.launch {
             userRepository.getProfile()
                 .onSuccess { profile ->

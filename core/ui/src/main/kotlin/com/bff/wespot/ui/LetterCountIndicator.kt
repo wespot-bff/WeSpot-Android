@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
+import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 
 @Composable
 fun LetterCountIndicator(
@@ -20,7 +21,7 @@ fun LetterCountIndicator(
         modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
         text = "$currentCount / $maxCount",
         style = StaticTypeScale.Default.body7,
-        color = Gray400,
+        color = if (currentCount <= maxCount) Gray400 else WeSpotThemeManager.colors.dangerColor,
     )
 }
 
