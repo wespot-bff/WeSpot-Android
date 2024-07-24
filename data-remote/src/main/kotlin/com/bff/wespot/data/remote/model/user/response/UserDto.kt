@@ -7,15 +7,19 @@ import kotlinx.serialization.Serializable
 data class UserDto (
     val id: Int,
     val name: String,
-    val schoolName: String,
     val grade: Int,
     val classNumber: Int,
+    val schoolId: Int,
+    val schoolName: String,
+    val profile: ProfileCharacterDto,
 ) {
     fun toUser(): User = User(
         id = id,
         name = name,
-        schoolName = schoolName,
         grade = grade,
         classNumber = classNumber,
+        schoolName = schoolName,
+        schoolId = schoolId,
+        profileCharacter = profile.toProfileCharacter(),
     )
 }

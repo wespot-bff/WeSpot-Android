@@ -9,7 +9,7 @@ data class ProfileDto (
     val name: String,
     val schoolName: String,
     val grade: Int,
-    val groupNumber: Int,
+    val classNumber: Int,
     val gender: String,
     val introduction: String,
     val profile: ProfileCharacterDto
@@ -19,7 +19,7 @@ data class ProfileDto (
         name = name,
         schoolName = schoolName,
         grade = grade,
-        group = groupNumber,
+        classNumber = classNumber,
         gender = gender,
         introduction = introduction,
         profileCharacter = profile.toProfileCharacter()
