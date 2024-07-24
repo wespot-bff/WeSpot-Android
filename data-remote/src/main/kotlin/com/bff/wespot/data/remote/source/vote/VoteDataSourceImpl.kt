@@ -1,9 +1,11 @@
 package com.bff.wespot.data.remote.source.vote
 
-import com.bff.wespot.data.remote.model.vote.request.VoteResultsDto
+import com.bff.wespot.data.remote.model.vote.request.VoteResultsUploadDto
 import com.bff.wespot.data.remote.model.vote.response.VoteItemsDto
+import com.bff.wespot.data.remote.model.vote.response.VoteResultsDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.path
@@ -20,12 +22,21 @@ class VoteDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun uploadVoteResults(voteResults: VoteResultsDto): Result<Unit> =
+    override suspend fun uploadVoteResults(voteResults: VoteResultsUploadDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/votes")
             }
             setBody(voteResults)
+        }
+
+    override suspend fun getVoteResults(date: String): Result<VoteResultsDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/votes")
+                parameter("date", date)
+            }
         }
 }

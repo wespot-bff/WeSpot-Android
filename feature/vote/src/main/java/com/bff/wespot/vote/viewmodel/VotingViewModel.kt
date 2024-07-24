@@ -3,8 +3,8 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.vote.VoteRepository
-import com.bff.wespot.model.vote.request.VoteResult
-import com.bff.wespot.model.vote.request.VoteResults
+import com.bff.wespot.model.vote.request.VoteResultUpload
+import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
@@ -49,7 +49,7 @@ class VotingViewModel @Inject constructor(
                             pageNumber = 1,
                             currentVote = it.voteItems.first(),
                             start = false,
-                            selectedVote = List(it.voteItems.size) { VoteResult() },
+                            selectedVote = List(it.voteItems.size) { VoteResultUpload() },
                             loading = false,
                         )
                     }
@@ -66,7 +66,7 @@ class VotingViewModel @Inject constructor(
                 state.copy(
                     selectedVote = state.selectedVote.toMutableList().apply {
                         this[state.pageNumber - 1] =
-                            VoteResult(state.currentVote.voteUser.id, optionId)
+                            VoteResultUpload(state.currentVote.voteUser.id, optionId)
                     },
                 )
             }
@@ -78,7 +78,7 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber + 1,
                 currentVote = state.voteItems[state.pageNumber],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    this[state.pageNumber - 1] = VoteResult(state.currentVote.voteUser.id, optionId)
+                    this[state.pageNumber - 1] = VoteResultUpload(state.currentVote.voteUser.id, optionId)
                 },
             )
         }
@@ -94,7 +94,7 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber - 1,
                 currentVote = state.voteItems[state.pageNumber - 2],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    this[state.pageNumber - 1] = VoteResult()
+                    this[state.pageNumber - 1] = VoteResultUpload()
                 },
             )
         }
@@ -105,9 +105,9 @@ class VotingViewModel @Inject constructor(
             state.copy(loading = true)
         }
         viewModelScope.launch(coroutineDispatcher) {
-            val result = voteRepository.uploadVoteResults(VoteResults(state.selectedVote))
+            val result = voteRepository.uploadVoteResults(VoteResultsUpload(state.selectedVote))
 
-            if (result) {
+            if (!result) {
                 postSideEffect(VotingSideEffect.NavigateToResult)
             } else {
                 postSideEffect(VotingSideEffect.ShowToast("투표 제출에 오류가 발생했습니다"))
