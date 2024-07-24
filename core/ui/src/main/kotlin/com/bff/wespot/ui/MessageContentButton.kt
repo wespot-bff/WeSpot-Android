@@ -36,7 +36,7 @@ fun MessageContentButton(
     Box(
         modifier = Modifier
             .wrapContentSize()
-            .padding(vertical = 12.dp, horizontal = 20.dp),
+            .padding(horizontal = 20.dp),
     ) {
         Button(
             modifier = Modifier
