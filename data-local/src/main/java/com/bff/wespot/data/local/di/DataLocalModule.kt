@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+interface DataLocalModule {
     @Binds
     @Singleton
     fun bindsWeSpotDataStore(

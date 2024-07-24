@@ -9,7 +9,7 @@ data class VoteItemDto(
     val voteOptions: List<VoteOptionDto>
 ) {
     fun toVoteItem() = VoteItem(
-            voteUser = user.toVoteUser(),
-            voteOption = voteOptions.map { it.toVoteOption() }
-        )
+        voteUser = user.toVoteUser(),
+        voteOption = voteOptions.map { it.toVoteOption() }
+    )
 }

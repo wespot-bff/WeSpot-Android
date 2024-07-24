@@ -9,7 +9,7 @@ data class VoteResultDto(
     val voteOptionId: Int,
 ) {
     fun toVote() = VoteResult(
-            userId = userId,
-            voteOptionId = voteOptionId
-        )
+        userId = userId,
+        voteOptionId = voteOptionId
+    )
 }

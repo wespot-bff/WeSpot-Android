@@ -11,9 +11,3 @@ data class VoteItemsDto(
         voteItems = voteItems.map { it.toVoteItem() }
     )
 }
-
-
-
-
-
-
