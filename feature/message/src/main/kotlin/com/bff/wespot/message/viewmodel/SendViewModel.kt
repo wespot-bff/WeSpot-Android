@@ -2,9 +2,10 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.common.di.extensions.onNetworkFailure
+import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
-import com.bff.wespot.message.common.NameExtensions
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -30,16 +32,19 @@ class SendViewModel @Inject constructor(
 
     private val nameInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
+    private val randomNameGenerator by lazy { RandomNameGenerator() }
 
     fun onAction(action: SendAction) {
         when (action) {
             is SendAction.OnReceiverScreenEntered -> observeNameInput()
+            is SendAction.OnWriteScreenEntered -> observeMessageInput()
+            is SendAction.OnEditScreenEntered -> handleEditScreenEntered()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
-            is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.SendMessage -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
+            is SendAction.NavigateToMessageHome -> clearSendUiState()
             else -> {}
         }
     }
@@ -92,10 +97,24 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    private fun handleEditScreenEntered() = intent {
+        viewModelScope.launch {
+            userRepository.getProfile()
+                .onSuccess { profile ->
+                    reduce {
+                        state.copy(
+                            profile = profile,
+                        )
+                    }
+                }
+        }
+    }
+
     private fun handleRandomNameToggled() = intent {
         reduce {
             state.copy(
-                randomName = NameExtensions().invoke(),
+                isRandomName = state.isRandomName.not(),
+                randomName = randomNameGenerator.getRandomName(),
             )
         }
     }
@@ -104,14 +123,21 @@ class SendViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.postMessage(
                 SentMessage(
-                    receivedId = state.selectedUser.id,
-                    schoolId = 32,
-                    grade = state.selectedUser.grade,
-                    group = state.selectedUser.classNumber,
+                    receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    sender = state.randomName,
+                    sender = if (state.isRandomName) {
+                        state.randomName
+                    } else {
+                        state.profile.toDescription()
+                    },
                 ),
-            )
+            ).onSuccess {
+                postSideEffect(SendSideEffect.NavigateToMessage)
+            }.onNetworkFailure { exception ->
+                if (exception.status == 400) {
+                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                }
+            }
         }
     }
 
@@ -125,14 +151,37 @@ class SendViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { exception ->
-                }
         }
     }
 
     private fun hasProfanity(content: String) = intent {
         viewModelScope.launch {
+            messageRepository.checkProfanity(content)
+                .onSuccess {
+                    reduce {
+                        state.copy(
+                            hasProfanity = false,
+                        )
+                    }
+                }
+                .onNetworkFailure { exception ->
+                    if (exception.status == 400) {
+                        reduce {
+                            state.copy(
+                                hasProfanity = true,
+                            )
+                        }
+                    }
+                }
         }
+    }
+
+    private fun clearSendUiState() = intent {
+        reduce {
+            SendUiState()
+        }
+        nameInput.value = ""
+        messageInput.value = ""
     }
 
     companion object {
