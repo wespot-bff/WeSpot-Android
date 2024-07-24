@@ -49,8 +49,8 @@ import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.model.TimePeriod
+import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
@@ -60,6 +60,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 interface MessageNavigator {
     fun navigateUp()
+    fun navigateStorageScreen()
+    fun navigateNotificationScreen()
+    fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
 }
 
 @Destination
@@ -95,11 +98,7 @@ fun MessageScreen(
                     ReservedMessageBanner(
                         messageStatus = state.messageStatus,
                         onBannerClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToStorageScreen,
-                                ),
-                            )
+                            messageNavigator.navigateStorageScreen()
                         },
                     )
 
@@ -116,10 +115,8 @@ fun MessageScreen(
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
                         onButtonClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToReceiverScreen(false),
-                                ),
+                            messageNavigator.navigateReceiverSelectionScreen(
+                                ReceiverSelectionScreenArgs(false),
                             )
                         },
                     )
@@ -133,11 +130,7 @@ fun MessageScreen(
                     ReceivedMessageBanner(
                         messageList = state.receivedMessageList,
                         onBannerClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToStorageScreen,
-                                ),
-                            )
+                            messageNavigator.navigateNotificationScreen()
                         },
                     )
 
@@ -148,7 +141,8 @@ fun MessageScreen(
                         buttonText = stringResource(R.string.message_card_button_text_night),
                         image = state.timePeriod.image,
                         isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
-                        onButtonClick = { },
+                        onButtonClick = {
+                        },
                     )
 
                     MessageHomeDescription(
