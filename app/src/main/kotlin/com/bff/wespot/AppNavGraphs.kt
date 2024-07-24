@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -15,7 +16,9 @@ import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
+import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.dynamic.routedIn
@@ -34,6 +37,7 @@ object AppNavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             VoteHomeScreenDestination,
             VotingScreenDestination,
+            VoteResultScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -123,6 +127,8 @@ internal fun AppNavigation(
         ),
     )
 
+    val votingViewModel: VotingViewModel = hiltViewModel()
+
     DestinationsNavHost(
         navGraph = AppNavGraphs.root,
         navController = navController,
@@ -130,6 +136,7 @@ internal fun AppNavigation(
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
+            dependency(votingViewModel)
         },
     )
 }

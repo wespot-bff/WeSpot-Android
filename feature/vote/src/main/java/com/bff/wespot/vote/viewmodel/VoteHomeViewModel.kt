@@ -3,9 +3,9 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.util.toDateTimeString
-import com.bff.wespot.vote.state.VoteAction
-import com.bff.wespot.vote.state.VoteSideEffect
-import com.bff.wespot.vote.state.VoteUiState
+import com.bff.wespot.vote.state.home.VoteAction
+import com.bff.wespot.vote.state.home.VoteSideEffect
+import com.bff.wespot.vote.state.home.VoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart

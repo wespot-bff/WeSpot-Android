@@ -4,7 +4,9 @@ import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
+import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
@@ -23,5 +25,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToVotingScreen() {
         navController.navigate(VotingScreenDestination within navGraph)
+    }
+
+    override fun navigateToResultScreen(args: VoteResultScreenArgs) {
+        navController.navigate(VoteResultScreenDestination(args) within navGraph)
     }
 }
