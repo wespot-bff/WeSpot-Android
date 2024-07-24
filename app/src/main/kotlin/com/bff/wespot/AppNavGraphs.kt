@@ -7,13 +7,18 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
+import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
+import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -45,6 +50,9 @@ object AppNavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             MessageScreenDestination,
+            MessageWriteScreenDestination,
+            MessageEditScreenDestination,
+            ReceiverSelectionScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -123,6 +131,8 @@ internal fun AppNavigation(
         ),
     )
 
+    val sendViewModel: SendViewModel = hiltViewModel()
+
     DestinationsNavHost(
         navGraph = AppNavGraphs.root,
         navController = navController,
@@ -130,6 +140,7 @@ internal fun AppNavigation(
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
+            dependency(sendViewModel)
         },
     )
 }
