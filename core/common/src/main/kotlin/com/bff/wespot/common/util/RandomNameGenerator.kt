@@ -1,7 +1,7 @@
-package com.bff.wespot.message.common
+package com.bff.wespot.common.util
 
-internal class NameExtensions {
-    fun invoke(): String = "${colorList.random()} ${animalList.random()}"
+class RandomNameGenerator {
+    fun getRandomName(): String = "${colorList.random()} ${animalList.random()}"
 
     companion object {
         private val colorList = listOf(
@@ -9,9 +9,7 @@ internal class NameExtensions {
         )
 
         private val animalList = listOf(
-            "얼룩말",
-            "코알라",
-            "기린",
+            "얼룩말", "코알라", "기린",
         )
     }
 }
