@@ -21,8 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -30,18 +30,31 @@ import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.message.state.send.NavigationAction
+import com.bff.wespot.message.R
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
+import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 
+interface MessageWriteNavigator {
+    fun navigateUp()
+    fun navigateMessageScreen()
+    fun navigateMessageEditScreen()
+}
+
+data class MessageWriteScreenArgs(
+    val isEditing: Boolean,
+)
+
+@Destination(navArgsDelegate = MessageWriteScreenArgs::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WriteScreen(
-    isEditing: Boolean,
-    viewModel: SendViewModel = hiltViewModel(),
+fun MessageWriteScreen(
+    navigator: MessageWriteNavigator,
+    navArgs: MessageWriteScreenArgs,
+    viewModel: SendViewModel,
 ) {
     var dialogState by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
@@ -55,11 +68,15 @@ fun WriteScreen(
             WSTopBar(
                 title = "",
                 canNavigateBack = true,
+                navigateUp = {
+                    navigator.navigateUp()
+                },
                 action = {
                     Text(
                         modifier = Modifier.clickable {
+                            dialogState = true
                         },
-                        text = "닫기",
+                        text = stringResource(id = R.string.close),
                         style = StaticTypeScale.Default.body4,
                         color = WeSpotThemeManager.colors.abledTxtColor,
                     )
@@ -76,7 +93,7 @@ fun WriteScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 3.dp),
-                text = "쪽지 내용을 작성해주세요\n상대에게 익명으로 전달해 드릴게요",
+                text = stringResource(R.string.message_write_title),
                 style = StaticTypeScale.Default.header1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
@@ -86,9 +103,9 @@ fun WriteScreen(
             WsTextField(
                 value = state.messageInput,
                 onValueChange = {
-                    action(SendAction.OnSearchContentChanged(it))
+                    action(SendAction.OnMessageChanged(it))
                 },
-                placeholder = "오늘 바나나 우유 고마웠어! 점심 시간에 경기하는 거 봤는데 잘 하더라! 다치지 말고 화이팅 해!",
+                placeholder = stringResource(R.string.message_write_text_holder),
                 isError = false,
                 focusRequester = focusRequester,
                 textFieldType = WsTextFieldType.Message,
@@ -101,7 +118,7 @@ fun WriteScreen(
                 if (state.hasProfanity) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
-                        text = "비속어가 포함되어 있어요",
+                        text = stringResource(R.string.has_profanity),
                         style = StaticTypeScale.Default.body7,
                         color = WeSpotThemeManager.colors.dangerColor,
                     )
@@ -117,14 +134,12 @@ fun WriteScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
             onClick = {
-                if (isEditing) {
-                    action(SendAction.Navigation(NavigationAction.PopBackStack))
-                    return@WSButton
-                }
-                action(SendAction.Navigation(NavigationAction.NavigateToEditScreen))
+                navigator.navigateMessageEditScreen()
             },
-            enabled = state.messageInput.length <= 200 && state.hasProfanity.not(),
-            text = if (isEditing) "작성 완료" else "수정 완료",
+            enabled = state.messageInput.length in 0..200 && state.hasProfanity.not(),
+            text = stringResource(
+                if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
+            ),
         ) {
             it()
         }
@@ -132,12 +147,13 @@ fun WriteScreen(
 
     if (dialogState) {
         WSDialog(
-            title = "쪽지 작성을 중단하시나요",
-            subTitle = "작성 중인 내용은 저장되지 않아요",
-            okButtonText = "네 그만할래요",
-            cancelButtonText = "닫기",
+            title = stringResource(R.string.send_exit_dialog_title),
+            subTitle = stringResource(R.string.send_exit_dialog_subtitle),
+            okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
+            cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(SendAction.Navigation(NavigationAction.NavigateToMessageScreen))
+                action(SendAction.NavigateToMessageHome)
+                navigator.navigateMessageScreen()
             },
             cancelButtonClick = { dialogState = false },
             onDismissRequest = { dialogState = false },
@@ -148,5 +164,9 @@ fun WriteScreen(
         focusRequester.requestFocus()
         delay(10)
         keyboard?.show()
+    }
+
+    LaunchedEffect(Unit) {
+        action(SendAction.OnWriteScreenEntered)
     }
 }
