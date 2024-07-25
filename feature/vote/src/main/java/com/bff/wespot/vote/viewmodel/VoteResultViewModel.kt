@@ -39,12 +39,14 @@ class VoteResultViewModel @Inject constructor(
 
     private fun loadVoteResults(date: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
+            reduce { state.copy(isLoading = true) }
             try {
                 voteRepository.getVoteResults(date)
                     .onSuccess {
-                        reduce { state.copy(voteResults = it) }
+                        reduce { state.copy(voteResults = it, isLoading = false) }
                     }
                     .onFailure {
+                        reduce { state.copy(isLoading = false) }
                         Timber.e(it)
                     }
             } catch (e: Exception) {
