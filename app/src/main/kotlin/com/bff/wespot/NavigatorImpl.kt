@@ -2,8 +2,8 @@ package com.bff.wespot
 
 import android.content.Context
 import android.content.Intent
-import com.wespot.navigation.Navigator
-import com.wespot.navigation.util.buildIntent
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.buildIntent
 import javax.inject.Inject
 
 class NavigatorImpl @Inject constructor() : Navigator {
