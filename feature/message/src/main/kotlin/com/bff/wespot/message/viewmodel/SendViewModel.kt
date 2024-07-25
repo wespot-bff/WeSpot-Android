@@ -81,8 +81,10 @@ class SendViewModel @Inject constructor(
             nameInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
-                .collect {
-                    getUserList(it)
+                .collect { name ->
+                    if (name.isNotBlank()) {
+                        getUserList(name)
+                    }
                 }
         }
     }
