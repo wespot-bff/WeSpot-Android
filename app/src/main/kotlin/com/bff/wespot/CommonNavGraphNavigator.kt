@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
+import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VotingNavigator
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
@@ -18,7 +19,8 @@ class CommonNavGraphNavigator(
 ) : VoteNavigator,
     MessageNavigator,
     EntireNavigator,
-    VotingNavigator {
+    VotingNavigator,
+    VoteResultNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -29,5 +31,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToResultScreen(args: VoteResultScreenArgs) {
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToHome() {
+        navController.popBackStack(navGraph.startRoute.route, inclusive = false, saveState = true)
     }
 }

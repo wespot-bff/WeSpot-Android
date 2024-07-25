@@ -17,7 +17,7 @@ fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
             lerp(
                 start = 0.7f,
                 stop = 1f,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                fraction = 1f - pageOffset.coerceIn(0f, 1f),
             )
         alpha = transformation
         scaleY = transformation

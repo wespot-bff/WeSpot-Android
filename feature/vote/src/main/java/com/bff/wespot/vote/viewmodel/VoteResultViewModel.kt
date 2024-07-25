@@ -22,13 +22,13 @@ import javax.inject.Inject
 class VoteResultViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val voteRepository: VoteRepository,
-    private val coroutineDispatcher: CoroutineDispatcher
+    private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
     override val container = container<ResultUiState, ResultSideEffect>(ResultUiState())
 
     val args = VoteResultScreenArgs(
         date = savedStateHandle["date"] ?: "",
-        isVoting = savedStateHandle["isVoting"] ?: false
+        isVoting = savedStateHandle["isVoting"] ?: false,
     )
 
     fun onAction(action: ResultAction) {
