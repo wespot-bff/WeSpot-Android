@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen.send
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -223,5 +224,10 @@ fun ReceiverSelectionScreen(
 
     LaunchedEffect(Unit) {
         action(SendAction.OnReceiverScreenEntered)
+    }
+
+    BackHandler {
+        action(SendAction.NavigateToMessage)
+        navigator.navigateMessageScreen(args = MessageScreenArgs(false))
     }
 }
