@@ -107,7 +107,7 @@ class VotingViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             val result = voteRepository.uploadVoteResults(VoteResultsUpload(state.selectedVote))
 
-            if (!result) {
+            if (result) {
                 postSideEffect(VotingSideEffect.NavigateToResult)
             } else {
                 postSideEffect(VotingSideEffect.ShowToast("투표 제출에 오류가 발생했습니다"))
