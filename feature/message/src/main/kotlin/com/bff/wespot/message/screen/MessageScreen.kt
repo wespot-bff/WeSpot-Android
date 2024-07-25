@@ -67,7 +67,7 @@ interface MessageNavigator {
 
 @Destination
 @Composable
-fun MessageScreen(
+internal fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
     messageNavigator: MessageNavigator,
 ) {

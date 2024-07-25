@@ -41,6 +41,7 @@ fun WSButton(
     paddingValues: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
     enabled: Boolean = true,
     borderStroke: BorderStroke? = null,
+    background: Color? = null,
     pressedBorderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
@@ -63,7 +64,7 @@ fun WSButton(
                 containerColor = if (isPressed) {
                     buttonType.pressColor()
                 } else {
-                    buttonType.background()
+                    background ?: buttonType.background()
                 },
                 disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
                 disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,

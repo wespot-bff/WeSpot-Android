@@ -13,7 +13,9 @@ import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.vote.screen.VoteNavigator
+import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
@@ -57,5 +59,9 @@ class CommonNavGraphNavigator(
     }
 
     override fun navigateNotificationScreen() {
+    }
+
+    override fun navigateToResultScreen(args: VoteResultScreenArgs) {
+        navController.navigate(VoteResultScreenDestination(args) within navGraph)
     }
 }

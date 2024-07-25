@@ -38,8 +38,9 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
-import com.bff.wespot.vote.state.VoteAction
+import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.viewmodel.VoteHomeViewModel
+import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
@@ -55,6 +56,7 @@ internal fun VoteHomeScreen(
     voteNavigator: VoteNavigator,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val votingViewModel: VotingViewModel = hiltViewModel()
 
     Scaffold(
         topBar = {
@@ -122,7 +124,9 @@ internal fun VoteHomeScreen(
                         )
 
                         WSButton(
-                            onClick = voteNavigator::navigateToVotingScreen,
+                            onClick = {
+                                voteNavigator.navigateToVotingScreen()
+                            },
                             text = stringResource(id = R.string.voting),
                         ) {
                             it.invoke()

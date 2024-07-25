@@ -20,7 +20,9 @@ import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
+import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.dynamic.routedIn
@@ -39,6 +41,7 @@ object AppNavGraphs {
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             VoteHomeScreenDestination,
             VotingScreenDestination,
+            VoteResultScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -132,6 +135,7 @@ internal fun AppNavigation(
     )
 
     val sendViewModel: SendViewModel = hiltViewModel()
+    val votingViewModel: VotingViewModel = hiltViewModel()
 
     DestinationsNavHost(
         navGraph = AppNavGraphs.root,
@@ -141,6 +145,7 @@ internal fun AppNavigation(
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
             dependency(sendViewModel)
+            dependency(votingViewModel)
         },
     )
 }

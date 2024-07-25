@@ -5,6 +5,9 @@ import java.time.LocalDate
 fun LocalDate.toDateTimeString(): String =
     "${this.monthValue}월 ${this.dayOfMonth}일 ${this.dayOfWeek.name.toKoreanWeekDay()}"
 
+fun LocalDate.toDateString(): String =
+    "${this.year}-${this.monthValue}-${this.dayOfMonth}"
+
 private fun String.toKoreanWeekDay() =
     when(this) {
         "MONDAY" -> "월요일"
