@@ -10,7 +10,7 @@ sealed class SendAction {
     data object SendMessage : SendAction()
     data object OnInviteFriendTextClicked : SendAction()
     data object NavigateToMessage : SendAction()
-    data object NavigateToEdit : SendAction()
     data object OnReceiverScreenEntered : SendAction()
+    data object OnMessageEditScreenEntered : SendAction()
     data object OnWriteScreenEntered : SendAction()
 }

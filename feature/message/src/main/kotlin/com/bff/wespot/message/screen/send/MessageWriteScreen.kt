@@ -142,7 +142,6 @@ fun MessageWriteScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
             onClick = {
-                action(SendAction.NavigateToEdit)
                 navigator.navigateMessageEditScreen()
             },
             enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),

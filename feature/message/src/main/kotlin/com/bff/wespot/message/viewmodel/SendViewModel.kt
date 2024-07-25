@@ -45,7 +45,7 @@ class SendViewModel @Inject constructor(
             is SendAction.SendMessage -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
             is SendAction.NavigateToMessage -> clearSendUiState()
-            is SendAction.NavigateToEdit -> getProfile()
+            is SendAction.OnMessageEditScreenEntered -> getProfile()
             else -> {}
         }
     }
