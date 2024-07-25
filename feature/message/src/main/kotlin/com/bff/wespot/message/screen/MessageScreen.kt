@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +41,8 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
+import com.bff.wespot.designsystem.component.indicator.WSToast
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -65,12 +68,19 @@ interface MessageNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
 }
 
-@Destination
+data class MessageScreenArgs(
+    val isMessageSent: Boolean = false,
+)
+
+@Destination(navArgsDelegate = MessageScreenArgs::class)
 @Composable
 internal fun MessageScreen(
-    viewModel: MessageViewModel = hiltViewModel(),
     messageNavigator: MessageNavigator,
+    navArgs: MessageScreenArgs,
+    viewModel: MessageViewModel = hiltViewModel(),
 ) {
+    var messageSentToast by remember { mutableStateOf(false) }
+
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -153,7 +163,19 @@ internal fun MessageScreen(
         }
     }
 
+    if (messageSentToast) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = stringResource(R.string.message_reserve_success),
+                toastType = WSToastType.Success,
+                showToast = messageSentToast,
+                closeToast = { messageSentToast = false },
+            )
+        }
+    }
+
     LaunchedEffect(Unit) {
+        messageSentToast = navArgs.isMessageSent
         action(MessageAction.OnHomeScreenEntered)
     }
 }

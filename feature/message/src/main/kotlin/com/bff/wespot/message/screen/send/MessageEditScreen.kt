@@ -36,6 +36,7 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
+import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -49,7 +50,7 @@ interface MessageEditNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
-    fun navigateMessageScreen()
+    fun navigateMessageScreen(args: MessageScreenArgs)
 }
 
 @Destination
@@ -77,7 +78,7 @@ fun MessageEditScreen(
 
             is SendSideEffect.NavigateToMessage -> {
                 action(SendAction.NavigateToMessage)
-                navigator.navigateMessageScreen()
+                navigator.navigateMessageScreen(args = MessageScreenArgs(true))
             }
         }
     }
@@ -187,7 +188,12 @@ fun MessageEditScreen(
                 onClick = {
                     reserveDialog = true
                 },
-                paddingValues = PaddingValues(horizontal = 20.dp, vertical = 32.dp),
+                paddingValues = PaddingValues(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 32.dp,
+                    bottom = 12.dp,
+                ),
                 text = stringResource(R.string.message_send),
             ) {
                 it()
@@ -202,7 +208,7 @@ fun MessageEditScreen(
                 cancelButtonText = stringResource(id = R.string.close),
                 okButtonClick = {
                     action(SendAction.NavigateToMessage)
-                    navigator.navigateMessageScreen()
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { exitDialog = false },
                 onDismissRequest = { exitDialog = false },
@@ -229,7 +235,7 @@ fun MessageEditScreen(
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
                     action(SendAction.NavigateToMessage)
-                    navigator.navigateMessageScreen()
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { timeoutDialog = false },

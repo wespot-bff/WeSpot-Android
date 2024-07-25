@@ -40,6 +40,7 @@ import com.bff.wespot.designsystem.theme.Gray300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
+import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.UserListItem
@@ -50,7 +51,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 interface ReceiverSelectionNavigator {
     fun navigateUp()
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
-    fun navigateMessageScreen()
+    fun navigateMessageScreen(args: MessageScreenArgs)
 }
 
 data class ReceiverSelectionScreenArgs(
@@ -207,7 +208,7 @@ fun ReceiverSelectionScreen(
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
                 action(SendAction.NavigateToMessage)
-                navigator.navigateMessageScreen()
+                navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },
             onDismissRequest = { dialogState = false },

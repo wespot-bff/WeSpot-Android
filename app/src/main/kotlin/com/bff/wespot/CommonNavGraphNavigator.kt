@@ -3,6 +3,7 @@ package com.bff.wespot
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.message.screen.MessageNavigator
+import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
@@ -47,8 +48,8 @@ class CommonNavGraphNavigator(
         navController.navigate(MessageWriteScreenDestination(args) within navGraph)
     }
 
-    override fun navigateMessageScreen() {
-        navController.navigate(MessageScreenDestination within navGraph)
+    override fun navigateMessageScreen(args: MessageScreenArgs) {
+        navController.navigate(MessageScreenDestination(args) within navGraph)
     }
 
     override fun navigateMessageEditScreen() {

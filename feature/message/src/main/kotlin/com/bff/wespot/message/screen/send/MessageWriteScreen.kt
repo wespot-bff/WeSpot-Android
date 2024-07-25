@@ -1,6 +1,7 @@
 package com.bff.wespot.message.screen.send
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
+import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
@@ -41,7 +43,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 interface MessageWriteNavigator {
     fun navigateUp()
-    fun navigateMessageScreen()
+    fun navigateMessageScreen(args: MessageScreenArgs)
     fun navigateMessageEditScreen()
 }
 
@@ -115,11 +117,9 @@ fun MessageWriteScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 val warningMessage = when {
-                    state.hasProfanity && state.messageInput.length > MESSAGE_MAX_LENGTH -> {
-                        stringResource(R.string.message_length_limit)
-                    }
                     state.messageInput.length > MESSAGE_MAX_LENGTH -> {
                         stringResource(R.string.message_length_limit)
                     }
@@ -133,8 +133,6 @@ fun MessageWriteScreen(
                     style = StaticTypeScale.Default.body7,
                     color = WeSpotThemeManager.colors.dangerColor,
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
 
                 LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
             }
@@ -164,7 +162,7 @@ fun MessageWriteScreen(
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
                 action(SendAction.NavigateToMessage)
-                navigator.navigateMessageScreen()
+                navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },
             onDismissRequest = { dialogState = false },
