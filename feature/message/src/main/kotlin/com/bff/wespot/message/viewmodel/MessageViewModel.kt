@@ -3,12 +3,14 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.message.MessageRepository
+import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
 import com.bff.wespot.model.message.request.MessageType
+import com.bff.wespot.model.message.response.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class MessageViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
@@ -67,7 +70,17 @@ class MessageViewModel @Inject constructor(
     fun onAction(action: MessageAction) {
         when (action) {
             is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
-            else -> {}
+            is MessageAction.OnMessageStorageScreenEntered -> getProfile()
+            is MessageAction.OnStorageChipSelected -> {
+                when (action.messageType) {
+                    MessageType.SENT -> {
+                        getMessageStatus()
+                        getSentMessageList()
+                    }
+                    MessageType.RECEIVED -> getReceivedMessageList()
+                }
+            }
+            is MessageAction.OnMessageItemClicked -> handleMessageItemClicked(action.message)
         }
     }
 
@@ -75,6 +88,19 @@ class MessageViewModel @Inject constructor(
         val currentTimePeriod = getCurrentTimePeriod()
         updateTimePeriod(currentTimePeriod)
         timeChecker.start()
+    }
+
+    private fun getProfile() = intent {
+        viewModelScope.launch {
+            userRepository.getProfile()
+                .onSuccess { profile ->
+                    reduce {
+                        state.copy(
+                            myProfile = profile,
+                        )
+                    }
+                }
+        }
     }
 
     private fun updateTimePeriod(currentTimePeriod: TimePeriod) {
@@ -124,6 +150,34 @@ class MessageViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    private fun getSentMessageList() = intent {
+        viewModelScope.launch {
+            messageRepository.getMessageList(MessageType.SENT)
+                .onSuccess { sentMessageList ->
+                    reduce {
+                        state.copy(
+                            sentMessageList = sentMessageList,
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun handleMessageItemClicked(message: Message) = intent {
+        reduce {
+            state.copy(
+                clickedMessage = message,
+            )
+        }
+        updateMessageReadStatus(message.id)
+    }
+
+    private fun updateMessageReadStatus(messageId: Int) {
+        viewModelScope.launch {
+            messageRepository.updateMessageReadStatus(messageId)
         }
     }
 
