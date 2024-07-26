@@ -7,6 +7,7 @@ data class Message(
     val senderName: String,
     val content: String,
     val receivedAt: LocalDateTime,
-    val read: Boolean,
+    val isRead: Boolean,
+    val isBlocked: Boolean,
     val readAt: LocalDateTime?,
 )
