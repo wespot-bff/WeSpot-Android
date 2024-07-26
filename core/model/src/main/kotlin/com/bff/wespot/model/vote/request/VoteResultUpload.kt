@@ -1,6 +1,6 @@
 package com.bff.wespot.model.vote.request
 
-data class VoteResult(
+data class VoteResultUpload(
     val userId: Int,
     val voteOptionId: Int,
 ) {
