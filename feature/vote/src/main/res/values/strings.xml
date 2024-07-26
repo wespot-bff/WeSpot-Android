@@ -21,4 +21,6 @@
     <string name="user_icon">사용자 아이콘</string>
     <string name="check_overall_result">전체 결과 보기</string>
     <string name="check_my_vote">내가 받은 투표 보기</string>
+    <string name="past_vote">지난투표</string>
+    <string name="real_time_vote">실시간 투표</string>
 </resources>

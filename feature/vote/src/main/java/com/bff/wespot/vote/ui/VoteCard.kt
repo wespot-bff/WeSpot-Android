@@ -52,6 +52,7 @@ internal fun VoteCard(
     question: String,
     pagerState: PagerState,
     page: Int,
+    onClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -127,7 +128,7 @@ internal fun VoteCard(
             }
 
             WSButton(
-                onClick = { },
+                onClick = onClick,
                 buttonType = WSButtonType.Secondary,
                 paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp),
             ) {
@@ -159,6 +160,7 @@ private fun PreviewVoteCard() {
                 question = "Question",
                 pagerState = rememberPagerState(pageCount = { 10 }),
                 1,
+                {},
             )
         }
     }

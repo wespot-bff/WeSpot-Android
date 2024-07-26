@@ -24,13 +24,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +51,7 @@ import coil.request.ImageRequest
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
+import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.Primary100
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -61,6 +65,7 @@ import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.ui.EmptyResultScreen
+import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -68,14 +73,14 @@ import java.time.LocalDate
 
 interface VoteResultNavigator {
     fun navigateToVoteHome()
+    fun navigateUp()
 }
 
 data class VoteResultScreenArgs(
-    val date: String,
     val isVoting: Boolean,
 )
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Destination(
     navArgsDelegate = VoteResultScreenArgs::class,
 )
@@ -89,21 +94,33 @@ fun VoteResultScreen(
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
+    var voteType by remember {
+        mutableStateOf(TODAY)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(end = 12.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                WSTextButton(
-                    text = stringResource(id = R.string.go_to_home),
-                    onClick = {
-                        navigator.navigateToVoteHome()
-                    },
+            if (state.isVoting) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(end = 12.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    WSTextButton(
+                        text = stringResource(id = R.string.go_to_home),
+                        onClick = {
+                            navigator.navigateToVoteHome()
+                        },
+                    )
+                }
+            } else {
+                WSTopBar(
+                    title = "",
+                    canNavigateBack = true,
+                    navigateUp = { navigator.navigateUp() },
                 )
             }
         },
@@ -113,6 +130,27 @@ fun VoteResultScreen(
                 .padding(it)
                 .fillMaxSize(),
         ) {
+            if (!state.isVoting) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
+                ) {
+                    VoteChip(
+                        text = stringResource(R.string.past_vote),
+                        isSelected = voteType == YESTERDAY,
+                    ) {
+                        voteType = YESTERDAY
+                    }
+
+                    VoteChip(
+                        text = stringResource(R.string.real_time_vote),
+                        isSelected = voteType == TODAY,
+                    ) {
+                        voteType = TODAY
+                    }
+                }
+            }
+
             WSCarousel(pagerState = pagerState) { page ->
                 VoteResultItem(
                     result = state.voteResults.voteResults[page],
@@ -179,8 +217,13 @@ fun VoteResultScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        action(ResultAction.LoadVoteResults(LocalDate.now().toDateString()))
+    LaunchedEffect(voteType) {
+        val today = LocalDate.now()
+        action(
+            ResultAction.LoadVoteResults(
+                today.minusDays(voteType.toLong()).toDateString(),
+            ),
+        )
     }
 }
 
@@ -365,3 +408,5 @@ private fun RankTile(
 }
 
 private const val MIN_REQUIREMENT = 5
+private const val TODAY = 0
+private const val YESTERDAY = 1

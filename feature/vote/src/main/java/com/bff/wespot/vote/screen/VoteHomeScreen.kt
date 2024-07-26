@@ -22,9 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +58,7 @@ import java.time.LocalDate
 interface VoteNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
+    fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
 }
 
 @Destination
@@ -69,18 +67,18 @@ internal fun VoteHomeScreen(
     viewModel: VoteHomeViewModel = hiltViewModel(),
     voteNavigator: VoteNavigator,
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     val state by viewModel.collectAsState()
+    val action = viewModel::onAction
 
     Scaffold(
         topBar = {
             VoteTopBar(
-                selectedTabIndex = selectedTabIndex,
-                onTabSelected = { selectedTabIndex = it },
+                selectedTabIndex = state.selectedTabIndex,
+                onTabSelected = { action(VoteAction.OnTabChanged(it)) },
             )
         },
     ) {
-        Crossfade(targetState = selectedTabIndex, label = "") { index ->
+        Crossfade(targetState = state.selectedTabIndex, label = "") { index ->
             Box(modifier = Modifier.padding(it)) {
                 when (index) {
                     0 -> VoteHomeContent(
@@ -91,6 +89,7 @@ internal fun VoteHomeScreen(
                     1 -> CardResultContent(
                         state = state,
                         action = viewModel::onAction,
+                        navigator = voteNavigator,
                     )
                 }
             }
@@ -218,7 +217,11 @@ private fun VoteHomeContent(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CardResultContent(state: VoteUiState, action: (VoteAction) -> Unit) {
+private fun CardResultContent(
+    state: VoteUiState,
+    action: (VoteAction) -> Unit,
+    navigator: VoteNavigator,
+) {
     val pagerState = rememberPagerState { state.voteResults.size }
 
     Image(
@@ -238,14 +241,19 @@ private fun CardResultContent(state: VoteUiState, action: (VoteAction) -> Unit) 
                 pageSpacing = 4.dp,
                 contentPadding = PaddingValues(horizontal = 46.dp),
             ) {
-                if (state.voteResults[0].results.isEmpty()) {
+                if (state.voteResults[it].results.isEmpty()) {
                     EmptyResultScreen()
                 } else {
                     VoteCard(
-                        result = state.voteResults[0].results.first(),
-                        question = state.voteResults[0].voteOption.content,
+                        result = state.voteResults[it].results.first(),
+                        question = state.voteResults[it].voteOption.content,
                         pagerState = pagerState,
                         page = it,
+                        onClick = {
+                            navigator.navigateToVoteResultScreen(
+                                VoteResultScreenArgs(false),
+                            )
+                        },
                     )
                 }
             }

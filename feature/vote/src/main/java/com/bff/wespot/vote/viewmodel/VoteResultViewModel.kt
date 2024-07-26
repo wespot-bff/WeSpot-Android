@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.vote.VoteRepository
-import com.bff.wespot.vote.screen.VoteResultScreenArgs
+import com.bff.wespot.model.vote.response.VoteResults
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.state.result.ResultSideEffect
 import com.bff.wespot.vote.state.result.ResultUiState
@@ -24,11 +24,10 @@ class VoteResultViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
-    override val container = container<ResultUiState, ResultSideEffect>(ResultUiState())
-
-    val args = VoteResultScreenArgs(
-        date = savedStateHandle["date"] ?: "",
-        isVoting = savedStateHandle["isVoting"] ?: false,
+    override val container = container<ResultUiState, ResultSideEffect>(
+        ResultUiState(
+            isVoting = savedStateHandle["isVoting"] ?: false,
+        ),
     )
 
     fun onAction(action: ResultAction) {
@@ -39,14 +38,15 @@ class VoteResultViewModel @Inject constructor(
 
     private fun loadVoteResults(date: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            reduce { state.copy(isLoading = true) }
+            val previous = state.voteResults
+            reduce { state.copy(isLoading = true, voteResults = VoteResults(emptyList())) }
             try {
                 voteRepository.getVoteResults(date)
                     .onSuccess {
                         reduce { state.copy(voteResults = it, isLoading = false) }
                     }
                     .onFailure {
-                        reduce { state.copy(isLoading = false) }
+                        reduce { state.copy(isLoading = false, voteResults = previous) }
                         Timber.e(it)
                     }
             } catch (e: Exception) {

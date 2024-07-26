@@ -55,6 +55,7 @@ class VoteHomeViewModel @Inject constructor(
             is VoteAction.StartDate -> startUpdatingDate()
             is VoteAction.EndDate -> stopUpdatingDate()
             is VoteAction.GetFirst -> getFirstVoteResults(action.date)
+            is VoteAction.OnTabChanged -> onTabChanged(action.index)
         }
     }
 
@@ -85,5 +86,9 @@ class VoteHomeViewModel @Inject constructor(
                 Timber.e(e)
             }
         }
+    }
+
+    private fun onTabChanged(index: Int) = intent {
+        reduce { state.copy(selectedTabIndex = index) }
     }
 }
