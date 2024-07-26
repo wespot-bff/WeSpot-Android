@@ -172,12 +172,18 @@ class MessageViewModel @Inject constructor(
                 clickedMessage = message,
             )
         }
-        updateMessageReadStatus(message.id)
+
+        if (message.isRead.not()) {
+            updateMessageReadStatus(messageId = message.id)
+        }
     }
 
     private fun updateMessageReadStatus(messageId: Int) {
         viewModelScope.launch {
             messageRepository.updateMessageReadStatus(messageId)
+                .onSuccess {
+                    getReceivedMessageList()
+                }
         }
     }
 
