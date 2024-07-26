@@ -55,4 +55,12 @@ class MessageDataSourceImpl @Inject constructor(
                 setBody(content)
             }
         }
+
+    override suspend fun updateMessageReadStatus(messageId: Int): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("messages/$messageId/read")
+            }
+        }
 }

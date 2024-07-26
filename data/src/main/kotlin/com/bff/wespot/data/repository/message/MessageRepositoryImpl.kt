@@ -35,4 +35,7 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun checkProfanity(content: String): Result<Unit> =
         messageDataSource.checkProfanity(MessageContentDto(message = content))
+
+    override suspend fun updateMessageReadStatus(messageId: Int): Result<Unit> =
+        messageDataSource.updateMessageReadStatus(messageId = messageId)
 }
