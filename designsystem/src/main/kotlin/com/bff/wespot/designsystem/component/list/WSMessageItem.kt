@@ -87,17 +87,23 @@ private fun WSLetterItemContent(
     wsMessageItemType: WSMessageItemType,
 ) {
     Column(
-        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
     ) {
-        Image(
-            modifier = Modifier.size(width = 130.dp, height = 100.dp),
-            bitmap = wsMessageItemType.letterImage(),
-            contentDescription = stringResource(R.string.letter_image),
-        )
-
-        Column(
-            modifier = Modifier.padding(top = 2.dp),
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
         ) {
+            Image(
+                modifier = Modifier
+                    .size(width = 130.dp, height = 100.dp),
+                bitmap = wsMessageItemType.letterImage(),
+                contentDescription = stringResource(R.string.letter_image),
+            )
+        }
+
+        Column(modifier = Modifier.padding(top = 2.dp)) {
             Text(
                 text = wsMessageItemType.letterStatusText(),
                 color = Gray100,
