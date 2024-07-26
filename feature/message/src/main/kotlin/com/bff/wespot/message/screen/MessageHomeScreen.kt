@@ -83,14 +83,14 @@ fun MessageHomeScreen(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
                     title = state.timePeriod.title,
-                    buttonText = if (state.messageStatus.canSend) {
+                    buttonText = if (state.messageStatus.isSendAllowed) {
                         stringResource(R.string.message_card_button_text_evening)
                     } else {
                         stringResource(R.string.message_card_button_text_evening_disabled)
                     },
                     image = state.timePeriod.image,
                     isBannerVisible = state.messageStatus.hasReservedMessages(),
-                    isButtonEnable = state.messageStatus.canSend,
+                    isButtonEnable = state.messageStatus.isSendAllowed,
                     onButtonClick = {
                         navigateToReceiverSelectionScreen(false)
                     },

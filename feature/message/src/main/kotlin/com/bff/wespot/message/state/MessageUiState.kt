@@ -14,5 +14,5 @@ data class MessageUiState(
     val receivedMessageList: MessageList = MessageList(listOf(), true),
     val myProfile: Profile = Profile(-1, "", "", -1, -1, "", "", ProfileCharacter("", "")),
     val sentMessageList: MessageList = MessageList(listOf(), true),
-    val clickedMessage: Message = Message(-1, "", "", LocalDateTime.MAX, false, null),
+    val clickedMessage: Message = Message(-1, "", "", LocalDateTime.MAX, false, false, null),
 )
