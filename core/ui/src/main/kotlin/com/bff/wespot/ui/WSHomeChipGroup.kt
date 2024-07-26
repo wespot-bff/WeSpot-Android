@@ -3,12 +3,13 @@ package com.bff.wespot.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,10 +23,13 @@ fun WSHomeChipGroup(
     selectedItemIndex: Int = 0,
     onSelectedChanged: (Int) -> Unit = {},
 ) {
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    LazyRow(
+        modifier = Modifier.padding(vertical = 12.dp, horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
         items(items.size) { index: Int ->
             FilterChip(
-                shape = MaterialTheme.shapes.extraLarge,
+                shape = WeSpotThemeManager.shapes.extraLarge,
                 selected = index == selectedItemIndex,
                 onClick = {
                     onSelectedChanged(index)
