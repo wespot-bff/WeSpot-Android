@@ -3,6 +3,7 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.util.toDateTimeString
+import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -18,13 +19,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class VoteHomeViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
+    private val voteRepository: VoteRepository,
 ) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(VoteUiState())
 
@@ -49,6 +54,7 @@ class VoteHomeViewModel @Inject constructor(
         when (action) {
             is VoteAction.StartDate -> startUpdatingDate()
             is VoteAction.EndDate -> stopUpdatingDate()
+            is VoteAction.GetFirst -> getFirstVoteResults(action.date)
         }
     }
 
@@ -60,5 +66,24 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun stopUpdatingDate() {
         dateJob.cancel()
+    }
+
+    private fun getFirstVoteResults(date: String) = intent {
+        reduce { state.copy(isLoading = true) }
+        viewModelScope.launch {
+            try {
+                voteRepository.getFirstVoteResults(date)
+                    .onSuccess {
+                        reduce { state.copy(voteResults = it.voteResults, isLoading = false) }
+                    }
+                    .onFailure {
+                        reduce { state.copy(isLoading = false) }
+                        Timber.e(it)
+                    }
+            } catch (e: Exception) {
+                reduce { state.copy(isLoading = false) }
+                Timber.e(e)
+            }
+        }
     }
 }

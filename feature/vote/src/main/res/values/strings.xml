@@ -17,4 +17,8 @@
     <string name="empty_vote">empty_vote</string>
     <string name="analyzing_result">결과를 분석하는 중이에요</string>
     <string name="more_friend_the_faster">우리 반 친구들이 많을수록 분석이 빨라져요</string>
+    <string name="first_icon">일등 아이콘</string>
+    <string name="user_icon">사용자 아이콘</string>
+    <string name="check_overall_result">전체 결과 보기</string>
+    <string name="check_my_vote">내가 받은 투표 보기</string>
 </resources>

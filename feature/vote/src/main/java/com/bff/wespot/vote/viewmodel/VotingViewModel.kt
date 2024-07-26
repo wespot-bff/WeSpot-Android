@@ -40,23 +40,27 @@ class VotingViewModel @Inject constructor(
             state.copy(loading = true)
         }
         viewModelScope.launch(coroutineDispatcher) {
-            voteRepository.getVoteQuestions()
-                .onSuccess {
-                    reduce {
-                        state.copy(
-                            voteItems = it.voteItems,
-                            totalPage = it.voteItems.size,
-                            pageNumber = 1,
-                            currentVote = it.voteItems.first(),
-                            start = false,
-                            selectedVote = List(it.voteItems.size) { VoteResultUpload() },
-                            loading = false,
-                        )
+            try {
+                voteRepository.getVoteQuestions()
+                    .onSuccess {
+                        reduce {
+                            state.copy(
+                                voteItems = it.voteItems,
+                                totalPage = it.voteItems.size,
+                                pageNumber = 1,
+                                currentVote = it.voteItems.first(),
+                                start = false,
+                                selectedVote = List(it.voteItems.size) { VoteResultUpload() },
+                                loading = false,
+                            )
+                        }
                     }
-                }
-                .onFailure {
-                    Timber.e(it)
-                }
+                    .onFailure {
+                        Timber.e(it)
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

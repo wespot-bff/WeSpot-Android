@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,6 +60,7 @@ import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
+import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -197,7 +197,7 @@ private fun VoteResultItem(
             modifier = Modifier.padding(horizontal = 24.dp),
         )
         if (empty) {
-            EmptyResult()
+            EmptyResultScreen()
         } else {
             Row(
                 modifier = Modifier.padding(horizontal = 12.dp),
@@ -359,38 +359,6 @@ private fun RankTile(
             Text(
                 text = "$vote${stringResource(id = R.string.ballot)}",
                 style = StaticTypeScale.Default.body2,
-            )
-        }
-    }
-}
-
-@Composable
-private fun EmptyResult() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .padding(top = 40.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.empty_vote),
-                contentDescription = stringResource(R.string.empty_vote),
-                modifier = Modifier.size(79.dp),
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = stringResource(R.string.analyzing_result),
-                style = StaticTypeScale.Default.body1,
-            )
-            Text(
-                text = stringResource(R.string.more_friend_the_faster),
-                style = StaticTypeScale.Default.body3,
             )
         }
     }
