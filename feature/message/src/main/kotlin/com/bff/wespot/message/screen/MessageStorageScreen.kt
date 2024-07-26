@@ -1,18 +1,21 @@
 package com.bff.wespot.message.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,10 +24,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,8 +67,6 @@ fun MessageStorageScreen(
     val action = viewModel::onAction
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(12.dp))
-
         WSHomeChipGroup(
             items = chipList,
             selectedItemIndex = selectedChipIndex,
@@ -72,12 +75,19 @@ fun MessageStorageScreen(
 
         when (selectedChipIndex) {
             RECEIVED_MESSAGE_INDEX -> {
-                LazyColumn {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                     items(state.receivedMessageList.messages, key = { it.id }) { item ->
                         WSMessageItem(
                             userInfo = item.senderName,
                             date = item.receivedAt.toStringWithDotSeparator(),
-                            wsMessageItemType = if (item.read) {
+                            wsMessageItemType = if (item.isRead) {
                                 WSMessageItemType.ReadReceivedMessage
                             } else {
                                 WSMessageItemType.UnreadReceivedMessage
@@ -103,34 +113,32 @@ fun MessageStorageScreen(
                 }
 
                 Text(
+                    modifier = Modifier.padding(start = 24.dp),
                     text = "전송 완료된 쪽지",
                     color = WeSpotThemeManager.colors.txtTitleColor,
                     style = StaticTypeScale.Default.body3,
                 )
 
                 // TODO
-                LazyColumn {
-                    items(state.sentMessageList.messages, key = { it.id }) { item ->
-                    }
-                }
             }
         }
     }
 
     if (showMessageDialog) {
         Dialog(onDismissRequest = { }) {
-            Box {
-                Icon(
-                    modifier = Modifier.padding(top = 8.dp, end = 8.dp),
-                    painter = painterResource(id = R.drawable.close),
-                    contentDescription = stringResource(id = R.string.close),
-                )
-
+            Box(
+                modifier = Modifier.size(width = 310.dp, height = 376.dp),
+            ) {
                 Column(
                     modifier = Modifier
                         .clip(WeSpotThemeManager.shapes.extraLarge)
                         .background(WeSpotThemeManager.colors.modalColor)
-                        .border(width = 1.dp, color = Primary400)
+                        .border(
+                            width = 1.dp,
+                            color = Primary400,
+                            shape = WeSpotThemeManager.shapes.extraLarge,
+                        )
+                        .fillMaxSize()
                         .padding(horizontal = 24.dp, vertical = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
@@ -138,7 +146,25 @@ fun MessageStorageScreen(
 
                     MessageDialogText(state.clickedMessage.content)
 
-                    MessageDialogText("From.\n" + state.clickedMessage.senderName)
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    MessageDialogText(
+                        text = "From.\n" + state.clickedMessage.senderName,
+                        textAlign = TextAlign.End,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, end = 8.dp)
+                        .clickable { showMessageDialog = false },
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.close),
+                        contentDescription = stringResource(id = R.string.close),
+                    )
                 }
             }
         }
@@ -159,10 +185,12 @@ fun MessageStorageScreen(
 }
 
 @Composable
-fun MessageDialogText(title: String) {
+fun MessageDialogText(text: String, textAlign: TextAlign = TextAlign.Start) {
     Text(
-        text = title,
+        modifier = Modifier.fillMaxWidth(),
+        text = text,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
+        textAlign = textAlign,
     )
 }
