@@ -3,8 +3,9 @@ package com.bff.wespot.data.repository.vote
 import com.bff.wespot.data.mapper.vote.toDto
 import com.bff.wespot.data.remote.source.vote.VoteDataSource
 import com.bff.wespot.domain.repository.vote.VoteRepository
-import com.bff.wespot.model.vote.request.VoteResults
+import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItems
+import com.bff.wespot.model.vote.response.VoteResults
 import javax.inject.Inject
 
 class VoteRepositoryImpl @Inject constructor(
@@ -16,7 +17,13 @@ class VoteRepositoryImpl @Inject constructor(
                 it.toVoteItems()
             }
 
-    override suspend fun uploadVoteResults(voteResults: VoteResults) =
+    override suspend fun uploadVoteResults(voteResults: VoteResultsUpload) =
         voteDataSource.uploadVoteResults(voteResults.toDto())
             .isSuccess
+
+    override suspend fun getVoteResults(date: String): Result<VoteResults> =
+        voteDataSource.getVoteResults(date)
+            .map {
+                it.toVoteResults()
+            }
 }

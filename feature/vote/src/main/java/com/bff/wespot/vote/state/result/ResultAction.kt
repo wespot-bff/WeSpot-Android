@@ -1,3 +1,5 @@
 package com.bff.wespot.vote.state.result
 
-class ResultAction
+sealed class ResultAction {
+    data class LoadVoteResults(val date: String) : ResultAction()
+}

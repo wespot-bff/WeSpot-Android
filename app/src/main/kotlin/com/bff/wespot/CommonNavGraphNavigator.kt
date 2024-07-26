@@ -14,6 +14,7 @@ import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.vote.screen.VoteNavigator
+import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VotingNavigator
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
@@ -31,7 +32,8 @@ class CommonNavGraphNavigator(
     MessageWriteNavigator,
     MessageEditNavigator,
     EntireNavigator,
-    VotingNavigator {
+    VotingNavigator,
+    VoteResultNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -64,5 +66,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToResultScreen(args: VoteResultScreenArgs) {
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToVoteHome() {
+        navController.popBackStack(navGraph.startRoute.route, inclusive = false, saveState = true)
     }
 }

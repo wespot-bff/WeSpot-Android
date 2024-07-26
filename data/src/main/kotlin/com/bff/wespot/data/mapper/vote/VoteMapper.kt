@@ -1,17 +1,17 @@
 package com.bff.wespot.data.mapper.vote
 
-import com.bff.wespot.data.remote.model.vote.request.VoteResultDto
-import com.bff.wespot.data.remote.model.vote.request.VoteResultsDto
-import com.bff.wespot.model.vote.request.VoteResult
-import com.bff.wespot.model.vote.request.VoteResults
+import com.bff.wespot.data.remote.model.vote.request.VoteResultUploadDto
+import com.bff.wespot.data.remote.model.vote.request.VoteResultsUploadDto
+import com.bff.wespot.model.vote.request.VoteResultUpload
+import com.bff.wespot.model.vote.request.VoteResultsUpload
 
-fun VoteResults.toDto() =
-    VoteResultsDto(
-        voteResultDtos = voteResults.map { it.toDto() }
+fun VoteResultsUpload.toDto() =
+    VoteResultsUploadDto(
+        votes = voteResults.map { it.toDto() }
     )
 
-fun VoteResult.toDto() =
-    VoteResultDto(
+fun VoteResultUpload.toDto() =
+    VoteResultUploadDto(
         userId = userId,
         voteOptionId = voteOptionId
     )
