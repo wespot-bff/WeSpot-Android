@@ -33,7 +33,7 @@ class CommonNavGraphNavigator(
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
     }
 
-    override fun navigateToHome() {
+    override fun navigateToVoteHome() {
         navController.popBackStack(navGraph.startRoute.route, inclusive = false, saveState = true)
     }
 }

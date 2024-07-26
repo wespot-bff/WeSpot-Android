@@ -68,7 +68,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
 interface VoteResultNavigator {
-    fun navigateToHome()
+    fun navigateToVoteHome()
 }
 
 data class VoteResultScreenArgs(
@@ -103,7 +103,7 @@ fun VoteResultScreen(
                 WSTextButton(
                     text = stringResource(id = R.string.go_to_home),
                     onClick = {
-                        navigator.navigateToHome()
+                        navigator.navigateToVoteHome()
                     },
                 )
             }
