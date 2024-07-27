@@ -4,6 +4,7 @@ import com.bff.wespot.data.remote.model.vote.request.VoteResultsUploadDto
 import com.bff.wespot.data.remote.model.vote.response.VoteItemsDto
 import com.bff.wespot.data.remote.model.vote.response.VoteReceivedDto
 import com.bff.wespot.data.remote.model.vote.response.VoteResultsDto
+import com.bff.wespot.data.remote.model.vote.response.VoteSentDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -47,6 +48,14 @@ class VoteDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v1/votes/tops")
                 parameter("date", date)
+            }
+        }
+
+    override suspend fun getVoteSent(): Result<VoteSentDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/votes/sent")
             }
         }
 

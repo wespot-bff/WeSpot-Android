@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VoteReceivedDto(
-    val voteData: List<VoteDataDto>,
+    val voteData: List<ReceivedVoteDataDto>,
     val isLastPage: Boolean,
 ) {
     fun toVoteReceived(): VoteReceived {

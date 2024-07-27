@@ -17,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class StorageViewModel @Inject constructor(
+class VoteStorageViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
@@ -26,6 +26,7 @@ class StorageViewModel @Inject constructor(
     fun onAction(action: StorageAction) {
         when (action) {
             is StorageAction.GetReceivedVotes -> getReceivedVotes()
+            is StorageAction.GetSentVotes -> getSentVotes()
         }
     }
 
@@ -36,6 +37,22 @@ class StorageViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             receivedVotes = it.voteData
+                        )
+                    }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun getSentVotes() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            voteRepository.getVoteSent()
+                .onSuccess {
+                    reduce {
+                        state.copy(
+                            sentVotes = it.voteData
                         )
                     }
                 }

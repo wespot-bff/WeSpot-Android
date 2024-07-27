@@ -7,6 +7,7 @@ import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItems
 import com.bff.wespot.model.vote.response.VoteReceived
 import com.bff.wespot.model.vote.response.VoteResults
+import com.bff.wespot.model.vote.response.VoteSent
 import javax.inject.Inject
 
 class VoteRepositoryImpl @Inject constructor(
@@ -34,9 +35,11 @@ class VoteRepositoryImpl @Inject constructor(
                 it.toVoteResults()
             }
 
-    override suspend fun getVoteSent() {
-
-    }
+    override suspend fun getVoteSent(): Result<VoteSent> =
+        voteDataSource.getVoteSent()
+            .map {
+                it.toVoteSent()
+            }
 
     override suspend fun getVoteReceived(): Result<VoteReceived> =
         voteDataSource.getVoteReceived()
