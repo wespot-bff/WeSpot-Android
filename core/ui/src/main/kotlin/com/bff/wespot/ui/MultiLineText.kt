@@ -1,6 +1,5 @@
 package com.bff.wespot.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
@@ -30,7 +29,6 @@ fun MultiLineText(
     Text(
         modifier = modifier
             .height(height)
-            .fillMaxWidth()
             .wrapContentHeight(),
         text = text,
         style = style,

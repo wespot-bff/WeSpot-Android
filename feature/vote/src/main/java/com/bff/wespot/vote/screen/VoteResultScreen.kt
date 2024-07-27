@@ -133,6 +133,7 @@ fun VoteResultScreen(
             if (!state.isVoting) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
                 ) {
                     VoteChip(

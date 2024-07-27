@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -155,7 +156,6 @@ fun VotingScreen(
                                 submitButton = true
                             }
                         },
-                        text = voteItem.content,
                         buttonType =
                             if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
                                 selected == voteItem.id
@@ -166,7 +166,12 @@ fun VotingScreen(
                             },
                         paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                     ) {
-                        it.invoke()
+                        Text(
+                            text = voteItem.content,
+                            style = StaticTypeScale.Default.body3,
+                            modifier = Modifier.padding(vertical = 14.dp),
+                            textAlign = TextAlign.Start
+                        )
                     }
                 }
             }
@@ -181,7 +186,7 @@ fun VotingScreen(
                     text = stringResource(id = R.string.submit_vote_and_check_result),
                     enabled = state.loading.not(),
                 ) {
-                    it.invoke()
+
                 }
             }
         }

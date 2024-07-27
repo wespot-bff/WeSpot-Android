@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -92,7 +93,12 @@ internal fun VoteCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            MultiLineText(text = question, style = StaticTypeScale.Default.body3, line = 2)
+            MultiLineText(
+                text = question,
+                style = StaticTypeScale.Default.body3,
+                line = 2,
+                modifier = Modifier.width(208.dp)
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
