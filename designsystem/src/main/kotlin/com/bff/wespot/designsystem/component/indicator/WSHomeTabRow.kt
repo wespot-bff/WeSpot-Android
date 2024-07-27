@@ -49,7 +49,9 @@ fun WSHomeTabRow(
             Tab(
                 selected = selected,
                 onClick = { onTabSelected(index) },
-                modifier = Modifier.padding(11.dp),
+                modifier = Modifier
+                    .padding(vertical = 11.dp)
+                    .then(paddingModifier),
             ) {
                 Text(
                     text = tab,
