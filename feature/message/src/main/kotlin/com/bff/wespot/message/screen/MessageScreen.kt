@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -22,6 +24,7 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
@@ -39,6 +42,7 @@ data class MessageScreenArgs(
 @Destination(navArgsDelegate = MessageScreenArgs::class)
 @Composable
 internal fun MessageScreen(
+    viewModel: MessageViewModel = hiltViewModel(),
     messageNavigator: MessageNavigator,
     navArgs: MessageScreenArgs,
 ) {
@@ -61,31 +65,38 @@ internal fun MessageScreen(
                 onTabSelected = { index -> selectedTabIndex = index },
             )
 
-            when (selectedTabIndex) {
-                HOME_SCREEN_INDEX -> {
-                    MessageHomeScreen(
-                        navigateToMessageStorageScreen = {
-                            messageNavigator.navigateStorageScreen()
-                        },
-                        navigateToNotificationScreen = {
-                            messageNavigator.navigateNotificationScreen()
-                        },
-                        navigateToReceiverSelectionScreen = {
-                            messageNavigator.navigateReceiverSelectionScreen(
-                                ReceiverSelectionScreenArgs(false),
-                            )
-                        },
-                    )
-                }
+            Crossfade(
+                targetState = selectedTabIndex,
+                label = stringResource(R.string.message_screen_crossfade),
+            ) { page ->
+                when (page) {
+                    HOME_SCREEN_INDEX -> {
+                        MessageHomeScreen(
+                            viewModel = viewModel,
+                            navigateToMessageStorageScreen = {
+                                messageNavigator.navigateStorageScreen()
+                            },
+                            navigateToNotificationScreen = {
+                                messageNavigator.navigateNotificationScreen()
+                            },
+                            navigateToReceiverSelectionScreen = {
+                                messageNavigator.navigateReceiverSelectionScreen(
+                                    ReceiverSelectionScreenArgs(false),
+                                )
+                            },
+                        )
+                    }
 
-                STORAGE_SCREEN_INDEX -> {
-                    MessageStorageScreen(
-                        navigateToReceiverSelectionScreen = {
-                            messageNavigator.navigateReceiverSelectionScreen(
-                                ReceiverSelectionScreenArgs(false),
-                            )
-                        },
-                    )
+                    STORAGE_SCREEN_INDEX -> {
+                        MessageStorageScreen(
+                            viewModel = viewModel,
+                            navigateToReceiverSelectionScreen = {
+                                messageNavigator.navigateReceiverSelectionScreen(
+                                    ReceiverSelectionScreenArgs(false),
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
