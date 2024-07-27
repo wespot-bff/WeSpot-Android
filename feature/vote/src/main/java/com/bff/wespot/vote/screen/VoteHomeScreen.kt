@@ -59,6 +59,7 @@ interface VoteNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
+    fun navigateToVoteStorageScreen()
 }
 
 @Destination
@@ -258,14 +259,18 @@ private fun CardResultContent(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(18.dp))
-        DotIndicators(pagerState = pagerState)
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        WSButton(onClick = { }, text = stringResource(R.string.check_my_vote)) {
-            it.invoke()
+        Column {
+            DotIndicators(pagerState = pagerState)
+            Spacer(modifier = Modifier.height(10.dp))
+        
+            WSButton(onClick = {
+                navigator.navigateToVoteStorageScreen()
+            }, text = stringResource(R.string.check_my_vote)) {
+                it.invoke()
+            }
         }
     }
 

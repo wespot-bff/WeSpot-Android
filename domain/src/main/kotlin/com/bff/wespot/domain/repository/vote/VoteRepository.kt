@@ -2,6 +2,7 @@ package com.bff.wespot.domain.repository.vote
 
 import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItems
+import com.bff.wespot.model.vote.response.VoteReceived
 import com.bff.wespot.model.vote.response.VoteResults
 
 interface VoteRepository {
@@ -9,4 +10,6 @@ interface VoteRepository {
     suspend fun uploadVoteResults(voteResults: VoteResultsUpload): Boolean
     suspend fun getVoteResults(date: String): Result<VoteResults>
     suspend fun getFirstVoteResults(date: String): Result<VoteResults>
+    suspend fun getVoteSent()
+    suspend fun getVoteReceived(): Result<VoteReceived>
 }

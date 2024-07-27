@@ -1,5 +1,6 @@
 package com.bff.wespot.model.vote.response
 
-abstract class VoteData(
-    open val date: String
+data class VoteData(
+    val date: String,
+    val receivedVoteResults: List<ReceivedVoteResult>
 )

@@ -20,8 +20,10 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.vote.screen.VoteNavigator
 import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
+import com.bff.wespot.vote.screen.VoteStorageNavigator
 import com.bff.wespot.vote.screen.VotingNavigator
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
@@ -37,6 +39,8 @@ class CommonNavGraphNavigator(
     MessageEditNavigator,
     EntireNavigator,
     VotingNavigator,
+    VoteResultNavigator,
+    VoteStorageNavigator,
     VoteResultNavigator,
     ReservedMessageNavigator {
     override fun navigateUp() {
@@ -80,5 +84,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToVoteResultScreen(args: VoteResultScreenArgs) {
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToVoteStorageScreen() {
+        navController.navigate(VoteStorageScreenDestination within navGraph)
     }
 }
