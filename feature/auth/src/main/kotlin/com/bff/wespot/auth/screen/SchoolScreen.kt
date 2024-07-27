@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +38,7 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.ui.SchoolListItem
+import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -116,13 +119,22 @@ fun SchoolScreen(
                 items(state.schoolList, key = { school ->
                     school.id
                 }) { school ->
-                    SchoolListItem(
-                        schoolName = school.name,
-                        address = school.address,
+                    WSListItem(
+                        title = school.name,
+                        subTitle = school.address,
                         selected = state.selectedSchool?.name == school.name,
-                    ) {
-                        action(AuthAction.OnSchoolSelected(school))
-                    }
+                        imageContent = {
+                            Icon(
+                                imageVector = Icons.Default.School,
+                                contentDescription = stringResource(
+                                    id = com.bff.wespot.ui.R.string.school_icon,
+                                ),
+                            )
+                        },
+                        onClick = {
+                            action(AuthAction.OnSchoolSelected(school))
+                        },
+                    )
                 }
             }
         }

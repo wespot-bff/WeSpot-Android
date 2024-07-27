@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -26,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.designsystem.component.button.HeightRange
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -42,7 +42,6 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
-import com.bff.wespot.ui.MessageContentButton
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -120,32 +119,14 @@ fun MessageEditScreen(
                 )
             }
 
-            Column {
-                Text(
-                    text = stringResource(R.string.message_sent_content),
-                    style = StaticTypeScale.Default.body4,
-                    modifier = Modifier.padding(top = 16.dp, start = 30.dp, end = 30.dp),
+            EditField(
+                title = stringResource(R.string.message_sent_content),
+                value = state.messageInput,
+                isMessageContent = true,
+            ) {
+                navigator.navigateMessageWriteScreen(
+                    args = MessageWriteScreenArgs(isEditing = true),
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                MessageContentButton(
-                    text = state.messageInput,
-                    onClick = {
-                        navigator.navigateMessageWriteScreen(
-                            args = MessageWriteScreenArgs(isEditing = true),
-                        )
-                    },
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
-                }
             }
 
             EditField(
@@ -153,6 +134,15 @@ fun MessageEditScreen(
                 value = if (state.isRandomName) state.randomName else state.profile.toDescription(),
                 onClicked = { toast = true },
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
+            }
 
             Row(
                 modifier = Modifier
@@ -264,6 +254,7 @@ fun MessageEditScreen(
 private fun EditField(
     title: String,
     value: String,
+    isMessageContent: Boolean = false,
     onClicked: () -> Unit,
 ) {
     Column {
@@ -275,11 +266,17 @@ private fun EditField(
 
         WSButton(
             onClick = onClicked,
+            heightRange = if (isMessageContent) HeightRange(170.dp, 228.dp) else null,
+            paddingValues = if (isMessageContent) {
+                PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp)
+            } else {
+                PaddingValues(vertical = 12.dp, horizontal = 20.dp)
+            },
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(18.dp),
             ) {
                 Text(

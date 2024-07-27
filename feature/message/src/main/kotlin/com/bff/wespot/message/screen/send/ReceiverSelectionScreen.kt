@@ -29,9 +29,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -44,7 +47,7 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.ui.UserListItem
+import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -148,14 +151,22 @@ fun ReceiverSelectionScreen(
                 modifier = Modifier.padding(top = 16.dp),
             ) {
                 items(state.userList, key = { user -> user.id }) { item ->
-                    UserListItem(
-                        name = item.name,
-                        schoolInfo = item.toSchoolInfo(),
+                    WSListItem(
+                        title = item.name,
+                        subTitle = item.toSchoolInfo(),
                         selected = state.selectedUser.id == item.id,
                         backgroundColor = item.profileCharacter.backgroundColor,
-                        iconUrl = item.profileCharacter.iconUrl,
                         onClick = {
                             action(SendAction.OnUserSelected(item))
+                        },
+                        imageContent = {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(item.profileCharacter.iconUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = stringResource(com.bff.wespot.ui.R.string.user_character_image),
+                            )
                         },
                     )
                 }
