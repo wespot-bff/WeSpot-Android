@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -45,6 +46,7 @@ import com.bff.wespot.ui.RedDot
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
 import com.bff.wespot.vote.state.storage.StorageUiState
+import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteStorageViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -110,23 +112,33 @@ fun VoteStorageScreen(
                     }
 
                     1 -> {
-                        SentVoteScreen(action = action)
+                        SentVoteScreen(state = state, action = action)
                     }
                 }
             }
+        }
+    }
+
+    if (state.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }
 
 @Composable
 private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) -> Unit) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(state.receivedVotes, key = {
-            it.date
-        }) {
-            VoteDateList(votes = it.receivedVoteResults, date = it.date)
+    if (state.receivedVotes.isEmpty()) {
+        EmptyResultScreen()
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(state.receivedVotes, key = {
+                it.date
+            }) {
+                VoteDateList(votes = it.receivedVoteResults, date = it.date)
+            }
         }
     }
 
@@ -136,7 +148,21 @@ private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) ->
 }
 
 @Composable
-private fun SentVoteScreen(action: (StorageAction) -> Unit) {
+private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Unit) {
+    if (state.sentVotes.isEmpty()) {
+        EmptyResultScreen()
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(state.sentVotes, key = {
+                it.date
+            }) {
+                VoteDateList(votes = it.sentVoteResults, date = it.date)
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         action(StorageAction.GetSentVotes)
     }
@@ -204,12 +230,14 @@ private fun VoteItem(
         )
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            RedDot(modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-                .zIndex(1f)
-                .size(6.dp)
-            )
+            if (new) {
+                RedDot(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(12.dp)
+                        .zIndex(1f)
+                )
+            }
 
             Row(
                 modifier = Modifier

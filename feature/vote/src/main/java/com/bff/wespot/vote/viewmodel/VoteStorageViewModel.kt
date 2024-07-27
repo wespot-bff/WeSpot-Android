@@ -31,33 +31,59 @@ class VoteStorageViewModel @Inject constructor(
     }
 
     private fun getReceivedVotes() = intent {
+        val original = state.receivedVotes
+
+        reduce {
+            state.copy(isLoading = true)
+        }
+
         viewModelScope.launch(coroutineDispatcher) {
             voteRepository.getVoteReceived()
                 .onSuccess {
                     reduce {
                         state.copy(
-                            receivedVotes = it.voteData
+                            receivedVotes = it.voteData,
+                            isLoading = false
                         )
                     }
                 }
                 .onFailure {
                     Timber.e(it)
+                    reduce {
+                        state.copy(
+                            receivedVotes = original,
+                            isLoading = false
+                        )
+                    }
                 }
         }
     }
 
     private fun getSentVotes() = intent {
+        val original = state.sentVotes
+
+        reduce {
+            state.copy(isLoading = true)
+        }
+
         viewModelScope.launch(coroutineDispatcher) {
             voteRepository.getVoteSent()
                 .onSuccess {
                     reduce {
                         state.copy(
-                            sentVotes = it.voteData
+                            sentVotes = it.voteData,
+                            isLoading = false
                         )
                     }
                 }
                 .onFailure {
                     Timber.e(it)
+                    reduce {
+                        state.copy(
+                            sentVotes = original,
+                            isLoading = false
+                        )
+                    }
                 }
         }
     }
