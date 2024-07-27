@@ -8,7 +8,6 @@ import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
-import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.model.message.request.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -69,7 +67,6 @@ class MessageViewModel @Inject constructor(
     fun onAction(action: MessageAction) {
         when (action) {
             is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
-            is MessageAction.Navigation -> handleNavigation(action.navigate)
             else -> {}
         }
     }
@@ -78,23 +75,6 @@ class MessageViewModel @Inject constructor(
         val currentTimePeriod = getCurrentTimePeriod()
         updateTimePeriod(currentTimePeriod)
         timeChecker.start()
-    }
-
-    private fun handleNavigation(navigate: NavigationAction) = intent {
-        val sideEffect = when (navigate) {
-            NavigationAction.NavigateToSendScreen -> {
-                MessageSideEffect.NavigateToSendScreen
-            }
-
-            NavigationAction.NavigateToStorageScreen -> {
-                MessageSideEffect.NavigateToStorageScreen
-            }
-
-            NavigationAction.NavigateToNotification -> {
-                MessageSideEffect.NavigateToNotification
-            }
-        }
-        postSideEffect(sideEffect)
     }
 
     private fun updateTimePeriod(currentTimePeriod: TimePeriod) {
@@ -131,9 +111,6 @@ class MessageViewModel @Inject constructor(
                         )
                     }
                 }
-                .onFailure { exception ->
-                    postSideEffect(MessageSideEffect.Error(exception))
-                }
         }
     }
 
@@ -146,9 +123,6 @@ class MessageViewModel @Inject constructor(
                             receivedMessageList = receivedMessageList,
                         )
                     }
-                }
-                .onFailure { exception ->
-                    postSideEffect(MessageSideEffect.Error(exception))
                 }
         }
     }

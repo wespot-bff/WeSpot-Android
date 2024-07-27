@@ -23,6 +23,8 @@ coroutines:
 
 empty-blocks:
   active: true
+  EmptyFunctionBlock:
+    active: false
 
 formatting:
   active: true

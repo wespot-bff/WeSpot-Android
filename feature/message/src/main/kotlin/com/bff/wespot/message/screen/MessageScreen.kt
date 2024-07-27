@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +41,8 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
+import com.bff.wespot.designsystem.component.indicator.WSToast
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -49,44 +52,37 @@ import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.model.TimePeriod
+import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.MessageSideEffect
-import com.bff.wespot.message.state.NavigationAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageNavigator {
     fun navigateUp()
+    fun navigateStorageScreen()
+    fun navigateNotificationScreen()
+    fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
 }
 
-@Destination
+data class MessageScreenArgs(
+    val isMessageSent: Boolean = false,
+)
+
+@Destination(navArgsDelegate = MessageScreenArgs::class)
 @Composable
 internal fun MessageScreen(
-    viewModel: MessageViewModel = hiltViewModel(),
     messageNavigator: MessageNavigator,
+    navArgs: MessageScreenArgs,
+    viewModel: MessageViewModel = hiltViewModel(),
 ) {
+    var messageSentToast by remember { mutableStateOf(false) }
+
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
-    viewModel.collectSideEffect {
-        when (it) {
-            is MessageSideEffect.Error -> {
-            }
-
-            is MessageSideEffect.NavigateToStorageScreen -> {
-            }
-
-            is MessageSideEffect.NavigateToSendScreen -> {
-            }
-
-            is MessageSideEffect.NavigateToNotification -> {
-            }
-        }
-    }
 
     Scaffold {
         Column(
@@ -112,11 +108,7 @@ internal fun MessageScreen(
                     ReservedMessageBanner(
                         messageStatus = state.messageStatus,
                         onBannerClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToStorageScreen,
-                                ),
-                            )
+                            messageNavigator.navigateStorageScreen()
                         },
                     )
 
@@ -133,10 +125,8 @@ internal fun MessageScreen(
                         isBannerVisible = state.messageStatus.hasReservedMessages(),
                         isButtonEnable = state.messageStatus.canSend,
                         onButtonClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToSendScreen,
-                                ),
+                            messageNavigator.navigateReceiverSelectionScreen(
+                                ReceiverSelectionScreenArgs(false),
                             )
                         },
                     )
@@ -150,11 +140,7 @@ internal fun MessageScreen(
                     ReceivedMessageBanner(
                         messageList = state.receivedMessageList,
                         onBannerClick = {
-                            action(
-                                MessageAction.Navigation(
-                                    NavigationAction.NavigateToStorageScreen,
-                                ),
-                            )
+                            messageNavigator.navigateNotificationScreen()
                         },
                     )
 
@@ -165,7 +151,8 @@ internal fun MessageScreen(
                         buttonText = stringResource(R.string.message_card_button_text_night),
                         image = state.timePeriod.image,
                         isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
-                        onButtonClick = { },
+                        onButtonClick = {
+                        },
                     )
 
                     MessageHomeDescription(
@@ -176,7 +163,19 @@ internal fun MessageScreen(
         }
     }
 
+    if (messageSentToast) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = stringResource(R.string.message_reserve_success),
+                toastType = WSToastType.Success,
+                showToast = messageSentToast,
+                closeToast = { messageSentToast = false },
+            )
+        }
+    }
+
     LaunchedEffect(Unit) {
+        messageSentToast = navArgs.isMessageSent
         action(MessageAction.OnHomeScreenEntered)
     }
 }

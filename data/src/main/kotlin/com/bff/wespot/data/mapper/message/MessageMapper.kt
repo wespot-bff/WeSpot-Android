@@ -13,10 +13,7 @@ internal fun MessageType.toMessageTypeDto(): MessageTypeDto {
 }
 
 internal fun SentMessage.toSentMessageDto(): SentMessageDto = SentMessageDto(
-    receivedId = receivedId,
-    schoolId = schoolId,
-    grade = grade,
-    group = group,
+    receiverId = receiverId,
     content = content,
     sender = sender,
 )

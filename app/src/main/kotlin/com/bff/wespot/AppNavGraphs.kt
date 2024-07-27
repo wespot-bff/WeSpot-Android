@@ -14,7 +14,11 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
+import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
+import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
@@ -49,6 +53,9 @@ object AppNavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             MessageScreenDestination,
+            MessageWriteScreenDestination,
+            MessageEditScreenDestination,
+            ReceiverSelectionScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -81,7 +88,7 @@ object AppNavGraphs {
 
 private val tabScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen",
+    "message/message_screen?isMessageSent={isMessageSent}",
     "entire/entire_screen",
 )
 
@@ -127,6 +134,7 @@ internal fun AppNavigation(
         ),
     )
 
+    val sendViewModel: SendViewModel = hiltViewModel()
     val votingViewModel: VotingViewModel = hiltViewModel()
 
     DestinationsNavHost(
@@ -136,6 +144,7 @@ internal fun AppNavigation(
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
+            dependency(sendViewModel)
             dependency(votingViewModel)
         },
     )

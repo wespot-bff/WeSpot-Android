@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.message
 
+import com.bff.wespot.data.remote.model.message.request.MessageContentDto
 import com.bff.wespot.data.remote.model.message.request.MessageTypeDto
 import com.bff.wespot.data.remote.model.message.request.SentMessageDto
 import com.bff.wespot.data.remote.model.message.request.type
@@ -45,4 +46,13 @@ class MessageDataSourceImpl @Inject constructor(
                 path("messages/status/me")
             }
         }
-    }
+
+    override suspend fun checkProfanity(content: MessageContentDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("messages/check-profanity")
+                setBody(content)
+            }
+        }
+}

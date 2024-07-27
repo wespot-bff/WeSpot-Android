@@ -9,9 +9,11 @@ android {
 }
 
 dependencies {
-    implementation(libs.material)
-    implementation(libs.kotlinx.collections.immutable)
     implementation(project(":designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:common"))
+    implementation(libs.material)
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.coil.core)
+    implementation(libs.coil.compose)
 }

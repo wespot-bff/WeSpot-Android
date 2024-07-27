@@ -1,4 +1,4 @@
-package com.wespot.navigation.util
+package com.bff.wespot.navigation.util
 
 import android.app.Activity
 import android.content.Context
