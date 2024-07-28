@@ -1,6 +1,6 @@
 package com.bff.wespot.message.state
 
-import com.bff.wespot.message.model.MessageOptionDialog
+import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.MessageList
@@ -16,5 +16,5 @@ data class MessageUiState(
     val sentMessageList: MessageList = MessageList(listOf(), true),
     val clickedMessage: Message = Message(),
     val optionButtonClickedMessage: Message = Message(),
-    val messageOptionDialog: MessageOptionDialog = MessageOptionDialog.DELETE,
+    val messageOptionType: MessageOptionType = MessageOptionType.DELETE,
 )
