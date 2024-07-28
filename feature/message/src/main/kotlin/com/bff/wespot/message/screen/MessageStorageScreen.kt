@@ -162,12 +162,17 @@ fun MessageStorageScreen(
 
                         items(state.sentMessageList.messages, key = { it.id }) { item ->
                             WSMessageItem(
-                                userInfo = item.senderName,
-                                date = item.receivedAt?.toStringWithDotSeparator() ?: "",
-                                wsMessageItemType = if (item.isRead) {
-                                    WSMessageItemType.ReadSentMessage
+                                userInfo = if (item.isBlocked.not() && item.isReported.not()) {
+                                    item.toReceiverDescription()
                                 } else {
-                                    WSMessageItemType.UnreadSentMessage
+                                    null
+                                },
+                                date = item.receivedAt?.toStringWithDotSeparator() ?: "",
+                                wsMessageItemType = when {
+                                    item.isBlocked -> WSMessageItemType.BlockedMessage
+                                    item.isReported -> WSMessageItemType.ReportedMessage
+                                    item.isRead -> WSMessageItemType.ReadSentMessage
+                                    else -> WSMessageItemType.UnreadSentMessage
                                 },
                                 itemClick = {
                                     action(MessageAction.OnMessageItemClicked(item))
