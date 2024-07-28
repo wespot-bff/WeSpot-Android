@@ -15,6 +15,4 @@ interface MessageDataSource {
     suspend fun getMessageStatus(): Result<MessageStatusDto>
 
     suspend fun checkProfanity(content: MessageContentDto): Result<Unit>
-
-    suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
 }
