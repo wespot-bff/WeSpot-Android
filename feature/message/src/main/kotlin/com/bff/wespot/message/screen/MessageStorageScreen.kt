@@ -174,6 +174,12 @@ fun MessageStorageScreen(
                                     showMessageDialog = true
                                 },
                                 optionButtonClick = {
+                                    action(
+                                        MessageAction.OnOptionBottomSheetClicked(
+                                            MessageOptionType.DELETE,
+                                        ),
+                                    )
+                                    showMessageOptionDialog = true
                                 },
                             )
                         }
