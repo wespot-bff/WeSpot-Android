@@ -176,7 +176,7 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
+        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
         @Composable
         override fun letterImage(): ImageBitmap = ImageBitmap.imageResource(id = R.drawable.closed_letter)
@@ -190,7 +190,7 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
+        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
         @Composable
         override fun letterImage(): ImageBitmap =
@@ -205,7 +205,7 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
+        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
         @Composable
         override fun letterImage(): ImageBitmap =
@@ -220,7 +220,7 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
+        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
         @Composable
         override fun letterImage(): ImageBitmap =
