@@ -47,6 +47,8 @@ internal fun MessageScreen(
     navArgs: MessageScreenArgs,
 ) {
     var messageSentToast by remember { mutableStateOf(false) }
+    var showToast by remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
     val tabList = persistentListOf(
         stringResource(R.string.message_home_screen),
         stringResource(R.string.message_storage_screen),
@@ -95,6 +97,10 @@ internal fun MessageScreen(
                                     ReceiverSelectionScreenArgs(false),
                                 )
                             },
+                            showToast = { message ->
+                                toastMessage = message
+                                showToast = true
+                            },
                         )
                     }
                 }
@@ -109,6 +115,20 @@ internal fun MessageScreen(
                 toastType = WSToastType.Success,
                 showToast = messageSentToast,
                 closeToast = { messageSentToast = false },
+            )
+        }
+    }
+
+    if (showToast) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = toastMessage,
+                toastType = WSToastType.Success,
+                showToast = showToast && toastMessage.isNotBlank(),
+                closeToast = {
+                    showToast = false
+                    toastMessage = ""
+                },
             )
         }
     }
