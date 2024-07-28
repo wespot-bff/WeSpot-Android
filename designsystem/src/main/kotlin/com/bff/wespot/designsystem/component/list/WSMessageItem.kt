@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,9 +38,9 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 
 @Composable
 fun WSMessageItem(
-    userInfo: String,
     date: String,
     wsMessageItemType: WSMessageItemType,
+    userInfo: String? = null,
     itemClick: () -> Unit,
     optionButtonClick: () -> Unit,
 ) {
@@ -73,7 +74,7 @@ private fun WSLetterItemOptionButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, end = 8.dp),
+            .padding(top = 8.dp, end = 12.dp),
         contentAlignment = Alignment.CenterEnd,
     ) {
         Icon(
@@ -87,7 +88,7 @@ private fun WSLetterItemOptionButton(
 
 @Composable
 private fun WSLetterItemContent(
-    userInfo: String,
+    userInfo: String?,
     date: String,
     wsMessageItemType: WSMessageItemType,
 ) {
@@ -106,6 +107,16 @@ private fun WSLetterItemContent(
                 bitmap = wsMessageItemType.letterImage(),
                 contentDescription = stringResource(R.string.letter_image),
             )
+
+            if (wsMessageItemType == WSMessageItemType.ReportedMessage ||
+                wsMessageItemType == WSMessageItemType.BlockedMessage
+            ) {
+                Image(
+                    modifier = Modifier.size(38.dp),
+                    painter = painterResource(id = R.drawable.warning),
+                    contentDescription = stringResource(R.string.invalid_message),
+                )
+            }
         }
 
         Column(modifier = Modifier.padding(top = 2.dp)) {
@@ -115,11 +126,13 @@ private fun WSLetterItemContent(
                 style = StaticTypeScale.Default.body9,
             )
 
-            Text(
-                text = userInfo,
-                color = Gray100,
-                style = StaticTypeScale.Default.body9,
-            )
+            userInfo?.let {
+                Text(
+                    text = userInfo,
+                    color = Gray100,
+                    style = StaticTypeScale.Default.body9,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -145,6 +158,7 @@ private fun WSLetterItemContent(
 }
 
 sealed interface WSMessageItemType {
+    // TODO 송신/차단/신고된 메세지는 다른 이모지 사용
     @Composable
     fun optionIcon(): ImageVector
 
@@ -215,6 +229,36 @@ sealed interface WSMessageItemType {
         @Composable
         override fun openStatusText(): String = stringResource(id = R.string.letter_opened)
     }
+
+    data object BlockedMessage : WSMessageItemType {
+        @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
+        @Composable
+        override fun letterStatusText(): String = stringResource(R.string.blocked_message_title)
+
+        @Composable
+        override fun letterImage(): ImageBitmap =
+            ImageBitmap.imageResource(id = R.drawable.invalid_message)
+
+        @Composable
+        override fun openStatusText(): String? = null
+    }
+
+    data object ReportedMessage : WSMessageItemType {
+        @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
+        @Composable
+        override fun letterStatusText(): String = stringResource(R.string.reported_message_title)
+
+        @Composable
+        override fun letterImage(): ImageBitmap =
+            ImageBitmap.imageResource(id = R.drawable.invalid_message)
+
+        @Composable
+        override fun openStatusText(): String? = null
+    }
 }
 
 @OrientationPreviews
@@ -238,23 +282,14 @@ private fun WSBannerPreview() {
                 WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsMessageItemType = WSMessageItemType.ReadReceivedMessage,
-                    optionButtonClick = { },
-                    itemClick = { },
-                )
-
-                WSMessageItem(
-                    userInfo = "역삼중 1학년 6반 김도현",
-                    date = "2024.07.07",
-                    wsMessageItemType = WSMessageItemType.UnreadReceivedMessage,
-                    optionButtonClick = { },
-                    itemClick = { },
-                )
-
-                WSMessageItem(
-                    userInfo = "역삼중 1학년 6반 김도현",
-                    date = "2024.07.07",
                     wsMessageItemType = WSMessageItemType.UnreadSentMessage,
+                    optionButtonClick = { },
+                    itemClick = { },
+                )
+
+                WSMessageItem(
+                    date = "2024.07.07",
+                    wsMessageItemType = WSMessageItemType.ReportedMessage,
                     optionButtonClick = { },
                     itemClick = { },
                 )
