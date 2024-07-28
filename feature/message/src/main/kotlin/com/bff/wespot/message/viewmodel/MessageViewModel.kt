@@ -3,7 +3,9 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.message.MessageRepository
+import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -32,6 +35,7 @@ class MessageViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
+    private val messageStorageRepository: MessageStorageRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
@@ -81,6 +85,19 @@ class MessageViewModel @Inject constructor(
                 }
             }
             is MessageAction.OnMessageItemClicked -> handleMessageItemClicked(action.message)
+            is MessageAction.OnOptionButtonClicked -> handleOptionButtonClicked(action.message)
+            is MessageAction.OnOptionBottomSheetClicked -> {
+                handleOptionBottomSheetClicked(action.messageOptionType)
+            }
+            is MessageAction.OnMessageDeleteButtonClicked -> {
+                handleDeleteMessageButtonClicked(action.messageId)
+            }
+            is MessageAction.OnMessageReportButtonClicked -> {
+                handleReportMessageButtonClicked(action.messageId)
+            }
+            is MessageAction.OnMessageBlockButtonClicked -> {
+                handleBlockMessageButtonClicked(action.messageId)
+            }
         }
     }
 
@@ -178,10 +195,54 @@ class MessageViewModel @Inject constructor(
         }
     }
 
+    private fun handleOptionButtonClicked(message: Message) = intent {
+        reduce {
+            state.copy(
+                optionButtonClickedMessage = message,
+            )
+        }
+    }
+
+    private fun handleOptionBottomSheetClicked(messageOptionType: MessageOptionType) = intent {
+        reduce {
+            state.copy(messageOptionType = messageOptionType)
+        }
+    }
+
     private fun updateMessageReadStatus(messageId: Int) {
         viewModelScope.launch {
-            messageRepository.updateMessageReadStatus(messageId)
+            messageStorageRepository.updateMessageReadStatus(messageId)
                 .onSuccess {
+                    getReceivedMessageList()
+                }
+        }
+    }
+
+    private fun handleDeleteMessageButtonClicked(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageStorageRepository.deleteMessage(messageId)
+                .onSuccess {
+                    postSideEffect(MessageSideEffect.ShowToast("삭제 완료"))
+                    getReceivedMessageList()
+                }
+        }
+    }
+
+    private fun handleReportMessageButtonClicked(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageStorageRepository.reportMessage(messageId)
+                .onSuccess {
+                    postSideEffect(MessageSideEffect.ShowToast("신고 완료"))
+                    getReceivedMessageList()
+                }
+        }
+    }
+
+    private fun handleBlockMessageButtonClicked(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageStorageRepository.blockMessage(messageId)
+                .onSuccess {
+                    postSideEffect(MessageSideEffect.ShowToast("차단 완료"))
                     getReceivedMessageList()
                 }
         }
