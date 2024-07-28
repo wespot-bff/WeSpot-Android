@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MessageListDto (
     val messages: List<MessageDto>,
-    val isLastPage: Boolean,
+    val hasNext: Boolean,
 ) {
     fun toMessageList(): MessageList = MessageList(
         messages = messages.map { it.toMessage() },
-        isLastPage = isLastPage,
+        hasNext = hasNext,
     )
 }

@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MessageStatusDto (
-    val canSend: Boolean,
+    val isSendAllowed: Boolean,
     val remainingMessages: Int,
 ) {
     fun toMessageStatus() = MessageStatus(
-        canSend = canSend,
+        isSendAllowed = isSendAllowed,
         remainingMessages = remainingMessages,
     )
 }

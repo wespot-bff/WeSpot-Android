@@ -96,6 +96,7 @@ fun ReceiverSelectionScreen(
     ) {
         Column(
             modifier = Modifier
+                .clickable { keyboard?.hide() }
                 .padding(it)
                 .padding(horizontal = 20.dp),
         ) {
@@ -157,6 +158,7 @@ fun ReceiverSelectionScreen(
                         selected = state.selectedUser.id == item.id,
                         backgroundColor = item.profileCharacter.backgroundColor,
                         onClick = {
+                            keyboard?.hide()
                             action(SendAction.OnUserSelected(item))
                         },
                         imageContent = {

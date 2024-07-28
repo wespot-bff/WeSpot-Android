@@ -35,11 +35,11 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
 @Composable
-fun WSLetterItem(
+fun WSMessageItem(
     userInfo: String,
     date: String,
-    wsLetterItemType: WSLetterItemType,
-    letterItemClick: () -> Unit,
+    wsMessageItemType: WSMessageItemType,
+    itemClick: () -> Unit,
     optionButtonClick: () -> Unit,
 ) {
     Box(
@@ -47,7 +47,7 @@ fun WSLetterItem(
             .clip(WeSpotThemeManager.shapes.medium)
             .size(width = 154.dp, height = 200.dp)
             .background(WeSpotThemeManager.colors.cardBackgroundColor)
-            .clickable { letterItemClick() },
+            .clickable { itemClick() },
     ) {
         Column {
             WSLetterItemOptionButton(optionButtonClick)
@@ -55,7 +55,7 @@ fun WSLetterItem(
             WSLetterItemContent(
                 userInfo = userInfo,
                 date = date,
-                wsLetterItemType = wsLetterItemType,
+                wsMessageItemType = wsMessageItemType,
             )
         }
     }
@@ -84,22 +84,28 @@ private fun WSLetterItemOptionButton(
 private fun WSLetterItemContent(
     userInfo: String,
     date: String,
-    wsLetterItemType: WSLetterItemType,
+    wsMessageItemType: WSMessageItemType,
 ) {
     Column(
-        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
     ) {
-        Image(
-            modifier = Modifier.size(width = 130.dp, height = 100.dp),
-            bitmap = wsLetterItemType.letterImage(),
-            contentDescription = stringResource(R.string.letter_image),
-        )
-
-        Column(
-            modifier = Modifier.padding(top = 2.dp),
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
         ) {
+            Image(
+                modifier = Modifier
+                    .size(width = 130.dp, height = 100.dp),
+                bitmap = wsMessageItemType.letterImage(),
+                contentDescription = stringResource(R.string.letter_image),
+            )
+        }
+
+        Column(modifier = Modifier.padding(top = 2.dp)) {
             Text(
-                text = wsLetterItemType.letterStatusText(),
+                text = wsMessageItemType.letterStatusText(),
                 color = Gray100,
                 style = StaticTypeScale.Default.body9,
             )
@@ -120,7 +126,7 @@ private fun WSLetterItemContent(
                 style = StaticTypeScale.Default.body11,
             )
 
-            wsLetterItemType.openStatusText()?.let {
+            wsMessageItemType.openStatusText()?.let {
                 Text(
                     modifier = Modifier.weight(1f),
                     text = it,
@@ -133,7 +139,7 @@ private fun WSLetterItemContent(
     }
 }
 
-sealed interface WSLetterItemType {
+sealed interface WSMessageItemType {
     @Composable
     fun letterStatusText(): String
 
@@ -143,7 +149,7 @@ sealed interface WSLetterItemType {
     @Composable
     fun letterImage(): ImageBitmap
 
-    data object ClosedReceiverLetter : WSLetterItemType {
+    data object UnreadReceivedMessage : WSMessageItemType {
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
@@ -154,7 +160,7 @@ sealed interface WSLetterItemType {
         override fun openStatusText(): String? = null
     }
 
-    data object ClosedSenderLetter : WSLetterItemType {
+    data object UnreadSentMessage : WSMessageItemType {
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
@@ -166,7 +172,7 @@ sealed interface WSLetterItemType {
         override fun openStatusText(): String? = null
     }
 
-    data object OpenedReceiverLetter : WSLetterItemType {
+    data object ReadReceivedMessage : WSMessageItemType {
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
@@ -178,7 +184,7 @@ sealed interface WSLetterItemType {
         override fun openStatusText(): String? = null
     }
 
-    data object OpenedSenderLetter : WSLetterItemType {
+    data object UnReadSentMessage : WSMessageItemType {
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
@@ -201,36 +207,36 @@ private fun WSBannerPreview() {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                WSLetterItem(
+                WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsLetterItemType = WSLetterItemType.OpenedSenderLetter,
-                    letterItemClick = { },
+                    wsMessageItemType = WSMessageItemType.UnReadSentMessage,
+                    itemClick = { },
                     optionButtonClick = { },
                 )
 
-                WSLetterItem(
+                WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsLetterItemType = WSLetterItemType.OpenedReceiverLetter,
+                    wsMessageItemType = WSMessageItemType.ReadReceivedMessage,
                     optionButtonClick = { },
-                    letterItemClick = { },
+                    itemClick = { },
                 )
 
-                WSLetterItem(
+                WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsLetterItemType = WSLetterItemType.ClosedReceiverLetter,
+                    wsMessageItemType = WSMessageItemType.UnreadReceivedMessage,
                     optionButtonClick = { },
-                    letterItemClick = { },
+                    itemClick = { },
                 )
 
-                WSLetterItem(
+                WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsLetterItemType = WSLetterItemType.ClosedSenderLetter,
+                    wsMessageItemType = WSMessageItemType.UnreadSentMessage,
                     optionButtonClick = { },
-                    letterItemClick = { },
+                    itemClick = { },
                 )
             }
         }

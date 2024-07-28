@@ -49,4 +49,7 @@
     <string name="timeout_dialog_subtitle">이미 10시가 지나서 쪽지를 예약할 수 없어요\n아쉽지만 내일 다시 작성해보는 건 어떨까요?</string>
     <string name="positive_answer">네 알겠어요</string>
     <string name="message_reserve_success">전송 예약 완료</string>
+    <string name="received_message">받은 쪽지</string>
+    <string name="reserved_message">보낸 쪽지</string>
+    <string name="message_screen_crossfade">Message Screen CrossFade</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.bff.wespot.model.message.response
 
 data class MessageStatus(
-    val canSend: Boolean,
+    val isSendAllowed: Boolean,
     val remainingMessages: Int,
 ) {
     companion object {

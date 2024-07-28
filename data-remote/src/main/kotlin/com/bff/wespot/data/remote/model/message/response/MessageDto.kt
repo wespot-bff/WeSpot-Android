@@ -10,7 +10,8 @@ data class MessageDto (
     val senderName: String,
     val content: String,
     val receivedAt: String,
-    val read: Boolean,
+    val isRead: Boolean,
+    val isBlocked: Boolean,
     val readAt: String?,
 ) {
     fun toMessage(): Message = Message(
@@ -18,7 +19,8 @@ data class MessageDto (
         senderName = senderName,
         content = content,
         receivedAt = receivedAt.toISOLocalDateTime(),
-        read = read,
+        isRead = isRead,
+        isBlocked = isBlocked,
         readAt = readAt?.toISOLocalDateTime(),
     )
 }
