@@ -4,6 +4,8 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.data.remote.source.message.MessageDataSourceImpl
+import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
+import com.bff.wespot.data.remote.source.message.MessageStorageDataSourceImpl
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
 import com.bff.wespot.data.remote.source.vote.VoteDataSource
@@ -40,4 +42,10 @@ abstract class DataRemoteModule {
     abstract fun bindsUserDataSource(
         userDataSourceImpl: UserDataSourceImpl
     ): UserDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsMessageStorageDataSource(
+        messageStorageDataSourceImpl: MessageStorageDataSourceImpl
+    ): MessageStorageDataSource
 }
