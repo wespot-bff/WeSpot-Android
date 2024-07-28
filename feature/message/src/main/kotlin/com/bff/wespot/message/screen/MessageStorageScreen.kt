@@ -56,7 +56,6 @@ import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
-import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
@@ -141,22 +140,31 @@ fun MessageStorageScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        item(span = { GridItemSpan(2) }) {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                if (state.timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                        val hasReservedMessages = state.messageStatus.hasReservedMessages() &&
+                            state.messageStatus.remainingMessages >= 0
+                        val isEveningToNight = state.timePeriod == TimePeriod.EVENING_TO_NIGHT
+                        val isBannerVisible = hasReservedMessages && isEveningToNight
+
+                        if (isBannerVisible) {
+                            item(span = { GridItemSpan(2) }) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
                                     ReservedMessageBanner(
                                         paddingValues = PaddingValues(),
                                         messageStatus = state.messageStatus,
-                                        onBannerClick = { navigateToReceiverSelectionScreen(false) },
+                                        onBannerClick = {
+                                            navigateToReceiverSelectionScreen(false)
+                                        },
+                                    )
+
+                                    Text(
+                                        modifier = Modifier.padding(top = 24.dp, start = 4.dp),
+                                        text = stringResource(
+                                            R.string.sent_message_storage_title,
+                                        ),
+                                        color = WeSpotThemeManager.colors.txtTitleColor,
+                                        style = StaticTypeScale.Default.body3,
                                     )
                                 }
-
-                                Text(
-                                    modifier = Modifier.padding(top = 24.dp, start = 4.dp),
-                                    text = stringResource(R.string.sent_message_storage_title),
-                                    color = WeSpotThemeManager.colors.txtTitleColor,
-                                    style = StaticTypeScale.Default.body3,
-                                )
                             }
                         }
 
@@ -232,7 +240,6 @@ fun MessageStorageScreen(
 
     if (showMessageDialog) {
         MessageContentDialog(
-            profile = state.myProfile,
             message = state.clickedMessage,
             closeButtonClick = { showMessageDialog = false },
         )
@@ -276,10 +283,6 @@ fun MessageStorageScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnMessageStorageScreenEntered)
-    }
-
     LaunchedEffect(selectedChipIndex) {
         when (selectedChipIndex) {
             RECEIVED_MESSAGE_INDEX -> {
@@ -295,7 +298,6 @@ fun MessageStorageScreen(
 
 @Composable
 private fun MessageContentDialog(
-    profile: Profile,
     message: Message,
     closeButtonClick: () -> Unit,
 ) {
@@ -318,7 +320,7 @@ private fun MessageContentDialog(
                     .padding(horizontal = 24.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                MessageDialogText("To.\n" + profile.toDescription())
+                MessageDialogText("To.\n" + message.toReceiverDescription())
 
                 MessageDialogText(message.content)
 
