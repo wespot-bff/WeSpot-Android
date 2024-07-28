@@ -74,7 +74,6 @@ class MessageViewModel @Inject constructor(
     fun onAction(action: MessageAction) {
         when (action) {
             is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
-            is MessageAction.OnMessageStorageScreenEntered -> getProfile()
             is MessageAction.OnStorageChipSelected -> {
                 when (action.messageType) {
                     MessageType.SENT -> {
