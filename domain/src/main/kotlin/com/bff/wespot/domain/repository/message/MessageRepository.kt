@@ -13,6 +13,4 @@ interface MessageRepository {
     suspend fun getMessageStatus(): Result<MessageStatus>
 
     suspend fun checkProfanity(content: String): Result<Unit>
-
-    suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
 }

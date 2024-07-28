@@ -19,23 +19,22 @@ class MessageRepositoryImpl @Inject constructor(
     ): Result<MessageList> =
         messageDataSource
             .getMessageList(messageType.toMessageTypeDto())
-            .map { messageListDto ->
+            .mapCatching { messageListDto ->
                 messageListDto.toMessageList()
             }
 
     override suspend fun postMessage(sentMessage: SentMessage): Result<String> {
-        return messageDataSource.postMessage(sentMessage.toSentMessageDto()).map { it.toString() }
+        return messageDataSource.postMessage(sentMessage.toSentMessageDto()).mapCatching {
+            it.toString()
+        }
     }
 
     override suspend fun getMessageStatus(): Result<MessageStatus> {
-        return messageDataSource.getMessageStatus().map { messageStatusDto ->
+        return messageDataSource.getMessageStatus().mapCatching { messageStatusDto ->
             messageStatusDto.toMessageStatus()
         }
     }
 
     override suspend fun checkProfanity(content: String): Result<Unit> =
         messageDataSource.checkProfanity(MessageContentDto(message = content))
-
-    override suspend fun updateMessageReadStatus(messageId: Int): Result<Unit> =
-        messageDataSource.updateMessageReadStatus(messageId = messageId)
 }
