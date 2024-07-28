@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,7 +51,10 @@ fun WSMessageItem(
             .clickable { itemClick() },
     ) {
         Column {
-            WSLetterItemOptionButton(optionButtonClick)
+            WSLetterItemOptionButton(
+                imageVector = wsMessageItemType.optionIcon(),
+                optionButtonClick = optionButtonClick,
+            )
 
             WSLetterItemContent(
                 userInfo = userInfo,
@@ -63,6 +67,7 @@ fun WSMessageItem(
 
 @Composable
 private fun WSLetterItemOptionButton(
+    imageVector: ImageVector,
     optionButtonClick: () -> Unit,
 ) {
     Box(
@@ -74,7 +79,7 @@ private fun WSLetterItemOptionButton(
         Icon(
             modifier = Modifier
                 .clickable { optionButtonClick() },
-            imageVector = ImageVector.vectorResource(id = R.drawable.option),
+            imageVector = imageVector,
             contentDescription = stringResource(id = R.string.option_button),
         )
     }
@@ -117,9 +122,9 @@ private fun WSLetterItemContent(
             )
         }
 
-        Row(
-            modifier = Modifier.padding(top = 16.dp),
-        ) {
+        Spacer(modifier = Modifier.weight(1f))
+
+        Row {
             Text(
                 text = date,
                 color = Gray300,
@@ -141,6 +146,9 @@ private fun WSLetterItemContent(
 
 sealed interface WSMessageItemType {
     @Composable
+    fun optionIcon(): ImageVector
+
+    @Composable
     fun letterStatusText(): String
 
     @Composable
@@ -150,6 +158,9 @@ sealed interface WSMessageItemType {
     fun letterImage(): ImageBitmap
 
     data object UnreadReceivedMessage : WSMessageItemType {
+        @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
@@ -161,6 +172,9 @@ sealed interface WSMessageItemType {
     }
 
     data object UnreadSentMessage : WSMessageItemType {
+        @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
@@ -174,6 +188,9 @@ sealed interface WSMessageItemType {
 
     data object ReadReceivedMessage : WSMessageItemType {
         @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
+        @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
 
         @Composable
@@ -184,7 +201,10 @@ sealed interface WSMessageItemType {
         override fun openStatusText(): String? = null
     }
 
-    data object UnReadSentMessage : WSMessageItemType {
+    data object ReadSentMessage : WSMessageItemType {
+        @Composable
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+
         @Composable
         override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
 
@@ -210,7 +230,7 @@ private fun WSBannerPreview() {
                 WSMessageItem(
                     userInfo = "역삼중 1학년 6반 김도현",
                     date = "2024.07.07",
-                    wsMessageItemType = WSMessageItemType.UnReadSentMessage,
+                    wsMessageItemType = WSMessageItemType.ReadSentMessage,
                     itemClick = { },
                     optionButtonClick = { },
                 )
