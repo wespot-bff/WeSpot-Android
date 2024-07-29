@@ -37,7 +37,7 @@ object ClientModule {
     fun provideHttpClient(): HttpClient = HttpClient(CIO) {
         defaultRequest {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-            url("https://2121b79d-93e5-4932-9e8b-45230a5f2647.mock.pstmn.io/")
+            url(BuildConfig.MOCK_BASE_URL)
         }
 
         // TODO Token 연동
