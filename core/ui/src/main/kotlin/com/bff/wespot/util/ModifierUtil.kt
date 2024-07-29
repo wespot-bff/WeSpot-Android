@@ -8,17 +8,18 @@ import androidx.compose.ui.util.lerp
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
-fun Modifier.carouselTransition(page: Int, pagerState: PagerState) =
+fun Modifier.carouselTransition(pagerState: PagerState, page: Int) =
     graphicsLayer {
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
         val transformation =
             lerp(
-                start = 0.7f,
+                start = 0.85f,
                 stop = 1f,
                 fraction = 1f - pageOffset.coerceIn(0f, 1f),
             )
         alpha = transformation
         scaleY = transformation
+        scaleX = transformation
     }

@@ -6,4 +6,5 @@ data class ResultUiState(
     val isLoading: Boolean = false,
     val error: String = "",
     val voteResults: VoteResults = VoteResults(emptyList()),
+    val isVoting: Boolean,
 )
