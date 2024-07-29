@@ -1,6 +1,5 @@
 package com.bff.wespot.message.screen.send
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -216,12 +215,17 @@ fun ReceiverSelectionScreen(
 
     if (dialogState) {
         WSDialog(
-            title = stringResource(R.string.send_exit_dialog_title),
+            title = stringResource(
+                if (state.isReservedMessage) {
+                    R.string.edit_exit_dialog_title
+                } else {
+                    R.string.send_exit_dialog_title
+                },
+            ),
             subTitle = stringResource(R.string.send_exit_dialog_subtitle),
             okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(SendAction.NavigateToMessage)
                 navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },
@@ -237,10 +241,5 @@ fun ReceiverSelectionScreen(
 
     LaunchedEffect(Unit) {
         action(SendAction.OnReceiverScreenEntered)
-    }
-
-    BackHandler {
-        action(SendAction.NavigateToMessage)
-        navigator.navigateMessageScreen(args = MessageScreenArgs(false))
     }
 }
