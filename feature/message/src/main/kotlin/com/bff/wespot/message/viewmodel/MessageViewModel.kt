@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
-import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
@@ -34,7 +33,6 @@ import javax.inject.Inject
 class MessageViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
-    private val userRepository: UserRepository,
     private val messageStorageRepository: MessageStorageRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
@@ -97,6 +95,7 @@ class MessageViewModel @Inject constructor(
             is MessageAction.OnMessageBlockButtonClicked -> {
                 handleBlockMessageButtonClicked(action.messageId)
             }
+            MessageAction.OnReservedMessageScreenEntered -> handleReservedMessageScreenEntered()
         }
     }
 
@@ -106,15 +105,11 @@ class MessageViewModel @Inject constructor(
         timeChecker.start()
     }
 
-    private fun getProfile() = intent {
+    private fun handleReservedMessageScreenEntered() = intent {
         viewModelScope.launch {
-            userRepository.getProfile()
-                .onSuccess { profile ->
-                    reduce {
-                        state.copy(
-                            myProfile = profile,
-                        )
-                    }
+            messageStorageRepository.getReservedMessage()
+                .onSuccess { reservedMessageList ->
+                    reduce { state.copy(reservedMessageList = reservedMessageList) }
                 }
         }
     }
