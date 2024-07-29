@@ -82,12 +82,12 @@ internal fun VoteHomeScreen(
         Crossfade(targetState = state.selectedTabIndex, label = "") { index ->
             Box(modifier = Modifier.padding(it)) {
                 when (index) {
-                    0 -> VoteHomeContent(
+                    HOME_SCREEN -> VoteHomeContent(
                         viewModel = viewModel,
                         voteNavigator = voteNavigator,
                     )
 
-                    1 -> CardResultContent(
+                    RESULT_SCREEN -> CardResultContent(
                         state = state,
                         action = viewModel::onAction,
                         navigator = voteNavigator,
@@ -265,7 +265,7 @@ private fun CardResultContent(
         Column {
             DotIndicators(pagerState = pagerState)
             Spacer(modifier = Modifier.height(10.dp))
-        
+
             WSButton(onClick = {
                 navigator.navigateToVoteStorageScreen()
             }, text = stringResource(R.string.check_my_vote)) {
@@ -284,3 +284,6 @@ private fun CardResultContent(
         action(VoteAction.GetFirst(LocalDate.now().toDateString()))
     }
 }
+
+private const val HOME_SCREEN = 0
+private const val RESULT_SCREEN = 1

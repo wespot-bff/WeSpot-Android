@@ -4,4 +4,4 @@ data class ReceivedVoteResult(
     val isNew: Boolean,
     override val voteOption: VoteOption,
     override val voteCount: Int,
-) : StorageVoteResult (voteOption, voteCount)
+) : StorageVoteResult(voteOption, voteCount)

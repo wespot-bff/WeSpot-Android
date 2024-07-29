@@ -43,7 +43,7 @@ class VoteStorageViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             receivedVotes = it.voteData,
-                            isLoading = false
+                            isLoading = false,
                         )
                     }
                 }
@@ -52,7 +52,7 @@ class VoteStorageViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             receivedVotes = original,
-                            isLoading = false
+                            isLoading = false,
                         )
                     }
                 }
@@ -72,7 +72,7 @@ class VoteStorageViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             sentVotes = it.voteData,
-                            isLoading = false
+                            isLoading = false,
                         )
                     }
                 }
@@ -81,7 +81,7 @@ class VoteStorageViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             sentVotes = original,
-                            isLoading = false
+                            isLoading = false,
                         )
                     }
                 }

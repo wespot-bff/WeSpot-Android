@@ -61,7 +61,7 @@ interface VoteStorageNavigator {
 @Composable
 fun VoteStorageScreen(
     navigator: VoteStorageNavigator,
-    viewModel: VoteStorageViewModel = hiltViewModel()
+    viewModel: VoteStorageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -77,29 +77,29 @@ fun VoteStorageScreen(
                 canNavigateBack = true,
                 navigateUp = {
                     navigator.navigateUp()
-                }
+                },
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 VoteChip(
                     text = stringResource(R.string.received_vote),
-                    isSelected = selectedTab == 0
+                    isSelected = selectedTab == 0,
                 ) {
                     selectedTab = 0
                 }
 
                 VoteChip(
                     text = stringResource(R.string.sent_vote),
-                    isSelected = selectedTab == 1
+                    isSelected = selectedTab == 1,
                 ) {
                     selectedTab = 1
                 }
@@ -132,7 +132,7 @@ private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) ->
         EmptyResultScreen()
     } else {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(state.receivedVotes, key = {
                 it.date
@@ -153,7 +153,7 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
         EmptyResultScreen()
     } else {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(state.sentVotes, key = {
                 it.date
@@ -175,12 +175,12 @@ private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             timeDiff.toDateString(date),
             style = StaticTypeScale.Default.body3,
-            modifier = Modifier.padding(start = 4.dp, top = 12.dp)
+            modifier = Modifier.padding(start = 4.dp, top = 12.dp),
         )
 
         votes.forEach { data ->
@@ -191,9 +191,9 @@ private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
                         title = data.voteOption.content,
                         subTitle = context.getString(
                             R.string.storage_subtitle,
-                            data.voteCount.toString()
+                            data.voteCount.toString(),
                         ),
-                        isToday = timeDiff == 0L
+                        isToday = timeDiff == 0L,
                     )
                 }
 
@@ -203,9 +203,9 @@ private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
                         title = data.voteOption.content,
                         subTitle = context.getString(
                             R.string.storage_subtitle,
-                            data.voteCount.toString()
+                            data.voteCount.toString(),
                         ),
-                        isToday = timeDiff == 0L
+                        isToday = timeDiff == 0L,
                     )
                 }
             }
@@ -226,8 +226,8 @@ private fun VoteItem(
             .clip(WeSpotThemeManager.shapes.medium),
         colors = CardDefaults.cardColors(
             containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
-            contentColor = WeSpotThemeManager.colors.txtTitleColor
-        )
+            contentColor = WeSpotThemeManager.colors.txtTitleColor,
+        ),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (new) {
@@ -235,7 +235,7 @@ private fun VoteItem(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(12.dp)
-                        .zIndex(1f)
+                        .zIndex(1f),
                 )
             }
 
@@ -245,16 +245,16 @@ private fun VoteItem(
                     .fillMaxWidth()
                     .zIndex(0f),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     if (isToday) {
                         Image(
                             painter = painterResource(id = R.drawable.vote_badge),
                             contentDescription = stringResource(R.string.vote_badge),
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(40.dp),
                         )
                     }
 
@@ -263,17 +263,16 @@ private fun VoteItem(
                         Text(
                             text = subTitle,
                             style = StaticTypeScale.Default.body7,
-                            color = WeSpotThemeManager.colors.txtSubColor
+                            color = WeSpotThemeManager.colors.txtSubColor,
                         )
                     }
                 }
 
                 Icon(
                     painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
-                    contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow)
+                    contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow),
                 )
             }
         }
     }
-
 }

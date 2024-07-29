@@ -170,7 +170,7 @@ fun VotingScreen(
                             text = voteItem.content,
                             style = StaticTypeScale.Default.body3,
                             modifier = Modifier.padding(vertical = 14.dp),
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Start,
                         )
                     }
                 }
@@ -186,7 +186,6 @@ fun VotingScreen(
                     text = stringResource(id = R.string.submit_vote_and_check_result),
                     enabled = state.loading.not(),
                 ) {
-
                 }
             }
         }

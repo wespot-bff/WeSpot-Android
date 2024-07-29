@@ -97,7 +97,7 @@ internal fun VoteCard(
                 text = question,
                 style = StaticTypeScale.Default.body3,
                 line = 2,
-                modifier = Modifier.width(208.dp)
+                modifier = Modifier.width(208.dp),
             )
 
             Spacer(modifier = Modifier.height(12.dp))

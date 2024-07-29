@@ -44,7 +44,7 @@ object AppNavGraphs {
             VoteHomeScreenDestination,
             VotingScreenDestination,
             VoteResultScreenDestination,
-            VoteStorageScreenDestination
+            VoteStorageScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }

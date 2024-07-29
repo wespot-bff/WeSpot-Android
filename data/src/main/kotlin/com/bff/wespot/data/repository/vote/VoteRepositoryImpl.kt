@@ -15,7 +15,7 @@ class VoteRepositoryImpl @Inject constructor(
 ) : VoteRepository {
     override suspend fun getVoteQuestions(): Result<VoteItems> =
         voteDataSource.getVoteQuestions()
-            .map {
+            .mapCatching {
                 it.toVoteItems()
             }
 
@@ -25,25 +25,25 @@ class VoteRepositoryImpl @Inject constructor(
 
     override suspend fun getVoteResults(date: String): Result<VoteResults> =
         voteDataSource.getVoteResults(date)
-            .map {
+            .mapCatching {
                 it.toVoteResults()
             }
 
     override suspend fun getFirstVoteResults(date: String): Result<VoteResults> =
         voteDataSource.getFirstVoteResults(date)
-            .map {
+            .mapCatching {
                 it.toVoteResults()
             }
 
     override suspend fun getVoteSent(): Result<VoteSent> =
         voteDataSource.getVoteSent()
-            .map {
+            .mapCatching {
                 it.toVoteSent()
             }
 
     override suspend fun getVoteReceived(): Result<VoteReceived> =
         voteDataSource.getVoteReceived()
-            .map {
+            .mapCatching {
                 it.toVoteReceived()
             }
 }
