@@ -66,7 +66,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun MessageStorageScreen(
     viewModel: MessageViewModel,
-    navigateToReceiverSelectionScreen: (Boolean) -> Unit,
+    navigateToReservedMessageScreen: () -> Unit,
     showToast: (String) -> Unit,
 ) {
     val chipList = persistentListOf(
@@ -152,7 +152,7 @@ fun MessageStorageScreen(
                                         paddingValues = PaddingValues(),
                                         messageStatus = state.messageStatus,
                                         onBannerClick = {
-                                            navigateToReceiverSelectionScreen(false)
+                                            navigateToReservedMessageScreen()
                                         },
                                     )
 
@@ -171,7 +171,7 @@ fun MessageStorageScreen(
                         items(state.sentMessageList.messages, key = { it.id }) { item ->
                             WSMessageItem(
                                 userInfo = if (item.isBlocked.not() && item.isReported.not()) {
-                                    item.toReceiverDescription()
+                                    item.receiver.toDescription()
                                 } else {
                                     null
                                 },
@@ -320,7 +320,7 @@ private fun MessageContentDialog(
                     .padding(horizontal = 24.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                MessageDialogText("To.\n" + message.toReceiverDescription())
+                MessageDialogText("To.\n" + message.receiver.toDescription())
 
                 MessageDialogText(message.content)
 
