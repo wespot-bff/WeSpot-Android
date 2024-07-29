@@ -8,4 +8,5 @@ interface VoteRepository {
     suspend fun getVoteQuestions(): Result<VoteItems>
     suspend fun uploadVoteResults(voteResults: VoteResultsUpload): Boolean
     suspend fun getVoteResults(date: String): Result<VoteResults>
+    suspend fun getFirstVoteResults(date: String): Result<VoteResults>
 }

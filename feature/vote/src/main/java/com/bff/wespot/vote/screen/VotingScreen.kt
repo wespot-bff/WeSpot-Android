@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
@@ -46,7 +45,6 @@ import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import java.time.LocalDate
 
 interface VotingNavigator {
     fun navigateUp()
@@ -80,7 +78,6 @@ fun VotingScreen(
             VotingSideEffect.NavigateToResult -> {
                 votingNavigator.navigateToResultScreen(
                     VoteResultScreenArgs(
-                        date = LocalDate.now().toDateString(),
                         isVoting = true,
                     ),
                 )
