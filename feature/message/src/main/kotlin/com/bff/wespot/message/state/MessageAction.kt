@@ -6,6 +6,7 @@ import com.bff.wespot.model.message.response.Message
 
 sealed class MessageAction {
     data object OnHomeScreenEntered : MessageAction()
+    data object OnReservedMessageScreenEntered : MessageAction()
     data class OnStorageChipSelected(val messageType: MessageType) : MessageAction()
     data class OnMessageItemClicked(val message: Message) : MessageAction()
     data class OnOptionButtonClicked(val message: Message) : MessageAction()

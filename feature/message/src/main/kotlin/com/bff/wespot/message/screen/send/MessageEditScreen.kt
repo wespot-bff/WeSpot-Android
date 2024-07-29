@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -38,6 +39,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.screen.MessageScreenArgs
+import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -51,13 +53,20 @@ interface MessageEditNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun navigateMessageScreen(args: MessageScreenArgs)
+    fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
 }
 
-@Destination
+data class EditMessageScreenArgs(
+    val isReservedMessage: Boolean = false,
+    val messageId: Int = -1,
+)
+
+@Destination(navArgsDelegate = EditMessageScreenArgs::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageEditScreen(
     navigator: MessageEditNavigator,
+    navArgs: EditMessageScreenArgs,
     viewModel: SendViewModel,
 ) {
     var exitDialog by remember { mutableStateOf(false) }
@@ -77,8 +86,13 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToMessage -> {
-                action(SendAction.NavigateToMessage)
                 navigator.navigateMessageScreen(args = MessageScreenArgs(true))
+            }
+
+            is SendSideEffect.NavigateToReservedMessage -> {
+                navigator.navigateToReservedMessageScreen(
+                    args = ReservedMessageScreenArgs(true),
+                )
             }
         }
     }
@@ -119,6 +133,8 @@ fun MessageEditScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             EditField(
                 title = stringResource(R.string.message_sent_content),
                 value = state.messageInput,
@@ -129,12 +145,6 @@ fun MessageEditScreen(
                 )
             }
 
-            EditField(
-                title = stringResource(R.string.sender),
-                value = if (state.isRandomName) state.randomName else state.profile.toDescription(),
-                onClicked = { toast = true },
-            )
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,6 +153,12 @@ fun MessageEditScreen(
             ) {
                 LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
             }
+
+            EditField(
+                title = stringResource(R.string.sender),
+                value = if (state.isRandomName) state.randomName else state.sender,
+                onClicked = { toast = true },
+            )
 
             Row(
                 modifier = Modifier
@@ -177,7 +193,11 @@ fun MessageEditScreen(
 
             WSButton(
                 onClick = {
-                    reserveDialog = true
+                    if (state.isReservedMessage) {
+                        action(SendAction.OnEditButtonClicked(navArgs.messageId))
+                    } else {
+                        reserveDialog = true
+                    }
                 },
                 paddingValues = PaddingValues(
                     start = 20.dp,
@@ -185,7 +205,9 @@ fun MessageEditScreen(
                     top = 32.dp,
                     bottom = 12.dp,
                 ),
-                text = stringResource(R.string.message_send),
+                text = stringResource(
+                    if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
+                ),
             ) {
                 it()
             }
@@ -193,12 +215,17 @@ fun MessageEditScreen(
 
         if (exitDialog) {
             WSDialog(
-                title = stringResource(R.string.send_exit_dialog_title),
+                title = stringResource(
+                    if (state.isReservedMessage) {
+                        R.string.edit_exit_dialog_title
+                    } else {
+                        R.string.send_exit_dialog_title
+                    },
+                ),
                 subTitle = stringResource(R.string.send_exit_dialog_subtitle),
                 okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
                 cancelButtonText = stringResource(id = R.string.close),
                 okButtonClick = {
-                    action(SendAction.NavigateToMessage)
                     navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { exitDialog = false },
@@ -212,7 +239,7 @@ fun MessageEditScreen(
                 subTitle = stringResource(R.string.message_send_dialog_subtitle),
                 okButtonText = stringResource(R.string.message_send_dialog_button_text),
                 cancelButtonText = stringResource(R.string.cancel),
-                okButtonClick = { action(SendAction.SendMessage) },
+                okButtonClick = { action(SendAction.OnSendButtonClicked) },
                 cancelButtonClick = { reserveDialog = false },
                 onDismissRequest = { reserveDialog = false },
             )
@@ -225,7 +252,6 @@ fun MessageEditScreen(
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
-                    action(SendAction.NavigateToMessage)
                     navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { timeoutDialog = false },
@@ -246,7 +272,7 @@ fun MessageEditScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(SendAction.OnMessageEditScreenEntered)
+        action(SendAction.OnMessageEditScreenEntered(navArgs.isReservedMessage, navArgs.messageId))
     }
 }
 
@@ -267,11 +293,7 @@ private fun EditField(
         WSButton(
             onClick = onClicked,
             heightRange = if (isMessageContent) HeightRange(170.dp, 228.dp) else null,
-            paddingValues = if (isMessageContent) {
-                PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp)
-            } else {
-                PaddingValues(vertical = 12.dp, horizontal = 20.dp)
-            },
+            paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(
