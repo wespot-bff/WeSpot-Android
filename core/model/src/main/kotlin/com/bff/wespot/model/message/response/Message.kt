@@ -1,15 +1,12 @@
 package com.bff.wespot.model.message.response
 
+import com.bff.wespot.model.user.response.User
 import java.time.LocalDateTime
 
 data class Message(
     val id: Int,
     val senderName: String,
-    val receiverId: Int,
-    val receiverName: String,
-    val receiverSchoolName: String,
-    val receiverGrade: Int,
-    val receiverClassNumber: Int,
+    val receiver: User,
     val content: String,
     val receivedAt: LocalDateTime?,
     val isRead: Boolean,
@@ -17,13 +14,7 @@ data class Message(
     val isBlocked: Boolean,
     val readAt: LocalDateTime?,
 ) {
-    constructor() : this(
-        -1, "", -1, "", "", -1, -1, "", LocalDateTime.MAX, false, false, false, null,
-    )
+    constructor() : this(-1, "", User(), "", LocalDateTime.MAX, false, false, false, null)
 
-    fun toReceiverDescription() =
-        "${receiverSchoolName
-            .replace("중학교", "중")
-            .replace("고등학교", "고")} " +
-            "${receiverGrade}학년 ${receiverClassNumber}반 $receiverName"
+    fun isRandomName(): Boolean = senderName.none { it.isDigit() }
 }
