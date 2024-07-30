@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
+import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -82,7 +83,11 @@ fun WsTextField(
                 null
             },
             placeholder = {
-                Text(text = placeholder, style = StaticTypeScale.Default.body4)
+                Text(
+                    text = placeholder,
+                    style = StaticTypeScale.Default.body4,
+                    color = Gray400,
+                )
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,

@@ -52,4 +52,16 @@
     <string name="received_message">받은 쪽지</string>
     <string name="reserved_message">보낸 쪽지</string>
     <string name="message_screen_crossfade">Message Screen CrossFade</string>
+    <string name="message_delete_dialog_title">쪽지를 삭제하시나요?</string>
+    <string name="message_delete_dialog_subtitle">삭제한 쪽지는 절대 되돌릴 수 없어요</string>
+    <string name="message_delete_dialog_ok_button">네 삭제할래요</string>
+    <string name="message_block_dialog_title">정말 차단하시나요?</string>
+    <string name="message_block_dialog_subtitle"><![CDATA[해당 친구와의 쪽지 수신 및 발신이 차단돼요\n* 차단 해제 : 전체>설정>차단 목록>차단 해제]]></string>
+    <string name="message_block_dialog_ok_button">네 차단할래요</string>
+    <string name="message_report_dialog_title">정말 신고하시나요?</string>
+    <string name="message_report_dialog_subtitle">허위 신고로 확인될 시 서비스 이용이 제한되며\n받은 쪽지는 신고 즉시 삭제돼요</string>
+    <string name="message_report_dialog_ok_button">네 신고할래요</string>
+    <string name="block">차단</string>
+    <string name="report_title">신고</string>
+    <string name="delete">삭제</string>
 </resources>

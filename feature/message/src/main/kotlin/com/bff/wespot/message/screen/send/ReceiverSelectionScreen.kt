@@ -185,7 +185,7 @@ fun ReceiverSelectionScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(110.dp)
+                .height(124.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(

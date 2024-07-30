@@ -1,3 +1,5 @@
 package com.bff.wespot.message.state
 
-sealed class MessageSideEffect
+sealed class MessageSideEffect {
+    data class ShowToast(val message: String) : MessageSideEffect()
+}

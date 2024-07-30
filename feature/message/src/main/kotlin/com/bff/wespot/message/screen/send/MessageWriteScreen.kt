@@ -128,7 +128,7 @@ fun MessageWriteScreen(
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
+                    modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp),
                     text = warningMessage,
                     style = StaticTypeScale.Default.body7,
                     color = WeSpotThemeManager.colors.dangerColor,
@@ -171,7 +171,7 @@ fun MessageWriteScreen(
     LaunchedEffect(focusRequester) {
         focusRequester.requestFocus()
         delay(10)
-        keyboard?.show()
+        keyboard?.hide()
     }
 
     LaunchedEffect(Unit) {

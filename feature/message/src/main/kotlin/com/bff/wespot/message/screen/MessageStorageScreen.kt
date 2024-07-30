@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.bff.wespot.designsystem.component.list.WSMessageItem
 import com.bff.wespot.designsystem.component.list.WSMessageItemType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -46,31 +47,45 @@ import com.bff.wespot.message.common.RECEIVED_MESSAGE_INDEX
 import com.bff.wespot.message.common.SENT_MESSAGE_INDEX
 import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.component.ReservedMessageBanner
+import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
+import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.request.MessageType
+import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageStorageScreen(
     viewModel: MessageViewModel,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
+    showToast: (String) -> Unit,
 ) {
     val chipList = persistentListOf(
         stringResource(R.string.received_message),
         stringResource(R.string.reserved_message),
     )
     var selectedChipIndex by remember { mutableIntStateOf(0) }
-    var showMessageDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showMessageDialog by remember { mutableStateOf(false) }
+    var showMessageOptionDialog by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    viewModel.collectSideEffect {
+        when (it) {
+            is MessageSideEffect.ShowToast -> {
+                showToast(it.message)
+            }
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         WSHomeChipGroup(
@@ -92,7 +107,7 @@ fun MessageStorageScreen(
                     items(state.receivedMessageList.messages, key = { it.id }) { item ->
                         WSMessageItem(
                             userInfo = item.senderName,
-                            date = item.receivedAt.toStringWithDotSeparator(),
+                            date = item.receivedAt?.toStringWithDotSeparator() ?: "",
                             wsMessageItemType = if (item.isRead) {
                                 WSMessageItemType.ReadReceivedMessage
                             } else {
@@ -103,6 +118,7 @@ fun MessageStorageScreen(
                                 showMessageDialog = true
                             },
                             optionButtonClick = {
+                                action(MessageAction.OnOptionButtonClicked(item))
                                 showBottomSheet = true
                             },
                         )
@@ -126,7 +142,7 @@ fun MessageStorageScreen(
                     style = StaticTypeScale.Default.body3,
                 )
 
-                // TODO
+                // TODO 보낸 쪽지
             }
         }
     }
@@ -139,86 +155,78 @@ fun MessageStorageScreen(
                 modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 32.dp),
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    text = "삭제",
-                    style = StaticTypeScale.Default.body4,
-                    color = Color(0xFFF7F7F8),
+                BottomSheetText(
+                    text = stringResource(R.string.delete),
+                    onClick = {
+                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
+                        showMessageOptionDialog = true
+                    },
                 )
 
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
+                BottomSheetText(
+                    text = stringResource(R.string.report_title),
+                    onClick = {
+                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
+                        showMessageOptionDialog = true
+                    },
                 )
 
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    text = "신고",
-                    style = StaticTypeScale.Default.body4,
-                    color = Color(0xFFF7F7F8),
-                )
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    text = "차단",
-                    style = StaticTypeScale.Default.body4,
-                    color = Color(0xFFF7F7F8),
+                BottomSheetText(
+                    text = stringResource(R.string.block),
+                    showDivider = false,
+                    onClick = {
+                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
+                        showMessageOptionDialog = true
+                    },
                 )
             }
         }
     }
 
     if (showMessageDialog) {
-        Dialog(onDismissRequest = { }) {
-            Box(
-                modifier = Modifier
-                    .width(296.dp)
-                    .heightIn(min = 376.dp, max = 424.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .clip(WeSpotThemeManager.shapes.extraLarge)
-                        .background(WeSpotThemeManager.colors.modalColor)
-                        .border(
-                            width = 1.dp,
-                            color = Primary400,
-                            shape = WeSpotThemeManager.shapes.extraLarge,
+        MessageContentDialog(
+            profile = state.myProfile,
+            message = state.clickedMessage,
+            closeButtonClick = { showMessageDialog = false },
+        )
+    }
+
+    if (showMessageOptionDialog) {
+        WSDialog(
+            title = state.messageOptionType.title,
+            subTitle = state.messageOptionType.subTitle,
+            okButtonText = state.messageOptionType.okButtonText,
+            cancelButtonText = state.messageOptionType.cancelButtonText,
+            okButtonClick = {
+                when (state.messageOptionType) {
+                    MessageOptionType.DELETE -> {
+                        action(
+                            MessageAction.OnMessageDeleteButtonClicked(
+                                state.optionButtonClickedMessage.id,
+                            ),
                         )
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp, vertical = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    MessageDialogText("To.\n" + state.myProfile.toDescription())
-
-                    MessageDialogText(state.clickedMessage.content)
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    MessageDialogText(
-                        text = "From.\n" + state.clickedMessage.senderName,
-                        textAlign = TextAlign.End,
-                    )
+                    }
+                    MessageOptionType.BLOCK -> {
+                        action(
+                            MessageAction.OnMessageBlockButtonClicked(
+                                state.optionButtonClickedMessage.id,
+                            ),
+                        )
+                    }
+                    MessageOptionType.REPORT -> {
+                        action(
+                            MessageAction.OnMessageReportButtonClicked(
+                                state.optionButtonClickedMessage.id,
+                            ),
+                        )
+                    }
                 }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, end = 8.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Image(
-                        modifier = Modifier.clickable { showMessageDialog = false },
-                        painter = painterResource(id = R.drawable.close),
-                        contentDescription = stringResource(id = R.string.close),
-                    )
-                }
-            }
-        }
+                showMessageOptionDialog = false
+                showBottomSheet = false
+            },
+            onDismissRequest = { showMessageOptionDialog = false },
+            cancelButtonClick = { showMessageOptionDialog = false },
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -236,7 +244,60 @@ fun MessageStorageScreen(
 }
 
 @Composable
-fun MessageDialogText(text: String, textAlign: TextAlign = TextAlign.Start) {
+private fun MessageContentDialog(
+    profile: Profile,
+    message: Message,
+    closeButtonClick: () -> Unit,
+) {
+    Dialog(onDismissRequest = { }) {
+        Box(
+            modifier = Modifier
+                .width(296.dp)
+                .heightIn(min = 376.dp, max = 424.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .clip(WeSpotThemeManager.shapes.extraLarge)
+                    .background(WeSpotThemeManager.colors.modalColor)
+                    .border(
+                        width = 1.dp,
+                        color = Primary400,
+                        shape = WeSpotThemeManager.shapes.extraLarge,
+                    )
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                MessageDialogText("To.\n" + profile.toDescription())
+
+                MessageDialogText(message.content)
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                MessageDialogText(
+                    text = "From.\n" + message.senderName,
+                    textAlign = TextAlign.End,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, end = 8.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Image(
+                    modifier = Modifier.clickable { closeButtonClick() },
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = stringResource(id = R.string.close),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessageDialogText(text: String, textAlign: TextAlign = TextAlign.Start) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = text,
@@ -244,4 +305,30 @@ fun MessageDialogText(text: String, textAlign: TextAlign = TextAlign.Start) {
         color = WeSpotThemeManager.colors.txtTitleColor,
         textAlign = textAlign,
     )
+}
+
+@Composable
+private fun BottomSheetText(
+    text: String,
+    showDivider: Boolean = true,
+    onClick: () -> Unit,
+) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp),
+        text = text,
+        style = StaticTypeScale.Default.body4,
+        color = Color(0xFFF7F7F8),
+        textAlign = TextAlign.Center,
+    )
+
+    if (showDivider) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 1.dp,
+            color = Color(0xFF4F5157),
+        )
+    }
 }
