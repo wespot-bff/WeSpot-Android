@@ -8,4 +8,5 @@ interface VoteDataSource {
     suspend fun getVoteQuestions(): Result<VoteItemsDto>
     suspend fun uploadVoteResults(voteResults: VoteResultsUploadDto): Result<Unit>
     suspend fun getVoteResults(date: String): Result<VoteResultsDto>
+    suspend fun getFirstVoteResults(date: String): Result<VoteResultsDto>
 }

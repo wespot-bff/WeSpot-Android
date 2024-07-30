@@ -63,7 +63,7 @@ private fun PreviewWSCarousel() {
                     pagerState = pagerState,
                 ) {
                     Box(modifier = Modifier.wrapContentSize()) {
-                        Text("Item 1", modifier = Modifier.carouselTransition(it, pagerState))
+                        Text("Item 1", modifier = Modifier.carouselTransition(pagerState, it))
                     }
                 }
                 DotIndicators(pagerState = pagerState)

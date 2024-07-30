@@ -71,4 +71,8 @@ class CommonNavGraphNavigator(
     override fun navigateToVoteHome() {
         navController.popBackStack(navGraph.startRoute.route, inclusive = false, saveState = true)
     }
+
+    override fun navigateToVoteResultScreen(args: VoteResultScreenArgs) {
+        navController.navigate(VoteResultScreenDestination(args) within navGraph)
+    }
 }

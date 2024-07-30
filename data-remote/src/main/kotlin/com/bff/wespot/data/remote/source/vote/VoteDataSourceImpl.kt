@@ -39,4 +39,13 @@ class VoteDataSourceImpl @Inject constructor(
                 parameter("date", date)
             }
         }
+
+    override suspend fun getFirstVoteResults(date: String): Result<VoteResultsDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/votes/tops")
+                parameter("date", date)
+            }
+        }
 }

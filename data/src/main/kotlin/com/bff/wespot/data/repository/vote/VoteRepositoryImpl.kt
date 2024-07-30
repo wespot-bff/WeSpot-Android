@@ -26,4 +26,10 @@ class VoteRepositoryImpl @Inject constructor(
             .map {
                 it.toVoteResults()
             }
+
+    override suspend fun getFirstVoteResults(date: String): Result<VoteResults> =
+        voteDataSource.getFirstVoteResults(date)
+            .map {
+                it.toVoteResults()
+            }
 }
