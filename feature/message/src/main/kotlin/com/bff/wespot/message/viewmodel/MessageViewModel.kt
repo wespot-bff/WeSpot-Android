@@ -153,7 +153,7 @@ class MessageViewModel @Inject constructor(
 
     private fun getReceivedMessageList() = intent {
         viewModelScope.launch {
-            messageRepository.getMessageList(MessageType.RECEIVED)
+            messageRepository.getMessageList(MessageType.RECEIVED, cursorId = 0) // TODO 커서 구현
                 .onSuccess { receivedMessageList ->
                     reduce {
                         state.copy(
@@ -166,7 +166,7 @@ class MessageViewModel @Inject constructor(
 
     private fun getSentMessageList() = intent {
         viewModelScope.launch {
-            messageRepository.getMessageList(MessageType.SENT)
+            messageRepository.getMessageList(MessageType.SENT, cursorId = 0) // TODO 커서 페이징 구현
                 .onSuccess { sentMessageList ->
                     reduce {
                         state.copy(

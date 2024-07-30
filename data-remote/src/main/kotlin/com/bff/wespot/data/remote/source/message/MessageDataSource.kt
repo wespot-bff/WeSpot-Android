@@ -9,7 +9,10 @@ import com.bff.wespot.data.remote.model.message.response.MessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 
 interface MessageDataSource {
-    suspend fun getMessageList(messageTypeDto: MessageTypeDto): Result<MessageListDto>
+    suspend fun getMessageList(
+        messageTypeDto: MessageTypeDto,
+        cursorId: Int,
+    ): Result<MessageListDto>
 
     suspend fun postMessage(sentMessageDto: SentMessageDto): Result<MessageIdDto>
 

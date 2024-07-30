@@ -17,9 +17,10 @@ class MessageRepositoryImpl @Inject constructor(
 ) : MessageRepository {
     override suspend fun getMessageList(
         messageType: MessageType,
+        cursorId: Int,
     ): Result<MessageList> =
         messageDataSource
-            .getMessageList(messageType.toMessageTypeDto())
+            .getMessageList(messageType.toMessageTypeDto(), cursorId)
             .mapCatching { messageListDto ->
                 messageListDto.toMessageList()
             }

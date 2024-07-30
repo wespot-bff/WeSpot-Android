@@ -20,12 +20,14 @@ class MessageDataSourceImpl @Inject constructor(
 ): MessageDataSource {
     override suspend fun getMessageList(
         messageTypeDto: MessageTypeDto,
+        cursorId: Int,
     ): Result<MessageListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("messages")
                 parameter("type", messageTypeDto.type())
+                parameter("cursorId", cursorId)
             }
         }
 

@@ -7,7 +7,7 @@ import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
 
 interface MessageRepository {
-    suspend fun getMessageList(messageType: MessageType): Result<MessageList>
+    suspend fun getMessageList(messageType: MessageType, cursorId: Int): Result<MessageList>
 
     suspend fun postMessage(sentMessage: SentMessage): Result<String>
 
