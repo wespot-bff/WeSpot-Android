@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,16 +52,16 @@ import com.bff.wespot.vote.R
 internal fun VoteCard(
     result: Result,
     question: String,
-    pagerState: PagerState,
+    pagerState: PagerState = rememberPagerState { 0 },
     page: Int,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     Card(
         modifier = Modifier
             .clip(WeSpotThemeManager.shapes.medium)
             .carouselTransition(pagerState, page),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.1f),
+            containerColor = Color.White.copy(alpha = 0.08f),
         ),
     ) {
         Column(
@@ -133,15 +134,32 @@ internal fun VoteCard(
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
-            WSButton(
-                onClick = onClick,
-                buttonType = WSButtonType.Secondary,
-                paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.check_overall_result),
-                    style = StaticTypeScale.Default.body3,
-                )
+            if (onClick != null) {
+                WSButton(
+                    onClick = onClick,
+                    buttonType = WSButtonType.Secondary,
+                    paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.check_overall_result),
+                        style = StaticTypeScale.Default.body3,
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.white_logo),
+                        contentDescription = stringResource(R.string.white_logo),
+                        modifier = Modifier
+                            .width(90.dp)
+                            .aspectRatio(2.64f)
+                    )
+                }
             }
         }
     }

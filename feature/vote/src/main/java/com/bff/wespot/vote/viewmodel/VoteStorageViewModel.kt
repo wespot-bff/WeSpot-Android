@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -27,6 +28,11 @@ class VoteStorageViewModel @Inject constructor(
         when (action) {
             is StorageAction.GetReceivedVotes -> getReceivedVotes()
             is StorageAction.GetSentVotes -> getSentVotes()
+            is StorageAction.ToIndividualVote -> toIndividualVote(
+                action.optionId,
+                action.date,
+                action.isReceived
+            )
         }
     }
 
@@ -86,5 +92,9 @@ class VoteStorageViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun toIndividualVote(optionId: Int, date: String, isReceived: Boolean) = intent {
+        postSideEffect(StorageSideEffect.NavigateToIndividualVote(optionId, date, isReceived))
     }
 }

@@ -27,4 +27,5 @@
     <string name="sent_vote">보낸 투표</string>
     <string name="vote_badge">투표 뱃지</string>
     <string name="storage_subtitle">우리 반 친구 %1$s 명 나에게 투표했어요</string>
+    <string name="white_logo">휜 로고</string>
 </resources>

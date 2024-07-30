@@ -1,3 +1,10 @@
 package com.bff.wespot.vote.state.storage
 
-class StorageSideEffect
+sealed class StorageSideEffect {
+    data class NavigateToIndividualVote(
+        val optionId: Int,
+        val date: String,
+        val isReceived: Boolean
+    ) :
+        StorageSideEffect()
+}

@@ -2,6 +2,7 @@ package com.bff.wespot.vote.screen
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,15 +46,18 @@ import com.bff.wespot.model.vote.response.StorageVoteResult
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
+import com.bff.wespot.vote.state.storage.StorageSideEffect
 import com.bff.wespot.vote.state.storage.StorageUiState
 import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteStorageViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface VoteStorageNavigator {
     fun navigateUp()
+    fun navigateToIndividualVote(args: IndividualVoteArgs)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +72,20 @@ fun VoteStorageScreen(
 
     var selectedTab by remember {
         mutableStateOf(0)
+    }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is StorageSideEffect.NavigateToIndividualVote -> {
+                navigator.navigateToIndividualVote(
+                    IndividualVoteArgs(
+                        it.optionId,
+                        it.date,
+                        it.isReceived
+                    )
+                )
+            }
+        }
     }
 
     Scaffold(
@@ -137,7 +155,7 @@ private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) ->
             items(state.receivedVotes, key = {
                 it.date
             }) {
-                VoteDateList(votes = it.receivedVoteResults, date = it.date)
+                VoteDateList(votes = it.receivedVoteResults, date = it.date, action = action)
             }
         }
     }
@@ -158,7 +176,7 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
             items(state.sentVotes, key = {
                 it.date
             }) {
-                VoteDateList(votes = it.sentVoteResults, date = it.date)
+                VoteDateList(votes = it.sentVoteResults, date = it.date, action = action)
             }
         }
     }
@@ -169,7 +187,11 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
 }
 
 @Composable
-private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
+private fun VoteDateList(
+    votes: List<StorageVoteResult>,
+    date: String,
+    action: (StorageAction) -> Unit
+) {
     val context = LocalContext.current
     val timeDiff = date.timeDifference()
 
@@ -194,7 +216,9 @@ private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
                             data.voteCount.toString(),
                         ),
                         isToday = timeDiff == 0L,
-                    )
+                    ) {
+                        action(StorageAction.ToIndividualVote(data.voteOption.id, date, false))
+                    }
                 }
 
                 is ReceivedVoteResult -> {
@@ -206,7 +230,9 @@ private fun VoteDateList(votes: List<StorageVoteResult>, date: String) {
                             data.voteCount.toString(),
                         ),
                         isToday = timeDiff == 0L,
-                    )
+                    ) {
+                        action(StorageAction.ToIndividualVote(data.voteOption.id, date, true))
+                    }
                 }
             }
         }
@@ -219,11 +245,15 @@ private fun VoteItem(
     title: String,
     subTitle: String,
     isToday: Boolean,
+    onClicked: () -> Unit,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(WeSpotThemeManager.shapes.medium),
+            .clip(WeSpotThemeManager.shapes.medium)
+            .clickable {
+                onClicked()
+            },
         colors = CardDefaults.cardColors(
             containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
             contentColor = WeSpotThemeManager.colors.txtTitleColor,
