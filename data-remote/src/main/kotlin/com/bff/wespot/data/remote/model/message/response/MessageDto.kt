@@ -15,6 +15,7 @@ data class MessageDto(
     val isRead: Boolean,
     val isReported: Boolean,
     val isBlocked: Boolean,
+    val isAnonymous: Boolean,
     val readAt: String? = "",
 ) {
     fun toMessage(): Message = Message(
@@ -26,6 +27,7 @@ data class MessageDto(
         isRead = isRead,
         isReported = isReported,
         isBlocked = isBlocked,
+        isAnonymous = isAnonymous,
         readAt = readAt?.toISOLocalDateTime(),
     )
 }

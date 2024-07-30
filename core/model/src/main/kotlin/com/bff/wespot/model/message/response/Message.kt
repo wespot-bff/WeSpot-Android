@@ -12,9 +12,8 @@ data class Message(
     val isRead: Boolean,
     val isReported: Boolean,
     val isBlocked: Boolean,
+    val isAnonymous: Boolean,
     val readAt: LocalDateTime?,
 ) {
-    constructor() : this(-1, "", User(), "", LocalDateTime.MAX, false, false, false, null)
-
-    fun isRandomName(): Boolean = senderName.none { it.isDigit() }
+    constructor() : this(-1, "", User(), "", LocalDateTime.MAX, false, false, false, false, null)
 }

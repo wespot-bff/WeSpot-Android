@@ -7,4 +7,5 @@ data class SentMessageDto (
     val receiverId: Int,
     val content: String,
     val sender: String,
+    val isAnonymous: Boolean,
 )

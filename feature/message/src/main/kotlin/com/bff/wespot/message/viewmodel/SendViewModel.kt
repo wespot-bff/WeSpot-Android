@@ -134,17 +134,16 @@ class SendViewModel @Inject constructor(
                         state.copy(
                             selectedUser = message.receiver,
                             messageInput = message.content,
+                            isRandomName = message.isAnonymous,
+                            randomName = message.senderName,
                         )
                     }
-                    messageInput.value = message.content
-
                     // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러온다.
-                    if (message.isRandomName()) {
-                        reduce { state.copy(isRandomName = true, randomName = message.senderName) }
+                    if (message.isAnonymous) {
                         getProfile()
-                    } else {
-                        reduce { state.copy(isRandomName = false, sender = message.senderName) }
                     }
+
+                    messageInput.value = message.content
                 }
         }
     }
@@ -174,6 +173,7 @@ class SendViewModel @Inject constructor(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     sender = if (state.isRandomName) state.randomName else state.sender,
+                    isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToMessage)
@@ -187,7 +187,7 @@ class SendViewModel @Inject constructor(
 
     private fun getUserList(name: String) = intent {
         viewModelScope.launch {
-            userRepository.getUserListByName(name)
+            userRepository.getUserListByName(name, cursorId = 0) // TODO 커서 페이징 구현
                 .onSuccess { userList ->
                     reduce {
                         state.copy(
@@ -228,6 +228,7 @@ class SendViewModel @Inject constructor(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     sender = if (state.isRandomName) state.randomName else state.sender,
+                    isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
