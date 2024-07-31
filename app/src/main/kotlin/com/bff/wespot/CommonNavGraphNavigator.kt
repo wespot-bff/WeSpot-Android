@@ -44,9 +44,7 @@ class CommonNavGraphNavigator(
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
-    VoteResultNavigator,
     ReservedMessageNavigator,
-    VoteStorageNavigator,
     IndividualVoteNavigator {
     override fun navigateUp() {
         navController.navigateUp()

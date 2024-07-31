@@ -31,4 +31,7 @@
     <string name="white_logo">휜 로고</string>
     <string name="guide_title">투표할 수 있는\n 1학년 6반 친구들이 부족해요</string>
     <string name="invite_friend_vote">친구 초대하기</string>
+    <string name="analyzing">분석 중이에요</string>
+    <string name="need_more_vote">더 많은 친구들의 투표가 필요해요</string>
+    <string name="ask_friend">친구에게 물어보기</string>
 </resources>

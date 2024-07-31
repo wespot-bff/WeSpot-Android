@@ -100,7 +100,7 @@ fun IndividualVoteScreen(
                             voteCount = result.voteCount,
                         ),
                         question = result.voteOption.content,
-                        page = 1,
+                        page = -1,
                     )
                 }
 

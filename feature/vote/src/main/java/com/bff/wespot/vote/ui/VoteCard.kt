@@ -49,7 +49,6 @@ import com.bff.wespot.model.vote.response.VoteProfile
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.util.carouselTransition
 import com.bff.wespot.vote.R
-import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -65,7 +64,7 @@ internal fun VoteCard(
         height / NORMAL_SCREEN_HEIGHT.dp
     }
 
-    val modifier = if (page == 1) {
+    val modifier = if (page == -1) {
         Modifier
             .clip(WeSpotThemeManager.shapes.medium)
     } else {
@@ -73,8 +72,6 @@ internal fun VoteCard(
             .clip(WeSpotThemeManager.shapes.medium)
             .carouselTransition(pagerState, page)
     }
-
-    Timber.d("VoteCard: $ratio")
 
     Card(
         modifier = modifier,
@@ -86,7 +83,7 @@ internal fun VoteCard(
             modifier = Modifier.padding(
                 start = 24.dp,
                 end = 24.dp,
-                top = 18.dp,
+                top = 24.dp,
             ),
         ) {
             Box(
@@ -97,14 +94,20 @@ internal fun VoteCard(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp * ratio),
                     horizontalArrangement = Arrangement.spacedBy(8.dp * ratio),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.first_empty),
-                        contentDescription = stringResource(R.string.first_icon),
-                        modifier = Modifier.size(30.dp * ratio),
-                    )
+                    if (result.voteCount != 0) {
+                        Image(
+                            painter = painterResource(id = R.drawable.first_empty),
+                            contentDescription = stringResource(R.string.first_icon),
+                            modifier = Modifier.size(30.dp * ratio),
+                        )
+                    }
 
                     Text(
-                        text = "${result.voteCount}${stringResource(id = R.string.ballot)}",
+                        text = if (result.voteCount == 0) {
+                            "??${stringResource(id = R.string.ballot)}"
+                        } else {
+                            "${result.voteCount}${stringResource(id = R.string.ballot)}"
+                        },
                         style = StaticTypeScale.Default.header1.copy(fontSize = 20.sp * ratio),
                     )
                 }
@@ -123,21 +126,31 @@ internal fun VoteCard(
                 modifier = Modifier.width(208.dp),
             )
 
-            Spacer(modifier = Modifier.height(12.dp * ratio))
+            Spacer(modifier = Modifier.height(18.dp * ratio))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(result.user.profile.iconUrl)
-                        .build(),
-                    contentDescription = stringResource(R.string.user_icon),
-                    modifier = Modifier.size(120.dp * ratio),
-                )
+                if (result.voteCount == 0) {
+                    Image(
+                        painter = painterResource(id = R.drawable.no_vote),
+                        contentDescription = stringResource(
+                            id = R.string.vote_ongoing,
+                        ),
+                        modifier = Modifier.size(100.dp * ratio),
+                    )
+                } else {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(result.user.profile.iconUrl)
+                            .build(),
+                        contentDescription = stringResource(R.string.user_icon),
+                        modifier = Modifier.size(100.dp * ratio),
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(12.dp * ratio))
+                Spacer(modifier = Modifier.height(18.dp * ratio))
 
                 Text(
                     text = result.user.name,
@@ -155,8 +168,18 @@ internal fun VoteCard(
 
                 Spacer(modifier = Modifier.height(12.dp * ratio))
             }
-
-            if (onClick != null) {
+            if (result.voteCount == 0) {
+                WSButton(
+                    onClick = {},
+                    buttonType = WSButtonType.Secondary,
+                    paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp * ratio),
+                ) {
+                    Text(
+                        text = stringResource(R.string.ask_friend),
+                        style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
+                    )
+                }
+            } else if (onClick != null) {
                 WSButton(
                     onClick = onClick,
                     buttonType = WSButtonType.Secondary,
