@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -74,6 +75,8 @@ fun VotingScreen(
         mutableStateOf("")
     }
 
+    val heightDp = LocalConfiguration.current.screenHeightDp.dp
+
     viewModel.collectSideEffect {
         when (it) {
             VotingSideEffect.NavigateToResult -> {
@@ -120,7 +123,7 @@ fun VotingScreen(
             }
             Text(
                 text =
-                    "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
                 style = StaticTypeScale.Default.header1,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
@@ -128,7 +131,7 @@ fun VotingScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp, bottom = 24.dp, start = 20.dp, end = 20.dp),
+                    .padding(top = 30.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 AsyncImage(
@@ -137,9 +140,11 @@ fun VotingScreen(
                         .build(),
                     contentDescription = "male",
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(heightDp * 0.15f)
                         .clip(CircleShape)
-                        .background(hexToColor(state.currentVote.voteUser.profile.backgroundColor)),
+                        .background(
+                            hexToColor(state.currentVote.voteUser.profile.backgroundColor)
+                        ),
                 )
             }
             LazyColumn {
@@ -157,13 +162,13 @@ fun VotingScreen(
                             }
                         },
                         buttonType =
-                            if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                                selected == voteItem.id
-                            ) {
-                                WSOutlineButtonType.Highlight
-                            } else {
-                                WSOutlineButtonType.None
-                            },
+                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                            selected == voteItem.id
+                        ) {
+                            WSOutlineButtonType.Highlight
+                        } else {
+                            WSOutlineButtonType.None
+                        },
                         paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                     ) {
                         Text(
@@ -186,6 +191,7 @@ fun VotingScreen(
                     text = stringResource(id = R.string.submit_vote_and_check_result),
                     enabled = state.loading.not(),
                 ) {
+                    it.invoke()
                 }
             }
         }

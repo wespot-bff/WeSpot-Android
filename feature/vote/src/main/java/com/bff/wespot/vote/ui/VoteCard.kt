@@ -23,14 +23,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -46,6 +49,7 @@ import com.bff.wespot.model.vote.response.VoteProfile
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.util.carouselTransition
 import com.bff.wespot.vote.R
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -56,10 +60,25 @@ internal fun VoteCard(
     page: Int,
     onClick: (() -> Unit)? = null,
 ) {
-    Card(
-        modifier = Modifier
+    val height = LocalConfiguration.current.screenHeightDp.dp
+    val ratio = remember {
+        height / NORMAL_SCREEN_HEIGHT.dp
+    }
+
+    val modifier = if (page == 1) {
+        Modifier
             .clip(WeSpotThemeManager.shapes.medium)
-            .carouselTransition(pagerState, page),
+    } else {
+        Modifier
+            .clip(WeSpotThemeManager.shapes.medium)
+            .carouselTransition(pagerState, page)
+    }
+
+    Timber.d("VoteCard: $ratio")
+
+
+    Card(
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = Color.White.copy(alpha = 0.08f),
         ),
@@ -76,32 +95,36 @@ internal fun VoteCard(
                     .border(1.dp, Gray300, RoundedCornerShape(30.dp)),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp * ratio),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp * ratio),
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.first_empty),
                         contentDescription = stringResource(R.string.first_icon),
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(30.dp * ratio),
                     )
 
                     Text(
                         text = "${result.voteCount}${stringResource(id = R.string.ballot)}",
-                        style = StaticTypeScale.Default.header1,
+                        style = StaticTypeScale.Default.header1.copy(fontSize = 20.sp * ratio),
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp * ratio))
 
             MultiLineText(
                 text = question,
-                style = StaticTypeScale.Default.body3,
-                line = 2,
+                style = StaticTypeScale.Default.header2.copy(fontSize = 18.sp * ratio),
+                line = if (ratio > 0.9f) {
+                    2
+                } else {
+                    1
+                },
                 modifier = Modifier.width(208.dp),
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp * ratio))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -112,51 +135,51 @@ internal fun VoteCard(
                         .data(result.user.profile.iconUrl)
                         .build(),
                     contentDescription = stringResource(R.string.user_icon),
-                    modifier = Modifier.size(120.dp),
+                    modifier = Modifier.size(120.dp * ratio),
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp * ratio))
 
                 Text(
                     text = result.user.name,
-                    style = StaticTypeScale.Default.header1,
+                    style = StaticTypeScale.Default.header1.copy(fontSize = 20.sp * ratio),
                     color = WeSpotThemeManager.colors.primaryColor,
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp * ratio))
 
                 Text(
                     text = result.user.introduction,
-                    style = StaticTypeScale.Default.body7,
+                    style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
                     maxLines = 1,
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp * ratio))
             }
 
             if (onClick != null) {
                 WSButton(
                     onClick = onClick,
                     buttonType = WSButtonType.Secondary,
-                    paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp),
+                    paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp * ratio),
                 ) {
                     Text(
                         text = stringResource(R.string.check_overall_result),
-                        style = StaticTypeScale.Default.body3,
+                        style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
                     )
                 }
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp),
+                        .padding(bottom = 24.dp * ratio),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.white_logo),
                         contentDescription = stringResource(R.string.white_logo),
                         modifier = Modifier
-                            .width(90.dp)
+                            .width(90.dp * ratio)
                             .aspectRatio(2.64f)
                     )
                 }
@@ -189,3 +212,5 @@ private fun PreviewVoteCard() {
         }
     }
 }
+
+private const val NORMAL_SCREEN_HEIGHT = 800

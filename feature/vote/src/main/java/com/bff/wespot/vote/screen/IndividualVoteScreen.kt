@@ -84,7 +84,7 @@ fun IndividualVoteScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(start = 38.dp, end = 38.dp, top = 60.dp)
+                .padding(top = 60.dp, start = 36.dp, end = 36.dp)
         ) {
             when (individual) {
                 is IndividualReceived -> {

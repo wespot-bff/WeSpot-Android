@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -69,6 +70,7 @@ import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
+import timber.log.Timber
 import java.time.LocalDate
 
 interface VoteResultNavigator {
@@ -233,34 +235,42 @@ private fun VoteResultItem(
     result: VoteResult,
     empty: Boolean,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        MultiLineText(
-            text = result.voteOption.content,
-            style = StaticTypeScale.Default.header1,
-            line = 2,
-            modifier = Modifier.padding(horizontal = 24.dp),
-        )
-        if (empty) {
-            EmptyResultScreen()
-        } else {
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                val results = result.results.take(3)
-                RankCard(user = results[1].user, vote = results[1].voteCount, rank = 2)
-                RankCard(user = results[0].user, vote = results[0].voteCount, rank = 1)
-                RankCard(user = results[2].user, vote = results[2].voteCount, rank = 3)
-            }
+    BoxWithConstraints {
+        val height = maxHeight
 
-            Spacer(modifier = Modifier.height(36.dp))
-            (3..<5).forEach {
-                RankTile(
-                    user = result.results[it].user,
-                    vote = result.results[it].voteCount,
-                    rank = it + 1,
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+        Column(modifier = Modifier.fillMaxWidth()) {
+            MultiLineText(
+                text = result.voteOption.content,
+                style = StaticTypeScale.Default.header1,
+                line = if (height < 600.dp) {
+                    1
+                } else {
+                    2
+                },
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+            if (empty) {
+                EmptyResultScreen()
+            } else {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    val results = result.results.take(3)
+                    RankCard(user = results[1].user, vote = results[1].voteCount, rank = 2)
+                    RankCard(user = results[0].user, vote = results[0].voteCount, rank = 1)
+                    RankCard(user = results[2].user, vote = results[2].voteCount, rank = 3)
+                }
+
+                Spacer(modifier = Modifier.height(36.dp))
+                (3..<5).forEach {
+                    RankTile(
+                        user = result.results[it].user,
+                        vote = result.results[it].voteCount,
+                        rank = it + 1,
+                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
         }
     }
