@@ -62,15 +62,15 @@ import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
+import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.ui.EmptyResultScreen
-import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
-import timber.log.Timber
 import java.time.LocalDate
 
 interface VoteResultNavigator {
@@ -133,25 +133,15 @@ fun VoteResultScreen(
                 .fillMaxSize(),
         ) {
             if (!state.isVoting) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
-                ) {
-                    VoteChip(
-                        text = stringResource(R.string.past_vote),
-                        isSelected = voteType == YESTERDAY,
-                    ) {
-                        voteType = YESTERDAY
-                    }
-
-                    VoteChip(
-                        text = stringResource(R.string.real_time_vote),
-                        isSelected = voteType == TODAY,
-                    ) {
-                        voteType = TODAY
-                    }
-                }
+                WSHomeChipGroup(
+                    items = persistentListOf(
+                        stringResource(id = R.string.past_vote), stringResource(
+                            id = R.string.real_time_vote
+                        )
+                    ),
+                    selectedItemIndex = voteType,
+                    onSelectedChanged = { voteType = it },
+                )
             }
 
             WSCarousel(pagerState = pagerState) { page ->

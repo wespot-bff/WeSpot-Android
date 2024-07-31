@@ -44,14 +44,15 @@ import com.bff.wespot.model.vote.response.ReceivedVoteResult
 import com.bff.wespot.model.vote.response.SentVoteResult
 import com.bff.wespot.model.vote.response.StorageVoteResult
 import com.bff.wespot.ui.RedDot
+import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
 import com.bff.wespot.vote.state.storage.StorageSideEffect
 import com.bff.wespot.vote.state.storage.StorageUiState
 import com.bff.wespot.vote.ui.EmptyResultScreen
-import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteStorageViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -103,27 +104,28 @@ fun VoteStorageScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 20.dp),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                VoteChip(
-                    text = stringResource(R.string.received_vote),
-                    isSelected = selectedTab == 0,
-                ) {
-                    selectedTab = 0
-                }
-
-                VoteChip(
-                    text = stringResource(R.string.sent_vote),
-                    isSelected = selectedTab == 1,
-                ) {
-                    selectedTab = 1
-                }
+                WSHomeChipGroup(
+                    items = persistentListOf(
+                        stringResource(id = R.string.received_vote), stringResource(
+                            id = R.string.sent_vote
+                        )
+                    ),
+                    selectedItemIndex = selectedTab,
+                    onSelectedChanged = { index ->
+                        selectedTab = index
+                    },
+                )
             }
 
-            Crossfade(targetState = selectedTab, label = "Screen") {
+            Crossfade(
+                targetState = selectedTab,
+                label = "Screen",
+                modifier = Modifier.padding(horizontal = 20.dp)
+            ) {
                 when (it) {
                     0 -> {
                         ReceivedVoteScreen(state = state, action = action)
