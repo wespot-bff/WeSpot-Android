@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SentVoteDataDto(
     val date: String,
-    val sentVoteResults: List<SentVoteResultDto>
+    val sentVoteResults: List<SentVoteStorageDto>
 ) {
     fun toSentVoteData(): SentVoteData {
         return SentVoteData(
             date = date,
-            sentVoteResults = sentVoteResults.map { it.toSentVoteResult() }
+            sentVoteResults = sentVoteResults.map { it.toSentVoteStorage() }
         )
     }
 }

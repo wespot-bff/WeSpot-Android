@@ -76,7 +76,6 @@ internal fun VoteCard(
 
     Timber.d("VoteCard: $ratio")
 
-
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -173,14 +172,14 @@ internal fun VoteCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 24.dp * ratio),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Image(
                         painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.white_logo),
                         contentDescription = stringResource(R.string.white_logo),
                         modifier = Modifier
                             .width(90.dp * ratio)
-                            .aspectRatio(2.64f)
+                            .aspectRatio(2.64f),
                     )
                 }
             }

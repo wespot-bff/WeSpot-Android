@@ -2,6 +2,7 @@ package com.bff.wespot.vote.screen
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,16 +37,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bff.wespot.common.util.timeDifference
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.ReceivedVoteResult
 import com.bff.wespot.model.vote.response.SentVoteResult
 import com.bff.wespot.model.vote.response.StorageVoteResult
+import com.bff.wespot.ui.ListBottomGradient
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
 import com.bff.wespot.vote.state.storage.StorageSideEffect
@@ -82,8 +89,8 @@ fun VoteStorageScreen(
                     IndividualVoteArgs(
                         it.optionId,
                         it.date,
-                        it.isReceived
-                    )
+                        it.isReceived,
+                    ),
                 )
             }
         }
@@ -103,16 +110,17 @@ fun VoteStorageScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(it),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 WSHomeChipGroup(
                     items = persistentListOf(
-                        stringResource(id = R.string.received_vote), stringResource(
-                            id = R.string.sent_vote
-                        )
+                        stringResource(id = R.string.received_vote),
+                        stringResource(
+                            id = R.string.sent_vote,
+                        ),
                     ),
                     selectedItemIndex = selectedTab,
                     onSelectedChanged = { index ->
@@ -124,7 +132,7 @@ fun VoteStorageScreen(
             Crossfade(
                 targetState = selectedTab,
                 label = "Screen",
-                modifier = Modifier.padding(horizontal = 20.dp)
+                modifier = Modifier.padding(horizontal = 20.dp),
             ) {
                 when (it) {
                     0 -> {
@@ -136,6 +144,9 @@ fun VoteStorageScreen(
                     }
                 }
             }
+        }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            ListBottomGradient()
         }
     }
 
@@ -153,6 +164,7 @@ private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) ->
     } else {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(bottom = 20.dp),
         ) {
             items(state.receivedVotes, key = {
                 it.date
@@ -174,11 +186,12 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
     } else {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(bottom = 20.dp),
         ) {
             items(state.sentVotes, key = {
                 it.date
             }) {
-                VoteDateList(votes = it.sentVoteResults, date = it.date, action = action)
+                VoteDateList(votes = it.getSentVoteResult(), date = it.date, action = action)
             }
         }
     }
@@ -192,7 +205,7 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
 private fun VoteDateList(
     votes: List<StorageVoteResult>,
     date: String,
-    action: (StorageAction) -> Unit
+    action: (StorageAction) -> Unit,
 ) {
     val context = LocalContext.current
     val timeDiff = date.timeDifference()
@@ -214,10 +227,11 @@ private fun VoteDateList(
                         new = false,
                         title = data.voteOption.content,
                         subTitle = context.getString(
-                            R.string.storage_subtitle,
-                            data.voteCount.toString(),
+                            R.string.sent_subtitle,
+                            data.voteOption.content,
                         ),
-                        isToday = timeDiff == 0L,
+                        isReceived = false,
+                        profileCharacter = data.user.profile,
                     ) {
                         action(StorageAction.ToIndividualVote(data.voteOption.id, date, false))
                     }
@@ -231,7 +245,8 @@ private fun VoteDateList(
                             R.string.storage_subtitle,
                             data.voteCount.toString(),
                         ),
-                        isToday = timeDiff == 0L,
+                        isReceived = true,
+                        profileCharacter = ProfileCharacter(),
                     ) {
                         action(StorageAction.ToIndividualVote(data.voteOption.id, date, true))
                     }
@@ -246,16 +261,25 @@ private fun VoteItem(
     new: Boolean,
     title: String,
     subTitle: String,
-    isToday: Boolean,
+    profileCharacter: ProfileCharacter,
+    isReceived: Boolean,
     onClicked: () -> Unit,
 ) {
-    Card(
-        modifier = Modifier
+    val modifier = if (isReceived) {
+        Modifier
             .fillMaxWidth()
             .clip(WeSpotThemeManager.shapes.medium)
             .clickable {
                 onClicked()
-            },
+            }
+    } else {
+        Modifier
+            .fillMaxWidth()
+            .clip(WeSpotThemeManager.shapes.medium)
+    }
+
+    Card(
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
             contentColor = WeSpotThemeManager.colors.txtTitleColor,
@@ -282,12 +306,27 @@ private fun VoteItem(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    if (isToday) {
+                    if (isReceived) {
                         Image(
                             painter = painterResource(id = R.drawable.vote_badge),
                             contentDescription = stringResource(R.string.vote_badge),
                             modifier = Modifier.size(40.dp),
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(hexToColor(profileCharacter.backgroundColor)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(profileCharacter.iconUrl)
+                                    .build(),
+                                contentDescription = "",
+                            )
+                        }
                     }
 
                     Column {
@@ -300,10 +339,12 @@ private fun VoteItem(
                     }
                 }
 
-                Icon(
-                    painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
-                    contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow),
-                )
+                if (isReceived) {
+                    Icon(
+                        painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
+                        contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow),
+                    )
+                }
             }
         }
     }

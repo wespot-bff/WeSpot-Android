@@ -31,7 +31,7 @@ class VoteStorageViewModel @Inject constructor(
             is StorageAction.ToIndividualVote -> toIndividualVote(
                 action.optionId,
                 action.date,
-                action.isReceived
+                action.isReceived,
             )
         }
     }
@@ -40,7 +40,7 @@ class VoteStorageViewModel @Inject constructor(
         val original = state.receivedVotes
 
         reduce {
-            state.copy(isLoading = true)
+            state.copy(isLoading = true, receivedVotes = emptyList())
         }
 
         viewModelScope.launch(coroutineDispatcher) {
@@ -69,7 +69,7 @@ class VoteStorageViewModel @Inject constructor(
         val original = state.sentVotes
 
         reduce {
-            state.copy(isLoading = true)
+            state.copy(isLoading = true, sentVotes = emptyList())
         }
 
         viewModelScope.launch(coroutineDispatcher) {

@@ -135,9 +135,10 @@ fun VoteResultScreen(
             if (!state.isVoting) {
                 WSHomeChipGroup(
                     items = persistentListOf(
-                        stringResource(id = R.string.past_vote), stringResource(
-                            id = R.string.real_time_vote
-                        )
+                        stringResource(id = R.string.past_vote),
+                        stringResource(
+                            id = R.string.real_time_vote,
+                        ),
                     ),
                     selectedItemIndex = voteType,
                     onSelectedChanged = { voteType = it },

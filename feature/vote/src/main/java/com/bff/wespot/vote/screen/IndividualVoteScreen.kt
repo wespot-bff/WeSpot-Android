@@ -45,46 +45,45 @@ import com.ramcosta.composedestinations.annotation.Destination
 data class IndividualVoteArgs(
     val optionId: Int,
     val date: String,
-    val isReceived: Boolean
+    val isReceived: Boolean,
 )
 
 interface IndividualVoteNavigator {
     fun navigateUp()
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Destination(
-    navArgsDelegate = IndividualVoteArgs::class
+    navArgsDelegate = IndividualVoteArgs::class,
 )
 @Composable
 fun IndividualVoteScreen(
     navigator: IndividualVoteNavigator,
-    viewModel: IndividualViewModel = hiltViewModel()
+    viewModel: IndividualViewModel = hiltViewModel(),
 ) {
     val individual by viewModel.individual.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             WSTopBar(title = "", canNavigateBack = true, navigateUp = navigator::navigateUp)
-        }
+        },
     ) {
         Image(
             painter = painterResource(id = R.drawable.vote_background),
             contentDescription = stringResource(
-                id = R.string.vote
+                id = R.string.vote,
             ),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 60.dp),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillBounds,
         )
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(top = 60.dp, start = 36.dp, end = 36.dp)
+                .padding(top = 60.dp, start = 36.dp, end = 36.dp),
         ) {
             when (individual) {
                 is IndividualReceived -> {
@@ -96,9 +95,9 @@ fun IndividualVoteScreen(
                                 id = user.id,
                                 name = user.name,
                                 introduction = user.introduction,
-                                profile = user.profile
+                                profile = user.profile,
                             ),
-                            voteCount = result.voteCount
+                            voteCount = result.voteCount,
                         ),
                         question = result.voteOption.content,
                         page = 1,
@@ -125,9 +124,9 @@ fun IndividualVoteScreen(
                                         id = user.id,
                                         name = user.name,
                                         introduction = "",
-                                        profile = user.profile
+                                        profile = user.profile,
                                     ),
-                                    voteCount = 0
+                                    voteCount = 0,
                                 ),
                                 question = result.voteOption.content,
                                 pagerState = pagerState,
@@ -140,8 +139,6 @@ fun IndividualVoteScreen(
                 }
             }
         }
-
-
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
             Box(

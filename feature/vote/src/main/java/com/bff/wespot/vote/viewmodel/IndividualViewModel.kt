@@ -39,7 +39,7 @@ class IndividualViewModel @Inject constructor(
                                 rate = 1,
                                 voteOption = VoteOption(
                                     id = 1,
-                                    content = "이 사람은 반에서 어떤 사람인가요?"
+                                    content = "이 사람은 반에서 어떤 사람인가요?",
                                 ),
                                 user = ReceivedUser(
                                     id = 1,
@@ -47,11 +47,11 @@ class IndividualViewModel @Inject constructor(
                                     introduction = "안녕하세요",
                                     profile = ProfileCharacter(
                                         iconUrl = "r",
-                                        backgroundColor = "#FF0000"
-                                    )
-                                )
-                            )
-                        )
+                                        backgroundColor = "#FF0000",
+                                    ),
+                                ),
+                            ),
+                        ),
                     )
                 }
         } else {
@@ -61,5 +61,4 @@ class IndividualViewModel @Inject constructor(
                 }
         }
     }.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(5000), null)
-
 }

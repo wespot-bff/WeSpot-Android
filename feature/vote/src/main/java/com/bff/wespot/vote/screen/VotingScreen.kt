@@ -123,7 +123,7 @@ fun VotingScreen(
             }
             Text(
                 text =
-                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+                    "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
                 style = StaticTypeScale.Default.header1,
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
@@ -143,7 +143,7 @@ fun VotingScreen(
                         .size(heightDp * 0.15f)
                         .clip(CircleShape)
                         .background(
-                            hexToColor(state.currentVote.voteUser.profile.backgroundColor)
+                            hexToColor(state.currentVote.voteUser.profile.backgroundColor),
                         ),
                 )
             }
@@ -162,13 +162,13 @@ fun VotingScreen(
                             }
                         },
                         buttonType =
-                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                            selected == voteItem.id
-                        ) {
-                            WSOutlineButtonType.Highlight
-                        } else {
-                            WSOutlineButtonType.None
-                        },
+                            if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                                selected == voteItem.id
+                            ) {
+                                WSOutlineButtonType.Highlight
+                            } else {
+                                WSOutlineButtonType.None
+                            },
                         paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                     ) {
                         Text(

@@ -4,7 +4,7 @@ sealed class StorageSideEffect {
     data class NavigateToIndividualVote(
         val optionId: Int,
         val date: String,
-        val isReceived: Boolean
+        val isReceived: Boolean,
     ) :
         StorageSideEffect()
 }
