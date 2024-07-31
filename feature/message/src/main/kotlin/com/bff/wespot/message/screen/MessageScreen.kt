@@ -24,15 +24,17 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.message.viewmodel.SendViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
 interface MessageNavigator {
     fun navigateUp()
-    fun navigateStorageScreen()
     fun navigateNotificationScreen()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
+    fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
 }
 
 data class MessageScreenArgs(
@@ -42,9 +44,10 @@ data class MessageScreenArgs(
 @Destination(navArgsDelegate = MessageScreenArgs::class)
 @Composable
 internal fun MessageScreen(
-    viewModel: MessageViewModel = hiltViewModel(),
     messageNavigator: MessageNavigator,
     navArgs: MessageScreenArgs,
+    sendViewModel: SendViewModel,
+    viewModel: MessageViewModel = hiltViewModel(),
 ) {
     var messageSentToast by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
@@ -75,8 +78,10 @@ internal fun MessageScreen(
                     HOME_SCREEN_INDEX -> {
                         MessageHomeScreen(
                             viewModel = viewModel,
-                            navigateToMessageStorageScreen = {
-                                messageNavigator.navigateStorageScreen()
+                            navigateToReservedMessageScreen = {
+                                messageNavigator.navigateToReservedMessageScreen(
+                                    args = ReservedMessageScreenArgs(false),
+                                )
                             },
                             navigateToNotificationScreen = {
                                 messageNavigator.navigateNotificationScreen()
@@ -92,9 +97,9 @@ internal fun MessageScreen(
                     STORAGE_SCREEN_INDEX -> {
                         MessageStorageScreen(
                             viewModel = viewModel,
-                            navigateToReceiverSelectionScreen = {
-                                messageNavigator.navigateReceiverSelectionScreen(
-                                    ReceiverSelectionScreenArgs(false),
+                            navigateToReservedMessageScreen = {
+                                messageNavigator.navigateToReservedMessageScreen(
+                                    args = ReservedMessageScreenArgs(false),
                                 )
                             },
                             showToast = { message ->
@@ -135,5 +140,6 @@ internal fun MessageScreen(
 
     LaunchedEffect(Unit) {
         messageSentToast = navArgs.isMessageSent
+        sendViewModel.onAction(SendAction.OnReservedMessageScreenEntered)
     }
 }

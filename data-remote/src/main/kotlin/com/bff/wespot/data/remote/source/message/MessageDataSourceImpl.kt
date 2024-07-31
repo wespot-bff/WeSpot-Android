@@ -4,6 +4,7 @@ import com.bff.wespot.data.remote.model.message.request.MessageContentDto
 import com.bff.wespot.data.remote.model.message.request.MessageTypeDto
 import com.bff.wespot.data.remote.model.message.request.SentMessageDto
 import com.bff.wespot.data.remote.model.message.request.type
+import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.MessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
@@ -19,12 +20,14 @@ class MessageDataSourceImpl @Inject constructor(
 ): MessageDataSource {
     override suspend fun getMessageList(
         messageTypeDto: MessageTypeDto,
+        cursorId: Int,
     ): Result<MessageListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("messages")
                 parameter("type", messageTypeDto.type())
+                parameter("cursorId", cursorId)
             }
         }
 
@@ -53,6 +56,23 @@ class MessageDataSourceImpl @Inject constructor(
                 method = HttpMethod.Post
                 path("messages/check-profanity")
                 setBody(content)
+            }
+        }
+
+    override suspend fun editMessage(messageId: Int, sentMessageDto: SentMessageDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("messages/$messageId")
+                setBody(sentMessageDto)
+            }
+        }
+
+    override suspend fun getMessage(messageId: Int): Result<MessageDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("messages/$messageId")
             }
         }
 }

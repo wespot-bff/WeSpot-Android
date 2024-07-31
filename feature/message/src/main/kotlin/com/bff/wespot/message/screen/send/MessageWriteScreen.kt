@@ -44,7 +44,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 interface MessageWriteNavigator {
     fun navigateUp()
     fun navigateMessageScreen(args: MessageScreenArgs)
-    fun navigateMessageEditScreen()
+    fun navigateMessageEditScreen(args: EditMessageScreenArgs)
 }
 
 data class MessageWriteScreenArgs(
@@ -142,7 +142,11 @@ fun MessageWriteScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(
             onClick = {
-                navigator.navigateMessageEditScreen()
+                if (state.isReservedMessage) {
+                    navigator.navigateUp()
+                } else {
+                    navigator.navigateMessageEditScreen(EditMessageScreenArgs())
+                }
             },
             enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
             text = stringResource(
@@ -155,12 +159,17 @@ fun MessageWriteScreen(
 
     if (dialogState) {
         WSDialog(
-            title = stringResource(R.string.send_exit_dialog_title),
+            title = stringResource(
+                if (state.isReservedMessage) {
+                    R.string.edit_exit_dialog_title
+                } else {
+                    R.string.send_exit_dialog_title
+                },
+            ),
             subTitle = stringResource(R.string.send_exit_dialog_subtitle),
             okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(SendAction.NavigateToMessage)
                 navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },

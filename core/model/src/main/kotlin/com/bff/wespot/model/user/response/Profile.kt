@@ -10,6 +10,7 @@ data class Profile(
     val introduction: String,
     val profileCharacter: ProfileCharacter,
 ) {
-    fun toDescription() =
-        "${schoolName.replace("중학교", "중").replace("고등학교", "고")} ${grade}학년 ${classNumber}반 $name"
+    constructor() : this(-1, "", "", -1, -1, "", "", ProfileCharacter())
+
+    fun toDescription() = "${schoolName.removeSuffix("학교")} ${grade}학년 ${classNumber}반 $name"
 }

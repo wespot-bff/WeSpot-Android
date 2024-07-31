@@ -50,7 +50,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun MessageHomeScreen(
     viewModel: MessageViewModel,
-    navigateToMessageStorageScreen: () -> Unit,
+    navigateToReservedMessageScreen: () -> Unit,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
     navigateToNotificationScreen: () -> Unit,
 ) {
@@ -75,7 +75,7 @@ fun MessageHomeScreen(
                     paddingValues = PaddingValues(top = 20.dp, start = 20.dp, end = 20.dp),
                     messageStatus = state.messageStatus,
                     onBannerClick = {
-                        navigateToMessageStorageScreen()
+                        navigateToReservedMessageScreen()
                     },
                 )
 

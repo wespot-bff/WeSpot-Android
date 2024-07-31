@@ -9,7 +9,6 @@ data class UserDto (
     val name: String,
     val grade: Int,
     val classNumber: Int,
-    val schoolId: Int,
     val schoolName: String,
     val profile: ProfileCharacterDto,
 ) {
@@ -19,7 +18,6 @@ data class UserDto (
         grade = grade,
         classNumber = classNumber,
         schoolName = schoolName,
-        schoolId = schoolId,
         profileCharacter = profile.toProfileCharacter(),
     )
 }

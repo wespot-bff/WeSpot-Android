@@ -38,15 +38,20 @@ class SendViewModel @Inject constructor(
     fun onAction(action: SendAction) {
         when (action) {
             is SendAction.OnReceiverScreenEntered -> observeNameInput()
+            is SendAction.OnMessageEditScreenEntered -> {
+                handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
+            }
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
-            is SendAction.SendMessage -> handleMessageSent()
+            is SendAction.OnSendButtonClicked -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
-            is SendAction.NavigateToMessage -> clearSendUiState()
-            is SendAction.OnMessageEditScreenEntered -> getProfile()
-            else -> {}
+            is SendAction.OnEditButtonClicked -> handleEditButtonClicked(action.messageId)
+            SendAction.OnInviteFriendTextClicked -> {}
+            SendAction.OnReservedMessageScreenEntered, SendAction.OnMessageScreenEntered -> {
+                clearSendUiState()
+            }
         }
     }
 
@@ -102,15 +107,52 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    private fun handleMessageEditScreenEntered(
+        isReservedMessage: Boolean,
+        messageId: Int,
+    ) = intent {
+        // 기존 상태가 존재하는 경우 재호출하지 않는다.
+        if (state.sender.isNotEmpty()) {
+            return@intent
+        }
+
+        if (isReservedMessage) {
+            reduce {
+                state.copy(isReservedMessage = true, messageId = messageId)
+            }
+            getReservedMessage(state.messageId)
+        } else {
+            getProfile()
+        }
+    }
+
+    private fun getReservedMessage(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageRepository.getMessage(messageId)
+                .onSuccess { message ->
+                    reduce {
+                        state.copy(
+                            selectedUser = message.receiver,
+                            messageInput = message.content,
+                            isRandomName = message.isAnonymous,
+                            randomName = message.senderName,
+                        )
+                    }
+                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러온다.
+                    if (message.isAnonymous) {
+                        getProfile()
+                    }
+
+                    messageInput.value = message.content
+                }
+        }
+    }
+
     private fun getProfile() = intent {
         viewModelScope.launch {
             userRepository.getProfile()
                 .onSuccess { profile ->
-                    reduce {
-                        state.copy(
-                            profile = profile,
-                        )
-                    }
+                    reduce { state.copy(sender = profile.toDescription()) }
                 }
         }
     }
@@ -130,16 +172,13 @@ class SendViewModel @Inject constructor(
                 SentMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    sender = if (state.isRandomName) {
-                        state.randomName
-                    } else {
-                        state.profile.toDescription()
-                    },
+                    sender = if (state.isRandomName) state.randomName else state.sender,
+                    isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) {
+                if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
                 }
             }
@@ -148,7 +187,7 @@ class SendViewModel @Inject constructor(
 
     private fun getUserList(name: String) = intent {
         viewModelScope.launch {
-            userRepository.getUserListByName(name)
+            userRepository.getUserListByName(name, cursorId = 0) // TODO 커서 페이징 구현
                 .onSuccess { userList ->
                     reduce {
                         state.copy(
@@ -170,7 +209,7 @@ class SendViewModel @Inject constructor(
                     }
                 }
                 .onNetworkFailure { exception ->
-                    if (exception.status == 400) {
+                    if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
                         reduce {
                             state.copy(
                                 hasProfanity = true,
@@ -178,6 +217,26 @@ class SendViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun handleEditButtonClicked(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageRepository.editMessage(
+                messageId = messageId,
+                SentMessage(
+                    receiverId = state.selectedUser.id,
+                    content = state.messageInput,
+                    sender = if (state.isRandomName) state.randomName else state.sender,
+                    isAnonymous = state.isRandomName,
+                ),
+            ).onSuccess {
+                postSideEffect(SendSideEffect.NavigateToReservedMessage)
+            }.onNetworkFailure { exception ->
+                if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
+                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                }
+            }
         }
     }
 

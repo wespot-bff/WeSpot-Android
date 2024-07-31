@@ -4,10 +4,14 @@ import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.MessageScreenArgs
+import com.bff.wespot.message.screen.ReservedMessageNavigator
+import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
+import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
+import com.bff.wespot.message.screen.send.EditMessageScreenArgs
 import com.bff.wespot.message.screen.send.MessageEditNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
@@ -33,7 +37,8 @@ class CommonNavGraphNavigator(
     MessageEditNavigator,
     EntireNavigator,
     VotingNavigator,
-    VoteResultNavigator {
+    VoteResultNavigator,
+    ReservedMessageNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -54,11 +59,12 @@ class CommonNavGraphNavigator(
         navController.navigate(MessageScreenDestination(args) within navGraph)
     }
 
-    override fun navigateMessageEditScreen() {
-        navController.navigate(MessageEditScreenDestination within navGraph)
+    override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
+        navController.navigate(MessageEditScreenDestination(args) within navGraph)
     }
 
-    override fun navigateStorageScreen() {
+    override fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs) {
+        navController.navigate(ReservedMessageScreenDestination(args) within navGraph)
     }
 
     override fun navigateNotificationScreen() {

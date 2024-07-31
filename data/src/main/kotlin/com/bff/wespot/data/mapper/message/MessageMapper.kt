@@ -16,4 +16,5 @@ internal fun SentMessage.toSentMessageDto(): SentMessageDto = SentMessageDto(
     receiverId = receiverId,
     content = content,
     sender = sender,
+    isAnonymous = isAnonymous,
 )

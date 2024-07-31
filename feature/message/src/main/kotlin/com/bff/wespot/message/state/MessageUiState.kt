@@ -6,15 +6,15 @@ import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.MessageList
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.model.user.response.Profile
-import com.bff.wespot.model.user.response.ProfileCharacter
 
 data class MessageUiState(
     val timePeriod: TimePeriod = TimePeriod.DAWN_TO_EVENING,
     val messageStatus: MessageStatus = MessageStatus(false, -1),
     val receivedMessageList: MessageList = MessageList(listOf(), true),
-    val myProfile: Profile = Profile(-1, "", "", -1, -1, "", "", ProfileCharacter("", "")),
+    val myProfile: Profile = Profile(),
     val sentMessageList: MessageList = MessageList(listOf(), true),
     val clickedMessage: Message = Message(),
     val optionButtonClickedMessage: Message = Message(),
     val messageOptionType: MessageOptionType = MessageOptionType.DELETE,
+    val reservedMessageList: List<Message> = listOf(),
 )

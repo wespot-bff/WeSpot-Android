@@ -26,7 +26,8 @@
     <string name="invite_friend_text">찾는 친구가 없다면</string>
     <string name="next">다음</string>
     <string name="edit_done">수정 완료</string>
-    <string name="send_exit_dialog_title">쪽지 작성을 중단하시나요</string>
+    <string name="send_exit_dialog_title">쪽지 작성을 중단하시나요?</string>
+    <string name="edit_exit_dialog_title">쪽지 수정을 중단하시나요?</string>
     <string name="send_exit_dialog_subtitle">작성 중인 내용은 저장되지 않아요</string>
     <string name="send_exit_dialog_ok_button">네 그만할래요</string>
     <string name="receiver">받는 사람</string>
@@ -36,7 +37,7 @@
     <string name="message_length_limit">200자 이내로 입력해 주세요</string>
     <string name="write_done">작성 완료</string>
     <string name="toast_error_name_edit">닉네임은 직접 수정이 어려워요</string>
-    <string name="message_send_dialog_title">쪽지를 예약할까요?</string>
+    <string name="message_send_dialog_title">쪽지를 예약하시나요?</string>
     <string name="message_send_dialog_subtitle">오늘 밤 10시에 상대에게 쪽지를 전달해 드릴게요\n예약 이후 전송 취소는 어려워요</string>
     <string name="message_send_dialog_button_text">네 예약할래요</string>
     <string name="cancel">취소</string>

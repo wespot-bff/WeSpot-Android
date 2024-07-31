@@ -9,6 +9,7 @@ import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.request.SentMessage
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.data.remote.source.message.MessageDataSource
+import com.bff.wespot.model.message.response.Message
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
@@ -16,9 +17,10 @@ class MessageRepositoryImpl @Inject constructor(
 ) : MessageRepository {
     override suspend fun getMessageList(
         messageType: MessageType,
+        cursorId: Int,
     ): Result<MessageList> =
         messageDataSource
-            .getMessageList(messageType.toMessageTypeDto())
+            .getMessageList(messageType.toMessageTypeDto(), cursorId)
             .mapCatching { messageListDto ->
                 messageListDto.toMessageList()
             }
@@ -37,4 +39,12 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun checkProfanity(content: String): Result<Unit> =
         messageDataSource.checkProfanity(MessageContentDto(message = content))
+
+    override suspend fun editMessage(messageId: Int, sentMessage: SentMessage): Result<Unit> =
+        messageDataSource.editMessage(messageId, sentMessage.toSentMessageDto())
+
+    override suspend fun getMessage(messageId: Int): Result<Message> =
+        messageDataSource.getMessage(messageId).mapCatching { messageDto ->
+            messageDto.toMessage()
+        }
 }
