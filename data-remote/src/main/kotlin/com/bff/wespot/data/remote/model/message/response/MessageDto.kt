@@ -16,6 +16,7 @@ data class MessageDto(
     val content: String,
     val receivedAt: String?,
     val isRead: Boolean,
+    val isReported: Boolean,
     val isBlocked: Boolean,
     val readAt: String?
 ) {
@@ -30,6 +31,7 @@ data class MessageDto(
         content = content,
         receivedAt = receivedAt?.toISOLocalDateTime(),
         isRead = isRead,
+        isReported = isReported,
         isBlocked = isBlocked,
         readAt = readAt?.toISOLocalDateTime(),
     )

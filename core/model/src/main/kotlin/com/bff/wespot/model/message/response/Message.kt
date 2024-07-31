@@ -13,8 +13,17 @@ data class Message(
     val content: String,
     val receivedAt: LocalDateTime?,
     val isRead: Boolean,
-    val isBlocked: Boolean = false,
+    val isReported: Boolean,
+    val isBlocked: Boolean,
     val readAt: LocalDateTime?,
 ) {
-    constructor() : this(-1, "", -1, "", "", -1, -1, "", LocalDateTime.MAX, false, false, null)
+    constructor() : this(
+        -1, "", -1, "", "", -1, -1, "", LocalDateTime.MAX, false, false, false, null,
+    )
+
+    fun toReceiverDescription() =
+        "${receiverSchoolName
+            .replace("중학교", "중")
+            .replace("고등학교", "고")} " +
+            "${receiverGrade}학년 ${receiverClassNumber}반 $receiverName"
 }

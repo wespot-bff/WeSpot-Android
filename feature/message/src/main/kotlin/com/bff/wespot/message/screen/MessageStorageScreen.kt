@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,7 +56,6 @@ import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
-import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
@@ -94,55 +95,109 @@ fun MessageStorageScreen(
             onSelectedChanged = { index -> selectedChipIndex = index },
         )
 
-        when (selectedChipIndex) {
-            RECEIVED_MESSAGE_INDEX -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(state.receivedMessageList.messages, key = { it.id }) { item ->
-                        WSMessageItem(
-                            userInfo = item.senderName,
-                            date = item.receivedAt?.toStringWithDotSeparator() ?: "",
-                            wsMessageItemType = if (item.isRead) {
-                                WSMessageItemType.ReadReceivedMessage
-                            } else {
-                                WSMessageItemType.UnreadReceivedMessage
-                            },
-                            itemClick = {
-                                action(MessageAction.OnMessageItemClicked(item))
-                                showMessageDialog = true
-                            },
-                            optionButtonClick = {
-                                action(MessageAction.OnOptionButtonClicked(item))
-                                showBottomSheet = true
-                            },
-                        )
+        Crossfade(
+            targetState = selectedChipIndex,
+            label = stringResource(R.string.message_storage_screen_crossfade),
+        ) { page ->
+            when (page) {
+                RECEIVED_MESSAGE_INDEX -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(state.receivedMessageList.messages, key = { it.id }) { item ->
+                            WSMessageItem(
+                                userInfo = item.senderName,
+                                date = item.receivedAt?.toStringWithDotSeparator() ?: "",
+                                wsMessageItemType = if (item.isRead) {
+                                    WSMessageItemType.ReadReceivedMessage
+                                } else {
+                                    WSMessageItemType.UnreadReceivedMessage
+                                },
+                                itemClick = {
+                                    action(MessageAction.OnMessageItemClicked(item))
+                                    showMessageDialog = true
+                                },
+                                optionButtonClick = {
+                                    action(MessageAction.OnOptionButtonClicked(item))
+                                    showBottomSheet = true
+                                },
+                            )
+                        }
                     }
                 }
-            }
 
-            SENT_MESSAGE_INDEX -> {
-                if (state.timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                    ReservedMessageBanner(
-                        paddingValues = PaddingValues(top = 12.dp, start = 20.dp, end = 20.dp),
-                        messageStatus = state.messageStatus,
-                        onBannerClick = { navigateToReceiverSelectionScreen(false) },
-                    )
+                SENT_MESSAGE_INDEX -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        val hasReservedMessages = state.messageStatus.hasReservedMessages() &&
+                            state.messageStatus.remainingMessages >= 0
+                        val isEveningToNight = state.timePeriod == TimePeriod.EVENING_TO_NIGHT
+                        val isBannerVisible = hasReservedMessages && isEveningToNight
+
+                        if (isBannerVisible) {
+                            item(span = { GridItemSpan(2) }) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    ReservedMessageBanner(
+                                        paddingValues = PaddingValues(),
+                                        messageStatus = state.messageStatus,
+                                        onBannerClick = {
+                                            navigateToReceiverSelectionScreen(false)
+                                        },
+                                    )
+
+                                    Text(
+                                        modifier = Modifier.padding(top = 24.dp, start = 4.dp),
+                                        text = stringResource(
+                                            R.string.sent_message_storage_title,
+                                        ),
+                                        color = WeSpotThemeManager.colors.txtTitleColor,
+                                        style = StaticTypeScale.Default.body3,
+                                    )
+                                }
+                            }
+                        }
+
+                        items(state.sentMessageList.messages, key = { it.id }) { item ->
+                            WSMessageItem(
+                                userInfo = if (item.isBlocked.not() && item.isReported.not()) {
+                                    item.toReceiverDescription()
+                                } else {
+                                    null
+                                },
+                                date = item.receivedAt?.toStringWithDotSeparator() ?: "",
+                                wsMessageItemType = when {
+                                    item.isBlocked -> WSMessageItemType.BlockedMessage
+                                    item.isReported -> WSMessageItemType.ReportedMessage
+                                    item.isRead -> WSMessageItemType.ReadSentMessage
+                                    else -> WSMessageItemType.UnreadSentMessage
+                                },
+                                itemClick = {
+                                    action(MessageAction.OnMessageItemClicked(item))
+                                    showMessageDialog = true
+                                },
+                                optionButtonClick = {
+                                    action(
+                                        MessageAction.OnOptionBottomSheetClicked(
+                                            MessageOptionType.DELETE,
+                                        ),
+                                    )
+                                    showMessageOptionDialog = true
+                                },
+                            )
+                        }
+                    }
                 }
-
-                Text(
-                    modifier = Modifier.padding(start = 24.dp),
-                    text = "전송 완료된 쪽지",
-                    color = WeSpotThemeManager.colors.txtTitleColor,
-                    style = StaticTypeScale.Default.body3,
-                )
-
-                // TODO 보낸 쪽지
             }
         }
     }
@@ -185,7 +240,6 @@ fun MessageStorageScreen(
 
     if (showMessageDialog) {
         MessageContentDialog(
-            profile = state.myProfile,
             message = state.clickedMessage,
             closeButtonClick = { showMessageDialog = false },
         )
@@ -229,8 +283,7 @@ fun MessageStorageScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnMessageStorageScreenEntered)
+    LaunchedEffect(selectedChipIndex) {
         when (selectedChipIndex) {
             RECEIVED_MESSAGE_INDEX -> {
                 action(MessageAction.OnStorageChipSelected(MessageType.RECEIVED))
@@ -245,7 +298,6 @@ fun MessageStorageScreen(
 
 @Composable
 private fun MessageContentDialog(
-    profile: Profile,
     message: Message,
     closeButtonClick: () -> Unit,
 ) {
@@ -268,7 +320,7 @@ private fun MessageContentDialog(
                     .padding(horizontal = 24.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                MessageDialogText("To.\n" + profile.toDescription())
+                MessageDialogText("To.\n" + message.toReceiverDescription())
 
                 MessageDialogText(message.content)
 
