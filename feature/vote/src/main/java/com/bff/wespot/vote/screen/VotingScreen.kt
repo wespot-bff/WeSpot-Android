@@ -102,6 +102,12 @@ fun VotingScreen(
         topBar = {
             if (showGuideScreen) {
                 WSTopBar(
+                    title = "",
+                    canNavigateBack = true,
+                    navigateUp = votingNavigator::navigateUp,
+                )
+            } else {
+                WSTopBar(
                     title = if (state.pageNumber == state.totalPage || state.loading.not()) {
                         "${state.pageNumber}/${state.totalPage}"
                     } else {
@@ -117,16 +123,13 @@ fun VotingScreen(
                         submitButton = false
                     },
                 )
-            } else {
-                WSTopBar(
-                    title = "",
-                    canNavigateBack = true,
-                    navigateUp = votingNavigator::navigateUp,
-                )
             }
         },
     ) {
-        if (showGuideScreen) {
+        if (state.loading && showGuideScreen) {
+            return@Scaffold
+        }
+        else if (showGuideScreen) {
             VotingGuideScreen(it)
         } else {
             VotingProgressScreen(

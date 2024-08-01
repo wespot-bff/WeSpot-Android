@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
+import com.bff.wespot.model.vote.response.VoteItem
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
@@ -119,12 +120,27 @@ class VotingViewModel @Inject constructor(
 
             if (result) {
                 postSideEffect(VotingSideEffect.NavigateToResult)
+                dispose()
             } else {
                 postSideEffect(VotingSideEffect.ShowToast("투표 제출에 오류가 발생했습니다"))
             }
             reduce {
                 state.copy(loading = false)
             }
+        }
+    }
+
+    private fun dispose() = intent {
+        reduce {
+            state.copy(
+                voteItems = emptyList(),
+                pageNumber = -1,
+                totalPage = 0,
+                currentVote = VoteItem(),
+                selectedVote = emptyList(),
+                start = true,
+                loading = false,
+            )
         }
     }
 }
