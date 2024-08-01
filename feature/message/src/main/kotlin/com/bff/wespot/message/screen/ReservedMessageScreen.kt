@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.designsystem.R.string
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -170,14 +171,23 @@ fun ReservedMessageItem(
                 )
             }
 
-            Text(
+            Column(
                 modifier = Modifier
-                    .padding(start = 10.dp)
+                    .padding(horizontal = 10.dp)
                     .weight(1f),
-                text = "To.\n" + reservedMessage.receiver.toDescription(),
-                style = StaticTypeScale.Default.body6,
-                color = WeSpotThemeManager.colors.txtSubColor,
-            )
+            ) {
+                Text(
+                    text = stringResource(id = string.letter_receiver),
+                    style = StaticTypeScale.Default.body6,
+                    color = WeSpotThemeManager.colors.txtSubColor,
+                )
+
+                Text(
+                    text = reservedMessage.receiver.toDescription(),
+                    style = StaticTypeScale.Default.body6,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                )
+            }
 
             FilterChip(
                 shape = WeSpotThemeManager.shapes.extraLarge,
