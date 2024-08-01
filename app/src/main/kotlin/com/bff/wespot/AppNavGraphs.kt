@@ -13,7 +13,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
-import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.EntireScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
@@ -69,6 +72,9 @@ object AppNavGraphs {
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
             EntireScreenDestination,
+            SettingScreenDestination,
+            NotificationSettingScreenDestination,
+            AccountSettingScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -91,7 +97,6 @@ object AppNavGraphs {
 private val tabScreenNames = listOf(
     "vote/vote_home_screen",
     "message/message_screen?isMessageSent={isMessageSent}",
-    "entire/entire_screen",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {
