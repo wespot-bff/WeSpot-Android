@@ -245,7 +245,7 @@ private fun VotingProgressScreen(
         }
         Text(
             text =
-                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+            "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
