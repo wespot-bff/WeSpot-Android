@@ -1,9 +1,8 @@
 package com.bff.wespot.data.remote.model.vote.response
 
-import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.model.vote.response.IndividualSent
 import com.bff.wespot.model.vote.response.SentResult
-import com.bff.wespot.model.vote.response.SentUser
+import com.bff.wespot.model.vote.response.VoteUser
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,18 +27,12 @@ data class SentResultDto(
 
 @Serializable
 data class SentUsersDto(
-    val user: SentUserDto,
+    val user: VoteUserDto,
 ) {
-    fun toSentUser() = SentUser (
+    fun toSentUser() = VoteUser (
         id = user.id,
         name = user.name,
+        introduction = user.introduction,
         profile = user.profile.toProfileCharacter(),
     )
 }
-
-@Serializable
-data class SentUserDto(
-    val id: Int,
-    val name: String,
-    val profile: ProfileCharacterDto
-)

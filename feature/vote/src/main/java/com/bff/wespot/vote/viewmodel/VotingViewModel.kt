@@ -37,7 +37,12 @@ class VotingViewModel @Inject constructor(
 
     private fun startVoting() = intent {
         reduce {
-            state.copy(loading = true)
+            state.copy(
+                loading = true,
+                start = true,
+                selectedVote = emptyList(),
+                voteItems = emptyList()
+            )
         }
         viewModelScope.launch(coroutineDispatcher) {
             try {
@@ -82,7 +87,8 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber + 1,
                 currentVote = state.voteItems[state.pageNumber],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    this[state.pageNumber - 1] = VoteResultUpload(state.currentVote.voteUser.id, optionId)
+                    this[state.pageNumber - 1] =
+                        VoteResultUpload(state.currentVote.voteUser.id, optionId)
                 },
             )
         }

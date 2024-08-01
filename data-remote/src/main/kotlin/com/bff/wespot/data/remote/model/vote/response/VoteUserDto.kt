@@ -8,11 +8,13 @@ import kotlinx.serialization.Serializable
 data class VoteUserDto(
     val id: Int,
     val name: String,
+    val introduction: String,
     val profile: ProfileCharacterDto
 ) {
     fun toVoteUser() = VoteUser(
             id = id,
             name = name,
+            introduction = introduction,
             profile = profile.toProfileCharacter()
         )
 }

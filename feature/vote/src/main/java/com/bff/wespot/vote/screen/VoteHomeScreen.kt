@@ -43,7 +43,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
-import com.bff.wespot.model.vote.response.VoteProfile
+import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
@@ -247,7 +247,7 @@ private fun CardResultContent(
                 if (state.voteResults[it].results.isEmpty()) {
                     VoteCard(
                         result = Result(
-                            user = VoteProfile(
+                            user = VoteUser(
                                 id = -1,
                                 name = stringResource(R.string.analyzing),
                                 introduction = stringResource(R.string.need_more_vote),

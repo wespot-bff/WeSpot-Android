@@ -126,7 +126,7 @@ fun VotingScreen(
             }
         },
     ) {
-        if (!showGuideScreen) {
+        if (showGuideScreen) {
             VotingGuideScreen(it)
         } else {
             VotingProgressScreen(
