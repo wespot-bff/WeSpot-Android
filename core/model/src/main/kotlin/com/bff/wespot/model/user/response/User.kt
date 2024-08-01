@@ -12,5 +12,8 @@ data class User(
 
     fun toSchoolInfo() = "$schoolName ${grade}학년 ${classNumber}반"
 
-    fun toDescription() = "${schoolName.removeSuffix("학교")} ${grade}학년 ${classNumber}반 $name"
+    fun toDescription(): String {
+        val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
+        return "$schoolName ${grade}학년 ${classNumber}반 $name"
+    }
 }
