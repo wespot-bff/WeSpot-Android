@@ -73,11 +73,13 @@ private fun WSDialogContent(
             color = WeSpotThemeManager.colors.txtTitleColor,
         )
 
-        Text(
-            text = subTitle,
-            style = StaticTypeScale.Default.body6,
-            color = WeSpotThemeManager.colors.txtSubColor,
-        )
+        if (subTitle.isNotEmpty()) {
+            Text(
+                text = subTitle,
+                style = StaticTypeScale.Default.body6,
+                color = WeSpotThemeManager.colors.txtSubColor,
+            )
+        }
     }
 }
 
