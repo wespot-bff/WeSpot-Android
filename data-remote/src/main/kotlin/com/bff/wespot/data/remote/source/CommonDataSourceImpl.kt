@@ -1,6 +1,7 @@
 package com.bff.wespot.data.remote.source
 
 import com.bff.wespot.data.remote.model.ProfanityDto
+import com.bff.wespot.data.remote.model.ReportDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
@@ -17,6 +18,15 @@ class CommonDataSourceImpl @Inject constructor(
                 method = HttpMethod.Post
                 path("check-profanity")
                 setBody(content)
+            }
+        }
+
+    override suspend fun sendReport(report: ReportDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("reports")
+                setBody(report)
             }
         }
 }

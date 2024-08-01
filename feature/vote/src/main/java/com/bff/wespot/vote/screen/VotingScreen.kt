@@ -198,6 +198,13 @@ fun VotingScreen(
             subTitle = stringResource(R.string.wrong_report),
             okButtonText = stringResource(R.string.it_is_not),
             cancelButtonText = stringResource(R.string.close),
+            okButtonClick = {
+                action(VotingAction.SendReport(state.currentVote.voteUser.id))
+                showReportDialog = false
+            },
+            cancelButtonClick = {
+                showReportDialog = false
+            }
         ) {
             showReportDialog = false
         }

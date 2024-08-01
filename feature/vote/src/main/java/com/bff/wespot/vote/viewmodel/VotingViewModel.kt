@@ -2,7 +2,10 @@ package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.common.di.extensions.onNetworkFailure
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.model.ReportType
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItem
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class VotingViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
+    private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
     override val container = container<VotingUiState, VotingSideEffect>(VotingUiState())
 
@@ -33,6 +37,7 @@ class VotingViewModel @Inject constructor(
             VotingAction.GoBackVote -> goBackVote()
             is VotingAction.GoToNextVote -> goToNextVote(action.optionId)
             is VotingAction.SubmitVoteResult -> submitVoteResult()
+            is VotingAction.SendReport -> sendReport(action.userId)
         }
     }
 
@@ -127,6 +132,18 @@ class VotingViewModel @Inject constructor(
             reduce {
                 state.copy(loading = false)
             }
+        }
+    }
+
+    private fun sendReport(userId: Int) = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            commonRepository.sendReport(ReportType.VOTE, userId)
+                .onSuccess {
+                    postSideEffect(VotingSideEffect.ShowToast("제보 접수 완료"))
+                }
+                .onNetworkFailure {
+                    Timber.e(it)
+                }
         }
     }
 
