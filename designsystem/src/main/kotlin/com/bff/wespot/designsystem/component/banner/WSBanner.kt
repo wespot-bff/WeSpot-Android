@@ -2,6 +2,7 @@ package com.bff.wespot.designsystem.component.banner
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -107,6 +108,7 @@ fun WSBanner(
                     contentDescription = stringResource(id = R.string.banner_icon),
                     modifier = Modifier
                         .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
+                    tint = WeSpotThemeManager.colors.secondaryBtnColor,
                 )
             }
 
@@ -153,6 +155,7 @@ fun WSBanner(
     title: String,
     image: Painter,
     subTitle: String? = null,
+    hasBorder: Boolean = false,
     onBannerClick: () -> Unit,
     bannerType: WSBannerType = WSBannerType.Primary,
 ) {
@@ -161,6 +164,17 @@ fun WSBanner(
             .height(80.dp)
             .fillMaxWidth()
             .clip(WeSpotThemeManager.shapes.medium)
+            .let {
+                if (hasBorder) {
+                    it.border(
+                        width = 1.dp,
+                        color = WeSpotThemeManager.colors.primaryColor,
+                        shape = WeSpotThemeManager.shapes.medium,
+                    )
+                } else {
+                    it
+                }
+            }
             .background(bannerType.backgroundColor())
             .clickable { onBannerClick() },
     ) {
@@ -271,7 +285,9 @@ private fun WSBannerPreview() {
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
-            Column {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Send,
                     title = stringResource(id = R.string.message_arrived),
@@ -293,7 +309,10 @@ private fun WSBannerPreview() {
                 WSBanner(
                     title = stringResource(id = R.string.message_arrived),
                     subTitle = stringResource(id = R.string.open_inbox_for_message),
-                    bannerType = WSBannerType.Secondary,
+                    bannerType = WSBannerType.Primary,
+                    hasBorder = true,
+                    image = painterResource(id = R.drawable.insta),
+                    onBannerClick = { },
                 )
             }
         }
