@@ -91,7 +91,10 @@ fun NameScreen(
                         error = true
                         return@WsTextField
                     }
-                    error = false
+
+                    if (name.length < 5) {
+                        error = false
+                    }
                     action(AuthAction.OnNameChanged(name))
                 },
                 placeholder = stringResource(id = R.string.enter_name),
@@ -102,7 +105,13 @@ fun NameScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                if (error) {
+                if (state.hasProfanity) {
+                    Text(
+                        text = stringResource(id = com.bff.wespot.designsystem.R.string.has_profanity),
+                        color = WeSpotThemeManager.colors.dangerColor,
+                        style = StaticTypeScale.Default.body6,
+                    )
+                } else if (error) {
                     Text(
                         text = stringResource(id = R.string.name_error),
                         color = WeSpotThemeManager.colors.dangerColor,
@@ -147,5 +156,9 @@ fun NameScreen(
         focusRequester.requestFocus()
         delay(10)
         keyboard?.show()
+    }
+
+    LaunchedEffect(Unit) {
+        action(AuthAction.OnStartNameScreen)
     }
 }
