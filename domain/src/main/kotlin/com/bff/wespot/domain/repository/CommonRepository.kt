@@ -9,4 +9,9 @@ interface CommonRepository {
     suspend fun sendReport(report: ReportType, targetId: Int): Result<Unit>
     suspend fun getCharacters(): Result<List<Character>>
     suspend fun getBackgroundColors(): Result<List<BackgroundColor>>
+    suspend fun EditProfile(
+        introduction: String,
+        backgroundColor: String,
+        iconUrl: String,
+    ): Result<Unit>
 }

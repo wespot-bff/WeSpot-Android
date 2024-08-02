@@ -2,6 +2,7 @@ package com.bff.wespot.data.remote.source
 
 import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
 import com.bff.wespot.data.remote.model.common.CharacterListDto
+import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
 import com.bff.wespot.network.extensions.safeRequest
@@ -45,6 +46,15 @@ class CommonDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("users/signup/backgrounds")
+            }
+        }
+
+    override suspend fun EditProfile(profile: EditProfileDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("users/me")
+                setBody(profile)
             }
         }
 }

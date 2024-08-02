@@ -7,5 +7,5 @@ data class Character(
 )
 
 data class CharacterList(
-    val characters: List<Character>
+    val characters: List<Character>,
 )

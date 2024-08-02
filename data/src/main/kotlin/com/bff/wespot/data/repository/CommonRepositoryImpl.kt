@@ -1,7 +1,9 @@
 package com.bff.wespot.data.repository
 
+import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
+import com.bff.wespot.data.remote.model.common.UpdateProfileDto
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.model.common.BackgroundColor
@@ -25,4 +27,19 @@ class CommonRepositoryImpl @Inject constructor(
     override suspend fun getBackgroundColors(): Result<List<BackgroundColor>> =
         commonDataSource.getBackgroundColors()
             .map { it.toBackgroundColorList().backgrounds }
+
+    override suspend fun EditProfile(
+        introduction: String,
+        backgroundColor: String,
+        iconUrl: String
+    ): Result<Unit> =
+        commonDataSource.EditProfile(
+            EditProfileDto(
+                introduction,
+                UpdateProfileDto(
+                    backgroundColor,
+                    iconUrl
+                )
+            )
+        )
 }

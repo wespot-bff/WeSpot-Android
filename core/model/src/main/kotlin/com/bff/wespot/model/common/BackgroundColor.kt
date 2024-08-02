@@ -7,5 +7,5 @@ data class BackgroundColor(
 )
 
 data class BackgroundColorList(
-    val backgrounds: List<BackgroundColor>
+    val backgrounds: List<BackgroundColor>,
 )
