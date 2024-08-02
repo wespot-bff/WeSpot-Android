@@ -1,10 +1,12 @@
 package com.bff.wespot.data.repository
 
-import com.bff.wespot.data.remote.model.ProfanityDto
-import com.bff.wespot.data.remote.model.ReportDto
+import com.bff.wespot.data.remote.model.common.ProfanityDto
+import com.bff.wespot.data.remote.model.common.ReportDto
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.model.ReportType
+import com.bff.wespot.model.common.BackgroundColor
+import com.bff.wespot.model.common.Character
+import com.bff.wespot.model.common.ReportType
 import javax.inject.Inject
 
 class CommonRepositoryImpl @Inject constructor(
@@ -15,4 +17,12 @@ class CommonRepositoryImpl @Inject constructor(
 
     override suspend fun sendReport(report: ReportType, targetId: Int): Result<Unit> =
         commonDataSource.sendReport(ReportDto(report, targetId))
+
+    override suspend fun getCharacters(): Result<List<Character>> =
+        commonDataSource.getCharacters()
+            .map { it.toCharacterList().characters }
+
+    override suspend fun getBackgroundColors(): Result<List<BackgroundColor>> =
+        commonDataSource.getBackgroundColors()
+            .map { it.toBackgroundColorList().backgrounds }
 }

@@ -1,7 +1,9 @@
 package com.bff.wespot.data.remote.source
 
-import com.bff.wespot.data.remote.model.ProfanityDto
-import com.bff.wespot.data.remote.model.ReportDto
+import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
+import com.bff.wespot.data.remote.model.common.CharacterListDto
+import com.bff.wespot.data.remote.model.common.ProfanityDto
+import com.bff.wespot.data.remote.model.common.ReportDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
@@ -27,6 +29,22 @@ class CommonDataSourceImpl @Inject constructor(
                 method = HttpMethod.Post
                 path("reports")
                 setBody(report)
+            }
+        }
+
+    override suspend fun getCharacters(): Result<CharacterListDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("users/signup/characters")
+            }
+        }
+
+    override suspend fun getBackgroundColors(): Result<BackgroundColorListDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("users/signup/backgrounds")
             }
         }
 }
