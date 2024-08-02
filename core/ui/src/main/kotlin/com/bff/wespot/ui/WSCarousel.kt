@@ -26,6 +26,7 @@ import com.bff.wespot.util.carouselTransition
 @Composable
 fun WSCarousel(
     pageCount: Int = 10,
+    modifier: Modifier = Modifier,
     pagerState: PagerState = rememberPagerState(pageCount = { pageCount }),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     pageSpacing: Dp = 0.dp,
@@ -37,7 +38,7 @@ fun WSCarousel(
             contentPadding = contentPadding,
             pageSpacing = pageSpacing,
             verticalAlignment = Alignment.Top,
-            modifier = Modifier
+            modifier = modifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
         ) {

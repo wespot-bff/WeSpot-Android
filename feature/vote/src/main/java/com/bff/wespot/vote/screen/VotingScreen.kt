@@ -1,14 +1,18 @@
 package com.bff.wespot.vote.screen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -25,8 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -41,6 +48,7 @@ import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
+import com.bff.wespot.vote.state.voting.VotingUiState
 import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -63,15 +71,15 @@ fun VotingScreen(
     val action = viewModel::onAction
 
     var submitButton by remember { mutableStateOf(false) }
-    var selected by remember {
-        mutableStateOf(-1)
-    }
+
     var toast by remember {
         mutableStateOf(false)
     }
     var toastMessage by remember {
         mutableStateOf("")
     }
+
+    val showGuideScreen = state.voteItems.isEmpty()
 
     viewModel.collectSideEffect {
         when (it) {
@@ -92,98 +100,43 @@ fun VotingScreen(
 
     Scaffold(
         topBar = {
-            WSTopBar(
-                title = if (state.pageNumber == state.totalPage || state.loading.not()) {
-                    "${state.pageNumber}/${state.totalPage}"
-                } else {
-                    ""
-                },
-                action = {
-                    Text(text = stringResource(id = R.string.report), style = it)
-                },
-                canNavigateBack = true,
-                navigateUp = {
-                    votingNavigator.navigateUp()
-                    action(VotingAction.GoBackVote)
-                    submitButton = false
-                },
-            )
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it),
-        ) {
-            if (state.pageNumber != state.totalPage && state.loading) {
-                return@Column
-            }
-            Text(
-                text =
-                    "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
-                style = StaticTypeScale.Default.header1,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp, bottom = 24.dp, start = 20.dp, end = 20.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(state.currentVote.voteUser.profile.iconUrl)
-                        .build(),
-                    contentDescription = "male",
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(hexToColor(state.currentVote.voteUser.profile.backgroundColor)),
+            if (showGuideScreen) {
+                WSTopBar(
+                    title = if (state.pageNumber == state.totalPage || state.loading.not()) {
+                        "${state.pageNumber}/${state.totalPage}"
+                    } else {
+                        ""
+                    },
+                    action = {
+                        Text(text = stringResource(id = R.string.report), style = it)
+                    },
+                    canNavigateBack = true,
+                    navigateUp = {
+                        votingNavigator.navigateUp()
+                        action(VotingAction.GoBackVote)
+                        submitButton = false
+                    },
+                )
+            } else {
+                WSTopBar(
+                    title = "",
+                    canNavigateBack = true,
+                    navigateUp = votingNavigator::navigateUp,
                 )
             }
-            LazyColumn {
-                items(state.currentVote.voteOption, key = { option ->
-                    option.id
-                }) { voteItem ->
-                    WSOutlineButton(
-                        onClick = {
-                            selected = voteItem.id
-                            action(VotingAction.GoToNextVote(voteItem.id))
-                            if (state.pageNumber != state.totalPage) {
-                                votingNavigator.navigateToVotingScreen()
-                            } else {
-                                submitButton = true
-                            }
-                        },
-                        text = voteItem.content,
-                        buttonType =
-                            if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                                selected == voteItem.id
-                            ) {
-                                WSOutlineButtonType.Highlight
-                            } else {
-                                WSOutlineButtonType.None
-                            },
-                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
-                    ) {
-                        it.invoke()
-                    }
-                }
-            }
-        }
-
-        if (submitButton) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                WSButton(
-                    onClick = {
-                        action(VotingAction.SubmitVoteResult)
-                    },
-                    text = stringResource(id = R.string.submit_vote_and_check_result),
-                    enabled = state.loading.not(),
-                ) {
-                    it.invoke()
-                }
-            }
+        },
+    ) {
+        if (!showGuideScreen) {
+            VotingGuideScreen(it)
+        } else {
+            VotingProgressScreen(
+                state = state,
+                paddingValues = it,
+                action = action,
+                votingNavigator = votingNavigator,
+                submitButton = submitButton,
+                changeSubmitButton = { submitButton = it },
+            )
         }
     }
 
@@ -214,5 +167,133 @@ fun VotingScreen(
         action(VotingAction.GoBackVote)
         votingNavigator.navigateUp()
         submitButton = false
+    }
+}
+
+@Composable
+private fun VotingProgressScreen(
+    state: VotingUiState,
+    paddingValues: PaddingValues,
+    action: (VotingAction) -> Unit,
+    votingNavigator: VotingNavigator,
+    submitButton: Boolean,
+    changeSubmitButton: (Boolean) -> Unit,
+) {
+    val heightDp = LocalConfiguration.current.screenHeightDp.dp
+    var selected by remember {
+        mutableStateOf(-1)
+    }
+
+    Column(
+        modifier = Modifier
+            .padding(paddingValues),
+    ) {
+        if (state.pageNumber != state.totalPage && state.loading) {
+            return@Column
+        }
+        Text(
+            text =
+                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+            style = StaticTypeScale.Default.header1,
+            modifier = Modifier.padding(horizontal = 20.dp),
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(state.currentVote.voteUser.profile.iconUrl)
+                    .build(),
+                contentDescription = stringResource(R.string.male),
+                modifier = Modifier
+                    .size(heightDp * 0.15f)
+                    .clip(CircleShape)
+                    .background(
+                        hexToColor(state.currentVote.voteUser.profile.backgroundColor),
+                    ),
+            )
+        }
+        LazyColumn {
+            items(state.currentVote.voteOption, key = { option ->
+                option.id
+            }) { voteItem ->
+                WSOutlineButton(
+                    onClick = {
+                        selected = voteItem.id
+                        action(VotingAction.GoToNextVote(voteItem.id))
+                        if (state.pageNumber != state.totalPage) {
+                            votingNavigator.navigateToVotingScreen()
+                        } else {
+                            changeSubmitButton(true)
+                        }
+                    },
+                    buttonType =
+                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                            selected == voteItem.id
+                        ) {
+                            WSOutlineButtonType.Highlight
+                        } else {
+                            WSOutlineButtonType.None
+                        },
+                    paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
+                ) {
+                    Text(
+                        text = voteItem.content,
+                        style = StaticTypeScale.Default.body3,
+                        modifier = Modifier.padding(vertical = 14.dp),
+                        textAlign = TextAlign.Start,
+                    )
+                }
+            }
+        }
+    }
+
+    if (submitButton) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            WSButton(
+                onClick = {
+                    action(VotingAction.SubmitVoteResult)
+                },
+                text = stringResource(id = R.string.submit_vote_and_check_result),
+                enabled = state.loading.not(),
+            ) {
+                it.invoke()
+            }
+        }
+    }
+}
+
+@Composable
+private fun VotingGuideScreen(paddingValues: PaddingValues) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = stringResource(R.string.guide_title),
+            style = StaticTypeScale.Default.header1,
+            modifier = Modifier.padding(horizontal = 24.dp),
+        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(id = R.drawable.guide_image),
+                contentDescription = stringResource(
+                    id = R.string.vote,
+                ),
+                modifier = Modifier
+                    .width(261.dp)
+                    .height(201.dp),
+            )
+        }
+
+        WSButton(onClick = { }, text = stringResource(R.string.invite_friend_vote)) {
+            it.invoke()
+        }
     }
 }
