@@ -1,7 +1,13 @@
 package com.bff.wespot
 
 import androidx.navigation.NavController
-import com.bff.wespot.entire.screen.EntireNavigator
+import com.bff.wespot.entire.screen.screen.AccountSettingNavigator
+import com.bff.wespot.entire.screen.screen.EntireNavigator
+import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
+import com.bff.wespot.entire.screen.screen.SettingNavigator
+import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
@@ -41,6 +47,9 @@ class CommonNavGraphNavigator(
     MessageWriteNavigator,
     MessageEditNavigator,
     EntireNavigator,
+    SettingNavigator,
+    NotificationSettingNavigator,
+    AccountSettingNavigator,
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
@@ -87,6 +96,18 @@ class CommonNavGraphNavigator(
 
     override fun navigateToVoteResultScreen(args: VoteResultScreenArgs) {
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToSetting() {
+        navController.navigate(SettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToNotificationSetting() {
+        navController.navigate(NotificationSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToAccountSetting() {
+        navController.navigate(AccountSettingScreenDestination within navGraph)
     }
 
     override fun navigateToVoteStorageScreen() {

@@ -31,17 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.designsystem.R.string
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.message.R
 import com.bff.wespot.message.screen.send.EditMessageScreenArgs
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.send.SendAction
@@ -94,7 +94,7 @@ fun ReservedMessageScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp, start = 24.dp, end = 24.dp),
-                text = "예약 중인 쪽지",
+                text = stringResource(R.string.reserving_message),
                 style = StaticTypeScale.Default.header1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
@@ -124,7 +124,7 @@ fun ReservedMessageScreen(
             contentAlignment = Alignment.TopCenter,
         ) {
             WSToast(
-                text = "수정 완료",
+                text = stringResource(id = R.string.edit_done),
                 toastType = WSToastType.Success,
                 showToast = showToast,
                 closeToast = { showToast = false },
@@ -171,14 +171,23 @@ fun ReservedMessageItem(
                 )
             }
 
-            Text(
+            Column(
                 modifier = Modifier
-                    .padding(start = 10.dp)
+                    .padding(horizontal = 10.dp)
                     .weight(1f),
-                text = "To.\n" + reservedMessage.receiver.toDescription(),
-                style = StaticTypeScale.Default.body6,
-                color = WeSpotThemeManager.colors.txtSubColor,
-            )
+            ) {
+                Text(
+                    text = stringResource(id = string.letter_receiver),
+                    style = StaticTypeScale.Default.body6,
+                    color = WeSpotThemeManager.colors.txtSubColor,
+                )
+
+                Text(
+                    text = reservedMessage.receiver.toDescription(),
+                    style = StaticTypeScale.Default.body6,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                )
+            }
 
             FilterChip(
                 shape = WeSpotThemeManager.shapes.extraLarge,
@@ -188,7 +197,7 @@ fun ReservedMessageItem(
                 selected = false,
                 label = {
                     Text(
-                        text = "수정하기",
+                        text = stringResource(R.string.message_edit),
                         style = StaticTypeScale.Default.body6,
                     )
                 },
@@ -204,17 +213,6 @@ fun ReservedMessageItem(
             modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp),
             thickness = 1.dp,
             color = WeSpotThemeManager.colors.cardBackgroundColor,
-        )
-    }
-}
-
-@Preview
-@Composable
-fun preview() {
-    WeSpotTheme {
-        ReservedMessageItem(
-            reservedMessage = Message(),
-            onClick = { },
         )
     }
 }

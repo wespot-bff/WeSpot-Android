@@ -321,7 +321,7 @@ private fun VoteItem(
                                     .data(profileCharacter.iconUrl)
                                     .build(),
                                 contentDescription = stringResource(
-                                    id = com.bff.wespot.ui.R.string.user_character_image
+                                    id = com.bff.wespot.ui.R.string.user_character_image,
                                 ),
                             )
                         }
