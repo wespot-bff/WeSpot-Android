@@ -23,11 +23,16 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.vote.screen.IndividualVoteArgs
+import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
 import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
+import com.bff.wespot.vote.screen.VoteStorageNavigator
 import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
@@ -47,7 +52,9 @@ class CommonNavGraphNavigator(
     AccountSettingNavigator,
     VotingNavigator,
     VoteResultNavigator,
-    ReservedMessageNavigator {
+    VoteStorageNavigator,
+    ReservedMessageNavigator,
+    IndividualVoteNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -101,5 +108,13 @@ class CommonNavGraphNavigator(
 
     override fun navigateToAccountSetting() {
         navController.navigate(AccountSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToVoteStorageScreen() {
+        navController.navigate(VoteStorageScreenDestination within navGraph)
+    }
+
+    override fun navigateToIndividualVote(args: IndividualVoteArgs) {
+        navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
     }
 }

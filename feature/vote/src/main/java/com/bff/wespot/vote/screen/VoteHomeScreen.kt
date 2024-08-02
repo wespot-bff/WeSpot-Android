@@ -41,13 +41,15 @@ import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.user.response.ProfileCharacter
+import com.bff.wespot.model.vote.response.Result
+import com.bff.wespot.model.vote.response.VoteProfile
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteUiState
-import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -59,6 +61,7 @@ interface VoteNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
+    fun navigateToVoteStorageScreen()
 }
 
 @Destination
@@ -81,12 +84,12 @@ internal fun VoteHomeScreen(
         Crossfade(targetState = state.selectedTabIndex, label = "") { index ->
             Box(modifier = Modifier.padding(it)) {
                 when (index) {
-                    0 -> VoteHomeContent(
+                    HOME_SCREEN -> VoteHomeContent(
                         viewModel = viewModel,
                         voteNavigator = voteNavigator,
                     )
 
-                    1 -> CardResultContent(
+                    RESULT_SCREEN -> CardResultContent(
                         state = state,
                         action = viewModel::onAction,
                         navigator = voteNavigator,
@@ -242,7 +245,21 @@ private fun CardResultContent(
                 contentPadding = PaddingValues(horizontal = 46.dp),
             ) {
                 if (state.voteResults[it].results.isEmpty()) {
-                    EmptyResultScreen()
+                    VoteCard(
+                        result = Result(
+                            user = VoteProfile(
+                                id = -1,
+                                name = stringResource(R.string.analyzing),
+                                introduction = stringResource(R.string.need_more_vote),
+                                profile = ProfileCharacter(),
+                            ),
+                            voteCount = 0,
+                        ),
+                        pagerState = pagerState,
+                        question = state.voteResults[it].voteOption.content,
+                        page = it,
+                        onClick = {},
+                    )
                 } else {
                     VoteCard(
                         result = state.voteResults[it].results.first(),
@@ -258,14 +275,18 @@ private fun CardResultContent(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(18.dp))
-        DotIndicators(pagerState = pagerState)
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        WSButton(onClick = { }, text = stringResource(R.string.check_my_vote)) {
-            it.invoke()
+        Column {
+            DotIndicators(pagerState = pagerState)
+            Spacer(modifier = Modifier.height(10.dp))
+
+            WSButton(onClick = {
+                navigator.navigateToVoteStorageScreen()
+            }, text = stringResource(R.string.check_my_vote)) {
+                it.invoke()
+            }
         }
     }
 
@@ -279,3 +300,6 @@ private fun CardResultContent(
         action(VoteAction.GetFirst(LocalDate.now().toDateString()))
     }
 }
+
+private const val HOME_SCREEN = 0
+private const val RESULT_SCREEN = 1

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -61,13 +62,14 @@ import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
+import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.ui.EmptyResultScreen
-import com.bff.wespot.vote.ui.VoteChip
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
@@ -131,24 +133,16 @@ fun VoteResultScreen(
                 .fillMaxSize(),
         ) {
             if (!state.isVoting) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
-                ) {
-                    VoteChip(
-                        text = stringResource(R.string.past_vote),
-                        isSelected = voteType == YESTERDAY,
-                    ) {
-                        voteType = YESTERDAY
-                    }
-
-                    VoteChip(
-                        text = stringResource(R.string.real_time_vote),
-                        isSelected = voteType == TODAY,
-                    ) {
-                        voteType = TODAY
-                    }
-                }
+                WSHomeChipGroup(
+                    items = persistentListOf(
+                        stringResource(id = R.string.past_vote),
+                        stringResource(
+                            id = R.string.real_time_vote,
+                        ),
+                    ),
+                    selectedItemIndex = voteType,
+                    onSelectedChanged = { voteType = it },
+                )
             }
 
             WSCarousel(pagerState = pagerState) { page ->
@@ -232,34 +226,42 @@ private fun VoteResultItem(
     result: VoteResult,
     empty: Boolean,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        MultiLineText(
-            text = result.voteOption.content,
-            style = StaticTypeScale.Default.header1,
-            line = 2,
-            modifier = Modifier.padding(horizontal = 24.dp),
-        )
-        if (empty) {
-            EmptyResultScreen()
-        } else {
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                val results = result.results.take(3)
-                RankCard(user = results[1].user, vote = results[1].voteCount, rank = 2)
-                RankCard(user = results[0].user, vote = results[0].voteCount, rank = 1)
-                RankCard(user = results[2].user, vote = results[2].voteCount, rank = 3)
-            }
+    BoxWithConstraints {
+        val height = maxHeight
 
-            Spacer(modifier = Modifier.height(36.dp))
-            (3..<5).forEach {
-                RankTile(
-                    user = result.results[it].user,
-                    vote = result.results[it].voteCount,
-                    rank = it + 1,
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+        Column(modifier = Modifier.fillMaxWidth()) {
+            MultiLineText(
+                text = result.voteOption.content,
+                style = StaticTypeScale.Default.header1,
+                line = if (height < 600.dp) {
+                    1
+                } else {
+                    2
+                },
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+            if (empty) {
+                EmptyResultScreen()
+            } else {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    val results = result.results.take(3)
+                    RankCard(user = results[1].user, vote = results[1].voteCount, rank = 2)
+                    RankCard(user = results[0].user, vote = results[0].voteCount, rank = 1)
+                    RankCard(user = results[2].user, vote = results[2].voteCount, rank = 3)
+                }
+
+                Spacer(modifier = Modifier.height(36.dp))
+                (3..<5).forEach {
+                    RankTile(
+                        user = result.results[it].user,
+                        vote = result.results[it].voteCount,
+                        rank = it + 1,
+                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
         }
     }
