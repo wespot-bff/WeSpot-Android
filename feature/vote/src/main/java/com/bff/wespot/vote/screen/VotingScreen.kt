@@ -186,9 +186,8 @@ fun VotingScreen(
                     showReportDialog = true
                 },
                 {
-
                 },
-            )
+            ),
         )
     }
 
@@ -204,7 +203,7 @@ fun VotingScreen(
             },
             cancelButtonClick = {
                 showReportDialog = false
-            }
+            },
         ) {
             showReportDialog = false
         }
@@ -246,7 +245,7 @@ private fun VotingProgressScreen(
         }
         Text(
             text =
-            "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
@@ -285,13 +284,13 @@ private fun VotingProgressScreen(
                         }
                     },
                     buttonType =
-                    if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                        selected == voteItem.id
-                    ) {
-                        WSOutlineButtonType.Highlight
-                    } else {
-                        WSOutlineButtonType.None
-                    },
+                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                            selected == voteItem.id
+                        ) {
+                            WSOutlineButtonType.Highlight
+                        } else {
+                            WSOutlineButtonType.None
+                        },
                     paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                 ) {
                     Text(

@@ -22,10 +22,10 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 fun ReportBottomSheet(
     closeSheet: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
+        skipPartiallyExpanded = true,
     ),
     options: List<String>,
-    optionsClickable: List<() -> Unit>
+    optionsClickable: List<() -> Unit>,
 ) {
     require(options.size == optionsClickable.size) {
         "options and optionsClickable must have the same size"
@@ -35,13 +35,13 @@ fun ReportBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 28.dp)
+                .padding(horizontal = 20.dp, vertical = 28.dp),
         ) {
             options.forEachIndexed { index, option ->
                 ReportSection(text = option, onClick = optionsClickable[index])
                 if (index != options.size - 1) {
                     HorizontalDivider(
-                        color = Color(0xFF4F5157)
+                        color = Color(0xFF4F5157),
                     )
                 }
             }
@@ -56,7 +56,7 @@ private fun ReportSection(text: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick.invoke() }
             .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = text, style = StaticTypeScale.Default.body4)
     }

@@ -156,7 +156,7 @@ class AuthViewModel @Inject constructor(
                         val result = checkProfanityUseCase(it)
                         reduce {
                             state.copy(
-                                hasProfanity = result
+                                hasProfanity = result,
                             )
                         }
                     }

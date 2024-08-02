@@ -47,7 +47,7 @@ class VotingViewModel @Inject constructor(
                 loading = true,
                 start = true,
                 selectedVote = emptyList(),
-                voteItems = emptyList()
+                voteItems = emptyList(),
             )
         }
         viewModelScope.launch(coroutineDispatcher) {
