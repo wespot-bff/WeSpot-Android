@@ -22,12 +22,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun getSchoolList(search: String): Result<List<School>> =
         authDataSource
             .getSchoolList(search)
-            .map { it.schools.map(SchoolDto::toSchool) }
+            .mapCatching { it.schools.map(SchoolDto::toSchool) }
 
     override suspend fun sendKakaoToken(token: KakaoAuthToken): Result<Any> =
         authDataSource
             .sendKakaoToken(token.toDto())
-            .map {
+            .mapCatching {
                 when (it) {
                     is AuthTokenDto -> {
                         it.toAuthToken()

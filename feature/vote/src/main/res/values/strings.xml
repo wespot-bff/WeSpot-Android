@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="invite_friend">위스팟에 친구 초대하기</string>
-    <string name="invite_friend_description">다양한 친구들과ㅏ 더 재미있게 사용해 보세요</string>
+    <string name="invite_friend_description">다양한 친구들과 더 재미있게 사용해 보세요</string>
     <string name="vote_ongoing">지금 우리반 투표가 진행 중이에요\n반 친구들에 대해 알려주세요</string>
     <string name="vote_description">투표 사진</string>
     <string name="voting">투표하기</string>
@@ -23,4 +23,16 @@
     <string name="check_my_vote">내가 받은 투표 보기</string>
     <string name="past_vote">지난투표</string>
     <string name="real_time_vote">실시간 투표</string>
+    <string name="received_vote">받은 투표</string>
+    <string name="sent_vote">보낸 투표</string>
+    <string name="vote_badge">투표 뱃지</string>
+    <string name="storage_subtitle">우리 반 친구 %1$s 명 나에게 투표했어요</string>
+    <string name="sent_subtitle">우리 반에서 %1$s</string>
+    <string name="white_logo">휜 로고</string>
+    <string name="guide_title">투표할 수 있는\n 1학년 6반 친구들이 부족해요</string>
+    <string name="invite_friend_vote">친구 초대하기</string>
+    <string name="analyzing">분석 중이에요</string>
+    <string name="need_more_vote">더 많은 친구들의 투표가 필요해요</string>
+    <string name="ask_friend">친구에게 물어보기</string>
+    <string name="male">male</string>
 </resources>

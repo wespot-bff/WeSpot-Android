@@ -89,7 +89,7 @@ class VotingViewModel @Inject constructor(
     }
 
     private fun goBackVote() = intent {
-        if (state.pageNumber == 1) {
+        if (state.pageNumber == 1 || state.voteItems.isEmpty()) {
             return@intent
         }
 
