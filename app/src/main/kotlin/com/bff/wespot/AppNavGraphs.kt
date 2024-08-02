@@ -25,6 +25,7 @@ import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
@@ -52,6 +53,7 @@ object AppNavGraphs {
             VoteResultScreenDestination,
             VoteStorageScreenDestination,
             IndividualVoteScreenDestination,
+            CharacterSettingScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }

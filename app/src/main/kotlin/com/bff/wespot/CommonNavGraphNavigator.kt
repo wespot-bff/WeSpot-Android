@@ -27,6 +27,7 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.vote.screen.CharacterSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
@@ -34,6 +35,7 @@ import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VoteStorageNavigator
 import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
@@ -60,7 +62,8 @@ class CommonNavGraphNavigator(
     VoteResultNavigator,
     VoteStorageNavigator,
     ReservedMessageNavigator,
-    IndividualVoteNavigator {
+    IndividualVoteNavigator,
+    CharacterSettingNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -130,5 +133,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIndividualVote(args: IndividualVoteArgs) {
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToCharacterScreen() {
+        navController.navigate(CharacterSettingScreenDestination within navGraph)
     }
 }
