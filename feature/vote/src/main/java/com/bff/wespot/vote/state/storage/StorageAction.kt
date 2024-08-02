@@ -7,6 +7,5 @@ sealed class StorageAction {
         val optionId: Int,
         val date: String,
         val isReceived: Boolean,
-    ) :
-        StorageAction()
+    ) : StorageAction()
 }

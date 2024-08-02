@@ -34,4 +34,5 @@
     <string name="analyzing">분석 중이에요</string>
     <string name="need_more_vote">더 많은 친구들의 투표가 필요해요</string>
     <string name="ask_friend">친구에게 물어보기</string>
+    <string name="male">male</string>
 </resources>

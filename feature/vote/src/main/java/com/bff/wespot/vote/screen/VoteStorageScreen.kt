@@ -79,7 +79,7 @@ fun VoteStorageScreen(
     val action = viewModel::onAction
 
     var selectedTab by remember {
-        mutableStateOf(0)
+        mutableStateOf(RECEIVED_SCREEN)
     }
 
     viewModel.collectSideEffect {
@@ -135,11 +135,11 @@ fun VoteStorageScreen(
                 modifier = Modifier.padding(horizontal = 20.dp),
             ) {
                 when (it) {
-                    0 -> {
+                    RECEIVED_SCREEN -> {
                         ReceivedVoteScreen(state = state, action = action)
                     }
 
-                    1 -> {
+                    SENT_SCREEN -> {
                         SentVoteScreen(state = state, action = action)
                     }
                 }
@@ -265,21 +265,17 @@ private fun VoteItem(
     isReceived: Boolean,
     onClicked: () -> Unit,
 ) {
-    val modifier = if (isReceived) {
-        Modifier
-            .fillMaxWidth()
-            .clip(WeSpotThemeManager.shapes.medium)
-            .clickable {
-                onClicked()
-            }
-    } else {
-        Modifier
-            .fillMaxWidth()
-            .clip(WeSpotThemeManager.shapes.medium)
-    }
-
     Card(
-        modifier = modifier,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(WeSpotThemeManager.shapes.medium)
+            .let {
+                if (isReceived) {
+                    it.clickable { onClicked() }
+                } else {
+                    it
+                }
+            },
         colors = CardDefaults.cardColors(
             containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
             contentColor = WeSpotThemeManager.colors.txtTitleColor,
@@ -324,7 +320,9 @@ private fun VoteItem(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(profileCharacter.iconUrl)
                                     .build(),
-                                contentDescription = "",
+                                contentDescription = stringResource(
+                                    id = com.bff.wespot.ui.R.string.user_character_image
+                                ),
                             )
                         }
                     }
@@ -349,3 +347,6 @@ private fun VoteItem(
         }
     }
 }
+
+const val RECEIVED_SCREEN = 0
+const val SENT_SCREEN = 1

@@ -5,6 +5,5 @@ sealed class StorageSideEffect {
         val optionId: Int,
         val date: String,
         val isReceived: Boolean,
-    ) :
-        StorageSideEffect()
+    ) : StorageSideEffect()
 }

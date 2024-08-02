@@ -208,7 +208,7 @@ private fun VotingProgressScreen(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(state.currentVote.voteUser.profile.iconUrl)
                     .build(),
-                contentDescription = "male",
+                contentDescription = stringResource(R.string.male),
                 modifier = Modifier
                     .size(heightDp * 0.15f)
                     .clip(CircleShape)
