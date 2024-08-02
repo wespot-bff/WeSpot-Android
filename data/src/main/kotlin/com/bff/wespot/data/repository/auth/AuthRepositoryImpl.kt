@@ -9,6 +9,7 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.request.KakaoAuthToken
+import com.bff.wespot.model.auth.request.RevokeReasonListDto
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.School
 import kotlinx.coroutines.flow.first
@@ -47,5 +48,11 @@ class AuthRepositoryImpl @Inject constructor(
                     dataStore.getString(DataStoreKey.SIGN_UP_TOKEN).first()
                 )
             ).isSuccess
+    }
+
+    override suspend fun revoke(revokeReasonList: List<String>): Result<Unit> {
+        return authDataSource.revoke(
+            RevokeReasonListDto(revokeReasons = revokeReasonList)
+        )
     }
 }
