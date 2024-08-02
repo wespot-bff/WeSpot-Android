@@ -60,6 +60,7 @@ class VoteHomeViewModel @Inject constructor(
             is VoteAction.GetFirst -> getFirstVoteResults(action.date)
             is VoteAction.OnTabChanged -> onTabChanged(action.index)
             is VoteAction.GetSettingDialogOption -> getSetting()
+            is VoteAction.ChangeSettingDialog -> changeSettingDialog(action.showDialog)
         }
     }
 
@@ -99,12 +100,15 @@ class VoteHomeViewModel @Inject constructor(
     private fun getSetting() = intent {
         viewModelScope.launch {
             dataStoreRepository.getBoolean(DataStoreKey.SETTING_DIALOG).collect {
-                reduce { state.copy(showSettingDialog = true) }
                 if (!it) {
                     reduce { state.copy(showSettingDialog = !it) }
                     dataStoreRepository.saveBoolean(DataStoreKey.SETTING_DIALOG, true)
                 }
             }
         }
+    }
+
+    private fun changeSettingDialog(showDialog: Boolean) = intent {
+        reduce { state.copy(showSettingDialog = showDialog) }
     }
 }

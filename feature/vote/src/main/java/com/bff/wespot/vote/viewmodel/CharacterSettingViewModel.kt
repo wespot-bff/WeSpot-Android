@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterSettingViewModel @Inject constructor(
-    private val commonRepository: CommonRepository
+    private val commonRepository: CommonRepository,
 ) : ViewModel() {
     val characters: StateFlow<List<Character>> = flow {
         commonRepository.getCharacters()

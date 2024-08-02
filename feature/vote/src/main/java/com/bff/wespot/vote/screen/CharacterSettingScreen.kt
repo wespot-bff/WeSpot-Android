@@ -27,13 +27,14 @@ import com.ramcosta.composedestinations.annotation.Destination
 
 interface CharacterSettingNavigator {
     fun navigateUp()
+    fun navigateToIntroduction(args: IntroductionArgs)
 }
 
 @Destination
 @Composable
 fun CharacterSettingScreen(
     navigator: CharacterSettingNavigator,
-    viewModel: CharacterSettingViewModel = hiltViewModel()
+    viewModel: CharacterSettingViewModel = hiltViewModel(),
 ) {
     val color by viewModel.backgroundColor.collectAsStateWithLifecycle()
     val character by viewModel.characters.collectAsStateWithLifecycle()
@@ -55,19 +56,30 @@ fun CharacterSettingScreen(
                     .fillMaxWidth()
                     .height(60.dp)
                     .padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.CenterEnd,
             ) {
                 WSTextButton(
                     text = stringResource(id = com.bff.wespot.designsystem.R.string.close),
                     onClick = {
                         showDialog = true
-                    }
+                    },
                 )
             }
-        }
+        },
     ) {
         Box(modifier = Modifier.padding(it)) {
-            CharacterScreen(name = "", characterList = character, colorList = color)
+            CharacterScreen(
+                name = "",
+                characterList = character,
+                colorList = color,
+            ) { iconUrl, color ->
+                navigator.navigateToIntroduction(
+                    IntroductionArgs(
+                        backgroundColor = color,
+                        iconUrl = iconUrl,
+                    ),
+                )
+            }
         }
     }
 
@@ -80,7 +92,7 @@ fun CharacterSettingScreen(
             okButtonClick = navigator::navigateUp,
             cancelButtonClick = {
                 showDialog = false
-            }
+            },
         ) {
             showDialog = false
         }

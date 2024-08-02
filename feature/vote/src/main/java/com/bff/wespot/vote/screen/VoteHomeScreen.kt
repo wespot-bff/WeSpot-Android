@@ -110,8 +110,11 @@ internal fun VoteHomeScreen(
             cancelButtonText = stringResource(R.string.next_time),
             okButtonClick = {
                 voteNavigator.navigateToCharacterScreen()
+                action(VoteAction.ChangeSettingDialog(false))
             },
-            onDismissRequest = {}
+            onDismissRequest = {
+                action(VoteAction.ChangeSettingDialog(false))
+            },
         )
     }
 
@@ -130,7 +133,7 @@ internal fun VoteHomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        delay(100)
+        delay(EDIT_POPUP_TIME)
         action(VoteAction.GetSettingDialogOption)
     }
 }
@@ -324,3 +327,4 @@ private fun CardResultContent(
 
 private const val HOME_SCREEN = 0
 private const val RESULT_SCREEN = 1
+private const val EDIT_POPUP_TIME = 5_000L

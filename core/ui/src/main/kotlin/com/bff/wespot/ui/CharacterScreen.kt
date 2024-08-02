@@ -57,6 +57,7 @@ fun CharacterScreen(
     name: String,
     characterList: List<Character>,
     colorList: List<BackgroundColor>,
+    navigateToNext: (String, String) -> Unit,
 ) {
     require(characterList.isNotEmpty()) { "Character list should not be empty" }
     require(colorList.isNotEmpty()) { "Color list should not be empty" }
@@ -74,12 +75,12 @@ fun CharacterScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Text(
             text = stringResource(R.string.select_character, name),
             style = StaticTypeScale.Default.header1,
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -89,7 +90,8 @@ fun CharacterScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(hexToColor(color)), contentAlignment = Alignment.Center
+                    .background(hexToColor(color)),
+                contentAlignment = Alignment.Center,
             ) {
                 AsyncImage(
                     model = ImageRequest
@@ -97,7 +99,7 @@ fun CharacterScreen(
                         .data(character)
                         .build(),
                     contentDescription = stringResource(id = R.string.user_character_image),
-                    modifier = Modifier.size(75.dp)
+                    modifier = Modifier.size(75.dp),
                 )
             }
         }
@@ -112,7 +114,7 @@ fun CharacterScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(WeSpotThemeManager.colors.modalColor)
+                        .background(WeSpotThemeManager.colors.modalColor),
                 ) {
                     when (chipSelection) {
                         CHARACTER -> {
@@ -121,7 +123,7 @@ fun CharacterScreen(
                                 characterList = characterList,
                                 onClick = {
                                     character = it
-                                }
+                                },
                             )
                         }
 
@@ -131,12 +133,17 @@ fun CharacterScreen(
                                 colorList = colorList,
                                 onClick = {
                                     color = it
-                                }
+                                },
                             )
                         }
                     }
 
-                    WSButton(onClick = { }, text = stringResource(R.string.complete)) {
+                    WSButton(
+                        onClick = {
+                            navigateToNext(character, color)
+                        },
+                        text = stringResource(R.string.complete),
+                    ) {
                         it.invoke()
                     }
                 }
@@ -166,7 +173,7 @@ private fun SelectionTypeChipGroup(index: Int, onClick: (Int) -> Unit) {
                 onClick(CHARACTER)
             },
             icon = painterResource(id = R.drawable.character),
-            modifier = Modifier.width(chipWidth)
+            modifier = Modifier.width(chipWidth),
         )
 
         SelectionTypeChip(
@@ -176,7 +183,7 @@ private fun SelectionTypeChipGroup(index: Int, onClick: (Int) -> Unit) {
                 onClick(COLOR)
             },
             icon = painterResource(id = R.drawable.background),
-            modifier = Modifier.width(chipWidth)
+            modifier = Modifier.width(chipWidth),
         )
     }
 }
@@ -187,7 +194,7 @@ private fun SelectionTypeChip(
     isSelected: Boolean,
     onClick: () -> Unit,
     icon: Painter,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     FilterChip(
         shape = WeSpotThemeManager.shapes.extraLarge,
@@ -197,7 +204,7 @@ private fun SelectionTypeChip(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Image(
                     painter = icon,
@@ -208,8 +215,8 @@ private fun SelectionTypeChip(
                             Color(0xFFD9D9D9)
                         } else {
                             Color(0xFF76777D)
-                        }
-                    )
+                        },
+                    ),
                 )
                 Text(text = text, style = StaticTypeScale.Default.body6)
             }
@@ -228,7 +235,7 @@ private fun SelectionTypeChip(
             selectedContainerColor = WeSpotThemeManager.colors.secondaryBtnColor,
             selectedLabelColor = Color(0xFFF7F7F8),
         ),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -236,17 +243,17 @@ private fun SelectionTypeChip(
 private fun CharacterPickerBox(
     selected: String,
     characterList: List<Character>,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = stringResource(id = R.string.character),
-            style = StaticTypeScale.Default.body6
+            style = StaticTypeScale.Default.body6,
         )
 
         LazyVerticalGrid(
@@ -255,7 +262,7 @@ private fun CharacterPickerBox(
             columns = GridCells.Fixed(4),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(vertical = 12.dp)
+            contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             items(characterList, key = {
                 it.id
@@ -268,13 +275,14 @@ private fun CharacterPickerBox(
                         .clickable { onClick(it.iconUrl) }
                         .let { modifier ->
                             if (it.iconUrl == selected) {
-                                modifier.background(WeSpotThemeManager.colors.badgeColor)
+                                modifier
+                                    .background(WeSpotThemeManager.colors.badgeColor)
                                     .border(2.dp, Color.White, CircleShape)
                             } else {
                                 modifier
                             }
                         },
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     AsyncImage(
                         model = ImageRequest
@@ -283,7 +291,7 @@ private fun CharacterPickerBox(
                             .build(),
                         contentDescription = stringResource(id = R.string.user_character_image),
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(60.dp),
                     )
                 }
             }
@@ -295,17 +303,17 @@ private fun CharacterPickerBox(
 private fun ColorPickerBox(
     selected: String,
     colorList: List<BackgroundColor>,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = stringResource(id = R.string.background),
-            style = StaticTypeScale.Default.body6
+            style = StaticTypeScale.Default.body6,
         )
 
         LazyVerticalGrid(
@@ -314,7 +322,7 @@ private fun ColorPickerBox(
             columns = GridCells.Fixed(4),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(vertical = 12.dp)
+            contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             items(colorList, key = {
                 it.id
@@ -339,7 +347,6 @@ private fun ColorPickerBox(
         }
     }
 }
-
 
 private const val CHARACTER = 0
 private const val COLOR = 1
