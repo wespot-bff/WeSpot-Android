@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
@@ -83,6 +84,7 @@ object AppNavGraphs {
             AccountSettingScreenDestination,
             RevokeScreenDestination,
             RevokeConfirmScreenDestination,
+            BlockListScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }

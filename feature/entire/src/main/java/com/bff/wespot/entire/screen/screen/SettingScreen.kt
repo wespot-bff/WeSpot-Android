@@ -26,6 +26,7 @@ interface SettingNavigator {
     fun navigateUp()
     fun navigateToNotificationSetting()
     fun navigateToAccountSetting()
+    fun navigateToBlockListScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +84,7 @@ fun SettingScreen(
             )
 
             EntireListItem(text = stringResource(R.string.block_list)) {
+                navigator.navigateToBlockListScreen()
             }
 
             EntireListItem(text = stringResource(R.string.account_setting)) {
