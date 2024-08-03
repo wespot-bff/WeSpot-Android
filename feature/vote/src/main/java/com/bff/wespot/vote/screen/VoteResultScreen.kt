@@ -63,6 +63,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
@@ -92,11 +93,13 @@ data class VoteResultScreenArgs(
 )
 @Composable
 fun VoteResultScreen(
-    navigator: VoteResultNavigator,
+    voteNavigator: VoteResultNavigator,
+    navigator: Navigator,
     viewModel: VoteResultViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val context = LocalContext.current
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
@@ -138,7 +141,7 @@ fun VoteResultScreen(
                     WSTextButton(
                         text = stringResource(id = R.string.go_to_home),
                         onClick = {
-                            navigator.navigateToVoteHome()
+                            voteNavigator.navigateToVoteHome()
                         },
                     )
                 }
@@ -146,7 +149,7 @@ fun VoteResultScreen(
                 WSTopBar(
                     title = "",
                     canNavigateBack = true,
-                    navigateUp = { navigator.navigateUp() },
+                    navigateUp = { voteNavigator.navigateUp() },
                 )
             }
         },
@@ -184,7 +187,9 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     WSButton(
-                        onClick = { },
+                        onClick = {
+                            navigator.navigateToSharing(context)
+                        },
                         paddingValues = PaddingValues(
                             end = 87.dp,
                         ),
@@ -201,7 +206,8 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterEnd,
                 ) {
                     Button(
-                        onClick = { },
+                        onClick = {
+                        },
                         modifier = Modifier.size(52.dp),
                         shape = WeSpotThemeManager.shapes.medium,
                         colors = ButtonDefaults.buttonColors(
@@ -251,7 +257,7 @@ fun VoteResultScreen(
     }
 
     BackHandler {
-        navigator.navigateToVoteHome()
+        voteNavigator.navigateToVoteHome()
     }
 }
 

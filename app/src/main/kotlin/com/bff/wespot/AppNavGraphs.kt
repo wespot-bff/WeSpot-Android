@@ -149,6 +149,7 @@ internal fun AppNavigation(
     navController: NavHostController,
     navigator: Navigator,
     modifier: Modifier = Modifier,
+    navigator: Navigator,
 ) {
     val engine = rememberNavHostEngine(
         rootDefaultAnimations = RootNavGraphDefaultAnimations(
@@ -170,6 +171,7 @@ internal fun AppNavigation(
             dependency(navigator)
             dependency(sendViewModel)
             dependency(votingViewModel)
+            dependency(navigator)
         },
     )
 }
