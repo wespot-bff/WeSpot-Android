@@ -30,8 +30,8 @@ import com.bff.wespot.model.message.response.Message
 fun ReservedMessageItem(
     reservedMessage: Message,
     chipText: String,
-    chipEnabled: Boolean,
-    chipDisabledText: String,
+    chipEnabled: Boolean = false,
+    chipDisabledText: String = "",
     onClick: () -> Unit,
 ) {
     Column {
