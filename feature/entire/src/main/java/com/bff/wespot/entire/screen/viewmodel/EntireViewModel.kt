@@ -3,7 +3,9 @@ package com.bff.wespot.entire.screen.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.usecase.GetBlockedMessageListUseCase
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
@@ -22,6 +24,8 @@ import javax.inject.Inject
 class EntireViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val getBlockedMessageListUseCase: GetBlockedMessageListUseCase,
+    private val messageStorageRepository: MessageStorageRepository,
     private val navigator: Navigator,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
@@ -32,7 +36,9 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
+            EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
+            is EntireAction.UnBlockMessage -> unblockMessage(action.messageId)
         }
     }
 
@@ -65,6 +71,35 @@ class EntireViewModel @Inject constructor(
         viewModelScope.launch {
             // TODO Token 삭제
             postSideEffect(EntireSideEffect.NavigateToAuth(navigator))
+        }
+    }
+
+    private fun getUnBlockedMessage() = intent {
+        viewModelScope.launch {
+            getBlockedMessageListUseCase(cursorId = 0)
+                .onSuccess { messageList ->
+                    reduce { state.copy(blockList = messageList) }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun unblockMessage(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageStorageRepository.blockMessage(messageId)
+                .onSuccess {
+                    val updatedList = state.unBlockList.toMutableList().apply {
+                        if (contains(messageId).not()) {
+                            add(messageId)
+                        }
+                    }
+                    reduce { state.copy(unBlockList = updatedList) }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 
