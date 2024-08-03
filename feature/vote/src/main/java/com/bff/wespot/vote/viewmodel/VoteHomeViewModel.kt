@@ -102,7 +102,6 @@ class VoteHomeViewModel @Inject constructor(
             dataStoreRepository.getBoolean(DataStoreKey.SETTING_DIALOG).collect {
                 if (!it) {
                     reduce { state.copy(showSettingDialog = !it) }
-                    dataStoreRepository.saveBoolean(DataStoreKey.SETTING_DIALOG, true)
                 }
             }
         }
@@ -110,5 +109,6 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun changeSettingDialog(showDialog: Boolean) = intent {
         reduce { state.copy(showSettingDialog = showDialog) }
+        dataStoreRepository.saveBoolean(DataStoreKey.SETTING_DIALOG, true)
     }
 }

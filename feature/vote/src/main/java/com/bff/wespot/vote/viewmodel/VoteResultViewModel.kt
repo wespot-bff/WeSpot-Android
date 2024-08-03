@@ -3,7 +3,9 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.vote.response.VoteResults
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.state.result.ResultSideEffect
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class VoteResultViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val voteRepository: VoteRepository,
+    private val dataStoreRepository: DataStoreRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
     override val container = container<ResultUiState, ResultSideEffect>(
@@ -33,6 +36,8 @@ class VoteResultViewModel @Inject constructor(
     fun onAction(action: ResultAction) {
         when (action) {
             is ResultAction.LoadVoteResults -> loadVoteResults(action.date)
+            is ResultAction.GetOnBoarding -> getOnBoarding()
+            is ResultAction.SetVoteOnBoarding -> setVoteOnBoarding()
         }
     }
 
@@ -52,6 +57,25 @@ class VoteResultViewModel @Inject constructor(
             } catch (e: Exception) {
                 Timber.e(e)
             }
+        }
+    }
+
+    private fun getOnBoarding() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            dataStoreRepository.getBoolean(DataStoreKey.VOTE_ONBOARDING).collect {
+                if (!it) {
+                    reduce { state.copy(onBoarding = !it) }
+                    dataStoreRepository.saveBoolean(DataStoreKey.VOTE_ONBOARDING, true)
+                }
+            }
+        }
+    }
+
+    private fun setVoteOnBoarding() = intent {
+        reduce {
+            state.copy(
+                onBoarding = false
+            )
         }
     }
 }

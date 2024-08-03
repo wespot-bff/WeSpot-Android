@@ -112,9 +112,10 @@ internal fun VoteHomeScreen(
                 voteNavigator.navigateToCharacterScreen()
                 action(VoteAction.ChangeSettingDialog(false))
             },
-            onDismissRequest = {
+            cancelButtonClick = {
                 action(VoteAction.ChangeSettingDialog(false))
             },
+            onDismissRequest = {}
         )
     }
 

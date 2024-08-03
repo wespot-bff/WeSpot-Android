@@ -1,8 +1,10 @@
 package com.bff.wespot.vote.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -98,6 +102,26 @@ fun VoteResultScreen(
 
     var voteType by remember {
         mutableStateOf(TODAY)
+    }
+
+    if (state.onBoarding) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0x00000000).copy(alpha = 0.4f))
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+
+                    val (x, y) = dragAmount
+                    when {
+                        x < 0 -> {
+                            action(ResultAction.SetVoteOnBoarding)
+                        }
+                    }
+                }
+            }
+            .zIndex(1f)
+        )
     }
 
     Scaffold(
@@ -218,6 +242,16 @@ fun VoteResultScreen(
                 today.minusDays(voteType.toLong()).toDateString(),
             ),
         )
+    }
+
+    LaunchedEffect(Unit) {
+        if (state.isVoting) {
+            action(ResultAction.GetOnBoarding)
+        }
+    }
+
+    BackHandler {
+        navigator.navigateToVoteHome()
     }
 }
 
