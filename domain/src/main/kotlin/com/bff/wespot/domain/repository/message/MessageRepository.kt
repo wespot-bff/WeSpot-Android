@@ -13,8 +13,6 @@ interface MessageRepository {
 
     suspend fun getMessageStatus(): Result<MessageStatus>
 
-    suspend fun checkProfanity(content: String): Result<Unit>
-
     suspend fun editMessage(messageId: Int, sentMessage: SentMessage): Result<Unit>
 
     suspend fun getMessage(messageId: Int): Result<Message>

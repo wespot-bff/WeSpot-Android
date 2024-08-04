@@ -18,13 +18,13 @@ data class SentVoteStorageDto (
 @Serializable
 data class SentVoteResultDto(
     val voteOption: VoteOptionDto,
-    val user: VoteProfileDto,
+    val user: VoteUserDto,
 ) {
     fun toSentVoteResult(): SentVoteResult {
         return SentVoteResult(
             voteOption = voteOption.toVoteOption(),
             voteCount = 0,
-            user = user.toProfile()
+            user = user.toVoteUser()
         )
     }
 }

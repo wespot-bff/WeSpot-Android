@@ -2,9 +2,13 @@ package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.common.di.extensions.onNetworkFailure
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.model.ReportType
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
+import com.bff.wespot.model.vote.response.VoteItem
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
@@ -23,6 +27,7 @@ import javax.inject.Inject
 class VotingViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
+    private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
     override val container = container<VotingUiState, VotingSideEffect>(VotingUiState())
 
@@ -32,12 +37,18 @@ class VotingViewModel @Inject constructor(
             VotingAction.GoBackVote -> goBackVote()
             is VotingAction.GoToNextVote -> goToNextVote(action.optionId)
             is VotingAction.SubmitVoteResult -> submitVoteResult()
+            is VotingAction.SendReport -> sendReport(action.userId)
         }
     }
 
     private fun startVoting() = intent {
         reduce {
-            state.copy(loading = true)
+            state.copy(
+                loading = true,
+                start = true,
+                selectedVote = emptyList(),
+                voteItems = emptyList(),
+            )
         }
         viewModelScope.launch(coroutineDispatcher) {
             try {
@@ -82,7 +93,8 @@ class VotingViewModel @Inject constructor(
                 pageNumber = state.pageNumber + 1,
                 currentVote = state.voteItems[state.pageNumber],
                 selectedVote = state.selectedVote.toMutableList().apply {
-                    this[state.pageNumber - 1] = VoteResultUpload(state.currentVote.voteUser.id, optionId)
+                    this[state.pageNumber - 1] =
+                        VoteResultUpload(state.currentVote.voteUser.id, optionId)
                 },
             )
         }
@@ -113,12 +125,39 @@ class VotingViewModel @Inject constructor(
 
             if (result) {
                 postSideEffect(VotingSideEffect.NavigateToResult)
+                dispose()
             } else {
                 postSideEffect(VotingSideEffect.ShowToast("투표 제출에 오류가 발생했습니다"))
             }
             reduce {
                 state.copy(loading = false)
             }
+        }
+    }
+
+    private fun sendReport(userId: Int) = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            commonRepository.sendReport(ReportType.VOTE, userId)
+                .onSuccess {
+                    postSideEffect(VotingSideEffect.ShowToast("제보 접수 완료"))
+                }
+                .onNetworkFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun dispose() = intent {
+        reduce {
+            state.copy(
+                voteItems = emptyList(),
+                pageNumber = -1,
+                totalPage = 0,
+                currentVote = VoteItem(),
+                selectedVote = emptyList(),
+                start = true,
+                loading = false,
+            )
         }
     }
 }

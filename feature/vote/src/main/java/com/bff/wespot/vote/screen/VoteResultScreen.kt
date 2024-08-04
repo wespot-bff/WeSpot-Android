@@ -57,8 +57,8 @@ import com.bff.wespot.designsystem.theme.Primary100
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.vote.response.VoteProfile
 import com.bff.wespot.model.vote.response.VoteResult
+import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
@@ -269,7 +269,7 @@ private fun VoteResultItem(
 
 @Composable
 private fun RankCard(
-    user: VoteProfile,
+    user: VoteUser,
     vote: Int,
     rank: Int,
 ) {
@@ -369,7 +369,7 @@ private fun RankCard(
 
 @Composable
 private fun RankTile(
-    user: VoteProfile,
+    user: VoteUser,
     vote: Int,
     rank: Int,
 ) {

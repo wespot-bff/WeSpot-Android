@@ -40,10 +40,13 @@ import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
+import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.ui.ReportBottomSheet
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
@@ -51,6 +54,7 @@ import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
 import com.bff.wespot.vote.viewmodel.VotingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -79,6 +83,14 @@ fun VotingScreen(
         mutableStateOf("")
     }
 
+    var showReportSheet by remember {
+        mutableStateOf(false)
+    }
+
+    var showReportDialog by remember {
+        mutableStateOf(false)
+    }
+
     val showGuideScreen = state.voteItems.isEmpty()
 
     viewModel.collectSideEffect {
@@ -102,13 +114,21 @@ fun VotingScreen(
         topBar = {
             if (showGuideScreen) {
                 WSTopBar(
+                    title = "",
+                    canNavigateBack = true,
+                    navigateUp = votingNavigator::navigateUp,
+                )
+            } else {
+                WSTopBar(
                     title = if (state.pageNumber == state.totalPage || state.loading.not()) {
                         "${state.pageNumber}/${state.totalPage}"
                     } else {
                         ""
                     },
                     action = {
-                        Text(text = stringResource(id = R.string.report), style = it)
+                        WSTextButton(text = stringResource(id = R.string.report), onClick = {
+                            showReportSheet = true
+                        })
                     },
                     canNavigateBack = true,
                     navigateUp = {
@@ -117,16 +137,12 @@ fun VotingScreen(
                         submitButton = false
                     },
                 )
-            } else {
-                WSTopBar(
-                    title = "",
-                    canNavigateBack = true,
-                    navigateUp = votingNavigator::navigateUp,
-                )
             }
         },
     ) {
-        if (!showGuideScreen) {
+        if (state.loading && showGuideScreen) {
+            return@Scaffold
+        } else if (showGuideScreen) {
             VotingGuideScreen(it)
         } else {
             VotingProgressScreen(
@@ -154,6 +170,42 @@ fun VotingScreen(
     if (state.loading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
+        }
+    }
+
+    if (showReportSheet) {
+        ReportBottomSheet(
+            closeSheet = { showReportSheet = false },
+            options = persistentListOf(
+                stringResource(R.string.not_my_classmate),
+                stringResource(R.string.need_more_option),
+            ),
+            optionsClickable = persistentListOf(
+                {
+                    showReportSheet = false
+                    showReportDialog = true
+                },
+                {
+                },
+            ),
+        )
+    }
+
+    if (showReportDialog) {
+        WSDialog(
+            title = stringResource(R.string.not_your_classmate),
+            subTitle = stringResource(R.string.wrong_report),
+            okButtonText = stringResource(R.string.it_is_not),
+            cancelButtonText = stringResource(R.string.close),
+            okButtonClick = {
+                action(VotingAction.SendReport(state.currentVote.voteUser.id))
+                showReportDialog = false
+            },
+            cancelButtonClick = {
+                showReportDialog = false
+            },
+        ) {
+            showReportDialog = false
         }
     }
 
