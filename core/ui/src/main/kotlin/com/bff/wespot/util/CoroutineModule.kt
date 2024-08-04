@@ -1,4 +1,4 @@
-package com.bff.wespot.common.di
+package com.bff.wespot.util
 
 import dagger.Module
 import dagger.Provides
