@@ -1,6 +1,5 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.request.MessageContentDto
 import com.bff.wespot.data.remote.model.message.request.MessageTypeDto
 import com.bff.wespot.data.remote.model.message.request.SentMessageDto
 import com.bff.wespot.data.remote.model.message.request.type
@@ -13,7 +12,8 @@ import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
-import io.ktor.http.*
+import io.ktor.http.HttpMethod
+import io.ktor.http.path
 import javax.inject.Inject
 
 class MessageDataSourceImpl @Inject constructor(
@@ -48,15 +48,6 @@ class MessageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("messages/status/me")
-            }
-        }
-
-    override suspend fun checkProfanity(content: MessageContentDto): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Post
-                path("messages/check-profanity")
-                setBody(content)
             }
         }
 

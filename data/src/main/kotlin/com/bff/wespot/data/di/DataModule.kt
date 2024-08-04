@@ -1,5 +1,6 @@
 package com.bff.wespot.data.di
 
+import com.bff.wespot.data.repository.CommonRepositoryImpl
 import com.bff.wespot.data.repository.DataStoreRepositoryImpl
 import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
 import com.bff.wespot.data.repository.auth.KakaoLoginManagerImpl
@@ -7,6 +8,7 @@ import com.bff.wespot.data.repository.message.MessageRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageStorageRepositoryImpl
 import com.bff.wespot.data.repository.user.UserRepositoryImpl
 import com.bff.wespot.data.repository.vote.VoteRepositoryImpl
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.auth.KakaoLoginManager
@@ -64,4 +66,10 @@ abstract class DataModule {
     abstract fun bindsMessageStorageRepository(
         messageStorageRepositoryImpl: MessageStorageRepositoryImpl
     ): MessageStorageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsCommonRepository(
+        commonRepositoryImpl: CommonRepositoryImpl
+    ): CommonRepository
 }

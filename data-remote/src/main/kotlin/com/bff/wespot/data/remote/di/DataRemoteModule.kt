@@ -1,5 +1,7 @@
 package com.bff.wespot.data.remote.di
 
+import com.bff.wespot.data.remote.source.CommonDataSource
+import com.bff.wespot.data.remote.source.CommonDataSourceImpl
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
@@ -48,4 +50,10 @@ abstract class DataRemoteModule {
     abstract fun bindsMessageStorageDataSource(
         messageStorageDataSourceImpl: MessageStorageDataSourceImpl
     ): MessageStorageDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsCommonDataSource(
+        commonDataSourceImpl: CommonDataSourceImpl
+    ): CommonDataSource
 }

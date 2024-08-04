@@ -8,9 +8,9 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
-import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
+import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
@@ -35,8 +35,8 @@ class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val authRepository: AuthRepository,
     private val dispatcher: CoroutineDispatcher,
-    private val dataStoreRepository: DataStoreRepository,
     private val autoLoginUseCase: AutoLoginUseCase,
+    private val checkProfanityUseCase: CheckProfanityUseCase,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
@@ -44,6 +44,7 @@ class AuthViewModel @Inject constructor(
     val loginState: LiveData<LoginState> = loginStateP
 
     private val userInput = MutableStateFlow("")
+    private val nameInput = MutableStateFlow("")
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -59,6 +60,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.Signup -> signUp()
             is AuthAction.AutoLogin -> autoLogin()
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
+            is AuthAction.OnStartNameScreen -> monitorNameInput()
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
             else -> {}
         }
@@ -134,12 +136,30 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun monitorUserInput() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             userInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect {
                     fetchSchoolList(it)
+                }
+        }
+    }
+
+    private fun monitorNameInput() = intent {
+        viewModelScope.launch(dispatcher) {
+            nameInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect {
+                    runCatching {
+                        val result = checkProfanityUseCase(it)
+                        reduce {
+                            state.copy(
+                                hasProfanity = result,
+                            )
+                        }
+                    }
                 }
         }
     }
@@ -201,6 +221,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun handleNameChanged(name: String) = intent {
+        nameInput.value = name
         reduce {
             state.copy(
                 name = name,

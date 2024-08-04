@@ -4,6 +4,7 @@ import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SchoolListDto
+import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.model.auth.request.RevokeReasonListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
@@ -20,7 +21,7 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("api/v1/auth/signup/schools/search")
+                path("auth/signup/schools/search")
                 parameter("name", search)
             }
         }
@@ -29,7 +30,7 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/auth/login")
+                path("auth/login")
             }
             setBody(token)
         }
@@ -38,7 +39,7 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/auth/signup")
+                path("auth/signup")
             }
             setBody(signUp)
         }
