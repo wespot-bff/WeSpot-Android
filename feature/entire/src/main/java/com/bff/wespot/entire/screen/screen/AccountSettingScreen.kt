@@ -15,17 +15,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
+import com.bff.wespot.entire.screen.state.EntireAction
+import com.bff.wespot.entire.screen.state.EntireSideEffect
+import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface AccountSettingNavigator {
     fun navigateUp()
+    fun navigateToRevokeScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,8 +40,21 @@ interface AccountSettingNavigator {
 @Composable
 fun AccountSettingScreen(
     navigator: AccountSettingNavigator,
+    viewModel: EntireViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+
+    val action = viewModel::onAction
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is EntireSideEffect.NavigateToAuth -> {
+                val intent = it.navigator.navigateToAuth(context)
+                context.startActivity(intent)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -56,7 +76,8 @@ fun AccountSettingScreen(
                 showDialog = true
             }
 
-            AccountSettingItem(title = stringResource(R.string.revoke)) {
+            AccountSettingItem(title = stringResource(R.string.user_revoke)) {
+                navigator.navigateToRevokeScreen()
             }
         }
     }
@@ -68,9 +89,7 @@ fun AccountSettingScreen(
             okButtonText = stringResource(R.string.close),
             cancelButtonText = stringResource(id = R.string.sign_out),
             okButtonClick = { showDialog = false },
-            cancelButtonClick = {
-                // TODO SIGN_OUT
-            },
+            cancelButtonClick = { action(EntireAction.OnSignOutButtonClicked) },
             onDismissRequest = { showDialog = false },
         )
     }

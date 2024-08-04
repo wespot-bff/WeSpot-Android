@@ -7,7 +7,11 @@ import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
 import com.bff.wespot.entire.screen.screen.SettingNavigator
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
+import com.bff.wespot.entire.screen.screen.revoke.RevokeConfirmNavigator
+import com.bff.wespot.entire.screen.screen.revoke.RevokeNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
@@ -50,6 +54,8 @@ class CommonNavGraphNavigator(
     SettingNavigator,
     NotificationSettingNavigator,
     AccountSettingNavigator,
+    RevokeNavigator,
+    RevokeConfirmNavigator,
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
@@ -108,6 +114,14 @@ class CommonNavGraphNavigator(
 
     override fun navigateToAccountSetting() {
         navController.navigate(AccountSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToRevokeScreen() {
+        navController.navigate(RevokeScreenDestination within navGraph)
+    }
+
+    override fun navigateToRevokeConfirmScreen() {
+        navController.navigate(RevokeConfirmScreenDestination within navGraph)
     }
 
     override fun navigateToVoteStorageScreen() {

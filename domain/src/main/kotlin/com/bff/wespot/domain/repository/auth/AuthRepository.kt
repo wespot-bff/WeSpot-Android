@@ -8,4 +8,5 @@ interface AuthRepository {
     suspend fun getSchoolList(search: String): Result<List<School>>
     suspend fun sendKakaoToken(token: KakaoAuthToken): Result<Any>
     suspend fun signUp(signUp: SignUp): Boolean
+    suspend fun revoke(revokeReasonList: List<String>): Result<Unit>
 }
