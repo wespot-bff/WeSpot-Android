@@ -1,19 +1,14 @@
 package com.bff.wespot.ui
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 
 @Composable
 fun MultiLineText(
@@ -23,22 +18,23 @@ fun MultiLineText(
     modifier: Modifier = Modifier,
     textAlign: TextAlign = TextAlign.Start,
 ) {
-    var height by remember { mutableStateOf(Dp.Unspecified) }
-    val density = LocalDensity.current
-
+    val textMeasurer = rememberTextMeasurer()
     Text(
-        modifier = modifier
-            .height(height)
-            .wrapContentHeight(),
         text = text,
         style = style,
-        onTextLayout = {
-            val newHeight = with(density) { it.size.height.toDp() }
-            if (it.lineCount < line) {
-                height = newHeight * (line / it.lineCount)
-            }
-        },
-        overflow = TextOverflow.Ellipsis,
+        modifier = modifier
+            .fillMaxWidth()
+            .layout { measurable, constraints ->
+                val textLayoutResult = textMeasurer.measure("\n", constraints = constraints)
+                val layoutHeight = textLayoutResult.size.height
+
+                val placeable = measurable.measure(constraints)
+
+                layout(placeable.width, layoutHeight) {
+                    placeable.placeRelative(0, 0)
+                }
+            },
+        overflow = Ellipsis,
         maxLines = line,
         textAlign = textAlign,
     )
