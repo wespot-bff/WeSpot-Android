@@ -11,11 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
@@ -36,6 +40,8 @@ fun BlockListScreen(
     navigator: BlockListNavigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
@@ -69,11 +75,27 @@ fun BlockListScreen(
                         chipEnabled = item.id !in state.unBlockList,
                         chipDisabledText = stringResource(R.string.unblock_done),
                         onClick = {
-                            action(EntireAction.UnBlockMessage(item.id))
+                            action(EntireAction.OnUnBlockButtonClicked(item.id))
+                            showDialog = true
                         },
                     )
                 }
             }
+        }
+
+        if (showDialog) {
+            WSDialog(
+                title = stringResource(R.string.unblock_dialog_title),
+                subTitle = "",
+                okButtonText = stringResource(R.string.unblock),
+                cancelButtonText = stringResource(R.string.close),
+                okButtonClick = {
+                    action(EntireAction.UnBlockMessage)
+                    showDialog = false
+                },
+                cancelButtonClick = { showDialog = false },
+                onDismissRequest = { showDialog = false },
+            )
         }
     }
 

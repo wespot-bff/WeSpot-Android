@@ -7,6 +7,7 @@ sealed class EntireAction {
     data object OnRevokeConfirmed : EntireAction()
     data object OnSignOutButtonClicked : EntireAction()
     data object OnRevokeButtonClicked : EntireAction()
+    data object UnBlockMessage : EntireAction()
+    data class OnUnBlockButtonClicked(val messageId: Int) : EntireAction()
     data class OnRevokeReasonSelected(val reason: String) : EntireAction()
-    data class UnBlockMessage(val messageId: Int) : EntireAction()
 }

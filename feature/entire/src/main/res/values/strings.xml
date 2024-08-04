@@ -50,4 +50,5 @@
     <string name="do_revoke">탈퇴하기</string>
     <string name="unblock">차단 해제</string>
     <string name="unblock_done">해제 완료</string>
+    <string name="unblock_dialog_title">차단 해제하시나요?</string>
 </resources>

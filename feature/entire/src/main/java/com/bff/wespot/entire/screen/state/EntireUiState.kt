@@ -9,4 +9,5 @@ data class EntireUiState(
     val revokeConfirmed: Boolean = false,
     val blockedMessageList: List<BlockedMessage> = listOf(),
     val unBlockList: List<Int> = listOf(),
+    val unBlockMessageId: Int = -1,
 )
