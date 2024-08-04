@@ -85,7 +85,9 @@ private fun MainScreen() {
                     action = {
                         IconButton(
                             modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                            onClick = {},
+                            onClick = {
+                                navController.navigateToNavGraph(AppNavGraphs.notification)
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.notification),
@@ -104,14 +106,7 @@ private fun MainScreen() {
                 BottomNavigationTab(
                     selectedNavigation = currentSelectedItem,
                     onNavigationSelected = { selected ->
-                        navController.navigate(selected) {
-                            launchSingleTop = true
-                            restoreState = true
-
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                        }
+                        navController.navigateToNavGraph(selected)
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -227,6 +222,17 @@ private fun TabItem(
                     WeSpotThemeManager.colors.disableIcnColor
                 },
             )
+        }
+    }
+}
+
+private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
+    this.navigate(navGraph) {
+        launchSingleTop = true
+        restoreState = true
+
+        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id) {
+            saveState = true
         }
     }
 }
