@@ -3,9 +3,9 @@ package com.bff.wespot.entire.screen.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
-import com.bff.wespot.domain.usecase.GetBlockedMessageListUseCase
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class EntireViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
-    private val getBlockedMessageListUseCase: GetBlockedMessageListUseCase,
+    private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val navigator: Navigator,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
@@ -76,9 +76,9 @@ class EntireViewModel @Inject constructor(
 
     private fun getUnBlockedMessage() = intent {
         viewModelScope.launch {
-            getBlockedMessageListUseCase(cursorId = 0)
-                .onSuccess { messageList ->
-                    reduce { state.copy(blockList = messageList) }
+            messageRepository.getBlockedMessage(cursorId = 0) // TODO Cursor Paging
+                .onSuccess { blockedMessageList ->
+                    reduce { state.copy(blockedMessageList = blockedMessageList) }
                 }
                 .onFailure {
                     Timber.e(it)
