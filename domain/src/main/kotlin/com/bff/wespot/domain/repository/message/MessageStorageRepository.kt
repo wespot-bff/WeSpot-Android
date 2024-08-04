@@ -9,7 +9,5 @@ interface MessageStorageRepository {
 
     suspend fun blockMessage(messageId: Int): Result<Unit>
 
-    suspend fun reportMessage(messageId: Int): Result<Unit>
-
     suspend fun getReservedMessage(): Result<List<Message>>
 }
