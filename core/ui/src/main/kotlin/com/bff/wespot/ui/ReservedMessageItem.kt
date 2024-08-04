@@ -22,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.designsystem.theme.Gray400
+import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 
@@ -94,6 +96,8 @@ fun ReservedMessageItem(
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
                     labelColor = Color(0xFFF7F7F8),
+                    disabledContainerColor = Gray600,
+                    disabledLabelColor = Gray400,
                 ),
             )
         }
