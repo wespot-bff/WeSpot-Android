@@ -5,10 +5,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class NotificationTypeDto {
-    VOTE, MESSAGE;
+    MESSAGE,
+    MESSAGE_SENT,
+    MESSAGE_RECEIVED,
+    VOTE,
+    VOTE_RESULT,
+    VOTE_RECEIVED,
+    ;
 
     fun toNotificationType() = when (this) {
-        VOTE -> NotificationType.VOTE
         MESSAGE -> NotificationType.MESSAGE
+        MESSAGE_SENT -> NotificationType.MESSAGE_SENT
+        MESSAGE_RECEIVED -> NotificationType.MESSAGE_RECEIVED
+        VOTE -> NotificationType.VOTE
+        VOTE_RESULT -> NotificationType.VOTE_RESULT
+        VOTE_RECEIVED -> NotificationType.VOTE_RECEIVED
     }
 }
