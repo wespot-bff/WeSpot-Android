@@ -27,6 +27,7 @@ import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -40,6 +41,7 @@ interface AccountSettingNavigator {
 @Composable
 fun AccountSettingScreen(
     navigator: AccountSettingNavigator,
+    activityNavigator: Navigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -50,7 +52,7 @@ fun AccountSettingScreen(
     viewModel.collectSideEffect {
         when (it) {
             is EntireSideEffect.NavigateToAuth -> {
-                val intent = it.navigator.navigateToAuth(context)
+                val intent = activityNavigator.navigateToAuth(context)
                 context.startActivity(intent)
             }
         }

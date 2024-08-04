@@ -9,7 +9,6 @@ import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
-import com.bff.wespot.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -26,7 +25,6 @@ class EntireViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
-    private val navigator: Navigator,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
@@ -59,7 +57,7 @@ class EntireViewModel @Inject constructor(
             // TODO Token 삭제
             authRepository.revoke(state.revokeReasonList)
                 .onSuccess {
-                    postSideEffect(EntireSideEffect.NavigateToAuth(navigator))
+                    postSideEffect(EntireSideEffect.NavigateToAuth)
                 }
                 .onFailure {
                     Timber.e(it)
@@ -70,7 +68,7 @@ class EntireViewModel @Inject constructor(
     private fun signOut() = intent {
         viewModelScope.launch {
             // TODO Token 삭제
-            postSideEffect(EntireSideEffect.NavigateToAuth(navigator))
+            postSideEffect(EntireSideEffect.NavigateToAuth)
         }
     }
 
