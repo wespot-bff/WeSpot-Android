@@ -35,8 +35,9 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
+            EntireAction.UnBlockMessage -> unblockMessage()
+            is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
-            is EntireAction.UnBlockMessage -> unblockMessage(action.messageId)
         }
     }
 
@@ -84,19 +85,28 @@ class EntireViewModel @Inject constructor(
         }
     }
 
-    private fun unblockMessage(messageId: Int) = intent {
+    private fun handleUnBlockButtonClicked(messageId: Int) = intent {
+        reduce { state.copy(unBlockMessageId = messageId) }
+    }
+
+    private fun unblockMessage() = intent {
+        val messageId = state.unBlockMessageId
+        if (state.unBlockList.contains(messageId).not()) {
+            val updatedList = state.unBlockList.toMutableList().apply { add(messageId) }
+            reduce { state.copy(unBlockList = updatedList) }
+        }
+
         viewModelScope.launch {
             messageStorageRepository.blockMessage(messageId)
-                .onSuccess {
-                    val updatedList = state.unBlockList.toMutableList().apply {
-                        if (contains(messageId).not()) {
-                            add(messageId)
-                        }
-                    }
-                    reduce { state.copy(unBlockList = updatedList) }
-                }
                 .onFailure {
                     Timber.e(it)
+                    // 차단 해제 실패 시, 차단 해제된 목록에서 삭제
+                    if (state.unBlockList.contains(messageId)) {
+                        val updatedList = state.unBlockList.toMutableList().apply {
+                            remove(messageId)
+                        }
+                        reduce { state.copy(unBlockList = updatedList) }
+                    }
                 }
         }
     }
