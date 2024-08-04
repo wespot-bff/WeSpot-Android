@@ -24,13 +24,15 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.message.response.Message
 
 @Composable
 fun ReservedMessageItem(
-    reservedMessage: Message,
+    title: String,
+    subTitle: String,
+    backgroundColor: String,
+    iconUrl: String,
     chipText: String,
-    chipEnabled: Boolean = false,
+    chipEnabled: Boolean = true,
     chipDisabledText: String = "",
     onClick: () -> Unit,
 ) {
@@ -39,22 +41,20 @@ fun ReservedMessageItem(
             modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val profile = reservedMessage.receiver.profileCharacter
-
             Box(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
                     .background(
                         runCatching {
-                            Color(parseColor(profile.backgroundColor))
+                            Color(parseColor(backgroundColor))
                         }.getOrDefault(WeSpotThemeManager.colors.cardBackgroundColor),
                     ),
                 contentAlignment = Alignment.Center,
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(profile.iconUrl)
+                        .data(iconUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = stringResource(com.bff.wespot.ui.R.string.user_character_image),
@@ -67,13 +67,13 @@ fun ReservedMessageItem(
                     .weight(1f),
             ) {
                 Text(
-                    text = stringResource(com.bff.wespot.designsystem.R.string.letter_receiver),
+                    text = title,
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtSubColor,
                 )
 
                 Text(
-                    text = reservedMessage.receiver.toDescription(),
+                    text = subTitle,
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 )

@@ -58,14 +58,15 @@ fun BlockListScreen(
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(state.blockList, key = { message -> message.id }) { item ->
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(state.blockedMessageList, key = { message -> message.id }) { item ->
                     ReservedMessageItem(
-                        reservedMessage = item,
+                        title = stringResource(com.bff.wespot.designsystem.R.string.letter_sender),
+                        subTitle = item.senderName,
+                        backgroundColor = item.senderProfile.backgroundColor,
+                        iconUrl = item.senderProfile.iconUrl,
                         chipText = stringResource(R.string.unblock),
-                        chipEnabled = item.id in state.unBlockList,
+                        chipEnabled = item.id !in state.unBlockList,
                         chipDisabledText = stringResource(R.string.unblock_done),
                         onClick = {
                             action(EntireAction.UnBlockMessage(item.id))

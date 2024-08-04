@@ -91,7 +91,10 @@ fun ReservedMessageScreen(
             ) {
                 items(state.reservedMessageList, key = { message -> message.id }) { item ->
                     ReservedMessageItem(
-                        reservedMessage = item,
+                        title = stringResource(string.letter_receiver),
+                        subTitle = item.receiver.toDescription(),
+                        backgroundColor = item.receiver.profileCharacter.backgroundColor,
+                        iconUrl = item.receiver.profileCharacter.iconUrl,
                         chipText = stringResource(R.string.message_edit),
                         onClick = {
                             navigator.navigateMessageEditScreen(
