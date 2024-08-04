@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,7 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.theme.Primary100
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.IndividualReceived
 import com.bff.wespot.model.vote.response.IndividualSent
@@ -201,7 +201,7 @@ fun IndividualVoteScreen(
                     shape = WeSpotThemeManager.shapes.medium,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                        contentColor = Primary100,
+                        contentColor = Color(0xFFEAEBEC),
                     ),
                     contentPadding = PaddingValues(1.dp),
                 ) {

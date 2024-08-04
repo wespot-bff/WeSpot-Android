@@ -60,7 +60,6 @@ import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.theme.Primary100
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -121,22 +120,23 @@ fun VoteResultScreen(
     }
 
     if (state.onBoarding) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0x00000000).copy(alpha = 0.4f))
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x00000000).copy(alpha = 0.4f))
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
 
-                    val (x, y) = dragAmount
-                    when {
-                        x < 0 -> {
-                            action(ResultAction.SetVoteOnBoarding)
+                        val (x, y) = dragAmount
+                        when {
+                            x < 0 -> {
+                                action(ResultAction.SetVoteOnBoarding)
+                            }
                         }
                     }
                 }
-            }
-            .zIndex(1f)
+                .zIndex(1f),
         )
     }
 
@@ -236,7 +236,7 @@ fun VoteResultScreen(
                         shape = WeSpotThemeManager.shapes.medium,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                            contentColor = Primary100,
+                            contentColor = Color(0xFFEAEBEC),
                         ),
                         contentPadding = PaddingValues(1.dp),
                     ) {
