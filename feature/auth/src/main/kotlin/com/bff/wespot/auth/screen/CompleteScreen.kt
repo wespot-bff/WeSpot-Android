@@ -20,22 +20,27 @@ import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
 @Destination
 fun CompleteScreen(
     viewModel: AuthViewModel,
+    navigator: Navigator,
 ) {
     var dialog by remember {
         mutableStateOf(false)
     }
 
     val activity = (LocalContext.current as? Activity)
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Column {
-            WSButton(onClick = { }, text = stringResource(id = R.string.invite_friend_and_start)) {
+            WSButton(onClick = {
+                navigator.navigateToSharing(context)
+            }, text = stringResource(id = R.string.invite_friend_and_start)) {
                 it.invoke()
             }
 
