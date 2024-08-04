@@ -92,7 +92,7 @@ fun AccountSettingScreen(
             cancelButtonText = stringResource(id = R.string.sign_out),
             okButtonClick = { showDialog = false },
             cancelButtonClick = { action(EntireAction.OnSignOutButtonClicked) },
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { },
         )
     }
 }

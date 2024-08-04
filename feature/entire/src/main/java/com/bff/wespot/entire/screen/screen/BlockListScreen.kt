@@ -87,14 +87,14 @@ fun BlockListScreen(
             WSDialog(
                 title = stringResource(R.string.unblock_dialog_title),
                 subTitle = "",
-                okButtonText = stringResource(R.string.unblock),
-                cancelButtonText = stringResource(R.string.close),
-                okButtonClick = {
+                okButtonText = stringResource(R.string.close),
+                cancelButtonText = stringResource(R.string.unblock),
+                okButtonClick = { showDialog = false },
+                cancelButtonClick = {
                     action(EntireAction.UnBlockMessage)
                     showDialog = false
                 },
-                cancelButtonClick = { showDialog = false },
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { },
             )
         }
     }

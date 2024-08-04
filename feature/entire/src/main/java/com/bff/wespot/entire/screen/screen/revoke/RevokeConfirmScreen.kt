@@ -146,7 +146,7 @@ fun RevokeConfirmScreen(
             cancelButtonClick = {
                 action(EntireAction.OnRevokeButtonClicked)
             },
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { },
         )
     }
 }
