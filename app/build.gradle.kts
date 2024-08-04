@@ -16,8 +16,12 @@ android {
 
     defaultConfig {
         buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
+
+        buildConfigField("String", "FACEBOOK_APP_ID", properties.getProperty("FACEBOOK_APP_ID"))
+
         manifestPlaceholders["SCHEME_KAKAO_APP_KEY"] =
             properties.getProperty("SCHEME_KAKAO_APP_KEY")
+
     }
 
     buildFeatures {

@@ -78,4 +78,31 @@ class NavigatorImpl @Inject constructor() : Navigator {
         context.startActivity(choser)
     }
 
+    override fun navigateToInstaStory(context: Context, file: Uri): Intent {
+        val intent = Intent("com.instagram.share.ADD_TO_STORY")
+            .apply {
+                setDataAndType(null, "image/*")
+
+            }
+        if (intent.resolveActivity(context.packageManager) == null) {
+            redirectToPlayStoreForInstagram(context)
+        }
+
+        intent.apply {
+            putExtra("source_application", BuildConfig.FACEBOOK_APP_ID)
+            setDataAndType(file, "image/jpeg")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        return intent
+    }
+
+    private fun redirectToPlayStoreForInstagram(context: Context) {
+        val appStoreIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android")
+        )
+        appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(appStoreIntent)
+    }
 }

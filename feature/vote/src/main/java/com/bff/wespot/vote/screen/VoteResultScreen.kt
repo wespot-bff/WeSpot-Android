@@ -1,6 +1,9 @@
 package com.bff.wespot.vote.screen
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,10 +67,12 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.ui.saveImage
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
@@ -75,6 +80,8 @@ import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
@@ -105,6 +112,12 @@ fun VoteResultScreen(
 
     var voteType by remember {
         mutableStateOf(TODAY)
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val intent = it.data
+        }
     }
 
     if (state.onBoarding) {
@@ -172,11 +185,13 @@ fun VoteResultScreen(
                 )
             }
 
-            WSCarousel(pagerState = pagerState) { page ->
-                VoteResultItem(
-                    result = state.voteResults.voteResults[page],
-                    empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
-                )
+            val snapshot = CaptureBitmap {
+                WSCarousel(pagerState = pagerState) { page ->
+                    VoteResultItem(
+                        result = state.voteResults.voteResults[page],
+                        empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+                    )
+                }
             }
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
@@ -207,6 +222,15 @@ fun VoteResultScreen(
                 ) {
                     Button(
                         onClick = {
+                            MainScope().launch {
+                                val bitmap = snapshot.invoke()
+                                val uri = saveImage(bitmap, context)
+
+                                if (uri != null) {
+                                    val intent = navigator.navigateToInstaStory(context, uri)
+                                    launcher.launch(intent)
+                                }
+                            }
                         },
                         modifier = Modifier.size(52.dp),
                         shape = WeSpotThemeManager.shapes.medium,
