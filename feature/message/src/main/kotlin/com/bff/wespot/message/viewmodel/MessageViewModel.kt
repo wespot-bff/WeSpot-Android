@@ -2,6 +2,7 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.message.model.MessageOptionType
@@ -10,6 +11,7 @@ import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
+import com.bff.wespot.model.ReportType
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +36,7 @@ class MessageViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
+    private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
@@ -224,7 +227,7 @@ class MessageViewModel @Inject constructor(
 
     private fun handleReportMessageButtonClicked(messageId: Int) = intent {
         viewModelScope.launch {
-            messageStorageRepository.reportMessage(messageId)
+            commonRepository.sendReport(ReportType.MESSAGE, messageId)
                 .onSuccess {
                     postSideEffect(MessageSideEffect.ShowToast("신고 완료"))
                     getReceivedMessageList()
