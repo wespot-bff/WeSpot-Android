@@ -9,6 +9,7 @@ import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.request.SentMessage
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.data.remote.source.message.MessageDataSource
+import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.model.message.response.Message
 import javax.inject.Inject
 
@@ -46,5 +47,10 @@ class MessageRepositoryImpl @Inject constructor(
     override suspend fun getMessage(messageId: Int): Result<Message> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
             messageDto.toMessage()
+        }
+
+    override suspend fun getBlockedMessage(cursorId: Int): Result<List<BlockedMessage>> =
+        messageDataSource.getBlockedMessage(cursorId).mapCatching { listDto ->
+            listDto.messages.map { it.toBlockedMessage() }
         }
 }
