@@ -2,14 +2,17 @@ package com.bff.wespot.entire.screen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
+import com.bff.wespot.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -18,12 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 class EntireViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
+    private val navigator: Navigator,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
     fun onAction(action: EntireAction) {
         when (action) {
-            EntireAction.OnEntireScreenEntered -> getProfile()
+            EntireAction.OnEntireScreenEntered, EntireAction.OnRevokeScreenEntered -> getProfile()
+            EntireAction.OnRevokeButtonClicked -> revokeUser()
+            EntireAction.OnSignOutButtonClicked -> signOut()
+            EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
+            is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
         }
     }
 
@@ -36,6 +45,45 @@ class EntireViewModel @Inject constructor(
                 .onFailure {
                     Timber.e(it)
                 }
+        }
+    }
+
+    private fun revokeUser() = intent {
+        viewModelScope.launch {
+            // TODO Token 삭제
+            authRepository.revoke(state.revokeReasonList)
+                .onSuccess {
+                    postSideEffect(EntireSideEffect.NavigateToAuth(navigator))
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun signOut() = intent {
+        viewModelScope.launch {
+            // TODO Token 삭제
+            postSideEffect(EntireSideEffect.NavigateToAuth(navigator))
+        }
+    }
+
+    private fun handleRevokeReasonSelected(reason: String) = intent {
+        reduce {
+            val updatedList = state.revokeReasonList.toMutableList().apply {
+                if (contains(reason)) {
+                    remove(reason)
+                } else {
+                    add(reason)
+                }
+            }
+            state.copy(revokeReasonList = updatedList)
+        }
+    }
+
+    private fun handleRevokeConfirmed() = intent {
+        reduce {
+            state.copy(revokeConfirmed = state.revokeConfirmed.not())
         }
     }
 }

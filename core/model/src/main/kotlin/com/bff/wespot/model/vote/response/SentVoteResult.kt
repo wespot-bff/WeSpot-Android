@@ -7,5 +7,5 @@ data class SentVoteStorage(
 data class SentVoteResult(
     override val voteOption: VoteOption,
     override val voteCount: Int,
-    val user: VoteProfile,
+    val user: VoteUser,
 ) : StorageVoteResult(voteOption, voteCount)

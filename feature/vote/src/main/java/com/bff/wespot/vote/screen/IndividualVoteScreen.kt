@@ -34,7 +34,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.IndividualReceived
 import com.bff.wespot.model.vote.response.IndividualSent
 import com.bff.wespot.model.vote.response.Result
-import com.bff.wespot.model.vote.response.VoteProfile
+import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.vote.R
@@ -91,7 +91,7 @@ fun IndividualVoteScreen(
                     val user = result.user
                     VoteCard(
                         result = Result(
-                            user = VoteProfile(
+                            user = VoteUser(
                                 id = user.id,
                                 name = user.name,
                                 introduction = user.introduction,
@@ -120,7 +120,7 @@ fun IndividualVoteScreen(
                             val user = result.voteUsers[index]
                             VoteCard(
                                 result = Result(
-                                    user = VoteProfile(
+                                    user = VoteUser(
                                         id = user.id,
                                         name = user.name,
                                         introduction = "",

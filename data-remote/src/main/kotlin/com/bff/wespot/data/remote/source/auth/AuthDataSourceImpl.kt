@@ -1,9 +1,12 @@
 package com.bff.wespot.data.remote.source.auth
 
-import com.bff.wespot.network.extensions.safeRequest
+import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SchoolListDto
+import com.bff.wespot.network.extensions.safeRequest
+import com.bff.wespot.model.auth.request.RevokeReasonListDto
+import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
@@ -18,16 +21,16 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("api/v1/auth/signup/schools/search")
+                path("auth/signup/schools/search")
                 parameter("name", search)
             }
         }
 
-    override suspend fun sendKakaoToken(token: com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto): Result<Any> =
+    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/auth/login")
+                path("auth/login")
             }
             setBody(token)
         }
@@ -36,8 +39,17 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/auth/signup")
+                path("auth/signup")
             }
             setBody(signUp)
+        }
+
+    override suspend fun revoke(revokeReasonList: RevokeReasonListDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("auth/revoke")
+            }
+            setBody(revokeReasonList)
         }
 }

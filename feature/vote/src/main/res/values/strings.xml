@@ -35,4 +35,10 @@
     <string name="need_more_vote">더 많은 친구들의 투표가 필요해요</string>
     <string name="ask_friend">친구에게 물어보기</string>
     <string name="male">male</string>
+    <string name="not_my_classmate">우리 반 친구가 아니에요</string>
+    <string name="need_more_option">더 다양한 선택지를 원해요</string>
+    <string name="not_your_classmate">우리 반 친구가 아닌가요?</string>
+    <string name="wrong_report">우리 반 친구를 잘못 신고한 것이 확인될 경우 서비스 이용에 제한이 생실 수 았어요</string>
+    <string name="it_is_not">네 아니에요</string>
+    <string name="close">닫기</string>
 </resources>

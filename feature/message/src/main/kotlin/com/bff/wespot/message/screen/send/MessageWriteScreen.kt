@@ -123,7 +123,10 @@ fun MessageWriteScreen(
                     state.messageInput.length > MESSAGE_MAX_LENGTH -> {
                         stringResource(R.string.message_length_limit)
                     }
-                    state.hasProfanity -> stringResource(R.string.has_profanity)
+
+                    state.hasProfanity -> {
+                        stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
+                    }
                     else -> ""
                 }
 

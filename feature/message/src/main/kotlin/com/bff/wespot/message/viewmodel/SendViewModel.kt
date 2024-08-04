@@ -6,6 +6,7 @@ import com.bff.wespot.common.di.extensions.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class SendViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
+    private val checkProfanityUseCase: CheckProfanityUseCase,
 ) : ViewModel(), ContainerHost<SendUiState, SendSideEffect> {
     override val container = container<SendUiState, SendSideEffect>(SendUiState())
 
@@ -41,6 +43,7 @@ class SendViewModel @Inject constructor(
             is SendAction.OnMessageEditScreenEntered -> {
                 handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
             }
+
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
@@ -200,23 +203,14 @@ class SendViewModel @Inject constructor(
 
     private fun hasProfanity(content: String) = intent {
         viewModelScope.launch {
-            messageRepository.checkProfanity(content)
-                .onSuccess {
-                    reduce {
-                        state.copy(
-                            hasProfanity = false,
-                        )
-                    }
+            runCatching {
+                val hasProfanity = checkProfanityUseCase(content)
+                reduce {
+                    state.copy(
+                        hasProfanity = hasProfanity,
+                    )
                 }
-                .onNetworkFailure { exception ->
-                    if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
-                        reduce {
-                            state.copy(
-                                hasProfanity = true,
-                            )
-                        }
-                    }
-                }
+            }
         }
     }
 

@@ -1,8 +1,6 @@
 package com.bff.wespot.data.remote.model.vote.response
 
-import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.model.vote.response.Result
-import com.bff.wespot.model.vote.response.VoteProfile
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteResults
 import kotlinx.serialization.Serializable
@@ -29,26 +27,11 @@ data class VoteResultDto(
 
 @Serializable
 data class ResultDto(
-    val user: VoteProfileDto,
+    val user: VoteUserDto,
     val voteCount: Int,
 ) {
     fun toResult() = Result(
-        user = user.toProfile(),
+        user = user.toVoteUser(),
         voteCount = voteCount,
-    )
-}
-
-@Serializable
-data class VoteProfileDto(
-    val id: Int,
-    val name: String,
-    val introduction: String,
-    val profile: ProfileCharacterDto
-) {
-    fun toProfile() = VoteProfile(
-        id = id,
-        name = name,
-        introduction = introduction,
-        profile = profile.toProfileCharacter(),
     )
 }
