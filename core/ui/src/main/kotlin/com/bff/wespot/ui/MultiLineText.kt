@@ -36,6 +36,6 @@ fun MultiLineText(
             },
         overflow = Ellipsis,
         maxLines = line,
-        textAlign = textAlign
+        textAlign = textAlign,
     )
 }

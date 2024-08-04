@@ -119,7 +119,7 @@ internal fun VoteHomeScreen(
             cancelButtonClick = {
                 action(VoteAction.ChangeSettingDialog(false))
             },
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 
@@ -191,7 +191,7 @@ private fun VoteHomeContent(
             bannerType = WSBannerType.Primary,
             onBannerClick = {
                 navigator.navigateToSharing(context)
-            }
+            },
         )
 
         Box(

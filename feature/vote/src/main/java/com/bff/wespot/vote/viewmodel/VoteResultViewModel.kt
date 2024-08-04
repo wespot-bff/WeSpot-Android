@@ -74,7 +74,7 @@ class VoteResultViewModel @Inject constructor(
     private fun setVoteOnBoarding() = intent {
         reduce {
             state.copy(
-                onBoarding = false
+                onBoarding = false,
             )
         }
     }

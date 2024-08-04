@@ -13,7 +13,7 @@ import javax.inject.Inject
 class NavigatorImpl @Inject constructor() : Navigator {
     private val sharingName = listOf(
         "instagram",
-        "kakao"
+        "kakao",
     )
 
     override fun navigateToMain(
@@ -37,7 +37,6 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val chooser: MutableList<Intent> = mutableListOf()
         val resInfo = context.packageManager.queryIntentActivities(sendIntent, 0)
 
-
         if (resInfo.isEmpty()) {
             return
         }
@@ -46,8 +45,8 @@ class NavigatorImpl @Inject constructor() : Navigator {
             setComponent(
                 ComponentName(
                     "com.instagram.android",
-                    "com.instagram.direct.share.handler.DirectShareHandlerActivity"
-                )
+                    "com.instagram.direct.share.handler.DirectShareHandlerActivity",
+                ),
             )
             setType("text/plain")
             putExtra(Intent.EXTRA_SUBJECT, "메시지 제목")
@@ -63,7 +62,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
             Timber.d("$packageName $name")
             val containsString =
                 sharingName.any { packageName.contains(it.lowercase()) } ||
-                        sharingName.any { name.contains(it.lowercase()) }
+                    sharingName.any { name.contains(it.lowercase()) }
 
             if (containsString) {
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "메시지 제목")
@@ -82,7 +81,6 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val intent = Intent("com.instagram.share.ADD_TO_STORY")
             .apply {
                 setDataAndType(null, "image/*")
-
             }
         if (intent.resolveActivity(context.packageManager) == null) {
             redirectToPlayStoreForInstagram(context)
@@ -100,7 +98,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
     private fun redirectToPlayStoreForInstagram(context: Context) {
         val appStoreIntent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android")
+            Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"),
         )
         appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(appStoreIntent)

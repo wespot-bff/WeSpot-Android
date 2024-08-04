@@ -21,7 +21,6 @@ android {
 
         manifestPlaceholders["SCHEME_KAKAO_APP_KEY"] =
             properties.getProperty("SCHEME_KAKAO_APP_KEY")
-
     }
 
     buildFeatures {
