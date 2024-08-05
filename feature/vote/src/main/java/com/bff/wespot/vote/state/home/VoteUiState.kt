@@ -6,4 +6,5 @@ data class VoteUiState(
     val voteResults: List<VoteResult> = emptyList(),
     val isLoading: Boolean = false,
     val selectedTabIndex: Int = 0,
+    val showSettingDialog: Boolean = false,
 )

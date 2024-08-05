@@ -38,6 +38,7 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -54,6 +55,7 @@ import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
@@ -62,6 +64,7 @@ interface VoteNavigator {
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
     fun navigateToVoteStorageScreen()
+    fun navigateToCharacterScreen()
 }
 
 @Destination
@@ -99,6 +102,22 @@ internal fun VoteHomeScreen(
         }
     }
 
+    if (state.showSettingDialog) {
+        WSDialog(
+            title = stringResource(R.string.show_profile_setting),
+            subTitle = stringResource(R.string.write_introduction),
+            okButtonText = stringResource(R.string.sure),
+            cancelButtonText = stringResource(R.string.next_time),
+            okButtonClick = {
+                voteNavigator.navigateToCharacterScreen()
+                action(VoteAction.ChangeSettingDialog(false))
+            },
+            onDismissRequest = {
+                action(VoteAction.ChangeSettingDialog(false))
+            },
+        )
+    }
+
     OnLifecycleEvent { owner, event ->
         when (event) {
             Lifecycle.Event.ON_RESUME -> {
@@ -111,6 +130,11 @@ internal fun VoteHomeScreen(
 
             else -> {}
         }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(EDIT_POPUP_TIME)
+        action(VoteAction.GetSettingDialogOption)
     }
 }
 
@@ -303,3 +327,4 @@ private fun CardResultContent(
 
 private const val HOME_SCREEN = 0
 private const val RESULT_SCREEN = 1
+private const val EDIT_POPUP_TIME = 5_000L

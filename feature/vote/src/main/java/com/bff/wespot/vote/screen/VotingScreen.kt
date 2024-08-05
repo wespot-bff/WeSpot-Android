@@ -196,7 +196,7 @@ fun VotingScreen(
             title = stringResource(R.string.not_your_classmate),
             subTitle = stringResource(R.string.wrong_report),
             okButtonText = stringResource(R.string.it_is_not),
-            cancelButtonText = stringResource(R.string.close),
+            cancelButtonText = stringResource(com.bff.wespot.designsystem.R.string.close),
             okButtonClick = {
                 action(VotingAction.SendReport(state.currentVote.voteUser.id))
                 showReportDialog = false
