@@ -1,6 +1,5 @@
 package com.bff.wespot.ui
 
-import android.graphics.Color.parseColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.util.hexToColor
 
 @Composable
 fun ReservedMessageItem(
@@ -49,7 +49,7 @@ fun ReservedMessageItem(
                     .clip(CircleShape)
                     .background(
                         runCatching {
-                            Color(parseColor(backgroundColor))
+                            hexToColor(backgroundColor)
                         }.getOrDefault(WeSpotThemeManager.colors.cardBackgroundColor),
                     ),
                 contentAlignment = Alignment.Center,
