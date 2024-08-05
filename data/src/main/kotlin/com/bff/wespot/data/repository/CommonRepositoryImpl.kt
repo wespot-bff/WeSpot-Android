@@ -22,11 +22,11 @@ class CommonRepositoryImpl @Inject constructor(
 
     override suspend fun getCharacters(): Result<List<Character>> =
         commonDataSource.getCharacters()
-            .map { it.toCharacterList().characters }
+            .mapCatching { it.toCharacterList().characters }
 
     override suspend fun getBackgroundColors(): Result<List<BackgroundColor>> =
         commonDataSource.getBackgroundColors()
-            .map { it.toBackgroundColorList().backgrounds }
+            .mapCatching { it.toBackgroundColorList().backgrounds }
 
     override suspend fun EditProfile(
         introduction: String,
