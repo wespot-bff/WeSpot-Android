@@ -202,6 +202,7 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     WSButton(
+                        enabled = state.isLoading.not(),
                         onClick = {
                             navigator.navigateToSharing(context)
                         },
@@ -221,6 +222,7 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterEnd,
                 ) {
                     Button(
+                        enabled = state.isLoading.not(),
                         onClick = {
                             MainScope().launch {
                                 val bitmap = snapshot.invoke()
