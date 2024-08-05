@@ -10,4 +10,5 @@ data class EntireUiState(
     val blockedMessageList: List<BlockedMessage> = listOf(),
     val unBlockList: List<Int> = listOf(),
     val unBlockMessageId: Int = -1,
+    val isLoading: Boolean = false,
 )

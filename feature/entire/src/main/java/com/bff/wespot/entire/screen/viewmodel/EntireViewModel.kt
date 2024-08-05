@@ -90,23 +90,21 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun unblockMessage() = intent {
-        val messageId = state.unBlockMessageId
-        if (state.unBlockList.contains(messageId).not()) {
-            val updatedList = state.unBlockList.toMutableList().apply { add(messageId) }
-            reduce { state.copy(unBlockList = updatedList) }
-        }
+        reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            messageStorageRepository.blockMessage(messageId)
-                .onFailure {
-                    Timber.e(it)
-                    // 차단 해제 실패 시, 차단 해제된 목록에서 삭제
-                    if (state.unBlockList.contains(messageId)) {
+            messageStorageRepository.blockMessage(state.unBlockMessageId)
+                .onSuccess {
+                    if (state.unBlockList.contains(state.unBlockMessageId).not()) {
                         val updatedList = state.unBlockList.toMutableList().apply {
-                            remove(messageId)
+                            add(state.unBlockMessageId)
                         }
-                        reduce { state.copy(unBlockList = updatedList) }
+                        reduce { state.copy(unBlockList = updatedList, isLoading = false) }
                     }
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    Timber.e(it)
                 }
         }
     }
