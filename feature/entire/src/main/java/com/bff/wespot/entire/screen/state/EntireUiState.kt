@@ -6,4 +6,7 @@ data class EntireUiState(
     val profile: Profile = Profile(),
     val revokeReasonList: List<String> = listOf(),
     val revokeConfirmed: Boolean = false,
+    val introductionInput: String = "",
+    val hasProfanity: Boolean = false,
+    val isIntroductionEditing: Boolean = false,
 )

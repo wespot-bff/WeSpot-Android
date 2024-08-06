@@ -4,4 +4,5 @@ import com.bff.wespot.navigation.Navigator
 
 sealed class EntireSideEffect {
     data class NavigateToAuth(val navigator: Navigator) : EntireSideEffect()
+    data class ShowToast(val message: String) : EntireSideEffect()
 }
