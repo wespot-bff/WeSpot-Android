@@ -4,11 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.usecase.CheckProfanityUseCase
+import com.bff.wespot.entire.screen.common.INPUT_DEBOUNCE_TIME
+import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
 import com.bff.wespot.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -22,17 +28,28 @@ import javax.inject.Inject
 class EntireViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val checkProfanityUseCase: CheckProfanityUseCase,
     private val navigator: Navigator,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
+    private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
+
     fun onAction(action: EntireAction) {
         when (action) {
             EntireAction.OnEntireScreenEntered, EntireAction.OnRevokeScreenEntered -> getProfile()
+            EntireAction.OnProfileEditScreenEntered -> {
+                getProfile()
+                observeIntroductionInput()
+            }
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
+            EntireAction.OnIntroductionEditDoneButtonClicked -> postIntroduction()
+            is EntireAction.OnProfileEditTextFieldFocused ->
+                handleProfileEditButtonText(action.focused)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
+            is EntireAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
         }
     }
 
@@ -41,6 +58,7 @@ class EntireViewModel @Inject constructor(
             userRepository.getProfile()
                 .onSuccess { profile ->
                     reduce { state.copy(profile = profile) }
+                    handleIntroductionChanged(profile.introduction)
                 }
                 .onFailure {
                     Timber.e(it)
@@ -81,9 +99,58 @@ class EntireViewModel @Inject constructor(
         }
     }
 
+    private fun handleProfileEditButtonText(focused: Boolean) = intent {
+        reduce {
+            state.copy(isIntroductionEditing = focused)
+        }
+    }
+
     private fun handleRevokeConfirmed() = intent {
         reduce {
             state.copy(revokeConfirmed = state.revokeConfirmed.not())
+        }
+    }
+
+    private fun handleIntroductionChanged(introduction: String) = intent {
+        reduce {
+            introductionInput.value = introduction
+            state.copy(introductionInput = introduction)
+        }
+    }
+
+    private fun observeIntroductionInput() {
+        viewModelScope.launch {
+            introductionInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect { introduction ->
+                    if (introduction.length in 1..INTRODUCTION_MAX_LENGTH) {
+                        hasProfanity(introduction)
+                    }
+                }
+        }
+    }
+
+    private fun hasProfanity(introduction: String) = intent {
+        runCatching {
+            val result = checkProfanityUseCase(introduction)
+            reduce {
+                state.copy(
+                    hasProfanity = result,
+                )
+            }
+        }
+    }
+
+    private fun postIntroduction() = intent {
+        viewModelScope.launch {
+            userRepository.updateIntroduction(state.introductionInput)
+                .onSuccess {
+                    postSideEffect(EntireSideEffect.ShowToast("수정 완료"))
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 }
