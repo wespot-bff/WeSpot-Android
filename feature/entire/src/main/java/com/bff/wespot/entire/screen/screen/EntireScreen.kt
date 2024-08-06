@@ -53,6 +53,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 interface EntireNavigator {
     fun navigateUp()
     fun navigateToSetting()
+    fun navigateToProfileEditScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +90,7 @@ internal fun EntireScreen(
         ) {
             ProfileContent(
                 profile = state.profile,
-                onClick = {},
+                onClick = { navigator.navigateToProfileEditScreen() },
             )
 
             Spacer(modifier = Modifier.height(8.dp))
