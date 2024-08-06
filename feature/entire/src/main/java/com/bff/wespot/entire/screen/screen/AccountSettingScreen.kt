@@ -53,6 +53,7 @@ fun AccountSettingScreen(
                 val intent = it.navigator.navigateToAuth(context)
                 context.startActivity(intent)
             }
+            else -> {}
         }
     }
 
