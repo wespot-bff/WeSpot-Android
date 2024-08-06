@@ -74,8 +74,10 @@ internal fun EntireScreen(
                 navigateUp = { navigator.navigateUp() },
                 action = {
                     Icon(
-                        modifier = Modifier.clickable { navigator.navigateToSetting() },
-                        imageVector = ImageVector.vectorResource(R.drawable.setting),
+                        modifier = Modifier
+                            .clickable { navigator.navigateToSetting() }
+                            .padding(end = 16.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_setting),
                         contentDescription = stringResource(R.string.setting_icon),
                         tint = WeSpotThemeManager.colors.secondaryBtnColor,
                     )

@@ -57,4 +57,7 @@
     <string name="request_profile_edit_text">하단의 버튼을 눌러 변경 신청해 주세요</string>
     <string name="introduction_limit">20자 이내로 입력이 가능해요</string>
     <string name="introduction">한 줄 소개</string>
+    <string name="unblock">차단 해제</string>
+    <string name="unblock_done">해제 완료</string>
+    <string name="unblock_dialog_title">차단 해제하시나요?</string>
 </resources>

@@ -176,7 +176,7 @@ fun MessageWriteScreen(
                 navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },
-            onDismissRequest = { dialogState = false },
+            onDismissRequest = { },
         )
     }
 

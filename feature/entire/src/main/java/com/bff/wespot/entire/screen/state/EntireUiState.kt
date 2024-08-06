@@ -1,5 +1,6 @@
 package com.bff.wespot.entire.screen.state
 
+import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.model.user.response.Profile
 
 data class EntireUiState(
@@ -9,4 +10,8 @@ data class EntireUiState(
     val introductionInput: String = "",
     val hasProfanity: Boolean = false,
     val isIntroductionEditing: Boolean = false,
+    val blockedMessageList: List<BlockedMessage> = listOf(),
+    val unBlockList: List<Int> = listOf(),
+    val unBlockMessageId: Int = -1,
+    val isLoading: Boolean = false,
 )

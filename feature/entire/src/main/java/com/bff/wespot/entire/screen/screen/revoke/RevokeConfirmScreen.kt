@@ -38,6 +38,7 @@ import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
@@ -54,6 +55,7 @@ interface RevokeConfirmNavigator {
 @Composable
 fun RevokeConfirmScreen(
     navigator: RevokeConfirmNavigator,
+    activityNavigator: Navigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -66,7 +68,7 @@ fun RevokeConfirmScreen(
     viewModel.collectSideEffect {
         when (it) {
             is EntireSideEffect.NavigateToAuth -> {
-                val intent = it.navigator.navigateToAuth(context)
+                val intent = activityNavigator.navigateToAuth(context)
                 intent.putExtra(EXTRA_TOAST_MESSAGE, context.getString(R.string.revoke_done))
                 context.startActivity(intent)
             }
@@ -145,7 +147,7 @@ fun RevokeConfirmScreen(
             cancelButtonClick = {
                 action(EntireAction.OnRevokeButtonClicked)
             },
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { },
         )
     }
 }

@@ -40,19 +40,24 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var navigator: Navigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             WeSpotTheme {
-                MainScreen()
+                MainScreen(navigator)
             }
         }
     }
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen() {
+private fun MainScreen(navigator: Navigator) {
     val navController = rememberNavController()
 
     val checkScreen by navController.checkCurrentScreen()
@@ -118,7 +123,7 @@ private fun MainScreen() {
             }
         },
     ) {
-        AppNavigation(navController = navController, modifier = Modifier.padding(it))
+        AppNavigation(navController = navController, navigator, modifier = Modifier.padding(it))
     }
 }
 
