@@ -20,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,6 +45,7 @@ fun WsTextField(
     singleLine: Boolean = false,
     readOnly: Boolean = false,
     focusRequester: FocusRequester = remember { FocusRequester() },
+    onFocusChanged: (FocusState) -> Unit = { },
     keyBoardOption: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldType: WsTextFieldType = WsTextFieldType.Normal,
@@ -54,12 +57,15 @@ fun WsTextField(
                     min = textFieldType.minHeight(),
                     max = textFieldType.maxHeight(),
                 )
-                .fillMaxWidth().focusRequester(focusRequester),
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState -> onFocusChanged(focusState) },
             value = value,
             onValueChange = onValueChange,
             isError = isError,
             singleLine = singleLine,
             readOnly = readOnly,
+            enabled = textFieldType.isEnabled(),
             keyboardOptions = keyBoardOption,
             keyboardActions = keyboardActions,
             trailingIcon = if (textFieldType.trailingIcon() != null) {
@@ -100,6 +106,9 @@ fun WsTextField(
                     Primary400
                 },
                 unfocusedBorderColor = WeSpotThemeManager.colors.cardBackgroundColor,
+                disabledContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
+                disabledPlaceholderColor = Gray400,
+                disabledBorderColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 errorBorderColor = WeSpotThemeManager.colors.dangerColor,
                 errorContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 errorPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
@@ -120,6 +129,8 @@ sealed interface WsTextFieldType {
     fun minHeight(): Dp = Dp.Unspecified
 
     fun maxHeight(): Dp = Dp.Unspecified
+
+    fun isEnabled(): Boolean = true
 
     data object Normal : WsTextFieldType {
         @Composable
@@ -143,6 +154,8 @@ sealed interface WsTextFieldType {
 
         @Composable
         override fun leadingIcon() = null
+
+        override fun isEnabled(): Boolean = false
     }
 
     data object Message : WsTextFieldType {
