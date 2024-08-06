@@ -3,6 +3,7 @@ package com.bff.wespot.data.remote.source.message
 import com.bff.wespot.data.remote.model.message.request.MessageTypeDto
 import com.bff.wespot.data.remote.model.message.request.SentMessageDto
 import com.bff.wespot.data.remote.model.message.request.type
+import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.MessageListDto
@@ -64,6 +65,15 @@ class MessageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("messages/$messageId")
+            }
+        }
+
+    override suspend fun getBlockedMessage(cursorId: Int): Result<BlockedMessageListDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("messages/blocked")
+                parameter("cursorId", cursorId)
             }
         }
 }

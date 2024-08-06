@@ -60,7 +60,7 @@ fun IntroductionScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
-            contentAlignment = Alignment.CenterEnd
+            contentAlignment = Alignment.CenterEnd,
         ) {
             LetterCountIndicator(currentCount = introduction.length, maxCount = 20)
         }

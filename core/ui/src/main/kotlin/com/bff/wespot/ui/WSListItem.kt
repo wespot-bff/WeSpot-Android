@@ -1,6 +1,5 @@
 package com.bff.wespot.ui
 
-import android.graphics.Color.parseColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +30,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
+import com.bff.wespot.util.hexToColor
 
 @Composable
 fun WSListItem(
@@ -69,7 +68,7 @@ fun WSListItem(
                     .clip(CircleShape)
                     .background(
                         if (backgroundColor.isNotEmpty()) {
-                            Color(parseColor(backgroundColor))
+                            hexToColor(backgroundColor)
                         } else {
                             WeSpotThemeManager.colors.cardBackgroundColor
                         },

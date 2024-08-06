@@ -2,10 +2,12 @@ package com.bff.wespot
 
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.screen.AccountSettingNavigator
+import com.bff.wespot.entire.screen.screen.BlockListNavigator
 import com.bff.wespot.entire.screen.screen.EntireNavigator
 import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
 import com.bff.wespot.entire.screen.screen.SettingNavigator
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
@@ -61,6 +63,7 @@ class CommonNavGraphNavigator(
     AccountSettingNavigator,
     RevokeNavigator,
     RevokeConfirmNavigator,
+    BlockListNavigator,
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
@@ -137,6 +140,10 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIndividualVote(args: IndividualVoteArgs) {
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToBlockListScreen() {
+        navController.navigate(BlockListScreenDestination within navGraph)
     }
 
     override fun navigateToCharacterScreen() {

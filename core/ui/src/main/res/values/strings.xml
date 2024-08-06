@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="user_character_image">User Character Image</string>
+    <string name="message_edit">수정하기</string>
+    <string name="school_icon">school icon</string>
     <string name="select_character">%1$s님을 잘 나타낼 수 있는 \n캐릭터를 선택해 주세요</string>
     <string name="character">캐릭터 고르기</string>
     <string name="background">배경 색 고르기</string>
