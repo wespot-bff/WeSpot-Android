@@ -4,9 +4,11 @@ import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.screen.AccountSettingNavigator
 import com.bff.wespot.entire.screen.screen.EntireNavigator
 import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
+import com.bff.wespot.entire.screen.screen.ProfileEditNavigator
 import com.bff.wespot.entire.screen.screen.SettingNavigator
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
@@ -60,7 +62,8 @@ class CommonNavGraphNavigator(
     VoteResultNavigator,
     VoteStorageNavigator,
     ReservedMessageNavigator,
-    IndividualVoteNavigator {
+    IndividualVoteNavigator,
+    ProfileEditNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -130,5 +133,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIndividualVote(args: IndividualVoteArgs) {
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToProfileEditScreen() {
+        navController.navigate(ProfileEditScreenDestination within navGraph)
     }
 }
