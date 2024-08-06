@@ -7,4 +7,6 @@ interface UserRepository {
     suspend fun getUserListByName(name: String, cursorId: Int): Result<List<User>>
 
     suspend fun getProfile(): Result<Profile>
+
+    suspend fun updateIntroduction(introduction: String): Result<Unit>
 }
