@@ -10,6 +10,7 @@ import com.bff.wespot.navigation.util.buildIntent
 import timber.log.Timber
 import javax.inject.Inject
 
+
 class NavigatorImpl @Inject constructor() : Navigator {
     private val sharingName = listOf(
         "instagram",
