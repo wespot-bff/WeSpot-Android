@@ -2,6 +2,7 @@ package com.bff.wespot.entire.screen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -12,10 +13,17 @@ import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
+import com.bff.wespot.model.common.BackgroundColor
+import com.bff.wespot.model.common.Character
+import com.bff.wespot.model.user.response.ProfileCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -29,17 +37,37 @@ import javax.inject.Inject
 class EntireViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
-    private val checkProfanityUseCase: CheckProfanityUseCase,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
+    private val commonRepository: CommonRepository,
+    private val checkProfanityUseCase: CheckProfanityUseCase,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
     private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
 
+    val characters: StateFlow<List<Character>> = flow {
+        commonRepository.getCharacters().onSuccess { emit(it) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList(),
+    )
+
+    val backgroundColor: StateFlow<List<BackgroundColor>> = flow {
+        commonRepository.getBackgroundColors().onSuccess { emit(it) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList(),
+    )
+
     fun onAction(action: EntireAction) {
         when (action) {
-            EntireAction.OnEntireScreenEntered, EntireAction.OnRevokeScreenEntered -> getProfile()
+            EntireAction.OnEntireScreenEntered,
+            EntireAction.OnRevokeScreenEntered,
+            EntireAction.OnCharacterEditScreenEntered,
+            -> getProfile()
             EntireAction.OnProfileEditScreenEntered -> {
                 getProfile()
                 observeIntroductionInput()
@@ -47,7 +75,7 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
-            EntireAction.OnIntroductionEditDoneButtonClicked -> postIntroduction()
+            EntireAction.OnIntroductionEditDoneButtonClicked -> updateIntroduction()
             EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
             EntireAction.UnBlockMessage -> unblockMessage()
             is EntireAction.OnProfileEditTextFieldFocused ->
@@ -55,6 +83,7 @@ class EntireViewModel @Inject constructor(
             is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
             is EntireAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
+            is EntireAction.OnCharacterEditDoneButtonClicked -> updateCharacter(action.character)
         }
     }
 
@@ -183,14 +212,32 @@ class EntireViewModel @Inject constructor(
         }
     }
 
-    private fun postIntroduction() = intent {
+    private fun updateIntroduction() = intent {
+        reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
             userRepository.updateIntroduction(state.introductionInput)
                 .onSuccess {
-                    postSideEffect(EntireSideEffect.ShowToast("수정 완료"))
+                    postSideEffect(EntireSideEffect.ShowToast)
+                    reduce { state.copy(isLoading = false) }
                 }
                 .onFailure {
                     Timber.e(it)
+                    reduce { state.copy(isLoading = false) }
+                }
+        }
+    }
+
+    private fun updateCharacter(character: ProfileCharacter) = intent {
+        reduce { state.copy(isLoading = true) }
+        viewModelScope.launch {
+            userRepository.updateCharacter(character = character)
+                .onSuccess {
+                    postSideEffect(EntireSideEffect.NavigateToEntire)
+                    reduce { state.copy(isLoading = false) }
+                }
+                .onFailure {
+                    Timber.e(it)
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }
