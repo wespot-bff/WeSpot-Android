@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen
+package com.bff.wespot.entire.screen.screen.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -62,13 +63,19 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ProfileEditNavigator {
     fun navigateUp()
+    fun navigateToCharacterEditScreen()
 }
 
+data class ProfileEditNavArgs(
+    val isCompleteProfileEdit: Boolean,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination(navArgsDelegate = ProfileEditNavArgs::class)
 @Composable
 fun ProfileEditScreen(
     navigator: ProfileEditNavigator,
+    navArgs: ProfileEditNavArgs,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
     var showErrorToast by remember { mutableStateOf(false) }
@@ -81,7 +88,7 @@ fun ProfileEditScreen(
     val state by viewModel.collectAsState()
     viewModel.collectSideEffect {
         when (it) {
-            is EntireSideEffect.ShowToast -> {
+            EntireSideEffect.ShowToast -> {
                 showSuccessToast = true
                 focusManager.clearFocus()
             }
@@ -106,7 +113,7 @@ fun ProfileEditScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box {
+            Box(modifier = Modifier.clickable { navigator.navigateToCharacterEditScreen() }) {
                 Box(
                     modifier = Modifier
                         .size(90.dp)
@@ -183,24 +190,27 @@ fun ProfileEditScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            val isEdited = state.profile.introduction != state.introductionInput
-            WSButton(
-                onClick = {
-                    action(EntireAction.OnIntroductionEditDoneButtonClicked)
-                },
-                enabled = if (state.isIntroductionEditing) {
-                    isEdited && state.hasProfanity.not() && state.introductionInput.length in 1..20
-                } else {
-                    true
-                },
-                text = stringResource(
-                    id = if (state.isIntroductionEditing) {
-                        R.string.edit_done
-                    } else {
-                        R.string.request_change_profile
+            if (state.isIntroductionEditing) {
+                val isEdited = state.profile.introduction != state.introductionInput
+                WSButton(
+                    onClick = {
+                        action(EntireAction.OnIntroductionEditDoneButtonClicked)
                     },
-                ),
-            ) { it() }
+                    enabled =
+                        isEdited &&
+                            state.hasProfanity.not() &&
+                            state.introductionInput.length in 1..20,
+                    text = stringResource(id = R.string.edit_done),
+                    content = { it() },
+                )
+            } else {
+                WSButton(
+                    // TODO 카카오톡 리다이렉션
+                    onClick = { },
+                    text = stringResource(R.string.request_change_profile),
+                    content = { it() },
+                )
+            }
         }
     }
 
@@ -224,8 +234,20 @@ fun ProfileEditScreen(
         }
     }
 
+    if (state.isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(enabled = false) { },
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
     LaunchedEffect(Unit) {
         action(EntireAction.OnProfileEditScreenEntered)
+        showSuccessToast = navArgs.isCompleteProfileEdit
     }
 }
 
