@@ -9,17 +9,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.toggle.WSSwitch
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
+import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
+import com.bff.wespot.entire.screen.viewmodel.NotificationSettingViewModel
+import com.bff.wespot.util.OnLifecycleEvent
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectAsState
 
 interface NotificationSettingNavigator {
     fun navigateUp()
@@ -30,7 +38,11 @@ interface NotificationSettingNavigator {
 @Destination
 fun NotificationSettingScreen(
     navigator: NotificationSettingNavigator,
+    viewModel: NotificationSettingViewModel = hiltViewModel(),
 ) {
+    val action = viewModel::onAction
+    val state by viewModel.collectAsState()
+
     Scaffold(
         topBar = {
             WSTopBar(
@@ -50,24 +62,55 @@ fun NotificationSettingScreen(
             NotificationSettingItem(
                 title = stringResource(R.string.vote),
                 subTitle = stringResource(R.string.vote_notification_title),
-                switchValue = true,
-                onToggled = { },
+                switchValue = state.isEnableVoteNotification,
+                onToggled = {
+                    action(
+                        NotificationSettingAction.OnVoteNotificationSwitched(
+                            state.isEnableVoteNotification.not(),
+                        ),
+                    )
+                },
             )
 
             NotificationSettingItem(
                 title = stringResource(R.string.mind),
                 subTitle = stringResource(R.string.mind_notification_title),
-                switchValue = true,
-                onToggled = { },
+                switchValue = state.isEnableMessageNotification,
+                onToggled = {
+                    action(
+                        NotificationSettingAction.OnMessageNotificationSwitched(
+                            state.isEnableMessageNotification.not(),
+                        ),
+                    )
+                },
             )
 
             NotificationSettingItem(
                 title = stringResource(R.string.event_benefit),
                 subTitle = stringResource(R.string.event_benefit_notification_title),
-                switchValue = false,
-                onToggled = { },
+                switchValue = state.isEnableEventNotification,
+                onToggled = {
+                    action(
+                        NotificationSettingAction.OnEventNotificationSwitched(
+                            state.isEnableEventNotification.not(),
+                        ),
+                    )
+                },
             )
         }
+    }
+
+    OnLifecycleEvent { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_STOP -> {
+                action(NotificationSettingAction.OnNotificationSettingScreenExited)
+            }
+            else -> { }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        action(NotificationSettingAction.OnNotificationSettingScreenEntered)
     }
 }
 
