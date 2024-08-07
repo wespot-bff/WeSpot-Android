@@ -6,7 +6,6 @@ import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SchoolListDto
 import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.model.auth.request.RevokeReasonListDto
-import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody

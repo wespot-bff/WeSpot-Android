@@ -123,7 +123,11 @@ private fun MainScreen(navigator: Navigator) {
             }
         },
     ) {
-        AppNavigation(navController = navController, navigator, modifier = Modifier.padding(it))
+        AppNavigation(
+            navController = navController,
+            modifier = Modifier.padding(it),
+            navigator = navigator,
+        )
     }
 }
 

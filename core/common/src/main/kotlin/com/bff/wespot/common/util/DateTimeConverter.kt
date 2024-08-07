@@ -20,7 +20,7 @@ fun String.timeDifference(): Long {
 }
 
 fun Long.toDateString(date: String): String =
-    when(this) {
+    when (this) {
         0L -> {
             "오늘"
         }
@@ -32,9 +32,8 @@ fun Long.toDateString(date: String): String =
         }
     }
 
-
 private fun String.toKoreanWeekDay() =
-    when(this) {
+    when (this) {
         "MONDAY" -> "월요일"
         "TUESDAY" -> "화요일"
         "WEDNESDAY" -> "수요일"

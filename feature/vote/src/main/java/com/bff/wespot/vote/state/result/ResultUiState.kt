@@ -7,4 +7,5 @@ data class ResultUiState(
     val error: String = "",
     val voteResults: VoteResults = VoteResults(emptyList()),
     val isVoting: Boolean,
+    val onBoarding: Boolean = false,
 )

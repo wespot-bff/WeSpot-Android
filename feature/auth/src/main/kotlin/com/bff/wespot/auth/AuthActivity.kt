@@ -114,6 +114,7 @@ class AuthActivity : ComponentActivity() {
                         engine = engine,
                         dependenciesContainerBuilder = {
                             dependency(viewModel)
+                            dependency(navigator)
                         },
                     )
                 }
