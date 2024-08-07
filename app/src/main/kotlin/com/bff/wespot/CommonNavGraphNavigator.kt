@@ -1,21 +1,24 @@
 package com.bff.wespot
 
 import androidx.navigation.NavController
-import com.bff.wespot.entire.screen.screen.AccountSettingNavigator
-import com.bff.wespot.entire.screen.screen.BlockListNavigator
 import com.bff.wespot.entire.screen.screen.EntireNavigator
-import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
-import com.bff.wespot.entire.screen.screen.ProfileEditNavigator
-import com.bff.wespot.entire.screen.screen.SettingNavigator
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
-import com.bff.wespot.entire.screen.screen.revoke.RevokeConfirmNavigator
-import com.bff.wespot.entire.screen.screen.revoke.RevokeNavigator
+import com.bff.wespot.entire.screen.screen.edit.CharacterEditNavigator
+import com.bff.wespot.entire.screen.screen.edit.ProfileEditNavArgs
+import com.bff.wespot.entire.screen.screen.edit.ProfileEditNavigator
+import com.bff.wespot.entire.screen.screen.setting.AccountSettingNavigator
+import com.bff.wespot.entire.screen.screen.setting.BlockListNavigator
+import com.bff.wespot.entire.screen.screen.setting.NotificationSettingNavigator
+import com.bff.wespot.entire.screen.screen.setting.RevokeConfirmNavigator
+import com.bff.wespot.entire.screen.screen.setting.RevokeNavigator
+import com.bff.wespot.entire.screen.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
@@ -72,6 +75,7 @@ class CommonNavGraphNavigator(
     ReservedMessageNavigator,
     IndividualVoteNavigator,
     ProfileEditNavigator,
+    CharacterEditNavigator,
     CharacterSettingNavigator,
     IntroductionNavigator {
     override fun navigateUp() {
@@ -145,10 +149,6 @@ class CommonNavGraphNavigator(
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
     }
 
-    override fun navigateToProfileEditScreen() {
-        navController.navigate(ProfileEditScreenDestination within navGraph)
-    }
-
     override fun navigateToBlockListScreen() {
         navController.navigate(BlockListScreenDestination within navGraph)
     }
@@ -159,5 +159,13 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIntroduction(args: IntroductionArgs) {
         navController.navigate(IntroductionScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToCharacterEditScreen() {
+        navController.navigate(CharacterEditScreenDestination within navGraph)
+    }
+
+    override fun navigateToProfileEditScreen(args: ProfileEditNavArgs) {
+        navController.navigate(ProfileEditScreenDestination(args) within navGraph)
     }
 }
