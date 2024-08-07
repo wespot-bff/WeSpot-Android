@@ -1,6 +1,7 @@
 package com.bff.wespot.data.remote.source.user
 
 import com.bff.wespot.data.remote.model.user.request.IntroductionDto
+import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.data.remote.model.user.response.UserListDto
 import com.bff.wespot.data.remote.model.user.response.ProfileDto
@@ -39,5 +40,14 @@ class UserDataSourceImpl @Inject constructor(
                 path("users/me")
             }
             setBody(introduction)
+        }
+
+    override suspend fun updateCharacter(character: ProfileCharacterDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("users/me")
+            }
+            setBody(character)
         }
 }
