@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":data-remote"))
     implementation(project(":data-local"))
     implementation(project(":core:model"))
+    implementation(project(":core:navigation"))
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.kotlin.serialization.json)

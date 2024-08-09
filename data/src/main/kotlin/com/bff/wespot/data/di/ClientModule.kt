@@ -1,13 +1,16 @@
 package com.bff.wespot.data.di
 
+import android.content.Context
 import com.bff.wespot.data.remote.BuildConfig
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.navigation.Navigator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -46,6 +49,8 @@ object ClientModule {
     @Provides
     @Singleton
     fun provideHttpClient(
+        @ApplicationContext context: Context,
+        navigator: Navigator,
         repository: DataStoreRepository,
     ): HttpClient = HttpClient(CIO) {
         defaultRequest {
@@ -103,6 +108,11 @@ object ClientModule {
                     val expire =
                         repository.getString(DataStoreKey.REFRESH_TOKEN_EXPIRED_AT)
                             .first()
+
+                    if (checkExpire(expire)) {
+                        repository.clear()
+                        navigator.navigateToAuth(context)
+                    }
 
                     val refreshToken = repository.getString(DataStoreKey.REFRESH_TOKEN)
                         .first()
