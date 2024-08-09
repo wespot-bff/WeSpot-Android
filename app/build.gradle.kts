@@ -16,6 +16,9 @@ android {
 
     defaultConfig {
         buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
+
+        buildConfigField("String", "FACEBOOK_APP_ID", properties.getProperty("FACEBOOK_APP_ID"))
+
         manifestPlaceholders["SCHEME_KAKAO_APP_KEY"] =
             properties.getProperty("SCHEME_KAKAO_APP_KEY")
     }
@@ -40,6 +43,7 @@ dependencies {
     implementation(project(":feature:vote"))
     implementation(project(":feature:message"))
     implementation(project(":feature:entire"))
+    implementation(project(":feature:notification"))
 
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)

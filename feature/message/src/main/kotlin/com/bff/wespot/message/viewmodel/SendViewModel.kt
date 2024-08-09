@@ -2,7 +2,7 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.common.di.extensions.onNetworkFailure
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.UserRepository

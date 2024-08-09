@@ -18,8 +18,8 @@
     <string name="account_setting">계정 관리</string>
     <string name="vote">투표</string>
     <string name="vote_notification_title">우리반 투표 및 결과 알림</string>
-    <string name="mind">마음</string>
-    <string name="mind_notification_title">오늘의 마음 보내기 및 내가 받은 마음 알림</string>
+    <string name="message">쪽지</string>
+    <string name="message_notification_title">오늘의 쪽지 보내기 및 받은 쪽지 관련 알림</string>
     <string name="event_benefit">이벤트 혜택</string>
     <string name="event_benefit_notification_title">광고성 정보 수신 동의에 의한 이벤트 혜택 알림</string>
     <string name="sign_out">로그아웃</string>

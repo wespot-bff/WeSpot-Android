@@ -34,6 +34,8 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.notification.screen.NotificationNavigator
+import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.vote.screen.CharacterSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
@@ -76,6 +78,7 @@ class CommonNavGraphNavigator(
     IndividualVoteNavigator,
     ProfileEditNavigator,
     CharacterEditNavigator,
+    NotificationNavigator,
     CharacterSettingNavigator,
     IntroductionNavigator {
     override fun navigateUp() {
@@ -107,6 +110,7 @@ class CommonNavGraphNavigator(
     }
 
     override fun navigateNotificationScreen() {
+        navController.navigate(NotificationScreenDestination within navGraph)
     }
 
     override fun navigateToResultScreen(args: VoteResultScreenArgs) {
