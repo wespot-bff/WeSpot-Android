@@ -13,6 +13,9 @@ dependencies {
     implementation(project(":data-local"))
     implementation(project(":core:model"))
 
+    implementation(libs.bundles.ktor.client)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.timber)
     implementation(libs.junit)
     implementation(libs.kakao.sdk)
     implementation(libs.datastore)
