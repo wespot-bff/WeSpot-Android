@@ -1,7 +1,7 @@
 package com.bff.wespot.data.di
 
 import android.content.Context
-import com.bff.wespot.data.remote.BuildConfig
+import com.bff.wespot.data.BuildConfig
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -55,7 +55,7 @@ object ClientModule {
     ): HttpClient = HttpClient(CIO) {
         defaultRequest {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-            url("https://wespot.kro.kr/api/v1/")
+            url(BuildConfig.BASE_URL)
         }
 
         install(HttpTimeout) {
