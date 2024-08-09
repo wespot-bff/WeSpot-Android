@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.wespot.android.library)
     alias(libs.plugins.wespot.android.compose)
     alias(libs.plugins.wespot.android.ktlint)
+    alias(libs.plugins.wespot.android.hilt)
 }
 
 android {
@@ -16,4 +17,5 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.coil.core)
     implementation(libs.coil.compose)
+    implementation(libs.timber)
 }

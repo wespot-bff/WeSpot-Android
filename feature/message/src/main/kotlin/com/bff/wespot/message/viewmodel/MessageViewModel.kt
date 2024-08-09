@@ -11,7 +11,7 @@ import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
-import com.bff.wespot.model.ReportType
+import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
@@ -26,7 +27,10 @@ import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestina
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
+import com.bff.wespot.vote.screen.destinations.IntroductionScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
@@ -53,6 +57,8 @@ object AppNavGraphs {
             VoteResultScreenDestination,
             VoteStorageScreenDestination,
             IndividualVoteScreenDestination,
+            CharacterSettingScreenDestination,
+            IntroductionScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -84,6 +90,7 @@ object AppNavGraphs {
             AccountSettingScreenDestination,
             RevokeScreenDestination,
             RevokeConfirmScreenDestination,
+            BlockListScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -153,6 +160,7 @@ fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavi
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
     val engine = rememberNavHostEngine(
@@ -172,8 +180,10 @@ internal fun AppNavigation(
         modifier = modifier,
         dependenciesContainerBuilder = {
             dependency(currentNavigator())
+            dependency(navigator)
             dependency(sendViewModel)
             dependency(votingViewModel)
+            dependency(navigator)
         },
     )
 }

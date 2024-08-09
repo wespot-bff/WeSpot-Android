@@ -36,12 +36,12 @@ data class NotificationDto (
 
     private fun String.convertToNotificationType(): NotificationType {
         return when (this) {
-            MESSAGE.name -> NotificationType.MESSAGE
-            MESSAGE_SENT.name -> NotificationType.MESSAGE_SENT
-            MESSAGE_RECEIVED.name -> NotificationType.MESSAGE_RECEIVED
-            VOTE.name -> NotificationType.VOTE
-            VOTE_RESULT.name -> NotificationType.VOTE_RESULT
-            VOTE_RECEIVED.name -> NotificationType.VOTE_RECEIVED
+            NotificationType.MESSAGE.name -> NotificationType.MESSAGE
+            NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE_SENT
+            NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE_RECEIVED
+            NotificationType.VOTE.name -> NotificationType.VOTE
+            NotificationType.VOTE_RESULT.name -> NotificationType.VOTE_RESULT
+            NotificationType.VOTE_RECEIVED.name -> NotificationType.VOTE_RECEIVED
             else -> NotificationType.IDLE
         }
     }

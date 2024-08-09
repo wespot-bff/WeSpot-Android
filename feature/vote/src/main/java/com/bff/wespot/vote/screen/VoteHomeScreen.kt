@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,12 +39,14 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
@@ -54,6 +57,7 @@ import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.VoteHomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
@@ -62,6 +66,7 @@ interface VoteNavigator {
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
     fun navigateToVoteStorageScreen()
+    fun navigateToCharacterScreen()
 }
 
 @Destination
@@ -69,6 +74,7 @@ interface VoteNavigator {
 internal fun VoteHomeScreen(
     viewModel: VoteHomeViewModel = hiltViewModel(),
     voteNavigator: VoteNavigator,
+    navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -87,6 +93,7 @@ internal fun VoteHomeScreen(
                     HOME_SCREEN -> VoteHomeContent(
                         viewModel = viewModel,
                         voteNavigator = voteNavigator,
+                        navigator = navigator,
                     )
 
                     RESULT_SCREEN -> CardResultContent(
@@ -97,6 +104,23 @@ internal fun VoteHomeScreen(
                 }
             }
         }
+    }
+
+    if (state.showSettingDialog) {
+        WSDialog(
+            title = stringResource(R.string.show_profile_setting),
+            subTitle = stringResource(R.string.write_introduction),
+            okButtonText = stringResource(R.string.sure),
+            cancelButtonText = stringResource(R.string.next_time),
+            okButtonClick = {
+                voteNavigator.navigateToCharacterScreen()
+                action(VoteAction.ChangeSettingDialog(false))
+            },
+            cancelButtonClick = {
+                action(VoteAction.ChangeSettingDialog(false))
+            },
+            onDismissRequest = {},
+        )
     }
 
     OnLifecycleEvent { owner, event ->
@@ -111,6 +135,11 @@ internal fun VoteHomeScreen(
 
             else -> {}
         }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(EDIT_POPUP_TIME)
+        action(VoteAction.GetSettingDialogOption)
     }
 }
 
@@ -147,16 +176,22 @@ private fun VoteTopBar(
 private fun VoteHomeContent(
     viewModel: VoteHomeViewModel,
     voteNavigator: VoteNavigator,
+    navigator: Navigator,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
     ) {
+        val context = LocalContext.current
+
         WSBanner(
             icon = painterResource(id = com.bff.wespot.ui.R.drawable.send),
             title = stringResource(id = R.string.invite_friend),
             subTitle = stringResource(id = R.string.invite_friend_description),
             bannerType = WSBannerType.Primary,
+            onBannerClick = {
+                navigator.navigateToSharing(context)
+            },
         )
 
         Box(
@@ -303,3 +338,4 @@ private fun CardResultContent(
 
 private const val HOME_SCREEN = 0
 private const val RESULT_SCREEN = 1
+private const val EDIT_POPUP_TIME = 5_000L

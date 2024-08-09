@@ -15,8 +15,11 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -24,6 +27,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
@@ -47,6 +51,14 @@ fun WsTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldType: WsTextFieldType = WsTextFieldType.Normal,
 ) {
+    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+
+    LaunchedEffect(value) {
+        if (value != textFieldValueState.text) {
+            textFieldValueState = textFieldValueState.copy(text = value)
+        }
+    }
+
     Box(modifier = Modifier.wrapContentSize()) {
         OutlinedTextField(
             modifier = Modifier
@@ -55,8 +67,11 @@ fun WsTextField(
                     max = textFieldType.maxHeight(),
                 )
                 .fillMaxWidth().focusRequester(focusRequester),
-            value = value,
-            onValueChange = onValueChange,
+            value = textFieldValueState,
+            onValueChange = { newTextFieldValue ->
+                textFieldValueState = newTextFieldValue
+                onValueChange(newTextFieldValue.text)
+            },
             isError = isError,
             singleLine = singleLine,
             readOnly = readOnly,

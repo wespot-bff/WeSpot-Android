@@ -40,5 +40,11 @@
     <string name="not_your_classmate">우리 반 친구가 아닌가요?</string>
     <string name="wrong_report">우리 반 친구를 잘못 신고한 것이 확인될 경우 서비스 이용에 제한이 생실 수 았어요</string>
     <string name="it_is_not">네 아니에요</string>
-    <string name="close">닫기</string>
+    <string name="show_profile_setting">프로필 설정을 해볼까요?</string>
+    <string name="write_introduction">친구들이 알아볼 수 있도록\n캐릭터 선택과 한 줄 소개 작성을 완료해 주세요</string>
+    <string name="sure">네 좋아요</string>
+    <string name="next_time">다음에 할래요</string>
+    <string name="quite_setting">프로필 설정을 중단하시나요?</string>
+    <string name="auto_select">선택하셨던 캐릭터와 배경색은 저장되지 않으며\n기본 캐릭터와 배경색으로 자동 설정됩니다</string>
+    <string name="yes_stop">네 중단할래요</string>
 </resources>

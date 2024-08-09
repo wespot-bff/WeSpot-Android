@@ -229,7 +229,7 @@ fun MessageEditScreen(
                     navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { exitDialog = false },
-                onDismissRequest = { exitDialog = false },
+                onDismissRequest = { },
             )
         }
 
@@ -241,7 +241,7 @@ fun MessageEditScreen(
                 cancelButtonText = stringResource(R.string.cancel),
                 okButtonClick = { action(SendAction.OnSendButtonClicked) },
                 cancelButtonClick = { reserveDialog = false },
-                onDismissRequest = { reserveDialog = false },
+                onDismissRequest = { },
             )
         }
 
@@ -255,7 +255,7 @@ fun MessageEditScreen(
                     navigator.navigateMessageScreen(args = MessageScreenArgs(false))
                 },
                 cancelButtonClick = { timeoutDialog = false },
-                onDismissRequest = { timeoutDialog = false },
+                onDismissRequest = { },
             )
         }
     }

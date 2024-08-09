@@ -87,6 +87,7 @@ fun WSBanner(
     title: String,
     icon: Painter? = null,
     subTitle: String? = null,
+    onBannerClick: () -> Unit = {},
     bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     Box(
@@ -94,6 +95,7 @@ fun WSBanner(
             .padding(16.dp)
             .height(80.dp)
             .fillMaxWidth()
+            .clickable { onBannerClick.invoke() }
             .clip(WeSpotThemeManager.shapes.medium)
             .background(bannerType.backgroundColor()),
     ) {
@@ -107,8 +109,8 @@ fun WSBanner(
                     painter = icon,
                     contentDescription = stringResource(id = R.string.banner_icon),
                     modifier = Modifier
-                        .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
-                    tint = WeSpotThemeManager.colors.secondaryBtnColor,
+                        .padding(20.dp),
+                    tint = WeSpotThemeManager.colors.txtTitleColor,
                 )
             }
 

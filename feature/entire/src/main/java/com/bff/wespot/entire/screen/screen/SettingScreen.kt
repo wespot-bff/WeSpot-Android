@@ -26,6 +26,7 @@ interface SettingNavigator {
     fun navigateUp()
     fun navigateToNotificationSetting()
     fun navigateToAccountSetting()
+    fun navigateToBlockListScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,8 +43,10 @@ fun SettingScreen(
                 navigateUp = { navigator.navigateUp() },
                 action = {
                     Icon(
-                        modifier = Modifier.clickable { navigator.navigateToNotificationSetting() },
-                        imageVector = ImageVector.vectorResource(R.drawable.setting),
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickable { navigator.navigateToNotificationSetting() },
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_setting),
                         contentDescription = stringResource(R.string.setting_icon),
                         tint = WeSpotThemeManager.colors.secondaryBtnColor,
                     )
@@ -83,6 +86,7 @@ fun SettingScreen(
             )
 
             EntireListItem(text = stringResource(R.string.block_list)) {
+                navigator.navigateToBlockListScreen()
             }
 
             EntireListItem(text = stringResource(R.string.account_setting)) {

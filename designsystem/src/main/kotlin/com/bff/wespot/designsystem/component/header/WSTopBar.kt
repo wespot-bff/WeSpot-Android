@@ -2,7 +2,6 @@ package com.bff.wespot.designsystem.component.header
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -63,7 +62,6 @@ fun WSTopBar(
         },
         actions = {
             action(StaticTypeScale.Default.body4)
-            Spacer(modifier = Modifier.padding(end = 12.dp))
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(

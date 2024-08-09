@@ -2,10 +2,12 @@ package com.bff.wespot
 
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.screen.AccountSettingNavigator
+import com.bff.wespot.entire.screen.screen.BlockListNavigator
 import com.bff.wespot.entire.screen.screen.EntireNavigator
 import com.bff.wespot.entire.screen.screen.NotificationSettingNavigator
 import com.bff.wespot.entire.screen.screen.SettingNavigator
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
@@ -29,14 +31,19 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
+import com.bff.wespot.vote.screen.CharacterSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
+import com.bff.wespot.vote.screen.IntroductionArgs
+import com.bff.wespot.vote.screen.IntroductionNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
 import com.bff.wespot.vote.screen.VoteResultNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VoteStorageNavigator
 import com.bff.wespot.vote.screen.VotingNavigator
+import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
+import com.bff.wespot.vote.screen.destinations.IntroductionScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
@@ -58,12 +65,15 @@ class CommonNavGraphNavigator(
     AccountSettingNavigator,
     RevokeNavigator,
     RevokeConfirmNavigator,
+    BlockListNavigator,
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
     ReservedMessageNavigator,
     IndividualVoteNavigator,
-    NotificationNavigator {
+    NotificationNavigator,
+    CharacterSettingNavigator,
+    IntroductionNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -134,5 +144,17 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIndividualVote(args: IndividualVoteArgs) {
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToBlockListScreen() {
+        navController.navigate(BlockListScreenDestination within navGraph)
+    }
+
+    override fun navigateToCharacterScreen() {
+        navController.navigate(CharacterSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToIntroduction(args: IntroductionArgs) {
+        navController.navigate(IntroductionScreenDestination(args) within navGraph)
     }
 }

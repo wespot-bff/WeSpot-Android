@@ -33,4 +33,5 @@
     <string name="blocked_message_title">\n차단 처리된 쪽지입니다</string>
     <string name="reported_message_title">\n신고 처리된 쪽지입니다</string>
     <string name="has_profanity">비속어가 포함되어 있어요</string>
+    <string name="close">닫기</string>
 </resources>
