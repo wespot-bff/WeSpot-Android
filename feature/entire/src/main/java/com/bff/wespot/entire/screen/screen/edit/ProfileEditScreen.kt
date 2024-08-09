@@ -50,9 +50,9 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.state.EntireSideEffect
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.screen.state.edit.EntireEditAction
+import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
+import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.util.hexToColor
@@ -77,7 +77,7 @@ data class ProfileEditNavArgs(
 fun ProfileEditScreen(
     navigator: ProfileEditNavigator,
     navArgs: ProfileEditNavArgs,
-    viewModel: EntireViewModel = hiltViewModel(),
+    viewModel: EntireEditViewModel = hiltViewModel(),
 ) {
     var toast by remember { mutableStateOf(ToastState()) }
     val coroutineScope = rememberCoroutineScope()
@@ -88,7 +88,7 @@ fun ProfileEditScreen(
     val state by viewModel.collectAsState()
     viewModel.collectSideEffect {
         when (it) {
-            is EntireSideEffect.ShowToast -> {
+            is EntireEditSideEffect.ShowToast -> {
                 toast = it.toastState
                 focusManager.clearFocus()
             }
@@ -185,7 +185,7 @@ fun ProfileEditScreen(
                 title = stringResource(R.string.introduction),
                 content = state.introductionInput,
                 hasProfanity = state.hasProfanity,
-                onValueChange = { value -> action(EntireAction.OnIntroductionChanged(value)) },
+                onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
                 onFocusChanged = { focusState ->
                     if (focusState.isFocused) {
                         // 포커스 상태일 떄, 화면 제일 하단으로 스크롤
@@ -194,7 +194,7 @@ fun ProfileEditScreen(
                             scrollState.animateScrollTo(scrollState.maxValue)
                         }
                     }
-                    action(EntireAction.OnProfileEditTextFieldFocused(focusState.isFocused))
+                    action(EntireEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
                 },
             )
 
@@ -206,7 +206,7 @@ fun ProfileEditScreen(
                 val isEdited = state.profile.introduction != state.introductionInput
                 WSButton(
                     onClick = {
-                        action(EntireAction.OnIntroductionEditDoneButtonClicked)
+                        action(EntireEditAction.OnIntroductionEditDoneButtonClicked)
                     },
                     enabled =
                         isEdited &&
@@ -251,7 +251,7 @@ fun ProfileEditScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(EntireAction.OnProfileEditScreenEntered(navArgs.isCompleteProfileEdit))
+        action(EntireEditAction.OnProfileEditScreenEntered(navArgs.isCompleteProfileEdit))
     }
 }
 

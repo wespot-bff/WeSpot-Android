@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.state.EntireSideEffect
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.screen.state.edit.EntireEditAction
+import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
+import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.ui.CharacterScreen
 import com.ramcosta.composedestinations.annotation.Destination
@@ -33,7 +33,7 @@ interface CharacterEditNavigator {
 @Composable
 fun CharacterEditScreen(
     navigator: CharacterEditNavigator,
-    viewModel: EntireViewModel = hiltViewModel(),
+    viewModel: EntireEditViewModel = hiltViewModel(),
 ) {
     val color by viewModel.backgroundColor.collectAsStateWithLifecycle()
     val character by viewModel.characters.collectAsStateWithLifecycle()
@@ -42,7 +42,7 @@ fun CharacterEditScreen(
     val state by viewModel.collectAsState()
     viewModel.collectSideEffect {
         when (it) {
-            EntireSideEffect.NavigateToEntire -> {
+            EntireEditSideEffect.NavigateToEntire -> {
                 navigator.navigateToProfileEditScreen(
                     ProfileEditNavArgs(true),
                 )
@@ -75,7 +75,7 @@ fun CharacterEditScreen(
                 colorList = color,
             ) { iconUrl, color ->
                 action(
-                    EntireAction.OnCharacterEditDoneButtonClicked(
+                    EntireEditAction.OnCharacterEditDoneButtonClicked(
                         ProfileCharacter(iconUrl, color),
                     ),
                 )
