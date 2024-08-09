@@ -53,6 +53,7 @@ import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -78,8 +79,7 @@ fun ProfileEditScreen(
     navArgs: ProfileEditNavArgs,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
-    var showErrorToast by remember { mutableStateOf(false) }
-    var showSuccessToast by remember { mutableStateOf(false) }
+    var toast by remember { mutableStateOf(ToastState()) }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
@@ -88,8 +88,8 @@ fun ProfileEditScreen(
     val state by viewModel.collectAsState()
     viewModel.collectSideEffect {
         when (it) {
-            EntireSideEffect.ShowToast -> {
-                showSuccessToast = true
+            is EntireSideEffect.ShowToast -> {
+                toast = it.toastState
                 focusManager.clearFocus()
             }
             else -> {}
@@ -147,7 +147,11 @@ fun ProfileEditScreen(
                 content = state.profile.name,
                 onClick = {
                     focusManager.clearFocus()
-                    showErrorToast = true
+                    toast = ToastState(
+                        show = true,
+                        message = R.string.request_profile_edit_text,
+                        type = WSToastType.Error,
+                    )
                 },
             )
 
@@ -156,7 +160,11 @@ fun ProfileEditScreen(
                 content = state.profile.gender,
                 onClick = {
                     focusManager.clearFocus()
-                    showErrorToast = true
+                    toast = ToastState(
+                        show = true,
+                        message = R.string.request_profile_edit_text,
+                        type = WSToastType.Error,
+                    )
                 },
             )
 
@@ -165,7 +173,11 @@ fun ProfileEditScreen(
                 content = state.profile.toSchoolInfo(),
                 onClick = {
                     focusManager.clearFocus()
-                    showErrorToast = true
+                    toast = ToastState(
+                        show = true,
+                        message = R.string.request_profile_edit_text,
+                        type = WSToastType.Error,
+                    )
                 },
             )
 
@@ -214,21 +226,14 @@ fun ProfileEditScreen(
         }
     }
 
-    if (showErrorToast || showSuccessToast) {
+    if (toast.show) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             WSToast(
-                text = stringResource(R.string.request_profile_edit_text),
-                toastType = WSToastType.Error,
-                showToast = showErrorToast,
-                closeToast = { showErrorToast = false },
-            )
-
-            WSToast(
-                text = stringResource(R.string.edit_done),
-                toastType = WSToastType.Success,
-                showToast = showSuccessToast,
+                text = stringResource(toast.message),
+                showToast = toast.show,
+                toastType = toast.type,
                 closeToast = {
-                    showSuccessToast = false
+                    toast = toast.copy(show = false)
                 },
             )
         }
@@ -246,8 +251,7 @@ fun ProfileEditScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(EntireAction.OnProfileEditScreenEntered)
-        showSuccessToast = navArgs.isCompleteProfileEdit
+        action(EntireAction.OnProfileEditScreenEntered(navArgs.isCompleteProfileEdit))
     }
 }
 

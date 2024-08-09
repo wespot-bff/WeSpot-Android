@@ -2,17 +2,20 @@ package com.bff.wespot.entire.screen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
+import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.screen.state.EntireAction
 import com.bff.wespot.entire.screen.state.EntireSideEffect
 import com.bff.wespot.entire.screen.state.EntireUiState
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.user.response.ProfileCharacter
@@ -68,16 +71,19 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnRevokeScreenEntered,
             EntireAction.OnCharacterEditScreenEntered,
             -> getProfile()
-            EntireAction.OnProfileEditScreenEntered -> {
-                getProfile()
-                observeIntroductionInput()
-            }
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnIntroductionEditDoneButtonClicked -> updateIntroduction()
             EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
             EntireAction.UnBlockMessage -> unblockMessage()
+            is EntireAction.OnProfileEditScreenEntered -> {
+                getProfile()
+                observeIntroductionInput()
+                if (action.isCompleteEdit) {
+                    postEditDoneSideToast()
+                }
+            }
             is EntireAction.OnProfileEditTextFieldFocused ->
                 handleProfileEditButtonText(action.focused)
             is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
@@ -201,6 +207,18 @@ class EntireViewModel @Inject constructor(
         }
     }
 
+    private fun postEditDoneSideToast() = intent {
+        postSideEffect(
+            EntireSideEffect.ShowToast(
+                ToastState(
+                    show = true,
+                    message = R.string.edit_done,
+                    type = WSToastType.Success,
+                ),
+            ),
+        )
+    }
+
     private fun hasProfanity(introduction: String) = intent {
         runCatching {
             val result = checkProfanityUseCase(introduction)
@@ -217,7 +235,7 @@ class EntireViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.updateIntroduction(state.introductionInput)
                 .onSuccess {
-                    postSideEffect(EntireSideEffect.ShowToast)
+                    postEditDoneSideToast()
                     reduce { state.copy(isLoading = false) }
                 }
                 .onFailure {
