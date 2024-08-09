@@ -17,9 +17,6 @@ class MessageStorageRepositoryImpl @Inject constructor(
     override suspend fun blockMessage(messageId: Int): Result<Unit> =
         messageStorageDataSource.blockMessage(messageId = messageId)
 
-    override suspend fun reportMessage(messageId: Int): Result<Unit> =
-        messageStorageDataSource.reportMessage(messageId = messageId)
-
     override suspend fun getReservedMessage(): Result<List<Message>> =
         messageStorageDataSource.getReservedMessage().mapCatching { list ->
             list.messages.map {

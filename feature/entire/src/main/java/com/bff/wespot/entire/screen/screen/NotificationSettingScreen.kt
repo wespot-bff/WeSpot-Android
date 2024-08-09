@@ -73,9 +73,9 @@ fun NotificationSettingScreen(
             )
 
             NotificationSettingItem(
-                title = stringResource(R.string.mind),
-                subTitle = stringResource(R.string.mind_notification_title),
-                switchValue = state.isEnableMessageNotification,
+                title = stringResource(R.string.message),
+                subTitle = stringResource(R.string.message_notification_title),
+                switchValue = true,
                 onToggled = {
                     action(
                         NotificationSettingAction.OnMessageNotificationSwitched(

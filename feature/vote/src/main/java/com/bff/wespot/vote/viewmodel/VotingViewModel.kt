@@ -2,7 +2,7 @@ package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.common.di.extensions.onNetworkFailure
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.model.common.ReportType

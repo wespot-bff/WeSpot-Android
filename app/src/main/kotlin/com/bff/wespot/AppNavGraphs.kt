@@ -26,6 +26,7 @@ import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
@@ -94,6 +95,17 @@ object AppNavGraphs {
             .associateBy { it.route }
     }
 
+    val notification = object : NavGraphSpec {
+        override val route = "notification"
+
+        override val startRoute = NotificationScreenDestination routedIn this
+
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            NotificationScreenDestination,
+        ).routedIn(this)
+            .associateBy { it.route }
+    }
+
     val root = object : NavGraphSpec {
         override val route = "root"
 
@@ -105,6 +117,7 @@ object AppNavGraphs {
             vote,
             message,
             entire,
+            notification,
         )
     }
 }
@@ -170,6 +183,7 @@ internal fun AppNavigation(
             dependency(navigator)
             dependency(sendViewModel)
             dependency(votingViewModel)
+            dependency(navigator)
         },
     )
 }

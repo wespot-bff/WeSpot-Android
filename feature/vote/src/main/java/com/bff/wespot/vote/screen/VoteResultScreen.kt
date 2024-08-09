@@ -1,8 +1,13 @@
 package com.bff.wespot.vote.screen
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -53,16 +60,18 @@ import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.theme.Primary100
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.ui.saveImage
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
@@ -70,6 +79,8 @@ import com.bff.wespot.vote.ui.EmptyResultScreen
 import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
 
@@ -88,16 +99,45 @@ data class VoteResultScreenArgs(
 )
 @Composable
 fun VoteResultScreen(
-    navigator: VoteResultNavigator,
+    voteNavigator: VoteResultNavigator,
+    navigator: Navigator,
     viewModel: VoteResultViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val context = LocalContext.current
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
     var voteType by remember {
         mutableStateOf(TODAY)
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val intent = it.data
+        }
+    }
+
+    if (state.onBoarding) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x00000000).copy(alpha = 0.4f))
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+
+                        val (x, y) = dragAmount
+                        when {
+                            x < 0 -> {
+                                action(ResultAction.SetVoteOnBoarding)
+                            }
+                        }
+                    }
+                }
+                .zIndex(1f),
+        )
     }
 
     Scaffold(
@@ -114,7 +154,7 @@ fun VoteResultScreen(
                     WSTextButton(
                         text = stringResource(id = R.string.go_to_home),
                         onClick = {
-                            navigator.navigateToVoteHome()
+                            voteNavigator.navigateToVoteHome()
                         },
                     )
                 }
@@ -122,7 +162,7 @@ fun VoteResultScreen(
                 WSTopBar(
                     title = "",
                     canNavigateBack = true,
-                    navigateUp = { navigator.navigateUp() },
+                    navigateUp = { voteNavigator.navigateUp() },
                 )
             }
         },
@@ -145,11 +185,13 @@ fun VoteResultScreen(
                 )
             }
 
-            WSCarousel(pagerState = pagerState) { page ->
-                VoteResultItem(
-                    result = state.voteResults.voteResults[page],
-                    empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
-                )
+            val snapshot = CaptureBitmap {
+                WSCarousel(pagerState = pagerState) { page ->
+                    VoteResultItem(
+                        result = state.voteResults.voteResults[page],
+                        empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+                    )
+                }
             }
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
@@ -160,7 +202,10 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     WSButton(
-                        onClick = { },
+                        enabled = state.isLoading.not(),
+                        onClick = {
+                            navigator.navigateToSharing(context)
+                        },
                         paddingValues = PaddingValues(
                             end = 87.dp,
                         ),
@@ -177,12 +222,23 @@ fun VoteResultScreen(
                     contentAlignment = Alignment.CenterEnd,
                 ) {
                     Button(
-                        onClick = { },
+                        enabled = state.isLoading.not(),
+                        onClick = {
+                            MainScope().launch {
+                                val bitmap = snapshot.invoke()
+                                val uri = saveImage(bitmap, context)
+
+                                if (uri != null) {
+                                    val intent = navigator.navigateToInstaStory(context, uri)
+                                    launcher.launch(intent)
+                                }
+                            }
+                        },
                         modifier = Modifier.size(52.dp),
                         shape = WeSpotThemeManager.shapes.medium,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                            contentColor = Primary100,
+                            contentColor = Color(0xFFEAEBEC),
                         ),
                         contentPadding = PaddingValues(1.dp),
                     ) {
@@ -218,6 +274,16 @@ fun VoteResultScreen(
                 today.minusDays(voteType.toLong()).toDateString(),
             ),
         )
+    }
+
+    LaunchedEffect(Unit) {
+        if (state.isVoting) {
+            action(ResultAction.GetOnBoarding)
+        }
+    }
+
+    BackHandler {
+        voteNavigator.navigateToVoteHome()
     }
 }
 

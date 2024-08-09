@@ -1,6 +1,7 @@
 package com.bff.wespot.common.util
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -19,8 +20,19 @@ fun String.timeDifference(): Long {
     return daysDifference
 }
 
+fun LocalDateTime.toDateString(): String {
+    val currentDateTime = LocalDateTime.now()
+    val daysBetween = ChronoUnit.DAYS.between(this, currentDateTime)
+
+    return when (daysBetween) {
+        0L -> "오늘"
+        in 1..7 -> "${daysBetween}일 전"
+        else -> this.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+    }
+}
+
 fun Long.toDateString(date: String): String =
-    when(this) {
+    when (this) {
         0L -> {
             "오늘"
         }
@@ -32,9 +44,8 @@ fun Long.toDateString(date: String): String =
         }
     }
 
-
 private fun String.toKoreanWeekDay() =
-    when(this) {
+    when (this) {
         "MONDAY" -> "월요일"
         "TUESDAY" -> "화요일"
         "WEDNESDAY" -> "수요일"

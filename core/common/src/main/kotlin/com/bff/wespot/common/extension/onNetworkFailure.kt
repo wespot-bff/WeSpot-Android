@@ -1,4 +1,4 @@
-package com.bff.wespot.common.di.extensions
+package com.bff.wespot.common.extension
 
 import com.bff.wespot.model.exception.NetworkException
 

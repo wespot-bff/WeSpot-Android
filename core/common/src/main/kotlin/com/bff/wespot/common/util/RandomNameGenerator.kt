@@ -9,7 +9,9 @@ class RandomNameGenerator {
         )
 
         private val animalList = listOf(
-            "얼룩말", "코알라", "기린",
+            "얼룩말",
+            "코알라",
+            "기린",
         )
     }
 }
