@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":feature:vote"))
     implementation(project(":feature:message"))
     implementation(project(":feature:entire"))
+    implementation(project(":feature:notification"))
 
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)

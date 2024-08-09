@@ -34,14 +34,6 @@ class MessageStorageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun reportMessage(messageId: Int): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Post
-                path("messages/$messageId/report")
-            }
-        }
-
     override suspend fun getReservedMessage(): Result<ReservedMessageListDto> =
         httpClient.safeRequest {
             url {
