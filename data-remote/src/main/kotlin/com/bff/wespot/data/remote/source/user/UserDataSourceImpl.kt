@@ -48,6 +48,6 @@ class UserDataSourceImpl @Inject constructor(
                 method = HttpMethod.Put
                 path("users/settings")
             }
-            setBody(NotificationSettingDto)
+            setBody(notificationSetting)
         }
 }
