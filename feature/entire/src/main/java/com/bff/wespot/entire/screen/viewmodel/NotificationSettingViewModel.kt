@@ -25,8 +25,9 @@ class NotificationSettingViewModel @Inject constructor(
 
     fun onAction(action: NotificationSettingAction) {
         when (action) {
-            NotificationSettingAction.OnNotificationSettingScreenEntered ->
-                getNotificationSetting()
+            NotificationSettingAction.OnNotificationSettingScreenEntered -> {
+                handleScreenEntered()
+            }
             is NotificationSettingAction.OnVoteNotificationSwitched -> {
                 handleVoteNotificationSwitched(action.isSwitched)
             }
@@ -42,19 +43,28 @@ class NotificationSettingViewModel @Inject constructor(
         }
     }
 
-    private fun getNotificationSetting() = intent {
+    private fun handleScreenEntered() = intent {
+        if (state.hasScreenBeenEntered) {
+            return@intent
+        }
+        reduce {
+            state.copy(isLoading = true, hasScreenBeenEntered = true)
+        }
+
         viewModelScope.launch {
             userRepository.getNotificationSetting()
                 .onSuccess { setting ->
                     reduce {
                         state.copy(
+                            isLoading = false,
                             isEnableVoteNotification = setting.isEnableVoteNotification,
                             isEnableMessageNotification = setting.isEnableMessageNotification,
-                            isEnableEventNotification = setting.isEnableEventNotification,
+                            isEnableMarketingNotification = setting.isEnableMarketingNotification,
                         )
                     }
                 }
                 .onFailure {
+                    reduce { state.copy(isLoading = false) }
                     Timber.e(it)
                 }
         }
@@ -69,7 +79,7 @@ class NotificationSettingViewModel @Inject constructor(
     }
 
     private fun handleEventNotificationSwitched(isSwitched: Boolean) = intent {
-        reduce { state.copy(isEnableEventNotification = isSwitched) }
+        reduce { state.copy(isEnableMarketingNotification = isSwitched) }
     }
 
     private fun postNotificationSetting() = intent {
@@ -78,7 +88,7 @@ class NotificationSettingViewModel @Inject constructor(
                 NotificationSetting(
                     isEnableVoteNotification = state.isEnableVoteNotification,
                     isEnableMessageNotification = state.isEnableMessageNotification,
-                    isEnableEventNotification = state.isEnableEventNotification,
+                    isEnableMarketingNotification = state.isEnableMarketingNotification,
                 ),
             ).onFailure {
                 Timber.e(it)
