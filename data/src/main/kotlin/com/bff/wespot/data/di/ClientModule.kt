@@ -58,52 +58,21 @@ object ClientModule {
             url(BuildConfig.BASE_URL)
         }
 
-        install(HttpTimeout) {
-            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
-        }
-
-        install(ContentNegotiation) {
-            json(
-                json = Json {
-                    encodeDefaults = true // Default 값 포함한 직렬화 수행
-                    isLenient = true // 비표준 Json 형식 허용
-                    prettyPrint = true
-                    ignoreUnknownKeys = true
-                }
-            )
-        }
-
-        install(Logging) {
-            level = LogLevel.ALL
-            logger = object : Logger {
-                override fun log(message: String) {
-                    if (BuildConfig.DEBUG) {
-                        Timber.i(message)
-                    }
-                }
-            }
-        }
-
-        HttpResponseValidator {
-            this.validateResponse {
-                if (it.request.url.toString().contains("api/v1/auth/login")) {
-                    when (it.status.value) {
-                        200 -> {
-                            val parsedBody = it.body<AuthTokenDto>()
-                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
-                        }
-
-                        202 -> {
-                            val parsedBody = it.body<SignUpTokenDto>()
-                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
-                        }
-                    }
-                }
-            }
-        }
-
         install(Auth) {
             bearer {
+                loadTokens {
+                    val accessToken = repository.getString(DataStoreKey.ACCESS_TOKEN)
+                        .first()
+
+                    val refreshToken = repository.getString(DataStoreKey.REFRESH_TOKEN)
+                        .first()
+
+                    BearerTokens(
+                        accessToken = accessToken,
+                        refreshToken = refreshToken,
+                    )
+                }
+
                 refreshTokens {
                     val expire =
                         repository.getString(DataStoreKey.REFRESH_TOKEN_EXPIRED_AT)
@@ -144,17 +113,49 @@ object ClientModule {
                         refreshToken = token.refreshToken
                     )
                 }
+            }
+        }
 
-                loadTokens {
-                    val accessToken = repository.getString(DataStoreKey.ACCESS_TOKEN)
-                        .first()
+        install(HttpTimeout) {
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
+        }
 
-                    val refreshToken = repository.getString(DataStoreKey.REFRESH_TOKEN)
-                        .first()
-                    BearerTokens(
-                        accessToken = accessToken,
-                        refreshToken = refreshToken,
-                    )
+        install(ContentNegotiation) {
+            json(
+                json = Json {
+                    encodeDefaults = true // Default 값 포함한 직렬화 수행
+                    isLenient = true // 비표준 Json 형식 허용
+                    prettyPrint = true
+                    ignoreUnknownKeys = true
+                }
+            )
+        }
+
+        install(Logging) {
+            level = LogLevel.ALL
+            logger = object : Logger {
+                override fun log(message: String) {
+                    if (BuildConfig.DEBUG) {
+                        Timber.i(message)
+                    }
+                }
+            }
+        }
+
+        HttpResponseValidator {
+            this.validateResponse {
+                if (it.request.url.toString().contains("api/v1/auth/login")) {
+                    when (it.status.value) {
+                        200 -> {
+                            val parsedBody = it.body<AuthTokenDto>()
+                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
+                        }
+
+                        202 -> {
+                            val parsedBody = it.body<SignUpTokenDto>()
+                            it.call.attributes.put(AttributeKey("parsedBody"), parsedBody)
+                        }
+                    }
                 }
             }
         }
