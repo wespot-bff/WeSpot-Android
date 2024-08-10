@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.auth
 
+import com.bff.wespot.data.remote.extensions.invalidateBearerTokens
 import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
@@ -25,23 +26,30 @@ class AuthDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> =
-        httpClient.safeRequest {
+    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> {
+        val client = httpClient.safeRequest<Any> {
             url {
                 method = HttpMethod.Post
                 path("auth/login")
             }
             setBody(token)
         }
+        httpClient.invalidateBearerTokens()
+        return client
+    }
 
-    override suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto> =
-        httpClient.safeRequest {
+    override suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto> {
+        val client = httpClient.safeRequest<AuthTokenDto> {
             url {
                 method = HttpMethod.Post
                 path("auth/signup")
             }
             setBody(signUp)
         }
+
+        httpClient.invalidateBearerTokens()
+        return client
+    }
 
     override suspend fun revoke(revokeReasonList: RevokeReasonListDto): Result<Unit> =
         httpClient.safeRequest {
