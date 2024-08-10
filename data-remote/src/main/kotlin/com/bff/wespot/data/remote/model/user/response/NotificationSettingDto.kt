@@ -7,11 +7,11 @@ import kotlinx.serialization.Serializable
 data class NotificationSettingDto (
     val isEnableVoteNotification: Boolean,
     val isEnableMessageNotification: Boolean,
-    val isEnableEventNotification: Boolean,
+    val isEnableMarketingNotification: Boolean,
 ) {
     fun toNotificationSetting(): NotificationSetting = NotificationSetting(
         isEnableVoteNotification = isEnableVoteNotification,
         isEnableMessageNotification = isEnableMessageNotification,
-        isEnableEventNotification = isEnableEventNotification,
+        isEnableMarketingNotification = isEnableMarketingNotification,
     )
 }
