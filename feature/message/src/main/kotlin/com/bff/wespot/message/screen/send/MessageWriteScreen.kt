@@ -28,11 +28,11 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
-import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
+import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -76,9 +76,11 @@ fun MessageWriteScreen(
                 },
                 action = {
                     Text(
-                        modifier = Modifier.clickable {
-                            dialogState = true
-                        },
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickable {
+                                dialogState = true
+                            },
                         text = stringResource(id = R.string.close),
                         style = StaticTypeScale.Default.body4,
                         color = WeSpotThemeManager.colors.abledTxtColor,
@@ -161,22 +163,12 @@ fun MessageWriteScreen(
     }
 
     if (dialogState) {
-        WSDialog(
-            title = stringResource(
-                if (state.isReservedMessage) {
-                    R.string.edit_exit_dialog_title
-                } else {
-                    R.string.send_exit_dialog_title
-                },
-            ),
-            subTitle = stringResource(R.string.send_exit_dialog_subtitle),
-            okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
-            cancelButtonText = stringResource(id = R.string.close),
+        SendExitDialog(
+            isReservedMessage = state.isReservedMessage,
             okButtonClick = {
                 navigator.navigateMessageScreen(args = MessageScreenArgs(false))
             },
             cancelButtonClick = { dialogState = false },
-            onDismissRequest = { },
         )
     }
 
