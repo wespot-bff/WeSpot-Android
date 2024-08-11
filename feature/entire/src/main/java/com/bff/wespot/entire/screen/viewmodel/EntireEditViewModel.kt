@@ -13,17 +13,11 @@ import com.bff.wespot.entire.screen.state.edit.EntireEditAction
 import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.screen.state.edit.EntireEditUiState
 import com.bff.wespot.model.ToastState
-import com.bff.wespot.model.common.BackgroundColor
-import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.user.response.ProfileCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -43,25 +37,11 @@ class EntireEditViewModel @Inject constructor(
 
     private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
 
-    val characters: StateFlow<List<Character>> = flow {
-        commonRepository.getCharacters().onSuccess { emit(it) }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList(),
-    )
-
-    val backgroundColor: StateFlow<List<BackgroundColor>> = flow {
-        commonRepository.getBackgroundColors().onSuccess { emit(it) }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList(),
-    )
-
     fun onAction(action: EntireEditAction) {
         when (action) {
-            EntireEditAction.OnCharacterEditScreenEntered -> getProfile()
+            EntireEditAction.OnCharacterEditScreenEntered -> {
+                handleCharacterEditScreenEntered()
+            }
             EntireEditAction.OnIntroductionEditDoneButtonClicked -> updateIntroduction()
             is EntireEditAction.OnProfileEditScreenEntered -> {
                 getProfile()
@@ -74,6 +54,32 @@ class EntireEditViewModel @Inject constructor(
                 handleProfileEditButtonText(action.focused)
             is EntireEditAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
             is EntireEditAction.OnCharacterEditDoneButtonClicked -> updateCharacter(action.character)
+        }
+    }
+
+    private fun handleCharacterEditScreenEntered() = intent {
+        viewModelScope.launch {
+            launch {
+                userRepository.getProfile()
+                    .onSuccess { profile -> reduce { state.copy(profile = profile) } }
+                    .onFailure { Timber.e(it) }
+            }
+
+            launch {
+                commonRepository.getBackgroundColors()
+                    .onSuccess { backgroundColorList ->
+                        reduce { state.copy(backgroundColorList = backgroundColorList) }
+                    }
+                    .onFailure { Timber.e(it) }
+            }
+
+            launch {
+                commonRepository.getCharacters()
+                    .onSuccess { characterList ->
+                        reduce { state.copy(characterList = characterList) }
+                    }
+                    .onFailure { Timber.e(it) }
+            }
         }
     }
 
@@ -103,13 +109,15 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun observeIntroductionInput() {
+    private fun observeIntroductionInput() = intent {
         viewModelScope.launch {
             introductionInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect { introduction ->
-                    if (introduction.length in 1..INTRODUCTION_MAX_LENGTH) {
+                    if (introduction.length in 1..INTRODUCTION_MAX_LENGTH &&
+                        introduction != state.profile.introduction
+                    ) {
                         hasProfanity(introduction)
                     }
                 }

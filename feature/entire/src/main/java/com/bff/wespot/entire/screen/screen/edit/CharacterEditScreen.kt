@@ -8,11 +8,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.entire.screen.state.edit.EntireEditAction
 import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
@@ -35,9 +35,6 @@ fun CharacterEditScreen(
     navigator: CharacterEditNavigator,
     viewModel: EntireEditViewModel = hiltViewModel(),
 ) {
-    val color by viewModel.backgroundColor.collectAsStateWithLifecycle()
-    val character by viewModel.characters.collectAsStateWithLifecycle()
-
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
     viewModel.collectSideEffect {
@@ -51,7 +48,15 @@ fun CharacterEditScreen(
         }
     }
 
-    if (color.isEmpty() || character.isEmpty()) {
+    // 상태가 없는 경우 아래 조건문에서 return 하기 때문에, LaunchedEffect를 상위로 선언
+    LaunchedEffect(Unit) {
+        action(EntireEditAction.OnCharacterEditScreenEntered)
+    }
+
+    if (state.characterList.isEmpty() ||
+        state.backgroundColorList.isEmpty() ||
+        state.profile.name.isEmpty()
+    ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
@@ -71,8 +76,8 @@ fun CharacterEditScreen(
             CharacterScreen(
                 name = state.profile.name,
                 isEditing = true,
-                characterList = character,
-                colorList = color,
+                characterList = state.characterList,
+                colorList = state.backgroundColorList,
             ) { iconUrl, color ->
                 action(
                     EntireEditAction.OnCharacterEditDoneButtonClicked(
