@@ -26,6 +26,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -37,9 +38,11 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -67,6 +70,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainScreen(navigator: Navigator) {
     val navController = rememberNavController()
+    var toast by remember { mutableStateOf(ToastState()) }
 
     val checkScreen by navController.checkCurrentScreen()
 
@@ -122,7 +126,21 @@ private fun MainScreen(navigator: Navigator) {
             navController = navController,
             modifier = Modifier.padding(it),
             navigator = navigator,
+            showToast = { toastState -> toast = toastState }
         )
+    }
+
+    if (toast.show) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            WSToast(
+                text = stringResource(toast.message),
+                showToast = toast.show,
+                toastType = toast.type,
+                closeToast = {
+                    toast = toast.copy(show = false)
+                },
+            )
+        }
     }
 }
 
