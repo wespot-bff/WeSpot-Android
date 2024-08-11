@@ -2,15 +2,18 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
+import com.bff.wespot.message.R
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
@@ -219,7 +222,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageStorageRepository.deleteMessage(messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("삭제 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.delete_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
@@ -229,7 +240,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             commonRepository.sendReport(ReportType.MESSAGE, messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("신고 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.report_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
@@ -239,7 +258,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageStorageRepository.blockMessage(messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("차단 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.block_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
