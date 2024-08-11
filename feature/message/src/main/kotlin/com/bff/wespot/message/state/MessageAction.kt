@@ -8,7 +8,11 @@ sealed class MessageAction {
     data object OnHomeScreenEntered : MessageAction()
     data object OnReservedMessageScreenEntered : MessageAction()
     data class OnStorageChipSelected(val messageType: MessageType) : MessageAction()
-    data class OnMessageItemClicked(val message: Message) : MessageAction()
+    data class OnMessageStorageScreenOpened(
+        val messageId: Int,
+        val type: MessageType,
+    ) : MessageAction()
+    data class OnMessageItemClicked(val message: Message, val type: MessageType) : MessageAction()
     data class OnOptionButtonClicked(val message: Message) : MessageAction()
     data class OnOptionBottomSheetClicked(
         val messageOptionType: MessageOptionType,

@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -56,6 +57,7 @@ import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
@@ -66,6 +68,8 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun MessageStorageScreen(
     viewModel: MessageViewModel,
+    type: NotificationType,
+    messageId: Int,
     navigateToReservedMessageScreen: () -> Unit,
     showToast: (String) -> Unit,
 ) {
@@ -84,6 +88,10 @@ fun MessageStorageScreen(
         when (it) {
             is MessageSideEffect.ShowToast -> {
                 showToast(it.message)
+            }
+
+            is MessageSideEffect.ShowMessageDialog -> {
+                showMessageDialog = true
             }
         }
     }
@@ -119,7 +127,12 @@ fun MessageStorageScreen(
                                     WSMessageItemType.UnreadReceivedMessage
                                 },
                                 itemClick = {
-                                    action(MessageAction.OnMessageItemClicked(item))
+                                    action(
+                                        MessageAction.OnMessageItemClicked(
+                                            message = item,
+                                            type = MessageType.RECEIVED,
+                                        ),
+                                    )
                                     showMessageDialog = true
                                 },
                                 optionButtonClick = {
@@ -183,7 +196,12 @@ fun MessageStorageScreen(
                                     else -> WSMessageItemType.UnreadSentMessage
                                 },
                                 itemClick = {
-                                    action(MessageAction.OnMessageItemClicked(item))
+                                    action(
+                                        MessageAction.OnMessageItemClicked(
+                                            message = item,
+                                            type = MessageType.SENT,
+                                        ),
+                                    )
                                     showMessageDialog = true
                                 },
                                 optionButtonClick = {
@@ -281,6 +299,38 @@ fun MessageStorageScreen(
             onDismissRequest = { showMessageOptionDialog = false },
             cancelButtonClick = { showMessageOptionDialog = false },
         )
+    }
+
+    if (state.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        when (type) {
+            NotificationType.MESSAGE_RECEIVED -> {
+                selectedChipIndex = RECEIVED_MESSAGE_INDEX
+                action(
+                    MessageAction.OnMessageStorageScreenOpened(
+                        messageId = messageId,
+                        type = MessageType.RECEIVED,
+                    ),
+                )
+            }
+
+            NotificationType.MESSAGE_SENT -> {
+                selectedChipIndex = SENT_MESSAGE_INDEX
+                action(
+                    MessageAction.OnMessageStorageScreenOpened(
+                        messageId = messageId,
+                        type = MessageType.SENT,
+                    ),
+                )
+            }
+
+            else -> { }
+        }
     }
 
     LaunchedEffect(selectedChipIndex) {
