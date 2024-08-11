@@ -1,16 +1,12 @@
 package com.bff.wespot.entire.screen.screen.edit
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -19,6 +15,7 @@ import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.ui.CharacterScreen
+import com.bff.wespot.ui.LoadingAnimation
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -57,9 +54,7 @@ fun CharacterEditScreen(
         state.backgroundColorList.isEmpty() ||
         state.profile.name.isEmpty()
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
         return
     }
 
@@ -89,13 +84,6 @@ fun CharacterEditScreen(
     }
 
     if (state.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(enabled = false) { },
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 }

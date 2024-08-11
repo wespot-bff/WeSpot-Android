@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -55,6 +54,7 @@ import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LetterCountIndicator
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -240,14 +240,7 @@ fun ProfileEditScreen(
     }
 
     if (state.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(enabled = false) { },
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 
     LaunchedEffect(Unit) {
