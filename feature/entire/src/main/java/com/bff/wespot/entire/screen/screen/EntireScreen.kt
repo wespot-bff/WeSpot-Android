@@ -52,7 +52,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 interface EntireNavigator {
-    fun navigateUp()
     fun navigateToSetting()
     fun navigateToProfileEditScreen(args: ProfileEditNavArgs)
 }
@@ -71,8 +70,6 @@ internal fun EntireScreen(
         topBar = {
             WSTopBar(
                 title = "",
-                canNavigateBack = true,
-                navigateUp = { navigator.navigateUp() },
                 action = {
                     Icon(
                         modifier = Modifier

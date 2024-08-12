@@ -72,12 +72,13 @@ private fun MainScreen(navigator: Navigator) {
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
 
-    val checkScreen by navController.checkCurrentScreen()
+    val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
+    val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (checkScreen) {
+            if (isTopNavigationScreen) {
                 WSTopBar(
                     title = "",
                     navigation = {
@@ -110,7 +111,7 @@ private fun MainScreen(navigator: Navigator) {
             }
         },
         bottomBar = {
-            if (checkScreen) {
+            if (isBottomNavigationScreen) {
                 val currentSelectedItem by navController.currentScreenAsState()
                 BottomNavigationTab(
                     selectedNavigation = currentSelectedItem,
@@ -195,12 +196,12 @@ private fun NavController.currentScreenAsState(): State<NavGraphSpec> {
 
 @Stable
 @Composable
-private fun NavController.checkCurrentScreen(): State<Boolean> {
+private fun NavController.checkCurrentScreen(position: NavigationBarPosition): State<Boolean> {
     val showBar = remember { mutableStateOf(false) }
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            showBar.value = destination.checkDestination()
+            showBar.value = destination.checkDestination(position)
         }
 
         addOnDestinationChangedListener(listener)
