@@ -73,11 +73,7 @@ fun NotificationSettingScreen(
                 subTitle = stringResource(R.string.vote_notification_title),
                 switchValue = state.isEnableVoteNotification,
                 onSwitched = {
-                    action(
-                        NotificationSettingAction.OnVoteNotificationSwitched(
-                            state.isEnableVoteNotification.not(),
-                        ),
-                    )
+                    action(NotificationSettingAction.OnVoteNotificationSwitched)
                 },
             )
 
@@ -86,11 +82,7 @@ fun NotificationSettingScreen(
                 subTitle = stringResource(R.string.message_notification_title),
                 switchValue = state.isEnableMessageNotification,
                 onSwitched = {
-                    action(
-                        NotificationSettingAction.OnMessageNotificationSwitched(
-                            state.isEnableMessageNotification.not(),
-                        ),
-                    )
+                    action(NotificationSettingAction.OnMessageNotificationSwitched)
                 },
             )
 
@@ -99,11 +91,7 @@ fun NotificationSettingScreen(
                 subTitle = stringResource(R.string.event_benefit_notification_title),
                 switchValue = state.isEnableMarketingNotification,
                 onSwitched = {
-                    action(
-                        NotificationSettingAction.OnEventNotificationSwitched(
-                            state.isEnableMarketingNotification.not(),
-                        ),
-                    )
+                    action(NotificationSettingAction.OnEventNotificationSwitched)
                 },
             )
         }
@@ -111,7 +99,7 @@ fun NotificationSettingScreen(
 
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_STOP -> {
+            Lifecycle.Event.ON_PAUSE -> {
                 action(NotificationSettingAction.OnNotificationSettingScreenExited)
             }
             else -> { }
