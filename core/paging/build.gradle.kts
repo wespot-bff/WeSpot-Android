@@ -7,8 +7,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
+
     implementation(libs.junit)
     implementation(libs.timber)
-    implementation(project(":core:model"))
     implementation(libs.paging3)
 }
