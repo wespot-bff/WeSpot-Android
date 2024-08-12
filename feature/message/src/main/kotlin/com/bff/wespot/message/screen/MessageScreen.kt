@@ -27,6 +27,7 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.notification.NotificationType
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
@@ -39,6 +40,8 @@ interface MessageNavigator {
 
 data class MessageScreenArgs(
     val isMessageSent: Boolean = false,
+    val type: NotificationType = NotificationType.IDLE,
+    val messageId: Int = -1,
 )
 
 @Destination(navArgsDelegate = MessageScreenArgs::class)
@@ -97,6 +100,8 @@ internal fun MessageScreen(
                     STORAGE_SCREEN_INDEX -> {
                         MessageStorageScreen(
                             viewModel = viewModel,
+                            type = navArgs.type,
+                            messageId = navArgs.messageId,
                             navigateToReservedMessageScreen = {
                                 messageNavigator.navigateToReservedMessageScreen(
                                     args = ReservedMessageScreenArgs(false),
@@ -140,6 +145,12 @@ internal fun MessageScreen(
 
     LaunchedEffect(Unit) {
         messageSentToast = navArgs.isMessageSent
+        when (navArgs.type) {
+            NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
+                selectedTabIndex = STORAGE_SCREEN_INDEX
+            }
+            else -> { }
+        }
         sendViewModel.onAction(SendAction.OnReservedMessageScreenEntered)
     }
 }

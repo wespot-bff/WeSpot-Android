@@ -226,7 +226,7 @@ fun ReceiverSelectionScreen(
             okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                navigator.navigateMessageScreen(args = MessageScreenArgs(false))
+                navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
             },
             cancelButtonClick = { dialogState = false },
             onDismissRequest = { },

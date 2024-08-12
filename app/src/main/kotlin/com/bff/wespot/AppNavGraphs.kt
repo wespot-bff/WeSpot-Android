@@ -128,7 +128,7 @@ object AppNavGraphs {
 
 private val tabScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen?isMessageSent={isMessageSent}",
+    "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {
