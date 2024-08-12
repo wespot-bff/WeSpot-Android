@@ -216,6 +216,7 @@ private fun BottomNavigationTab(
             BottomBarDestinations.values().forEach { destination ->
                 TabItem(
                     icon = painterResource(id = destination.icon),
+                    emptyIcon = painterResource(id = destination.emptyIcon),
                     title = stringResource(id = destination.title),
                     description = stringResource(id = destination.title),
                     selected = selectedNavigation == destination.screen,
@@ -270,6 +271,7 @@ private fun NavController.checkCurrentScreen(position: NavigationBarPosition): S
 @Composable
 private fun TabItem(
     icon: Painter,
+    emptyIcon: Painter,
     title: String,
     description: String,
     selected: Boolean = false,
@@ -285,13 +287,12 @@ private fun TabItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = icon,
-                contentDescription = description,
-                tint = if (selected) {
-                    WeSpotThemeManager.colors.abledIconColor
+                painter = if(selected) {
+                    icon
                 } else {
-                    WeSpotThemeManager.colors.disableIcnColor
+                    emptyIcon
                 },
+                contentDescription = description,
             )
 
             Text(
