@@ -69,7 +69,7 @@ object ClientModule {
                         .first()
 
                     BearerTokens(
-                        accessToken = accessToken,
+                        accessToken = "accessToken",
                         refreshToken = refreshToken,
                     )
                 }
@@ -81,7 +81,8 @@ object ClientModule {
 
                     if (checkExpire(expire)) {
                         repository.clear()
-                        navigator.navigateToAuth(context)
+                        context.startActivity(navigator.navigateToAuth(context))
+                        return@refreshTokens null
                     }
 
                     val refreshToken = repository.getString(DataStoreKey.REFRESH_TOKEN)
@@ -166,14 +167,9 @@ private fun checkExpire(expire: String): Boolean {
         return true
     }
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")
-    return try {
-        val givenTime = LocalDateTime.parse(expire, formatter)
-
+    return runCatching {
+        val givenTime = LocalDateTime.parse(expire, DateTimeFormatter.ISO_DATE_TIME)
         val currentTime = LocalDateTime.now()
-
         givenTime.isBefore(currentTime)
-    } catch (e: Exception) {
-        true
-    }
+    }.getOrDefault(true)
 }
