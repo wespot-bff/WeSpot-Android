@@ -1,11 +1,12 @@
 package com.bff.wespot.data.remote.source.auth
 
+import com.bff.wespot.data.remote.extensions.invalidateBearerTokens
 import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SchoolListDto
-import com.bff.wespot.network.extensions.safeRequest
 import com.bff.wespot.model.auth.request.RevokeReasonListDto
+import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
@@ -20,28 +21,35 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("auth/signup/schools/search")
+                path("schools/search")
                 parameter("name", search)
             }
         }
 
-    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> =
-        httpClient.safeRequest {
+    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> {
+        val client = httpClient.safeRequest<Any> {
             url {
                 method = HttpMethod.Post
                 path("auth/login")
             }
             setBody(token)
         }
+        httpClient.invalidateBearerTokens()
+        return client
+    }
 
-    override suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto> =
-        httpClient.safeRequest {
+    override suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto> {
+        val client = httpClient.safeRequest<AuthTokenDto> {
             url {
                 method = HttpMethod.Post
                 path("auth/signup")
             }
             setBody(signUp)
         }
+
+        httpClient.invalidateBearerTokens()
+        return client
+    }
 
     override suspend fun revoke(revokeReasonList: RevokeReasonListDto): Result<Unit> =
         httpClient.safeRequest {

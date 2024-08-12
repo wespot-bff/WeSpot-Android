@@ -115,7 +115,9 @@ fun EditScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        WSButton(onClick = { }, text = stringResource(id = R.string.confirm)) {
+        WSButton(onClick = {
+            firstEnter = true
+        }, text = stringResource(id = R.string.confirm)) {
             it.invoke()
         }
     }

@@ -172,7 +172,7 @@ private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
         AppNavigation(
             navController = navController,
             modifier = Modifier.padding(it),
-            navigator = navigator,
+            navigator = navigator
         )
 
         navigateScreenFromNavArgs(navArgs, navController)
