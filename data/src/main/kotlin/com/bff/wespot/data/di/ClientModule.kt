@@ -69,7 +69,7 @@ object ClientModule {
                         .first()
 
                     BearerTokens(
-                        accessToken = "accessToken",
+                        accessToken = accessToken,
                         refreshToken = refreshToken,
                     )
                 }
