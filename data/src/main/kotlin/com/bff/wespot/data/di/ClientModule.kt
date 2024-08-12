@@ -4,6 +4,7 @@ import android.content.Context
 import com.bff.wespot.data.BuildConfig
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
+import com.bff.wespot.data.remote.model.common.TokenDto
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.navigation.Navigator
@@ -88,9 +89,7 @@ object ClientModule {
                     val token = client.post {
                         markAsRefreshTokenRequest()
                         url("auth/reissue")
-                        setBody {
-                            "refreshToken" to refreshToken
-                        }
+                        setBody(TokenDto(refreshToken))
                     }.body<AuthTokenDto>()
 
                     repository.saveString(
