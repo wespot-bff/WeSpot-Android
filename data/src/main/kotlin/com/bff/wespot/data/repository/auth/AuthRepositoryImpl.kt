@@ -42,12 +42,22 @@ class AuthRepositoryImpl @Inject constructor(
             }
 
     override suspend fun signUp(signUp: SignUp): Boolean {
-        return authDataSource
+        val response =  authDataSource
             .signUp(
                 signUp.toDto(
                     dataStore.getString(DataStoreKey.SIGN_UP_TOKEN).first()
                 )
-            ).isSuccess
+            )
+
+        if (response.isSuccess) {
+            val data = response.getOrThrow()
+
+            dataStore.saveString(DataStoreKey.ACCESS_TOKEN, data.accessToken)
+            dataStore.saveString(DataStoreKey.REFRESH_TOKEN, data.refreshToken)
+            dataStore.saveString(DataStoreKey.REFRESH_TOKEN_EXPIRED_AT, data.refreshTokenExpiredAt)
+        }
+
+        return response.isSuccess
     }
 
     override suspend fun revoke(revokeReasonList: List<String>): Result<Unit> {
