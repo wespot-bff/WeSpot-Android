@@ -19,4 +19,5 @@ dependencies {
     implementation(libs.junit)
     implementation(libs.androidx.junit)
     implementation(libs.timber)
+    implementation(libs.lottie)
 }
