@@ -99,6 +99,7 @@ fun NameScreen(
                 },
                 placeholder = stringResource(id = R.string.enter_name),
                 focusRequester = focusRequester,
+                singleLine = true,
             )
 
             Row(
@@ -146,7 +147,7 @@ fun NameScreen(
                     R.string.next
                 },
             ),
-            enabled = state.name.length in 2..5,
+            enabled = error.not(),
         ) {
             it.invoke()
         }
