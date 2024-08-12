@@ -189,7 +189,6 @@ internal fun AppNavigation(
             dependency(navigator)
             dependency(sendViewModel)
             dependency(votingViewModel)
-            dependency(navigator)
             dependency(showToast)
         },
     )
