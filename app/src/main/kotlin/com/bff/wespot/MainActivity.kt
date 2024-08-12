@@ -1,5 +1,8 @@
 package com.bff.wespot
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,9 +36,12 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.ramcosta.composedestinations.dynamic.within
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
@@ -43,6 +49,12 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.message.screen.MessageScreenArgs
+import com.bff.wespot.message.screen.destinations.MessageScreenDestination
+import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
+import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -57,18 +69,57 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestNotificationPermission()
 
         setContent {
             WeSpotTheme {
-                MainScreen(navigator)
+                MainScreen(
+                    navigator = navigator,
+                    navArgs = getMainScreenArgsFromIntent(),
+                )
             }
         }
     }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if(!hasPermission) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    0
+                )
+            }
+        }
+    }
+
+    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs {
+        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
+        val date = intent.getStringExtra("date") ?: ""
+        val type = intent.getStringExtra("type") ?: ""
+
+        return MainScreenNavArgs(
+            targetId = targetId,
+            date = date,
+            type = convertNotificationType(type),
+        )
+    }
 }
+
+data class MainScreenNavArgs(
+    val type: NotificationType,
+    val date: String,
+    val targetId: Int,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(navigator: Navigator) {
+private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
 
@@ -129,6 +180,8 @@ private fun MainScreen(navigator: Navigator) {
             navigator = navigator,
             showToast = { toastState -> toast = toastState }
         )
+
+        navigateScreenFromNavArgs(navArgs, navController)
     }
 
     if (toast.show) {
@@ -250,6 +303,38 @@ private fun TabItem(
                     WeSpotThemeManager.colors.disableIcnColor
                 },
             )
+        }
+    }
+}
+
+private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController: NavController) {
+    when (navArgs.type) {
+        NotificationType.MESSAGE -> {
+            navController.navigate(
+                ReceiverSelectionScreenDestination(
+                    ReceiverSelectionScreenArgs(false),
+                ) within AppNavGraphs.message
+            )
+        }
+
+        NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
+            navController.navigate(
+                MessageScreenDestination(
+                    MessageScreenArgs(
+                        type = navArgs.type,
+                        messageId = navArgs.targetId,
+                    ),
+                ) within AppNavGraphs.message
+            )
+        }
+
+        NotificationType.VOTE -> {
+        }
+        NotificationType.VOTE_RESULT -> {
+        }
+        NotificationType.VOTE_RECEIVED -> {
+        }
+        NotificationType.IDLE -> {
         }
     }
 }

@@ -91,7 +91,7 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToMessage -> {
-                navigator.navigateMessageScreen(args = MessageScreenArgs(true))
+                navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = true))
             }
 
             is SendSideEffect.NavigateToReservedMessage -> {
@@ -224,7 +224,7 @@ fun MessageEditScreen(
             SendExitDialog(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { exitDialog = false },
             )
@@ -249,7 +249,7 @@ fun MessageEditScreen(
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },

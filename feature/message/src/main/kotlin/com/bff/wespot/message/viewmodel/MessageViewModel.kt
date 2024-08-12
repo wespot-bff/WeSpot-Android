@@ -87,7 +87,11 @@ class MessageViewModel @Inject constructor(
                     MessageType.RECEIVED -> getReceivedMessageList()
                 }
             }
-            is MessageAction.OnMessageItemClicked -> handleMessageItemClicked(action.message)
+            is MessageAction.OnMessageStorageScreenOpened -> {
+                handleMessageStorageScreenOpened(action.messageId, action.type)
+            }
+            is MessageAction.OnMessageItemClicked ->
+                handleMessageItemClicked(action.message, action.type)
             is MessageAction.OnOptionButtonClicked -> handleOptionButtonClicked(action.message)
             is MessageAction.OnOptionBottomSheetClicked -> {
                 handleOptionBottomSheetClicked(action.messageOptionType)
@@ -183,14 +187,25 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageItemClicked(message: Message) = intent {
-        reduce {
-            state.copy(
-                clickedMessage = message,
-            )
+    private fun handleMessageStorageScreenOpened(messageId: Int, type: MessageType) = intent {
+        reduce { state.copy(isLoading = true) }
+        viewModelScope.launch {
+            messageRepository.getMessage(messageId)
+                .onSuccess { message ->
+                    handleMessageItemClicked(message = message, type = type)
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(MessageSideEffect.ShowMessageDialog)
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                }
         }
+    }
 
-        if (message.isRead.not()) {
+    private fun handleMessageItemClicked(message: Message, type: MessageType) = intent {
+        reduce { state.copy(clickedMessage = message) }
+
+        if (message.isRead.not() && type == MessageType.RECEIVED) {
             updateMessageReadStatus(messageId = message.id)
         }
     }

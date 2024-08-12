@@ -135,7 +135,7 @@ private val bottomBarScreenNames = listOf(
 
 private val topBarScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen?isMessageSent={isMessageSent}",
+    "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {

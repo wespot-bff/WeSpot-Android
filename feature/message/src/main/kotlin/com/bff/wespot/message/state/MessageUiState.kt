@@ -17,4 +17,5 @@ data class MessageUiState(
     val optionButtonClickedMessage: Message = Message(),
     val messageOptionType: MessageOptionType = MessageOptionType.DELETE,
     val reservedMessageList: List<Message> = listOf(),
+    val isLoading: Boolean = false,
 )

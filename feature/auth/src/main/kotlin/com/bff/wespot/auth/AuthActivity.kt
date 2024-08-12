@@ -33,7 +33,10 @@ import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
+import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
@@ -98,7 +101,12 @@ class AuthActivity : ComponentActivity() {
                     }
 
                     AuthSideEffect.NavigateToMainActivity -> {
-                        val intent = navigator.navigateToMain(this)
+                        val intent = navigator.navigateToMain(
+                            this,
+                            Pair("", 0),
+                            Pair("", ""),
+                            Pair("", ""),
+                        )
                         startActivity(intent)
                     }
                 }
@@ -150,7 +158,16 @@ class AuthActivity : ComponentActivity() {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
                     if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val intent = navigator.navigateToMain(this@AuthActivity)
+                        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
+                        val date = intent.getStringExtra("date") ?: ""
+                        val type = intent.getStringExtra("type") ?: ""
+
+                        val intent = navigator.navigateToMain(
+                            this@AuthActivity,
+                            targetId = Pair(EXTRA_TARGET_ID, targetId),
+                            date = Pair(EXTRA_DATE, date),
+                            type = Pair(EXTRA_TYPE, type),
+                        )
                         startActivity(intent)
                     }
                     content.viewTreeObserver.removeOnPreDrawListener(this)
