@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -156,7 +158,7 @@ private fun MessageCard(
     ) {
         when (timePeriod) {
             TimePeriod.EVENING_TO_NIGHT, TimePeriod.NIGHT_TO_DAWN -> {
-                MessageLottieAnimation(imageRes)
+                MessageLottieAnimation(imageRes, timePeriod)
             }
 
             TimePeriod.DAWN_TO_EVENING -> {
@@ -270,7 +272,7 @@ private fun MessageHomeDescription(title: String) {
 }
 
 @Composable
-private fun MessageLottieAnimation(imageRes: Int) {
+private fun MessageLottieAnimation(imageRes: Int, timePeriod: TimePeriod) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(imageRes))
     val progress by animateLottieCompositionAsState(composition)
 
@@ -278,7 +280,17 @@ private fun MessageLottieAnimation(imageRes: Int) {
         LottieAnimation(
             modifier = Modifier
                 .padding(top = 20.dp)
-                .size(320.dp),
+                .size(320.dp)
+                .let {
+                    if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                        it.paint(
+                            painter = painterResource(R.drawable.message_gradient_dawn_evening),
+                            contentScale = ContentScale.Crop,
+                        )
+                    } else {
+                        it
+                    }
+                },
             composition = composition,
             progress = { progress },
         )
