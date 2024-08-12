@@ -156,19 +156,7 @@ private fun MessageCard(
             .clip(RoundedCornerShape(18.dp))
             .background(WeSpotThemeManager.colors.modalColor),
     ) {
-        when (timePeriod) {
-            TimePeriod.EVENING_TO_NIGHT, TimePeriod.NIGHT_TO_DAWN -> {
-                MessageLottieAnimation(imageRes, timePeriod)
-            }
-
-            TimePeriod.DAWN_TO_EVENING -> {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(imageRes),
-                    contentDescription = stringResource(R.string.message_card_image),
-                )
-            }
-        }
+        MessageLottieAnimation(imageRes, timePeriod)
 
         Column(
             modifier = Modifier
@@ -282,7 +270,9 @@ private fun MessageLottieAnimation(imageRes: Int, timePeriod: TimePeriod) {
                 .padding(top = 20.dp)
                 .size(320.dp)
                 .let {
-                    if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                    if (timePeriod == TimePeriod.DAWN_TO_EVENING ||
+                        timePeriod == TimePeriod.EVENING_TO_NIGHT
+                    ) {
                         it.paint(
                             painter = painterResource(R.drawable.message_gradient_dawn_evening),
                             contentScale = ContentScale.Crop,

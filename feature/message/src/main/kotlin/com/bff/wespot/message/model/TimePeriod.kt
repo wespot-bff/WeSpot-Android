@@ -33,7 +33,7 @@ enum class TimePeriod {
 
     val imageRes
         get() = when (this) {
-            DAWN_TO_EVENING -> R.drawable.home_message_dawn
+            DAWN_TO_EVENING -> R.raw.message_evening
             EVENING_TO_NIGHT -> R.raw.message_evening
             NIGHT_TO_DAWN -> R.raw.message_dawn
         }
