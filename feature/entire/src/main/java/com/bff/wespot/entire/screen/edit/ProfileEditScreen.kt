@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen.edit
+package com.bff.wespot.entire.screen.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +48,10 @@ import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.screen.state.edit.EntireEditAction
-import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
+import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
+import com.bff.wespot.entire.state.edit.EntireEditAction
+import com.bff.wespot.entire.state.edit.EntireEditSideEffect
+import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation

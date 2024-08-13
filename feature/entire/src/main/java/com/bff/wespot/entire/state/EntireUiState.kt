@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.state
+package com.bff.wespot.entire.state
 
 import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.model.user.response.Profile

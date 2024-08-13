@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen.setting
+package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.component.EntireListItem
+import com.bff.wespot.entire.component.EntireListItem
 import com.ramcosta.composedestinations.annotation.Destination
 
 interface SettingNavigator {

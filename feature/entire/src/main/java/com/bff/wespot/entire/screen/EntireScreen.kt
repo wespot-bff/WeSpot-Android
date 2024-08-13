@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen
+package com.bff.wespot.entire.screen
 
 import android.graphics.Color.parseColor
 import androidx.compose.foundation.background
@@ -43,10 +43,10 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.component.EntireListItem
-import com.bff.wespot.entire.screen.screen.edit.ProfileEditNavArgs
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.component.EntireListItem
+import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState

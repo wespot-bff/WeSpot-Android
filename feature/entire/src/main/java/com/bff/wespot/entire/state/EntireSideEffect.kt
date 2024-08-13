@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.state
+package com.bff.wespot.entire.state
 
 sealed class EntireSideEffect {
     data object NavigateToAuth : EntireSideEffect()
