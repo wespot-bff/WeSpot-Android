@@ -92,7 +92,7 @@ fun WSBanner(
 ) {
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(20.dp)
             .height(80.dp)
             .fillMaxWidth()
             .clickable { onBannerClick.invoke() }
