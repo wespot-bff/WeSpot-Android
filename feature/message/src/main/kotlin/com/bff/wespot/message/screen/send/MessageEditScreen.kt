@@ -38,12 +38,14 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
+import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
+import com.bff.wespot.ui.LoadingAnimation
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -80,13 +82,16 @@ fun MessageEditScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            is SendSideEffect.ShowTimeoutDialog -> {
+            SendSideEffect.CloseReserveDialog -> {
                 reserveDialog = false
+            }
+
+            is SendSideEffect.ShowTimeoutDialog -> {
                 timeoutDialog = true
             }
 
             is SendSideEffect.NavigateToMessage -> {
-                navigator.navigateMessageScreen(args = MessageScreenArgs(true))
+                navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = true))
             }
 
             is SendSideEffect.NavigateToReservedMessage -> {
@@ -107,9 +112,11 @@ fun MessageEditScreen(
                 },
                 action = {
                     Text(
-                        modifier = Modifier.clickable {
-                            exitDialog = true
-                        },
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickable {
+                                exitDialog = true
+                            },
                         text = stringResource(R.string.close),
                         style = StaticTypeScale.Default.body4,
                         color = WeSpotThemeManager.colors.abledTxtColor,
@@ -214,22 +221,12 @@ fun MessageEditScreen(
         }
 
         if (exitDialog) {
-            WSDialog(
-                title = stringResource(
-                    if (state.isReservedMessage) {
-                        R.string.edit_exit_dialog_title
-                    } else {
-                        R.string.send_exit_dialog_title
-                    },
-                ),
-                subTitle = stringResource(R.string.send_exit_dialog_subtitle),
-                okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
-                cancelButtonText = stringResource(id = R.string.close),
+            SendExitDialog(
+                isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { exitDialog = false },
-                onDismissRequest = { },
             )
         }
 
@@ -252,11 +249,15 @@ fun MessageEditScreen(
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs(false))
+                    navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },
             )
+        }
+
+        if (state.isLoading) {
+            LoadingAnimation()
         }
     }
 

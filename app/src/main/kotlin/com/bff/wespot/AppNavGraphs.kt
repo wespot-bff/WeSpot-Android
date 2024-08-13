@@ -15,19 +15,20 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.ProfileEditScreenDestination
+import com.bff.wespot.entire.screen.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
@@ -126,9 +127,15 @@ object AppNavGraphs {
     }
 }
 
-private val tabScreenNames = listOf(
+private val bottomBarScreenNames = listOf(
     "vote/vote_home_screen",
     "message/message_screen?isMessageSent={isMessageSent}",
+    "entire/entire_screen",
+)
+
+private val topBarScreenNames = listOf(
+    "vote/vote_home_screen",
+    "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {
@@ -143,15 +150,15 @@ fun NavDestination.navGraph(): NavGraphSpec {
     throw ClassNotFoundException("Unknown nav graph for destination $route")
 }
 
-fun NavDestination.checkDestination(): Boolean {
-    hierarchy.forEach { destination ->
-        tabScreenNames.forEach { name ->
-            if (destination.route == name) {
-                return true
-            }
-        }
+internal fun NavDestination.checkDestination(position: NavigationBarPosition): Boolean {
+    val screenNames = when (position) {
+        NavigationBarPosition.BOTTOM -> bottomBarScreenNames
+        NavigationBarPosition.TOP -> topBarScreenNames
     }
-    return false
+
+    return hierarchy.any { destination ->
+        screenNames.any { name -> destination.route == name }
+    }
 }
 
 fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavigator {
@@ -165,6 +172,7 @@ fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavi
 internal fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    showToast: (ToastState) -> Unit,
     navigator: Navigator,
 ) {
     val engine = rememberNavHostEngine(
@@ -187,7 +195,7 @@ internal fun AppNavigation(
             dependency(navigator)
             dependency(sendViewModel)
             dependency(votingViewModel)
-            dependency(navigator)
+            dependency(showToast)
         },
     )
 }

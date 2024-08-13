@@ -19,8 +19,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToMain(
         context: Context,
+        targetId: Pair<String, Int>,
+        date: Pair<String, String>,
+        type: Pair<String, String>,
     ): Intent {
-        val intent = context.buildIntent<MainActivity>()
+        val intent = context.buildIntent<MainActivity>(targetId, date, type)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return intent
     }

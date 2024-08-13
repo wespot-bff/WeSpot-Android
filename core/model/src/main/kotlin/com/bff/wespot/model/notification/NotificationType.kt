@@ -16,3 +16,14 @@ enum class NotificationType {
         IDLE -> ""
     }
 }
+
+fun convertNotificationType(type: String): NotificationType =
+    when (type) {
+        NotificationType.MESSAGE.name -> NotificationType.MESSAGE
+        NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE
+        NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE
+        NotificationType.VOTE.name -> NotificationType.MESSAGE
+        NotificationType.VOTE_RESULT.name -> NotificationType.MESSAGE
+        NotificationType.VOTE_RECEIVED.name -> NotificationType.MESSAGE
+        else -> NotificationType.IDLE
+    }

@@ -1,7 +1,6 @@
 package com.bff.wespot.message.screen
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,15 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
@@ -27,6 +23,8 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.ToastState
+import com.bff.wespot.model.notification.NotificationType
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
@@ -39,6 +37,8 @@ interface MessageNavigator {
 
 data class MessageScreenArgs(
     val isMessageSent: Boolean = false,
+    val type: NotificationType = NotificationType.IDLE,
+    val messageId: Int = -1,
 )
 
 @Destination(navArgsDelegate = MessageScreenArgs::class)
@@ -47,11 +47,9 @@ internal fun MessageScreen(
     messageNavigator: MessageNavigator,
     navArgs: MessageScreenArgs,
     sendViewModel: SendViewModel,
+    showToast: (ToastState) -> Unit,
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
-    var messageSentToast by remember { mutableStateOf(false) }
-    var showToast by remember { mutableStateOf(false) }
-    var toastMessage by remember { mutableStateOf("") }
     val tabList = persistentListOf(
         stringResource(R.string.message_home_screen),
         stringResource(R.string.message_storage_screen),
@@ -97,15 +95,14 @@ internal fun MessageScreen(
                     STORAGE_SCREEN_INDEX -> {
                         MessageStorageScreen(
                             viewModel = viewModel,
+                            type = navArgs.type,
+                            messageId = navArgs.messageId,
                             navigateToReservedMessageScreen = {
                                 messageNavigator.navigateToReservedMessageScreen(
                                     args = ReservedMessageScreenArgs(false),
                                 )
                             },
-                            showToast = { message ->
-                                toastMessage = message
-                                showToast = true
-                            },
+                            showToast = showToast,
                         )
                     }
                 }
@@ -113,33 +110,24 @@ internal fun MessageScreen(
         }
     }
 
-    if (messageSentToast) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(R.string.message_reserve_success),
-                toastType = WSToastType.Success,
-                showToast = messageSentToast,
-                closeToast = { messageSentToast = false },
-            )
-        }
-    }
-
-    if (showToast) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = toastMessage,
-                toastType = WSToastType.Success,
-                showToast = showToast && toastMessage.isNotBlank(),
-                closeToast = {
-                    showToast = false
-                    toastMessage = ""
-                },
-            )
-        }
-    }
-
     LaunchedEffect(Unit) {
-        messageSentToast = navArgs.isMessageSent
+        if (navArgs.isMessageSent) {
+            showToast(
+                ToastState(
+                    message = R.string.message_reserve_success,
+                    show = true,
+                    type = WSToastType.Success,
+                ),
+            )
+        }
+
+        when (navArgs.type) {
+            NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
+                selectedTabIndex = STORAGE_SCREEN_INDEX
+            }
+            else -> { }
+        }
+
         sendViewModel.onAction(SendAction.OnReservedMessageScreenEntered)
     }
 }

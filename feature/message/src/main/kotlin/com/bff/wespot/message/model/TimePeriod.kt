@@ -2,7 +2,6 @@ package com.bff.wespot.message.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.message.R
@@ -32,12 +31,11 @@ enum class TimePeriod {
             NIGHT_TO_DAWN -> stringResource(R.string.message_title_night)
         }
 
-    val image
-        @Composable
+    val imageRes
         get() = when (this) {
-            DAWN_TO_EVENING -> painterResource(R.drawable.home_message_dawn)
-            EVENING_TO_NIGHT -> painterResource(R.drawable.home_message)
-            NIGHT_TO_DAWN -> painterResource(R.drawable.home_message_night)
+            DAWN_TO_EVENING -> R.raw.message_evening
+            EVENING_TO_NIGHT -> R.raw.message_evening
+            NIGHT_TO_DAWN -> R.raw.message_dawn
         }
 }
 

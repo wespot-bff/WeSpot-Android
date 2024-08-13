@@ -2,15 +2,18 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
+import com.bff.wespot.message.R
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
@@ -84,7 +87,11 @@ class MessageViewModel @Inject constructor(
                     MessageType.RECEIVED -> getReceivedMessageList()
                 }
             }
-            is MessageAction.OnMessageItemClicked -> handleMessageItemClicked(action.message)
+            is MessageAction.OnMessageStorageScreenOpened -> {
+                handleMessageStorageScreenOpened(action.messageId, action.type)
+            }
+            is MessageAction.OnMessageItemClicked ->
+                handleMessageItemClicked(action.message, action.type)
             is MessageAction.OnOptionButtonClicked -> handleOptionButtonClicked(action.message)
             is MessageAction.OnOptionBottomSheetClicked -> {
                 handleOptionBottomSheetClicked(action.messageOptionType)
@@ -180,14 +187,25 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageItemClicked(message: Message) = intent {
-        reduce {
-            state.copy(
-                clickedMessage = message,
-            )
+    private fun handleMessageStorageScreenOpened(messageId: Int, type: MessageType) = intent {
+        reduce { state.copy(isLoading = true) }
+        viewModelScope.launch {
+            messageRepository.getMessage(messageId)
+                .onSuccess { message ->
+                    handleMessageItemClicked(message = message, type = type)
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(MessageSideEffect.ShowMessageDialog)
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                }
         }
+    }
 
-        if (message.isRead.not()) {
+    private fun handleMessageItemClicked(message: Message, type: MessageType) = intent {
+        reduce { state.copy(clickedMessage = message) }
+
+        if (message.isRead.not() && type == MessageType.RECEIVED) {
             updateMessageReadStatus(messageId = message.id)
         }
     }
@@ -219,7 +237,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageStorageRepository.deleteMessage(messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("삭제 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.delete_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
@@ -229,7 +255,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             commonRepository.sendReport(ReportType.MESSAGE, messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("신고 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.report_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
@@ -239,7 +273,15 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageStorageRepository.blockMessage(messageId)
                 .onSuccess {
-                    postSideEffect(MessageSideEffect.ShowToast("차단 완료"))
+                    postSideEffect(
+                        MessageSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.block_done,
+                                type = WSToastType.Success,
+                            ),
+                        ),
+                    )
                     getReceivedMessageList()
                 }
         }
