@@ -1,6 +1,5 @@
 package com.bff.wespot.entire.screen.screen.setting
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,13 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -41,16 +37,6 @@ fun SettingScreen(
                 title = "",
                 canNavigateBack = true,
                 navigateUp = { navigator.navigateUp() },
-                action = {
-                    Icon(
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .clickable { navigator.navigateToNotificationSetting() },
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_setting),
-                        contentDescription = stringResource(R.string.setting_icon),
-                        tint = WeSpotThemeManager.colors.secondaryBtnColor,
-                    )
-                },
             )
         },
     ) {
@@ -62,6 +48,7 @@ fun SettingScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             EntireListItem(text = stringResource(R.string.notification_setting)) {
+                navigator.navigateToNotificationSetting()
             }
 
             HorizontalDivider(
