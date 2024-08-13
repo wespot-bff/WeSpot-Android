@@ -1,11 +1,9 @@
 package com.bff.wespot.vote.screen
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.ui.CharacterScreen
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.viewmodel.CharacterSettingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -44,9 +43,7 @@ fun CharacterSettingScreen(
     }
 
     if (color.isEmpty() || character.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
         return
     }
     Scaffold(

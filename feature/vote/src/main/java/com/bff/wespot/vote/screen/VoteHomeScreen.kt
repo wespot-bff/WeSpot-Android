@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +50,7 @@ import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
@@ -219,7 +219,10 @@ private fun VoteHomeContent(
                     contentDescription = stringResource(
                         id = R.string.vote_description
                     ),
-                    modifier = Modifier.matchParentSize().aspectRatio(1f).zIndex(2f),
+                    modifier = Modifier
+                        .matchParentSize()
+                        .aspectRatio(1f)
+                        .zIndex(2f),
                 )
 
                 LottieAnimation(
@@ -342,9 +345,7 @@ private fun CardResultContent(
     }
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 
     LaunchedEffect(Unit) {

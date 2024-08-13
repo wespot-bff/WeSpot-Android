@@ -29,7 +29,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -68,6 +67,7 @@ import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
@@ -128,7 +128,7 @@ fun VoteResultScreen(
                     detectDragGestures { change, dragAmount ->
                         change.consume()
 
-                        val (x, y) = dragAmount
+                        val (x, _) = dragAmount
                         when {
                             x < 0 -> {
                                 action(ResultAction.SetVoteOnBoarding)
@@ -262,9 +262,7 @@ fun VoteResultScreen(
     }
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 
     LaunchedEffect(voteType) {
