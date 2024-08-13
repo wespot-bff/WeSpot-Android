@@ -81,9 +81,9 @@ fun GenderScreen(
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.male_student,
                     ),
-                    selected = "male" == state.gender,
+                    selected = "MALE" == state.gender,
                     onClicked = {
-                        action(AuthAction.OnGenderChanged("male"))
+                        action(AuthAction.OnGenderChanged("MALE"))
                         if (edit) {
                             action(AuthAction.Navigation(NavigationAction.PopBackStack))
                             return@GenderBox
@@ -96,9 +96,9 @@ fun GenderScreen(
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.female_student,
                     ),
-                    selected = "female" == state.gender,
+                    selected = "FEMALE" == state.gender,
                     onClicked = {
-                        action(AuthAction.OnGenderChanged("female"))
+                        action(AuthAction.OnGenderChanged("FEMALE"))
                         if (edit) {
                             action(AuthAction.Navigation(NavigationAction.PopBackStack))
                             return@GenderBox

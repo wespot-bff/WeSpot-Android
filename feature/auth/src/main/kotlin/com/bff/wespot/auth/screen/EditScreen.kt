@@ -82,7 +82,7 @@ fun EditScreen(
 
             EditField(
                 title = stringResource(id = R.string.gender),
-                value = if (state.gender == "male") {
+                value = if (state.gender == "MALE") {
                     stringResource(id = R.string.male_student)
                 } else {
                     stringResource(id = R.string.female_student)
@@ -230,7 +230,7 @@ private fun ConfirmBottomSheetContent(
             Column {
                 Text(
                     text = "$name (${
-                        if (gender == "male") {
+                        if (gender == "MALE") {
                             stringResource(id = R.string.male_student)
                         } else {
                             stringResource(id = R.string.female_student)
