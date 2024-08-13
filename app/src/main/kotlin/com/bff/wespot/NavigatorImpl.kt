@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.WebLink
 import com.bff.wespot.navigation.util.buildIntent
 import timber.log.Timber
 import javax.inject.Inject
@@ -94,6 +95,15 @@ class NavigatorImpl @Inject constructor() : Navigator {
         }
 
         return intent
+    }
+
+    override fun navigateToWebLink(context: Context, webLink: WebLink) {
+        val webLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(context.getString(webLink.url)),
+        )
+        webLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(webLinkIntent)
     }
 
     private fun redirectToPlayStoreForInstagram(context: Context) {
