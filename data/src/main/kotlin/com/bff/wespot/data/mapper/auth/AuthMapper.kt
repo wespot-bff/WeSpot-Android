@@ -7,10 +7,11 @@ import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 
-internal fun KakaoAuthToken.toDto() =
+internal fun KakaoAuthToken.toDto(fcmToken: String) =
     KakaoAuthTokenDto(
         socialType = socialType,
         identityToken = accessToken,
+        fcmToken = fcmToken,
     )
 
 internal fun Consents.toDto() =

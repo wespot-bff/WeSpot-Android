@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class KakaoAuthTokenDto(
     val socialType: String,
     val identityToken: String,
+    val fcmToken: String,
 )
