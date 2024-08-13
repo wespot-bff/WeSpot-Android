@@ -132,7 +132,7 @@ fun GradeScreen(
                 BottomSheetContent(
                     currentGrade = state.grade,
                     onGradeSelected = { grade ->
-                        if (grade == 1) {
+                        if (grade == 1 && state.selectedSchool?.type != "HIGH") {
                             toast = true
                             return@BottomSheetContent
                         }
