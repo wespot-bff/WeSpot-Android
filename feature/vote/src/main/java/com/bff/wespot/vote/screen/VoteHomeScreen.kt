@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +34,9 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -197,21 +200,34 @@ private fun VoteHomeContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(390.dp)
+                .height(400.dp)
                 .padding(horizontal = 20.dp),
         ) {
             Box(
-                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f),
             ) {
+                val composition by rememberLottieComposition(
+                    spec = LottieCompositionSpec.RawRes(
+                        R.raw.vote_home
+                    )
+                )
+
                 Image(
-                    painter = painterResource(id = R.drawable.vote),
+                    painter = painterResource(id = R.drawable.vote_gradient),
                     contentDescription = stringResource(
-                        id = R.string.vote_description,
+                        id = R.string.vote_description
                     ),
-                    modifier = Modifier.size(310.dp),
+                    modifier = Modifier.matchParentSize().aspectRatio(1f).zIndex(2f),
+                )
+
+                LottieAnimation(
+                    composition = composition,
+                    iterations = 1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
                 )
             }
             Card(
