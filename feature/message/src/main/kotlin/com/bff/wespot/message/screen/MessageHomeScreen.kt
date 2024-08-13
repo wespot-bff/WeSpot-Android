@@ -22,7 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +31,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -65,7 +70,7 @@ fun MessageHomeScreen(
                     timePeriod = state.timePeriod,
                     title = state.timePeriod.title,
                     buttonText = stringResource(R.string.message_card_button_text_dawn),
-                    image = state.timePeriod.image,
+                    imageRes = state.timePeriod.imageRes,
                     onButtonClick = { },
                 )
             }
@@ -88,7 +93,7 @@ fun MessageHomeScreen(
                     } else {
                         stringResource(R.string.message_card_button_text_evening_disabled)
                     },
-                    image = state.timePeriod.image,
+                    imageRes = state.timePeriod.imageRes,
                     isBannerVisible = state.messageStatus.hasReservedMessages(),
                     isButtonEnable = state.messageStatus.isSendAllowed,
                     onButtonClick = {
@@ -114,7 +119,7 @@ fun MessageHomeScreen(
                     timePeriod = state.timePeriod,
                     title = state.timePeriod.title,
                     buttonText = stringResource(R.string.message_card_button_text_night),
-                    image = state.timePeriod.image,
+                    imageRes = state.timePeriod.imageRes,
                     isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
                     onButtonClick = {
                     },
@@ -137,7 +142,7 @@ private fun MessageCard(
     height: Dp,
     title: String,
     buttonText: String,
-    image: Painter,
+    imageRes: Int,
     timePeriod: TimePeriod,
     isBannerVisible: Boolean = false,
     isButtonEnable: Boolean = false,
@@ -151,11 +156,7 @@ private fun MessageCard(
             .clip(RoundedCornerShape(18.dp))
             .background(WeSpotThemeManager.colors.modalColor),
     ) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = image,
-            contentDescription = stringResource(R.string.message_card_image),
-        )
+        MessageLottieAnimation(imageRes, timePeriod)
 
         Column(
             modifier = Modifier
@@ -256,4 +257,32 @@ private fun MessageHomeDescription(title: String) {
         textAlign = TextAlign.Center,
         maxLines = 1,
     )
+}
+
+@Composable
+private fun MessageLottieAnimation(imageRes: Int, timePeriod: TimePeriod) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(imageRes))
+    val progress by animateLottieCompositionAsState(composition)
+
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        LottieAnimation(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .size(320.dp)
+                .let {
+                    if (timePeriod == TimePeriod.DAWN_TO_EVENING ||
+                        timePeriod == TimePeriod.EVENING_TO_NIGHT
+                    ) {
+                        it.paint(
+                            painter = painterResource(R.drawable.message_gradient_dawn_evening),
+                            contentScale = ContentScale.Crop,
+                        )
+                    } else {
+                        it
+                    }
+                },
+            composition = composition,
+            progress = { progress },
+        )
+    }
 }

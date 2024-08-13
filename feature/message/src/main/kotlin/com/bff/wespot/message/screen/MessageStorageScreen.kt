@@ -55,6 +55,7 @@ import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.notification.NotificationType
@@ -71,7 +72,7 @@ fun MessageStorageScreen(
     type: NotificationType,
     messageId: Int,
     navigateToReservedMessageScreen: () -> Unit,
-    showToast: (String) -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     val chipList = persistentListOf(
         stringResource(R.string.received_message),
@@ -87,7 +88,7 @@ fun MessageStorageScreen(
     viewModel.collectSideEffect {
         when (it) {
             is MessageSideEffect.ShowToast -> {
-                showToast(it.message)
+                showToast(it.toastState)
             }
 
             is MessageSideEffect.ShowMessageDialog -> {

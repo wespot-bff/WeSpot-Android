@@ -38,7 +38,7 @@ espresso-core = "3.6.1"
 appcompat = "1.7.0"
 
 compose-destination = "1.10.2"
-lottie = "6.4.1"
+lottie = "6.5.0"
 timber = "5.0.1"
 datastore = "1.1.1"
 
@@ -72,7 +72,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-compose-destination = { group = "io.github.raamcosta.compose-destinations", name = "core", version.ref = "compose-destination" }
 androidx-compose-destination-compiler = { group = "io.github.raamcosta.compose-destinations", name = "ksp", version.ref = "compose-destination" }
 
-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 
 compose-compiler-extension = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 

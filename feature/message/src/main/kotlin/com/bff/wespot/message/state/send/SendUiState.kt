@@ -13,4 +13,5 @@ data class SendUiState(
     val sender: String = "",
     val isReservedMessage: Boolean = false,
     val messageId: Int = -1,
+    val isLoading: Boolean = false,
 )

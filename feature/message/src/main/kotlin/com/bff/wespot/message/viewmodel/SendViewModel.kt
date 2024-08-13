@@ -170,6 +170,9 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleMessageSent() = intent {
+        reduce { state.copy(isLoading = true) }
+        postSideEffect(SendSideEffect.CloseReserveDialog)
+
         viewModelScope.launch {
             messageRepository.postMessage(
                 SentMessage(
@@ -179,11 +182,14 @@ class SendViewModel @Inject constructor(
                     isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
+                reduce { state.copy(isLoading = false) }
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
                 }
+            }.onFailure {
+                reduce { state.copy(isLoading = false) }
             }
         }
     }
