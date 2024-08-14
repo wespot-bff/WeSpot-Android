@@ -42,14 +42,19 @@ fun CompleteScreen(
     val activity = (LocalContext.current as? Activity)
     val context = LocalContext.current
 
-    Image(
-        painter = painterResource(id = R.drawable.subscription_completed),
-        contentDescription = stringResource(R.string.register_done),
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .padding(top = 88.dp),
-    )
+            .fillMaxSize()
+            .padding(top = 86.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.register_complete),
+            contentDescription = stringResource(R.string.register_done),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Column {
