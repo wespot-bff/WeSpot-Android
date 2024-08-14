@@ -49,7 +49,7 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(top = 8.dp, start = 24.dp, end = 24.dp),
+                .padding(top = 4.dp, start = 24.dp, end = 24.dp),
         ) {
             EntireListItem(text = stringResource(R.string.notification_setting)) {
                 navigator.navigateToNotificationSetting()
