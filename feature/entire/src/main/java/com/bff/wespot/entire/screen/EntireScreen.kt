@@ -102,7 +102,9 @@ internal fun EntireScreen(
                 title = stringResource(R.string.vote_question_banner_title),
                 subTitle = stringResource(R.string.vote_question_banner_subtitle),
                 image = painterResource(id = R.drawable.vote_question_ask),
-                onBannerClick = {},
+                onBannerClick = {
+                    activityNavigator.navigateToWebLink(context, WebLink.VOTE_QUESTION_GOOGLE_FORM)
+                },
                 hasBorder = true,
                 bannerType = WSBannerType.Primary,
             )
