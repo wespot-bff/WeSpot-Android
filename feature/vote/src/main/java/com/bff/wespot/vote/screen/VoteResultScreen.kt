@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -55,6 +57,10 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
@@ -67,7 +73,6 @@ import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
-import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
@@ -113,17 +118,17 @@ fun VoteResultScreen(
         mutableStateOf(TODAY)
     }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val intent = it.data
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val intent = it.data
+            }
         }
-    }
 
     if (state.onBoarding) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x00000000).copy(alpha = 0.4f))
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
@@ -136,8 +141,27 @@ fun VoteResultScreen(
                         }
                     }
                 }
-                .zIndex(1f),
-        )
+                .zIndex(1f)
+                .padding(top = 180.dp),
+        ) {
+            val composition by rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(
+                    R.raw.vote_swipe
+                )
+            )
+
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .blur(30.dp))
+
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
+        }
     }
 
     Scaffold(
@@ -259,10 +283,6 @@ fun VoteResultScreen(
         ) {
             DotIndicators(pagerState = pagerState)
         }
-    }
-
-    if (state.isLoading) {
-        LoadingAnimation()
     }
 
     LaunchedEffect(voteType) {
