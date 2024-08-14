@@ -85,6 +85,7 @@ import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
@@ -116,6 +117,10 @@ fun VoteResultScreen(
 
     var voteType by remember {
         mutableStateOf(TODAY)
+    }
+
+    var showLottie by remember {
+        mutableStateOf(false)
     }
 
     val launcher =
@@ -150,9 +155,11 @@ fun VoteResultScreen(
                 )
             )
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .blur(30.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(30.dp)
+            )
 
             LottieAnimation(
                 composition = composition,
@@ -164,112 +171,149 @@ fun VoteResultScreen(
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            if (state.isVoting) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(end = 12.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    WSTextButton(
-                        text = stringResource(id = R.string.go_to_home),
-                        onClick = {
-                            voteNavigator.navigateToVoteHome()
-                        },
-                    )
-                }
-            } else {
-                WSTopBar(
-                    title = "",
-                    canNavigateBack = true,
-                    navigateUp = { voteNavigator.navigateUp() },
-                )
-            }
-        },
-    ) {
+    if (showLottie) {
+        val composition by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(
+                R.raw.vote_find
+            )
+        )
+
         Column(
             modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(top = 60.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (!state.isVoting) {
-                WSHomeChipGroup(
-                    items = persistentListOf(
-                        stringResource(id = R.string.past_vote),
-                        stringResource(
-                            id = R.string.real_time_vote,
-                        ),
-                    ),
-                    selectedItemIndex = voteType,
-                    onSelectedChanged = { voteType = it },
-                )
-            }
+            MultiLineText(
+                text = stringResource(R.string.analysis_result),
+                style = StaticTypeScale.Default.header1,
+                line = 2,
+                modifier = Modifier.padding(horizontal = 30.dp)
+            )
 
-            val snapshot = CaptureBitmap {
-                WSCarousel(pagerState = pagerState) { page ->
-                    VoteResultItem(
-                        result = state.voteResults.voteResults[page],
-                        empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
+        }
+
+        LaunchedEffect(state.isLoading) {
+            if (!state.isLoading) {
+                delay(2000)
+                showLottie = false
+            }
+        }
+    } else {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                if (state.isVoting) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(end = 12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        WSTextButton(
+                            text = stringResource(id = R.string.go_to_home),
+                            onClick = {
+                                voteNavigator.navigateToVoteHome()
+                            },
+                        )
+                    }
+                } else {
+                    WSTopBar(
+                        title = "",
+                        canNavigateBack = true,
+                        navigateUp = { voteNavigator.navigateUp() },
                     )
                 }
-            }
-
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    WSButton(
-                        enabled = state.isLoading.not(),
-                        onClick = {
-                            navigator.navigateToSharing(context)
-                        },
-                        paddingValues = PaddingValues(
-                            end = 87.dp,
+            },
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
+            ) {
+                if (!state.isVoting) {
+                    WSHomeChipGroup(
+                        items = persistentListOf(
+                            stringResource(id = R.string.past_vote),
+                            stringResource(
+                                id = R.string.real_time_vote,
+                            ),
                         ),
-                        text = stringResource(id = R.string.tell_friend),
-                    ) {
-                        it.invoke()
+                        selectedItemIndex = voteType,
+                        onSelectedChanged = { voteType = it },
+                    )
+                }
+
+                val snapshot = CaptureBitmap {
+                    WSCarousel(pagerState = pagerState) { page ->
+                        VoteResultItem(
+                            result = state.voteResults.voteResults[page],
+                            empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+                        )
                     }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 20.dp, top = 12.dp, bottom = 12.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Button(
-                        enabled = state.isLoading.not(),
-                        onClick = {
-                            MainScope().launch {
-                                val bitmap = snapshot.invoke()
-                                val uri = saveImage(bitmap, context)
-
-                                if (uri != null) {
-                                    val intent = navigator.navigateToInstaStory(context, uri)
-                                    launcher.launch(intent)
-                                }
-                            }
-                        },
-                        modifier = Modifier.size(52.dp),
-                        shape = WeSpotThemeManager.shapes.medium,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                            contentColor = Color(0xFFEAEBEC),
-                        ),
-                        contentPadding = PaddingValues(1.dp),
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
+                        contentAlignment = Alignment.CenterStart,
                     ) {
-                        Icon(
-                            painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.insta),
-                            contentDescription = "",
-                        )
+                        WSButton(
+                            enabled = state.isLoading.not(),
+                            onClick = {
+                                navigator.navigateToSharing(context)
+                            },
+                            paddingValues = PaddingValues(
+                                end = 87.dp,
+                            ),
+                            text = stringResource(id = R.string.tell_friend),
+                        ) {
+                            it.invoke()
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 20.dp, top = 12.dp, bottom = 12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        Button(
+                            enabled = state.isLoading.not(),
+                            onClick = {
+                                MainScope().launch {
+                                    val bitmap = snapshot.invoke()
+                                    val uri = saveImage(bitmap, context)
+
+                                    if (uri != null) {
+                                        val intent = navigator.navigateToInstaStory(context, uri)
+                                        launcher.launch(intent)
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(52.dp),
+                            shape = WeSpotThemeManager.shapes.medium,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
+                                contentColor = Color(0xFFEAEBEC),
+                            ),
+                            contentPadding = PaddingValues(1.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.insta),
+                                contentDescription = "",
+                            )
+                        }
                     }
                 }
             }
@@ -283,6 +327,10 @@ fun VoteResultScreen(
         ) {
             DotIndicators(pagerState = pagerState)
         }
+    }
+
+    if (state.isLoading) {
+        showLottie = true
     }
 
     LaunchedEffect(voteType) {
