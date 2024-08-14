@@ -53,6 +53,8 @@ import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.WebLink
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.util.hexToColor
@@ -77,8 +79,10 @@ data class ProfileEditNavArgs(
 fun ProfileEditScreen(
     navigator: ProfileEditNavigator,
     navArgs: ProfileEditNavArgs,
+    activityNavigator: Navigator,
     viewModel: EntireEditViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     var toast by remember { mutableStateOf(ToastState()) }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -217,8 +221,9 @@ fun ProfileEditScreen(
                 )
             } else {
                 WSButton(
-                    // TODO 카카오톡 리다이렉션
-                    onClick = { },
+                    onClick = {
+                        activityNavigator.navigateToWebLink(context, WebLink.WESPOT_KAKAKO_CHANNEL)
+                    },
                     text = stringResource(R.string.request_change_profile),
                     content = { it() },
                 )
