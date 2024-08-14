@@ -151,14 +151,14 @@ fun VoteResultScreen(
         ) {
             val composition by rememberLottieComposition(
                 spec = LottieCompositionSpec.RawRes(
-                    R.raw.vote_swipe
-                )
+                    R.raw.vote_swipe,
+                ),
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(30.dp)
+                    .blur(30.dp),
             )
 
             LottieAnimation(
@@ -166,7 +166,7 @@ fun VoteResultScreen(
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1f),
             )
         }
     }
@@ -174,8 +174,8 @@ fun VoteResultScreen(
     if (showLottie) {
         val composition by rememberLottieComposition(
             spec = LottieCompositionSpec.RawRes(
-                R.raw.vote_find
-            )
+                R.raw.vote_find,
+            ),
         )
 
         Column(
@@ -188,7 +188,7 @@ fun VoteResultScreen(
                 text = stringResource(R.string.analysis_result),
                 style = StaticTypeScale.Default.header1,
                 line = 2,
-                modifier = Modifier.padding(horizontal = 30.dp)
+                modifier = Modifier.padding(horizontal = 30.dp),
             )
 
             LottieAnimation(
@@ -196,7 +196,7 @@ fun VoteResultScreen(
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1f),
             )
         }
 

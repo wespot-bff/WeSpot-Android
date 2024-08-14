@@ -130,12 +130,12 @@ fun SchoolScreen(
                                         com.bff.wespot.designsystem.R.drawable.hight_school
                                     } else {
                                         com.bff.wespot.designsystem.R.drawable.middle_school
-                                    }
+                                    },
                                 ),
                                 contentDescription = stringResource(
                                     id = com.bff.wespot.ui.R.string.school_icon,
                                 ),
-                                modifier = Modifier.size(56.dp)
+                                modifier = Modifier.size(56.dp),
                             )
                         },
                         onClick = {

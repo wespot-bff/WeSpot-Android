@@ -210,14 +210,14 @@ private fun VoteHomeContent(
             ) {
                 val composition by rememberLottieComposition(
                     spec = LottieCompositionSpec.RawRes(
-                        R.raw.vote_home
-                    )
+                        R.raw.vote_home,
+                    ),
                 )
 
                 Image(
                     painter = painterResource(id = R.drawable.vote_gradient),
                     contentDescription = stringResource(
-                        id = R.string.vote_description
+                        id = R.string.vote_description,
                     ),
                     modifier = Modifier
                         .matchParentSize()
@@ -230,7 +230,7 @@ private fun VoteHomeContent(
                     iterations = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f)
+                        .aspectRatio(1f),
                 )
             }
             Card(

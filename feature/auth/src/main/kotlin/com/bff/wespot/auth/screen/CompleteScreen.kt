@@ -45,14 +45,14 @@ fun CompleteScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 86.dp)
+            .padding(top = 86.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.register_complete),
             contentDescription = stringResource(R.string.register_done),
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
+                .aspectRatio(1f),
         )
     }
 

@@ -55,15 +55,15 @@ fun AuthScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp)
+            .padding(top = 48.dp),
     ) {
         WSCarousel(
-            pagerState = pagerState
+            pagerState = pagerState,
         ) {
             val composition by rememberLottieComposition(
                 spec = LottieCompositionSpec.RawRes(
-                    AuthCarouselItem.entries[it].resId
-                )
+                    AuthCarouselItem.entries[it].resId,
+                ),
             )
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(
@@ -71,7 +71,7 @@ fun AuthScreen(
                     contentDescription = stringResource(R.string.onboarding_background),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f)
+                        .aspectRatio(1f),
                 )
 
                 LottieAnimation(
@@ -79,7 +79,7 @@ fun AuthScreen(
                     iterations = LottieConstants.IterateForever,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f)
+                        .aspectRatio(1f),
                 )
             }
         }
@@ -91,7 +91,7 @@ fun AuthScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 6.dp)
+                    .padding(horizontal = 24.dp, vertical = 6.dp),
             )
         }
 
@@ -99,7 +99,6 @@ fun AuthScreen(
             DotIndicators(pagerState = pagerState, modifier = Modifier.padding(top = 12.dp))
         }
     }
-
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Button(
@@ -134,7 +133,10 @@ fun AuthScreen(
     }
 }
 
-private enum class AuthCarouselItem(@RawRes val resId: Int, @DrawableRes val background: Int) {
+private enum class AuthCarouselItem(
+    @RawRes val resId: Int,
+    @DrawableRes val background: Int,
+) {
     FIRST(R.raw.onboarding01, R.drawable.onboarding_01_bkg),
     SignUp(R.raw.onboarding02, R.drawable.onboarding_02_bkg),
     Welcome(R.raw.onboarding03, R.drawable.onboarding_03_bkg),
