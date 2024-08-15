@@ -53,19 +53,21 @@ class VoteDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getVoteSent(): Result<VoteSentDto> =
+    override suspend fun getVoteSent(cursorId: Int?): Result<VoteSentDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("votes/sent")
+                parameter("cursorId", cursorId)
             }
         }
 
-    override suspend fun getVoteReceived(): Result<VoteReceivedDto> =
+    override suspend fun getVoteReceived(cursorId: Int?): Result<VoteReceivedDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("votes/received")
+                parameter("cursorId", cursorId)
             }
         }
 
