@@ -22,7 +22,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/options")
+                path("api/v1/votes/options")
             }
         }
 
@@ -30,7 +30,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("votes")
+                path("api/v1/votes")
             }
             setBody(voteResults)
         }
@@ -39,7 +39,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes")
+                path("api/v1/votes")
                 parameter("date", date)
             }
         }
@@ -48,7 +48,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/tops")
+                path("api/v1/votes/tops")
                 parameter("date", date)
             }
         }
@@ -57,7 +57,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/sent")
+                path("api/v1/votes/sent")
                 parameter("cursorId", cursorId)
             }
         }
@@ -66,7 +66,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/received")
+                path("api/v1/votes/received")
                 parameter("cursorId", cursorId)
             }
         }
@@ -78,7 +78,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/received/options/$optionId")
+                path("api/v1/votes/received/options/$optionId")
                 parameter("date", date)
             }
         }
@@ -90,7 +90,7 @@ class VoteDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("votes/sent/options/$optionId")
+                path("api/v1/votes/sent/options/$optionId")
                 parameter("date", date)
             }
         }

@@ -14,7 +14,7 @@ class MessageStorageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("messages/$messageId/read")
+                path("api/v1/messages/$messageId/read")
             }
         }
 
@@ -22,7 +22,7 @@ class MessageStorageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Delete
-                path("messages/$messageId")
+                path("api/v1/messages/$messageId")
             }
         }
 
@@ -30,7 +30,7 @@ class MessageStorageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("messages/$messageId/block")
+                path("api/v1/messages/$messageId/block")
             }
         }
 
@@ -38,7 +38,7 @@ class MessageStorageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("messages/scheduled")
+                path("api/v1/messages/scheduled")
             }
         }
 }

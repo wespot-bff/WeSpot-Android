@@ -10,15 +10,6 @@ plugins {
 
 android {
     namespace = "com.bff.wespot.data"
-
-    defaultConfig {
-        buildConfigField("String", "MOCK_BASE_URL", properties.getProperty("MOCK_BASE_URL"))
-        buildConfigField("String", "BASE_URL", properties.getProperty("BASE_URL"))
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
