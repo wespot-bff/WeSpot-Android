@@ -1,7 +1,6 @@
 package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,8 +71,7 @@ fun AccountSettingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(top = 16.dp, start = 24.dp, end = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+                .padding(top = 4.dp, start = 24.dp, end = 24.dp),
         ) {
             AccountSettingItem(title = stringResource(R.string.sign_out)) {
                 showDialog = true
@@ -103,7 +101,8 @@ fun AccountSettingItem(title: String, onClick: () -> Unit) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .padding(vertical = 12.dp),
         text = title,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
