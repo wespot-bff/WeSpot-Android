@@ -9,10 +9,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
+    implementation(project(":core:network"))
+
     implementation(libs.junit)
     implementation(libs.timber)
     implementation(libs.bundles.ktor.client)
     implementation(libs.kotlin.serialization.json)
-    implementation(project(":core:model"))
-    implementation(project(":core:network"))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.config)
 }
