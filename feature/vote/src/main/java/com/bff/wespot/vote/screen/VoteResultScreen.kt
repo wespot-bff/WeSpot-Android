@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +30,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -42,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -56,6 +57,10 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
@@ -80,6 +85,7 @@ import com.bff.wespot.vote.viewmodel.VoteResultViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalDate
@@ -113,22 +119,26 @@ fun VoteResultScreen(
         mutableStateOf(TODAY)
     }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val intent = it.data
-        }
+    var showLottie by remember {
+        mutableStateOf(false)
     }
+
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val intent = it.data
+            }
+        }
 
     if (state.onBoarding) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x00000000).copy(alpha = 0.4f))
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
 
-                        val (x, y) = dragAmount
+                        val (x, _) = dragAmount
                         when {
                             x < 0 -> {
                                 action(ResultAction.SetVoteOnBoarding)
@@ -136,116 +146,174 @@ fun VoteResultScreen(
                         }
                     }
                 }
-                .zIndex(1f),
-        )
+                .zIndex(1f)
+                .padding(top = 180.dp),
+        ) {
+            val composition by rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(
+                    R.raw.vote_swipe,
+                ),
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(30.dp),
+            )
+
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+            )
+        }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            if (state.isVoting) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(end = 12.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    WSTextButton(
-                        text = stringResource(id = R.string.go_to_home),
-                        onClick = {
-                            voteNavigator.navigateToVoteHome()
-                        },
-                    )
-                }
-            } else {
-                WSTopBar(
-                    title = "",
-                    canNavigateBack = true,
-                    navigateUp = { voteNavigator.navigateUp() },
-                )
-            }
-        },
-    ) {
+    if (showLottie) {
+        val composition by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(
+                R.raw.vote_find,
+            ),
+        )
+
         Column(
             modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(top = 60.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (!state.isVoting) {
-                WSHomeChipGroup(
-                    items = persistentListOf(
-                        stringResource(id = R.string.past_vote),
-                        stringResource(
-                            id = R.string.real_time_vote,
-                        ),
-                    ),
-                    selectedItemIndex = voteType,
-                    onSelectedChanged = { voteType = it },
-                )
-            }
+            MultiLineText(
+                text = stringResource(R.string.analysis_result),
+                style = StaticTypeScale.Default.header1,
+                line = 2,
+                modifier = Modifier.padding(horizontal = 30.dp),
+            )
 
-            val snapshot = CaptureBitmap {
-                WSCarousel(pagerState = pagerState) { page ->
-                    VoteResultItem(
-                        result = state.voteResults.voteResults[page],
-                        empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+            )
+        }
+
+        LaunchedEffect(state.isLoading) {
+            if (!state.isLoading) {
+                delay(2000)
+                showLottie = false
+            }
+        }
+    } else {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                if (state.isVoting) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(end = 12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        WSTextButton(
+                            text = stringResource(id = R.string.go_to_home),
+                            onClick = {
+                                voteNavigator.navigateToVoteHome()
+                            },
+                        )
+                    }
+                } else {
+                    WSTopBar(
+                        title = "",
+                        canNavigateBack = true,
+                        navigateUp = { voteNavigator.navigateUp() },
                     )
                 }
-            }
-
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    WSButton(
-                        enabled = state.isLoading.not(),
-                        onClick = {
-                            navigator.navigateToSharing(context)
-                        },
-                        paddingValues = PaddingValues(
-                            end = 87.dp,
+            },
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
+            ) {
+                if (!state.isVoting) {
+                    WSHomeChipGroup(
+                        items = persistentListOf(
+                            stringResource(id = R.string.past_vote),
+                            stringResource(
+                                id = R.string.real_time_vote,
+                            ),
                         ),
-                        text = stringResource(id = R.string.tell_friend),
-                    ) {
-                        it.invoke()
+                        selectedItemIndex = voteType,
+                        onSelectedChanged = { voteType = it },
+                    )
+                }
+
+                val snapshot = CaptureBitmap {
+                    WSCarousel(pagerState = pagerState) { page ->
+                        VoteResultItem(
+                            result = state.voteResults.voteResults[page],
+                            empty = state.voteResults.voteResults[page].results.size < MIN_REQUIREMENT,
+                        )
                     }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 20.dp, top = 12.dp, bottom = 12.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Button(
-                        enabled = state.isLoading.not(),
-                        onClick = {
-                            MainScope().launch {
-                                val bitmap = snapshot.invoke()
-                                val uri = saveImage(bitmap, context)
-
-                                if (uri != null) {
-                                    val intent = navigator.navigateToInstaStory(context, uri)
-                                    launcher.launch(intent)
-                                }
-                            }
-                        },
-                        modifier = Modifier.size(52.dp),
-                        shape = WeSpotThemeManager.shapes.medium,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                            contentColor = Color(0xFFEAEBEC),
-                        ),
-                        contentPadding = PaddingValues(1.dp),
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 12.dp, bottom = 12.dp),
+                        contentAlignment = Alignment.CenterStart,
                     ) {
-                        Icon(
-                            painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.insta),
-                            contentDescription = "",
-                        )
+                        WSButton(
+                            enabled = state.isLoading.not(),
+                            onClick = {
+                                navigator.navigateToSharing(context)
+                            },
+                            paddingValues = PaddingValues(
+                                end = 87.dp,
+                            ),
+                            text = stringResource(id = R.string.tell_friend),
+                        ) {
+                            it.invoke()
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 20.dp, top = 12.dp, bottom = 12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        Button(
+                            enabled = state.isLoading.not(),
+                            onClick = {
+                                MainScope().launch {
+                                    val bitmap = snapshot.invoke()
+                                    val uri = saveImage(bitmap, context)
+
+                                    if (uri != null) {
+                                        val intent = navigator.navigateToInstaStory(context, uri)
+                                        launcher.launch(intent)
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(52.dp),
+                            shape = WeSpotThemeManager.shapes.medium,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
+                                contentColor = Color(0xFFEAEBEC),
+                            ),
+                            contentPadding = PaddingValues(1.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.insta),
+                                contentDescription = "",
+                            )
+                        }
                     }
                 }
             }
@@ -262,9 +330,7 @@ fun VoteResultScreen(
     }
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        showLottie = true
     }
 
     LaunchedEffect(voteType) {

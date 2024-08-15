@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -49,6 +48,7 @@ import com.bff.wespot.model.vote.response.ReceivedVoteResult
 import com.bff.wespot.model.vote.response.SentVoteResult
 import com.bff.wespot.model.vote.response.StorageVoteResult
 import com.bff.wespot.ui.ListBottomGradient
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.util.hexToColor
@@ -151,9 +151,7 @@ fun VoteStorageScreen(
     }
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 }
 

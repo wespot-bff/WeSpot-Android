@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,6 +45,8 @@ import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.ReportBottomSheet
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
@@ -70,6 +71,7 @@ interface VotingNavigator {
 fun VotingScreen(
     votingNavigator: VotingNavigator,
     viewModel: VotingViewModel,
+    navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -168,9 +170,7 @@ fun VotingScreen(
     }
 
     if (state.loading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
 
     if (showReportSheet) {
