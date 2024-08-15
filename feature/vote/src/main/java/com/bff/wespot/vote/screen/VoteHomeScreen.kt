@@ -36,6 +36,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytic.buttonClick
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -181,6 +183,8 @@ private fun VoteHomeContent(
     voteNavigator: VoteNavigator,
     navigator: Navigator,
 ) {
+    val analyticsHelper = LocalAnalyticsHelper.current
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -193,6 +197,7 @@ private fun VoteHomeContent(
             subTitle = stringResource(id = R.string.invite_friend_description),
             bannerType = WSBannerType.Primary,
             onBannerClick = {
+                analyticsHelper.buttonClick("vote_home", "invite_friend")
                 navigator.navigateToSharing(context)
             },
         )
