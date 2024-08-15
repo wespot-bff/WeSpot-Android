@@ -3,6 +3,7 @@ package com.bff.wespot.domain.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.bff.wespot.model.common.Paging
+import java.io.IOException
 
 abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>() {
     protected abstract suspend fun fetchItems(cursorId: Int?): R
@@ -24,7 +25,7 @@ abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>()
                 prevKey = null,
                 nextKey = nextKey,
             )
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             LoadResult.Error(e)
         }
     }

@@ -48,28 +48,39 @@ class VoteStorageViewModel @Inject constructor(
         }
 
         viewModelScope.launch(coroutineDispatcher) {
-            reduce {
-                state.copy(
-                    receivedVotes = receivedRepository.fetchResultStream().cachedIn(viewModelScope),
-                    isLoading = false,
-                )
+            runCatching {
+                reduce {
+                    state.copy(
+                        receivedVotes = receivedRepository.fetchResultStream()
+                            .cachedIn(viewModelScope),
+                        isLoading = false,
+                    )
+                }
+            }.onFailure {
+                reduce {
+                    state.copy(isLoading = false)
+                }
             }
         }
     }
 
     private fun getSentVotes() = intent {
-        val original = state.sentVotes
-
         reduce {
             state.copy(isLoading = true)
         }
 
         viewModelScope.launch(coroutineDispatcher) {
-            reduce {
-                state.copy(
-                    sentVotes = sentRepository.fetchResultStream().cachedIn(viewModelScope),
-                    isLoading = false,
-                )
+            runCatching {
+                reduce {
+                    state.copy(
+                        sentVotes = sentRepository.fetchResultStream().cachedIn(viewModelScope),
+                        isLoading = false,
+                    )
+                }
+            }.onFailure {
+                reduce {
+                    state.copy(isLoading = false)
+                }
             }
         }
     }
