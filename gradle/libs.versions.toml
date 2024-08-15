@@ -46,8 +46,6 @@ kakao_sdk = "2.12.1"
 
 paging3 = "3.3.2"
 
-cloudy = "0.2.0"
-
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -121,8 +119,6 @@ kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sd
 
 paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
-
-compose-cloudy = { group = "com.github.skydoves", name = "cloudy", version.ref = "cloudy" }
 
 [bundles]
 androidx-compose = [
