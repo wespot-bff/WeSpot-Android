@@ -1,6 +1,5 @@
 package com.bff.wespot.data.remote.model.vote.response
 
-import com.bff.wespot.model.common.Cursor
 import com.bff.wespot.model.vote.response.VoteSent
 import kotlinx.serialization.Serializable
 
@@ -12,11 +11,9 @@ data class VoteSentDto(
 ) {
     fun toVoteSent(): VoteSent {
         return VoteSent(
-            voteData = voteData.map { it.toSentVoteData() },
-            cursor = Cursor(
-                hasNext = hasNext,
-                lastCursorId = lastCursorId
-            )
+            data = voteData.map { it.toSentVoteData() },
+            lastCursorId = lastCursorId,
+            hasNext = hasNext
         )
     }
 }
