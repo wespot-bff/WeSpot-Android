@@ -157,7 +157,7 @@ fun ProfileEditScreen(
 
             ProfileEditLockedItem(
                 title = stringResource(R.string.gender),
-                content = state.profile.gender,
+                content = state.profile.toGenderKorean(),
                 onClick = {
                     focusManager.clearFocus()
                     toast = ToastState(
