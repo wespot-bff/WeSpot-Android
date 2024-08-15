@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
     implementation(project(":core:network"))
-    implementation(project(":core:paging"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:vote"))
     implementation(project(":feature:message"))

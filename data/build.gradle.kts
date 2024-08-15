@@ -27,7 +27,6 @@ dependencies {
     implementation(project(":data-local"))
     implementation(project(":core:model"))
     implementation(project(":core:navigation"))
-    implementation(project(":core:paging"))
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.kotlin.serialization.json)
