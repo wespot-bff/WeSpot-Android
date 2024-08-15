@@ -2,7 +2,12 @@ package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.model.common.Paging
+import com.bff.wespot.model.vote.response.ReceivedVoteData
+import com.bff.wespot.model.vote.response.SentVoteData
 import com.bff.wespot.vote.state.storage.StorageAction
 import com.bff.wespot.vote.state.storage.StorageSideEffect
 import com.bff.wespot.vote.state.storage.StorageUiState
@@ -14,12 +19,13 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class VoteStorageViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
+    private val receivedRepository: BasePagingRepository<ReceivedVoteData, Paging<ReceivedVoteData>>,
+    private val sentRepository: BasePagingRepository<SentVoteData, Paging<SentVoteData>>,
     private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(StorageUiState())
@@ -37,31 +43,17 @@ class VoteStorageViewModel @Inject constructor(
     }
 
     private fun getReceivedVotes() = intent {
-        val original = state.receivedVotes
-
         reduce {
-            state.copy(isLoading = true, receivedVotes = emptyList())
+            state.copy(isLoading = true)
         }
 
         viewModelScope.launch(coroutineDispatcher) {
-            voteRepository.getVoteReceived()
-                .onSuccess {
-                    reduce {
-                        state.copy(
-                            receivedVotes = it.voteData,
-                            isLoading = false,
-                        )
-                    }
-                }
-                .onFailure {
-                    Timber.e(it)
-                    reduce {
-                        state.copy(
-                            receivedVotes = original,
-                            isLoading = false,
-                        )
-                    }
-                }
+            reduce {
+                state.copy(
+                    receivedVotes = receivedRepository.fetchResultStream().cachedIn(viewModelScope),
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -69,28 +61,16 @@ class VoteStorageViewModel @Inject constructor(
         val original = state.sentVotes
 
         reduce {
-            state.copy(isLoading = true, sentVotes = emptyList())
+            state.copy(isLoading = true)
         }
 
         viewModelScope.launch(coroutineDispatcher) {
-            voteRepository.getVoteSent()
-                .onSuccess {
-                    reduce {
-                        state.copy(
-                            sentVotes = it.voteData,
-                            isLoading = false,
-                        )
-                    }
-                }
-                .onFailure {
-                    Timber.e(it)
-                    reduce {
-                        state.copy(
-                            sentVotes = original,
-                            isLoading = false,
-                        )
-                    }
-                }
+            reduce {
+                state.copy(
+                    sentVotes = sentRepository.fetchResultStream().cachedIn(viewModelScope),
+                    isLoading = false
+                )
+            }
         }
     }
 
