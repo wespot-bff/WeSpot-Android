@@ -168,6 +168,15 @@ fun VoteResultScreen(
         }
     }
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && state.onBoarding) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x00000000).copy(alpha = 0.6f))
+                .zIndex(1f),
+        )
+    }
+
     if (showLottie) {
         val composition by rememberLottieComposition(
             spec = LottieCompositionSpec.RawRes(
@@ -205,7 +214,9 @@ fun VoteResultScreen(
         }
     } else {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(if (state.onBoarding) 10.dp else 0.dp),,
             topBar = {
                 if (state.isVoting) {
                     Box(
@@ -729,7 +740,9 @@ private fun EmptyTile(
                 Image(
                     painter = painterResource(id = R.drawable.blur_4),
                     contentDescription = "",
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     contentScale = ContentScale.FillWidth,
                 )
             } else {
