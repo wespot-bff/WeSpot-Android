@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.common.util.timeDifference
@@ -136,7 +137,10 @@ fun VoteStorageScreen(
             ) {
                 when (it) {
                     RECEIVED_SCREEN -> {
-                        ReceivedVoteScreen(state = state, action = action)
+                        ReceivedVoteScreen(
+                            state = state,
+                            action = action,
+                        )
                     }
 
                     SENT_SCREEN -> {
@@ -156,18 +160,41 @@ fun VoteStorageScreen(
 }
 
 @Composable
-private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) -> Unit) {
-    if (state.receivedVotes.isEmpty()) {
-        EmptyResultScreen()
-    } else {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(bottom = 20.dp),
-        ) {
-            items(state.receivedVotes, key = {
-                it.date
-            }) {
-                VoteDateList(votes = it.receivedVoteResults, date = it.date, action = action)
+private fun ReceivedVoteScreen(
+    state: StorageUiState,
+    action: (StorageAction) -> Unit,
+) {
+    val data = state.receivedVotes.collectAsLazyPagingItems()
+
+    when (data.loadState.refresh) {
+        is LoadState.Loading -> {
+            LoadingAnimation()
+        }
+
+        is LoadState.Error -> {
+            if (data.itemCount == 0) {
+                EmptyResultScreen()
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(bottom = 20.dp),
+            ) {
+                items(data.itemCount) { index ->
+                    val item = data[index]
+
+                    item?.let {
+                        if (it.receivedVoteResults.isNotEmpty()) {
+                            VoteDateList(
+                                votes = item.receivedVoteResults,
+                                date = item.date,
+                                action = action,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -179,17 +206,37 @@ private fun ReceivedVoteScreen(state: StorageUiState, action: (StorageAction) ->
 
 @Composable
 private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Unit) {
-    if (state.sentVotes.isEmpty()) {
-        EmptyResultScreen()
-    } else {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(bottom = 20.dp),
-        ) {
-            items(state.sentVotes, key = {
-                it.date
-            }) {
-                VoteDateList(votes = it.getSentVoteResult(), date = it.date, action = action)
+    val data = state.sentVotes.collectAsLazyPagingItems()
+
+    when (data.loadState.refresh) {
+        is LoadState.Loading -> {
+            LoadingAnimation()
+        }
+
+        is LoadState.Error -> {
+            if (data.itemCount == 0) {
+                EmptyResultScreen()
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(bottom = 20.dp),
+            ) {
+                items(data.itemCount) { index ->
+                    val item = data[index]
+
+                    item?.let {
+                        if (it.sentVoteResults.isNotEmpty()) {
+                            VoteDateList(
+                                votes = item.getSentVoteResult(),
+                                date = item.date,
+                                action = action,
+                            )
+                        }
+                    }
+                }
             }
         }
     }

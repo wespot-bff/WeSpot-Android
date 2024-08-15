@@ -40,7 +40,6 @@ fun Long.toDateString(date: String): String =
             "${this}일 전"
         }
         else -> {
-            println("data: $date")
             date.split("-").joinToString(".")
         }
     }

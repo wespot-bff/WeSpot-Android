@@ -34,4 +34,5 @@ dependencies {
     implementation(libs.junit)
     implementation(libs.kakao.sdk)
     implementation(libs.datastore)
+    implementation(libs.paging3)
 }

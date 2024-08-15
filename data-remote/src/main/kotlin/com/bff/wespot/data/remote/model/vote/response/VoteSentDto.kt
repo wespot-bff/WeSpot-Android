@@ -5,11 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VoteSentDto(
-    val voteData: List<SentVoteDataDto>
+    val voteData: List<SentVoteDataDto>,
+    val lastCursorId: Int,
+    val hasNext: Boolean,
 ) {
     fun toVoteSent(): VoteSent {
         return VoteSent(
-            voteData = voteData.map { it.toSentVoteData() }
+            data = voteData.map { it.toSentVoteData() },
+            lastCursorId = lastCursorId,
+            hasNext = hasNext
         )
     }
 }

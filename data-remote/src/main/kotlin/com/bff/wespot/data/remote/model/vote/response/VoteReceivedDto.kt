@@ -6,12 +6,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class VoteReceivedDto(
     val voteData: List<ReceivedVoteDataDto>,
-    val isLastPage: Boolean,
+    val lastCursorId: Int,
+    val hasNext: Boolean
 ) {
     fun toVoteReceived(): VoteReceived {
         return VoteReceived(
-            isLastPage = isLastPage,
-            voteData = voteData.map { it.toVoteData() }
+            data = voteData.map { it.toVoteData() },
+            lastCursorId = lastCursorId,
+            hasNext = hasNext
         )
     }
 }

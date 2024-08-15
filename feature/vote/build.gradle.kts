@@ -14,6 +14,7 @@ ksp {
 }
 
 dependencies {
+    implementation(libs.paging3)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
