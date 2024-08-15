@@ -16,7 +16,7 @@ abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>()
 
             val nextKey = when {
                 hasNext -> lastCursorId
-                else -> return LoadResult.Error(Exception("No more data"))
+                else -> null
             }
 
             LoadResult.Page(

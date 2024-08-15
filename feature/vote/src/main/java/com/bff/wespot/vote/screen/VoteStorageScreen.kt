@@ -189,11 +189,13 @@ private fun ReceivedVoteScreen(
                     val item = data[index]
 
                     item?.let {
-                        VoteDateList(
-                            votes = item.receivedVoteResults,
-                            date = item.date,
-                            action = action,
-                        )
+                        if (it.receivedVoteResults.isNotEmpty()) {
+                            VoteDateList(
+                                votes = item.receivedVoteResults,
+                                date = item.date,
+                                action = action,
+                            )
+                        }
                     }
                 }
             }
@@ -229,11 +231,13 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
                     val item = data[index]
 
                     item?.let {
-                        VoteDateList(
-                            votes = item.getSentVoteResult(),
-                            date = item.date,
-                            action = action,
-                        )
+                        if (it.sentVoteResults.isNotEmpty()) {
+                            VoteDateList(
+                                votes = item.getSentVoteResult(),
+                                date = item.date,
+                                action = action,
+                            )
+                        }
                     }
                 }
             }
