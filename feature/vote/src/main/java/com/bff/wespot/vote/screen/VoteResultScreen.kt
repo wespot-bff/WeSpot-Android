@@ -42,7 +42,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
@@ -121,7 +120,7 @@ fun VoteResultScreen(
     var voteType by remember {
         mutableStateOf(TODAY)
     }
-    
+
     var showLottie by remember {
         mutableStateOf(false)
     }
@@ -216,7 +215,7 @@ fun VoteResultScreen(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if (state.onBoarding) 10.dp else 0.dp),,
+                .blur(if (state.onBoarding) 10.dp else 0.dp),
             topBar = {
                 if (state.isVoting) {
                     Box(
@@ -260,14 +259,14 @@ fun VoteResultScreen(
                     )
                 }
 
-            val snapshot = CaptureBitmap {
-                WSCarousel(pagerState = pagerState) { page ->
-                    VoteResultItem(
-                        result = state.voteResults.voteResults[page],
-                        empty = state.voteResults.voteResults[page].results.isEmpty(),
-                    )
+                val snapshot = CaptureBitmap {
+                    WSCarousel(pagerState = pagerState) { page ->
+                        VoteResultItem(
+                            result = state.voteResults.voteResults[page],
+                            empty = state.voteResults.voteResults[page].results.isEmpty(),
+                        )
+                    }
                 }
-            }
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
                     Box(
