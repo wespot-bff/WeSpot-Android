@@ -6,6 +6,11 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -129,7 +135,11 @@ private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (isTopNavigationScreen) {
+            AnimatedVisibility(
+                visible = isTopNavigationScreen,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
                 WSTopBar(
                     title = "",
                     navigation = {
@@ -162,7 +172,11 @@ private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
             }
         },
         bottomBar = {
-            if (isBottomNavigationScreen) {
+            AnimatedVisibility(
+                visible = isBottomNavigationScreen,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
                 val currentSelectedItem by navController.currentScreenAsState()
                 BottomNavigationTab(
                     selectedNavigation = currentSelectedItem,
