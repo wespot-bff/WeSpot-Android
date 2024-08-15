@@ -1,6 +1,7 @@
 package com.bff.wespot.message.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -152,6 +153,7 @@ private fun MessageCard(
         modifier = Modifier
             .height(height)
             .fillMaxWidth()
+            .animateContentSize()
             .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 16.dp else 20.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(WeSpotThemeManager.colors.modalColor),
