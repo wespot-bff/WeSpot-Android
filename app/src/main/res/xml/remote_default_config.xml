@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- Add other default parameters as needed -->
+    <entry>
+        <key>MIN_VERSION</key>
+        <value>1.0.0</value>
+    </entry>
+</defaultsMap>
