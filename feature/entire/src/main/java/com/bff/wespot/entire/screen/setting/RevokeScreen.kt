@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen.setting
+package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,8 +25,8 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

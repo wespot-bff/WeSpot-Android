@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.viewmodel
+package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,9 +6,9 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.UserRepository
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.state.EntireSideEffect
-import com.bff.wespot.entire.screen.state.EntireUiState
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.state.EntireSideEffect
+import com.bff.wespot.entire.state.EntireUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost

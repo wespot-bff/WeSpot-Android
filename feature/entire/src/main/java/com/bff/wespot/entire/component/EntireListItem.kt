@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.component
+package com.bff.wespot.entire.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -24,7 +24,8 @@ internal fun EntireListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(

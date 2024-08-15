@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.viewmodel
+package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,11 +7,11 @@ import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.common.INPUT_DEBOUNCE_TIME
-import com.bff.wespot.entire.screen.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.screen.state.edit.EntireEditAction
-import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.screen.state.edit.EntireEditUiState
+import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
+import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
+import com.bff.wespot.entire.state.edit.EntireEditAction
+import com.bff.wespot.entire.state.edit.EntireEditSideEffect
+import com.bff.wespot.entire.state.edit.EntireEditUiState
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.user.response.ProfileCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel

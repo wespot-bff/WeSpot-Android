@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.state.edit
+package com.bff.wespot.entire.state.edit
 
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
