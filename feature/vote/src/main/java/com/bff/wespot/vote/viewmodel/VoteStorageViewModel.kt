@@ -51,7 +51,7 @@ class VoteStorageViewModel @Inject constructor(
             reduce {
                 state.copy(
                     receivedVotes = receivedRepository.fetchResultStream().cachedIn(viewModelScope),
-                    isLoading = false
+                    isLoading = false,
                 )
             }
         }
@@ -68,7 +68,7 @@ class VoteStorageViewModel @Inject constructor(
             reduce {
                 state.copy(
                     sentVotes = sentRepository.fetchResultStream().cachedIn(viewModelScope),
-                    isLoading = false
+                    isLoading = false,
                 )
             }
         }

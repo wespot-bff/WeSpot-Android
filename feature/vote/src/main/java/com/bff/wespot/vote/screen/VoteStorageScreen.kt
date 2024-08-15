@@ -140,7 +140,7 @@ fun VoteStorageScreen(
                     RECEIVED_SCREEN -> {
                         ReceivedVoteScreen(
                             state = state,
-                            action = action
+                            action = action,
                         )
                     }
 
@@ -165,7 +165,7 @@ fun VoteStorageScreen(
 @Composable
 private fun ReceivedVoteScreen(
     state: StorageUiState,
-    action: (StorageAction) -> Unit
+    action: (StorageAction) -> Unit,
 ) {
     val data = state.receivedVotes.collectAsLazyPagingItems()
 
@@ -192,7 +192,7 @@ private fun ReceivedVoteScreen(
                         VoteDateList(
                             votes = item.receivedVoteResults,
                             date = item.date,
-                            action = action
+                            action = action,
                         )
                     }
                 }
@@ -232,7 +232,7 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
                         VoteDateList(
                             votes = item.getSentVoteResult(),
                             date = item.date,
-                            action = action
+                            action = action,
                         )
                     }
                 }

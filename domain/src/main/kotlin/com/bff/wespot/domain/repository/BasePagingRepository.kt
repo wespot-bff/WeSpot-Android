@@ -12,6 +12,6 @@ abstract class BasePagingRepository<T : Any, R : Paging<T>> {
 
     fun fetchResultStream(): Flow<PagingData<T>> = Pager(
         config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { pagingSource() }
+        pagingSourceFactory = { pagingSource() },
     ).flow
 }

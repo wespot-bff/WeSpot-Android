@@ -22,7 +22,7 @@ abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>()
             LoadResult.Page(
                 data = response.data,
                 prevKey = null,
-                nextKey = nextKey
+                nextKey = nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
