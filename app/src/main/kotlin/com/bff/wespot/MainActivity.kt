@@ -23,6 +23,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -41,21 +42,23 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
-import com.ramcosta.composedestinations.dynamic.within
+import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +70,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
+    @Inject
+    lateinit var analyticsHelper: AnalyticsHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
@@ -76,6 +82,7 @@ class MainActivity : ComponentActivity() {
                 MainScreen(
                     navigator = navigator,
                     navArgs = getMainScreenArgsFromIntent(),
+                    analyticsHelper = analyticsHelper,
                 )
             }
         }
@@ -88,7 +95,7 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
 
-            if(!hasPermission) {
+            if (!hasPermission) {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -119,7 +126,11 @@ data class MainScreenNavArgs(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
+private fun MainScreen(
+    navigator: Navigator,
+    navArgs: MainScreenNavArgs,
+    analyticsHelper: AnalyticsHelper
+) {
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
 
@@ -174,12 +185,16 @@ private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
             }
         },
     ) {
-        AppNavigation(
-            navController = navController,
-            modifier = Modifier.padding(it),
-            navigator = navigator,
-            showToast = { toastState -> toast = toastState }
-        )
+        CompositionLocalProvider(
+            LocalAnalyticsHelper provides analyticsHelper,
+        ) {
+            AppNavigation(
+                navController = navController,
+                modifier = Modifier.padding(it),
+                navigator = navigator,
+                showToast = { toastState -> toast = toastState }
+            )
+        }
 
         navigateScreenFromNavArgs(navArgs, navController)
     }
@@ -331,10 +346,13 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController:
 
         NotificationType.VOTE -> {
         }
+
         NotificationType.VOTE_RESULT -> {
         }
+
         NotificationType.VOTE_RECEIVED -> {
         }
+
         NotificationType.IDLE -> {
         }
     }

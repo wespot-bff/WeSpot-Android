@@ -26,6 +26,19 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    flavorDimensions.add("wespot")
+    productFlavors {
+        create("dev") {
+            dimension = "wespot"
+            applicationIdSuffix = ".dev"
+        }
+
+        create("prod") {
+            dimension = "wespot"
+            applicationIdSuffix = ".prod"
+        }
+    }
 }
 
 dependencies {
@@ -39,6 +52,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
     implementation(project(":core:network"))
+    implementation(project(":core:analytics"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:vote"))
     implementation(project(":feature:message"))
