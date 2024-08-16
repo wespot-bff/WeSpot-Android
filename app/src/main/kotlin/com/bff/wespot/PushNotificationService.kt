@@ -12,12 +12,14 @@ import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.util.DataStoreKey.PUSH_TOKEN
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class PushNotificationService : FirebaseMessagingService() {
 
     @Inject

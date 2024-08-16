@@ -120,7 +120,6 @@ kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sd
 paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
 
-
 [bundles]
 androidx-compose = [
     "androidx-activity-compose",
