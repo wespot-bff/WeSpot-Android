@@ -1,5 +1,7 @@
 package com.bff.wespot.data.local.di
 
+import com.bff.wespot.data.local.source.ProfileDataSource
+import com.bff.wespot.data.local.source.ProfileDataSourceImpl
 import com.bff.wespot.data.local.source.WeSpotDataStore
 import com.bff.wespot.data.local.source.WeSpotDataStoreImpl
 import dagger.Binds
@@ -16,4 +18,10 @@ interface DataLocalModule {
     fun bindsWeSpotDataStore(
         weSpotDataStoreImpl: WeSpotDataStoreImpl
     ): WeSpotDataStore
+
+    @Binds
+    @Singleton
+    fun bindsProfileDataSource(
+        profileDataSourceImpl: ProfileDataSourceImpl
+    ): ProfileDataSource
 }
