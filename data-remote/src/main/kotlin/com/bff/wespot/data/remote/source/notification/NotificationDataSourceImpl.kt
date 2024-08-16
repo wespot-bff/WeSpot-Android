@@ -21,7 +21,7 @@ class NotificationDataSourceImpl @Inject constructor(
     override suspend fun updateNotificationReadStatus(id: Int): Result<Unit> =
         httpClient.safeRequest {
             url {
-                method = HttpMethod.Put
+                method = HttpMethod.Patch
                 path("notifications/$id")
             }
         }
