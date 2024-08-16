@@ -41,6 +41,8 @@ compose-destination = "1.10.2"
 lottie = "6.5.0"
 timber = "5.0.1"
 datastore = "1.1.1"
+google-protobuf-plguin = "0.9.4"
+google-protobuf = "3.25.3"
 
 kakao_sdk = "2.12.1"
 
@@ -95,7 +97,10 @@ orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbi
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbit" }
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }
 
-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+datastore-prefereces = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+datastore = { group = "androidx.datastore", name ="datastore", version.ref = "datastore"}
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "google-protobuf" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "google-protobuf" }
 
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 crashlytics-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlytics" }
@@ -156,6 +161,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plguin" }
 
 # Gradle Plugin
 wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified" }
