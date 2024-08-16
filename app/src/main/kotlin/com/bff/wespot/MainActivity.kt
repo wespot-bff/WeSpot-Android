@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -44,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -62,6 +64,8 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.state.MainAction
+import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -125,7 +129,13 @@ data class MainScreenNavArgs(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
+private fun MainScreen(
+    navigator: Navigator,
+    navArgs: MainScreenNavArgs,
+    viewModel: MainViewModel = hiltViewModel(),
+) {
+    val action = viewModel::onAction
+
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
 
@@ -209,6 +219,10 @@ private fun MainScreen(navigator: Navigator, navArgs: MainScreenNavArgs) {
                 },
             )
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(MainAction.OnMainScreenEntered)
     }
 }
 
