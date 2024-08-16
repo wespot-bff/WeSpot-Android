@@ -259,14 +259,14 @@ fun VoteResultScreen(
                     )
                 }
 
-            val snapshot = CaptureBitmap {
-                WSCarousel(pagerState = pagerState) { page ->
-                    VoteResultItem(
-                        result = state.voteResults.voteResults[page],
-                        empty = state.voteResults.voteResults[page].results.isEmpty(),
-                    )
+                val snapshot = CaptureBitmap {
+                    WSCarousel(pagerState = pagerState) { page ->
+                        VoteResultItem(
+                            result = state.voteResults.voteResults[page],
+                            empty = state.voteResults.voteResults[page].results.isEmpty(),
+                        )
+                    }
                 }
-            }
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
                     Box(

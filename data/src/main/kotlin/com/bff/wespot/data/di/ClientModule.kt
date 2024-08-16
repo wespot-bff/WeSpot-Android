@@ -92,7 +92,7 @@ object ClientModule {
                         .first()
                     val token = client.post {
                         markAsRefreshTokenRequest()
-                        url("auth/reissue")
+                        url("api/v1/auth/reissue")
                         setBody(TokenDto(refreshToken))
                     }.body<AuthTokenDto>()
 

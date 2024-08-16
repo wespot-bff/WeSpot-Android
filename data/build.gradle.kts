@@ -10,6 +10,10 @@ plugins {
 
 android {
     namespace = "com.bff.wespot.data"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
