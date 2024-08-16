@@ -37,7 +37,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/signup/characters")
+                path("users/characters")
             }
         }
 
@@ -45,7 +45,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/signup/backgrounds")
+                path("users/backgrounds")
             }
         }
 
