@@ -82,10 +82,7 @@ fun GradeScreen(
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        action(AuthAction.OnGradeBottomSheetChanged(true))
-                    },
+                    .fillMaxWidth(),
             ) {
                 WSOutlineButton(
                     text = "",
@@ -132,12 +129,13 @@ fun GradeScreen(
                 BottomSheetContent(
                     currentGrade = state.grade,
                     onGradeSelected = { grade ->
-                        if (grade == 1) {
+                        if (grade == 1 && state.selectedSchool?.type != "HIGH") {
                             toast = true
                             return@BottomSheetContent
                         }
 
                         action(AuthAction.OnGradeChanged(grade))
+                        action(AuthAction.OnGradeBottomSheetChanged(false))
                         if (edit) {
                             action(AuthAction.Navigation(NavigationAction.PopBackStack))
                             return@BottomSheetContent

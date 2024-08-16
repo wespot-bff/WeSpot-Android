@@ -41,7 +41,9 @@ fun DotIndicators(
                     .background(color)
                     .size(7.dp),
             )
-            Spacer(modifier = Modifier.width(14.dp))
+            if (it < pagerState.pageCount - 1) {
+                Spacer(modifier = Modifier.width(14.dp))
+            }
         }
     }
 }

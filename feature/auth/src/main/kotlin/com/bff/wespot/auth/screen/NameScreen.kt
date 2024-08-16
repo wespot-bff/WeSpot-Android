@@ -147,7 +147,7 @@ fun NameScreen(
                     R.string.next
                 },
             ),
-            enabled = error.not(),
+            enabled = state.name.length > 1 && error.not(),
         ) {
             it.invoke()
         }

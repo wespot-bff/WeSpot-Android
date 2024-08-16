@@ -29,6 +29,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -49,23 +50,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
-import com.ramcosta.composedestinations.dynamic.within
+import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.viewmodel.MainViewModel
+import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,6 +80,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
+    @Inject
+    lateinit var analyticsHelper: AnalyticsHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
@@ -86,6 +92,7 @@ class MainActivity : ComponentActivity() {
                 MainScreen(
                     navigator = navigator,
                     navArgs = getMainScreenArgsFromIntent(),
+                    analyticsHelper = analyticsHelper,
                 )
             }
         }
@@ -98,7 +105,7 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
 
-            if(!hasPermission) {
+            if (!hasPermission) {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -132,6 +139,7 @@ data class MainScreenNavArgs(
 private fun MainScreen(
     navigator: Navigator,
     navArgs: MainScreenNavArgs,
+    analyticsHelper: AnalyticsHelper,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val action = viewModel::onAction
@@ -198,12 +206,16 @@ private fun MainScreen(
             }
         },
     ) {
-        AppNavigation(
-            navController = navController,
-            modifier = Modifier.padding(it),
-            navigator = navigator,
-            showToast = { toastState -> toast = toastState }
-        )
+        CompositionLocalProvider(
+            LocalAnalyticsHelper provides analyticsHelper,
+        ) {
+            AppNavigation(
+                navController = navController,
+                modifier = Modifier.padding(it),
+                navigator = navigator,
+                showToast = { toastState -> toast = toastState }
+            )
+        }
 
         navigateScreenFromNavArgs(navArgs, navController)
     }
@@ -244,6 +256,7 @@ private fun BottomNavigationTab(
             BottomBarDestinations.values().forEach { destination ->
                 TabItem(
                     icon = painterResource(id = destination.icon),
+                    emptyIcon = painterResource(id = destination.emptyIcon),
                     title = stringResource(id = destination.title),
                     description = stringResource(id = destination.title),
                     selected = selectedNavigation == destination.screen,
@@ -298,6 +311,7 @@ private fun NavController.checkCurrentScreen(position: NavigationBarPosition): S
 @Composable
 private fun TabItem(
     icon: Painter,
+    emptyIcon: Painter,
     title: String,
     description: String,
     selected: Boolean = false,
@@ -313,13 +327,12 @@ private fun TabItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = icon,
-                contentDescription = description,
-                tint = if (selected) {
-                    WeSpotThemeManager.colors.abledIconColor
+                painter = if(selected) {
+                    icon
                 } else {
-                    WeSpotThemeManager.colors.disableIcnColor
+                    emptyIcon
                 },
+                contentDescription = description,
             )
 
             Text(
@@ -358,10 +371,13 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController:
 
         NotificationType.VOTE -> {
         }
+
         NotificationType.VOTE_RESULT -> {
         }
+
         NotificationType.VOTE_RECEIVED -> {
         }
+
         NotificationType.IDLE -> {
         }
     }

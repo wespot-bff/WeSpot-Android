@@ -46,6 +46,8 @@ google-protobuf = "3.25.3"
 
 kakao_sdk = "2.12.1"
 
+paging3 = "3.3.2"
+
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -119,6 +121,9 @@ detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", v
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 
 kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sdk" }
+
+paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
+paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
 
 [bundles]
 androidx-compose = [

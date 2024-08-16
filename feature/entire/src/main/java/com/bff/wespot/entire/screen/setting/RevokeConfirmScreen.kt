@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen.setting
+package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,9 +35,9 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.state.EntireSideEffect
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.state.EntireSideEffect
+import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.ui.WSBottomSheet

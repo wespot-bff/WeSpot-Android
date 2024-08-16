@@ -13,15 +13,15 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
-import com.bff.wespot.entire.screen.screen.destinations.AccountSettingScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.BlockListScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.EntireScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.NotificationSettingScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.RevokeConfirmScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.RevokeScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.SettingScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.ProfileEditScreenDestination
-import com.bff.wespot.entire.screen.screen.destinations.CharacterEditScreenDestination
+import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
+import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
+import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
+import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
+import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
+import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
+import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
+import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
@@ -129,7 +129,7 @@ object AppNavGraphs {
 
 private val bottomBarScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen?isMessageSent={isMessageSent}",
+    "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}",
     "entire/entire_screen",
 )
 

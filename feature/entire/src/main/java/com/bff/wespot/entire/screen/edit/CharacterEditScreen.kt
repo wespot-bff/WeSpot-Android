@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.screen.edit
+package com.bff.wespot.entire.screen.edit
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -10,9 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.entire.screen.state.edit.EntireEditAction
-import com.bff.wespot.entire.screen.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.screen.viewmodel.EntireEditViewModel
+import com.bff.wespot.entire.state.edit.EntireEditAction
+import com.bff.wespot.entire.state.edit.EntireEditSideEffect
+import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.ui.CharacterScreen
 import com.bff.wespot.ui.LoadingAnimation

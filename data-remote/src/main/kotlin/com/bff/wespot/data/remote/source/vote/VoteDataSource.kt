@@ -7,16 +7,14 @@ import com.bff.wespot.data.remote.model.vote.response.VoteItemsDto
 import com.bff.wespot.data.remote.model.vote.response.VoteReceivedDto
 import com.bff.wespot.data.remote.model.vote.response.VoteResultsDto
 import com.bff.wespot.data.remote.model.vote.response.VoteSentDto
-import com.bff.wespot.model.vote.response.IndividualReceived
-import com.bff.wespot.model.vote.response.IndividualSent
 
 interface VoteDataSource {
     suspend fun getVoteQuestions(): Result<VoteItemsDto>
     suspend fun uploadVoteResults(voteResults: VoteResultsUploadDto): Result<Unit>
     suspend fun getVoteResults(date: String): Result<VoteResultsDto>
     suspend fun getFirstVoteResults(date: String): Result<VoteResultsDto>
-    suspend fun getVoteSent(): Result<VoteSentDto>
-    suspend fun getVoteReceived(): Result<VoteReceivedDto>
+    suspend fun getVoteSent(cursorId: Int?): Result<VoteSentDto>
+    suspend fun getVoteReceived(cursorId: Int?): Result<VoteReceivedDto>
     suspend fun getReceivedVote(
         date: String,
         optionId: Int,

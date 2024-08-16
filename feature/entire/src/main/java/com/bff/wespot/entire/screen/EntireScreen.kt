@@ -1,9 +1,8 @@
-package com.bff.wespot.entire.screen.screen
+package com.bff.wespot.entire.screen
 
 import android.graphics.Color.parseColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,11 +42,13 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.component.EntireListItem
-import com.bff.wespot.entire.screen.screen.edit.ProfileEditNavArgs
-import com.bff.wespot.entire.screen.state.EntireAction
-import com.bff.wespot.entire.screen.viewmodel.EntireViewModel
+import com.bff.wespot.entire.component.EntireListItem
+import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.WebLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -61,8 +62,10 @@ interface EntireNavigator {
 @Composable
 internal fun EntireScreen(
     navigator: EntireNavigator,
+    activityNavigator: Navigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -99,7 +102,9 @@ internal fun EntireScreen(
                 title = stringResource(R.string.vote_question_banner_title),
                 subTitle = stringResource(R.string.vote_question_banner_subtitle),
                 image = painterResource(id = R.drawable.vote_question_ask),
-                onBannerClick = {},
+                onBannerClick = {
+                    activityNavigator.navigateToWebLink(context, WebLink.VOTE_QUESTION_GOOGLE_FORM)
+                },
                 hasBorder = true,
                 bannerType = WSBannerType.Primary,
             )
@@ -107,37 +112,45 @@ internal fun EntireScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 32.dp, start = 4.dp, end = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(top = 20.dp, start = 4.dp, end = 4.dp),
             ) {
                 EntireListItem(text = stringResource(R.string.contact_channel)) {
+                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_KAKAKO_CHANNEL)
                 }
 
                 EntireListItem(text = stringResource(R.string.official_sns)) {
+                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_INSTARGRAM)
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
                 EntireListItem(text = stringResource(R.string.leave_store_review)) {
+                    activityNavigator.navigateToWebLink(context, WebLink.PLAY_STORE)
                 }
 
                 EntireListItem(text = stringResource(R.string.send_feedback)) {
+                    activityNavigator.navigateToWebLink(context, WebLink.USER_OPINION_GOOGLE_FORM)
                 }
 
                 EntireListItem(text = stringResource(R.string.participate_in_research)) {
+                    activityNavigator.navigateToWebLink(
+                        context,
+                        WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM,
+                    )
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
                 EntireListItem(text = stringResource(R.string.wespot_makers)) {
+                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_MAKERS)
                 }
             }
         }

@@ -26,7 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun sendKakaoToken(token: KakaoAuthToken): Result<Any> =
         authDataSource
-            .sendKakaoToken(token.toDto())
+            .sendKakaoToken(token.toDto(dataStore.getString(DataStoreKey.PUSH_TOKEN).first()))
             .mapCatching {
                 when (it) {
                     is AuthTokenDto -> {
