@@ -8,10 +8,10 @@ import com.bff.wespot.model.common.Paging
 import kotlinx.coroutines.flow.Flow
 
 abstract class BasePagingRepository<T : Any, R : Paging<T>> {
-    protected abstract fun pagingSource(): BasePagingSource<T, R>
+    protected abstract fun pagingSource(parameter: String? = null): BasePagingSource<T, R>
 
-    fun fetchResultStream(): Flow<PagingData<T>> = Pager(
+    fun fetchResultStream(parameter: String? = null): Flow<PagingData<T>> = Pager(
         config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { pagingSource() },
+        pagingSourceFactory = { pagingSource(parameter) },
     ).flow
 }
