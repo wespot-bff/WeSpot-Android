@@ -93,14 +93,16 @@ class EntireEditViewModel @Inject constructor(
     }
 
     private fun observeProfileFlow() = intent {
-        profileRepository.profileDataFlow
-            .distinctUntilChanged()
-            .catch { exception ->
-                Timber.e(exception)
-            }
-            .collect {
-                reduce { state.copy(profile = it) }
-            }
+        viewModelScope.launch {
+            profileRepository.profileDataFlow
+                .distinctUntilChanged()
+                .catch { exception ->
+                    Timber.e(exception)
+                }
+                .collect {
+                    reduce { state.copy(profile = it) }
+                }
+        }
     }
 
     private fun handleIntroductionChanged(introduction: String) = intent {

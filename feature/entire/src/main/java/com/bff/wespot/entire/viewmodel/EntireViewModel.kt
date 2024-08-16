@@ -64,7 +64,7 @@ class EntireViewModel @Inject constructor(
             launch {
                 authRepository.revoke(state.revokeReasonList)
                     .onSuccess {
-                        dataStoreRepository.clear()
+                        clearCachedData()
                         postSideEffect(EntireSideEffect.NavigateToAuth)
                     }
                     .onFailure {
@@ -75,9 +75,14 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun signOut() = intent {
+        clearCachedData()
+        postSideEffect(EntireSideEffect.NavigateToAuth)
+    }
+
+    private fun clearCachedData() {
         viewModelScope.launch {
-            dataStoreRepository.clear()
-            postSideEffect(EntireSideEffect.NavigateToAuth)
+            launch { dataStoreRepository.clear() }
+            launch { profileRepository.clearProfile() }
         }
     }
 
