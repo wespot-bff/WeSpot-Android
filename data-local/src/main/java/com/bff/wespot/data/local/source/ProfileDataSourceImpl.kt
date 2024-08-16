@@ -69,4 +69,10 @@ class ProfileDataSourceImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun clearProfile() {
+        preference.updateData {
+            it.toBuilder().clear().build()
+        }
+    }
 }

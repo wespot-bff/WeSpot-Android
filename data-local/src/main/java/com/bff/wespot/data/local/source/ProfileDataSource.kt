@@ -14,4 +14,6 @@ interface ProfileDataSource {
     suspend fun updateIntroduction(introduction: String)
 
     suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter)
+
+    suspend fun clearProfile()
 }

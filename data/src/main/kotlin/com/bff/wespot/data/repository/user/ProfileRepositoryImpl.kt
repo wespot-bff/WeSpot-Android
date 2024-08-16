@@ -22,4 +22,6 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter) =
         profileDataSource.updateProfileCharacter(profileCharacter)
+
+    override suspend fun clearProfile() = profileDataSource.clearProfile()
 }
