@@ -17,12 +17,13 @@ import javax.inject.Inject
 class AuthDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient
 ) : AuthDataSource {
-    override suspend fun getSchoolList(search: String): Result<SchoolListDto> =
+    override suspend fun getSchoolList(search: String, cursorId: Int?): Result<SchoolListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("api/v1/schools/search")
                 parameter("name", search)
+                parameter("cursorId", cursorId)
             }
         }
 
