@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_package = "com.bff.wespot.data.local";
+option java_multiple_files = true;
+
+message ProfilePreference {
+    int32 id = 1;
+    string name = 2;
+    string schoolName = 3;
+    int32 grade = 4;
+    int32 classNumber = 5;
+    string gender = 6;
+    string introduction = 7;
+    ProfileCharacterPreference profileCharacter = 8;
+}
+
+message ProfileCharacterPreference {
+    string iconUrl = 1;
+    string backgroundColor = 2;
+}
