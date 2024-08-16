@@ -8,6 +8,7 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
@@ -17,6 +18,7 @@ import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
+import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.constants.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,6 +41,7 @@ class AuthViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
+    private val pagingRepository: BasePagingRepository<School, Paging<School>>,
     private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
@@ -173,17 +176,14 @@ class AuthViewModel @Inject constructor(
 
     private fun fetchSchoolList(search: String) = intent {
         viewModelScope.launch(dispatcher) {
-            authRepository.getSchoolList(search)
-                .onSuccess {
-                    reduce {
-                        state.copy(
-                            schoolList = it,
-                        )
-                    }
+            runCatching {
+                val result = pagingRepository.fetchResultStream(search)
+                reduce {
+                    state.copy(
+                        schoolList = result,
+                    )
                 }
-                .onFailure {
-                    Timber.e(it)
-                }
+            }
         }
     }
 
