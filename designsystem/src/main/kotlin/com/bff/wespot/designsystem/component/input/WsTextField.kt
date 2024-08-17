@@ -70,9 +70,9 @@ fun WsTextField(
             .wrapContentSize()
             .border(
                 BorderStroke(1.dp, WeSpotThemeManager.colors.primaryColor),
-                shape = WeSpotThemeManager.shapes.small
+                shape = WeSpotThemeManager.shapes.small,
             )
-            .padding(1.dp)
+            .padding(1.dp),
     ) {
         OutlinedTextField(
             modifier = Modifier

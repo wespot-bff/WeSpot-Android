@@ -79,7 +79,7 @@ internal fun EntireScreen(
                             .clickable { navigator.navigateToSetting() }
                             .padding(end = 16.dp),
                         imageVector = ImageVector.vectorResource(
-                           com.bff.wespot.designsystem.R.drawable.icn_settings
+                            com.bff.wespot.designsystem.R.drawable.icn_settings,
                         ),
                         contentDescription = stringResource(R.string.setting_icon),
                         tint = WeSpotThemeManager.colors.secondaryBtnColor,

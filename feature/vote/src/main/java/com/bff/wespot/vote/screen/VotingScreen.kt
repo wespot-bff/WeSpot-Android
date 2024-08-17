@@ -142,7 +142,7 @@ fun VotingScreen(
     ) {
         if (state.loading && showGuideScreen) {
             return@Scaffold
-        } else if (!showGuideScreen) {
+        } else if (showGuideScreen) {
             VotingGuideScreen(it, navigator)
         } else {
             VotingProgressScreen(
@@ -243,7 +243,7 @@ private fun VotingProgressScreen(
         }
         Text(
             text =
-            "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
@@ -282,13 +282,13 @@ private fun VotingProgressScreen(
                         }
                     },
                     buttonType =
-                    if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                        selected == voteItem.id
-                    ) {
-                        WSOutlineButtonType.Highlight
-                    } else {
-                        WSOutlineButtonType.None
-                    },
+                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                            selected == voteItem.id
+                        ) {
+                            WSOutlineButtonType.Highlight
+                        } else {
+                            WSOutlineButtonType.None
+                        },
                     paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                 ) {
                     Text(
@@ -328,7 +328,7 @@ private fun VotingGuideScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
             text = stringResource(R.string.guide_title),

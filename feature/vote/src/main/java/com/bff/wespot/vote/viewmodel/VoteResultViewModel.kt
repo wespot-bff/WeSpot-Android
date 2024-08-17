@@ -65,7 +65,6 @@ class VoteResultViewModel @Inject constructor(
             dataStoreRepository.getBoolean(DataStoreKey.VOTE_ONBOARDING).collect {
                 if (!it) {
                     reduce { state.copy(onBoarding = !it) }
-                    dataStoreRepository.saveBoolean(DataStoreKey.VOTE_ONBOARDING, true)
                 }
             }
         }
@@ -73,6 +72,9 @@ class VoteResultViewModel @Inject constructor(
 
     private fun setVoteOnBoarding() = intent {
         reduce {
+            viewModelScope.launch {
+                dataStoreRepository.saveBoolean(DataStoreKey.VOTE_ONBOARDING, true)
+            }
             state.copy(
                 onBoarding = false,
             )

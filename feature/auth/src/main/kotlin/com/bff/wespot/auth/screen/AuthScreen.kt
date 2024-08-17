@@ -143,5 +143,5 @@ private enum class AuthCarouselItem(
 ) {
     FIRST(R.raw.onboarding01, R.drawable.onboarding_01_bkg, R.string.onboarding1),
     SignUp(R.raw.onboarding02, R.drawable.onboarding_02_bkg, R.string.onboarding2),
-    Welcome(R.raw.onboarding03, R.drawable.onboarding_03_bkg, R.string.onboarding3);
+    Welcome(R.raw.onboarding03, R.drawable.onboarding_03_bkg, R.string.onboarding3),
 }

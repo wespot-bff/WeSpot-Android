@@ -135,7 +135,7 @@ internal fun VoteCard(
                 if (result.voteCount == 0) {
                     Image(
                         painter = painterResource(
-                            id = com.bff.wespot.designsystem.R.drawable.question
+                            id = com.bff.wespot.designsystem.R.drawable.question,
                         ),
                         contentDescription = stringResource(
                             id = R.string.vote_ongoing,

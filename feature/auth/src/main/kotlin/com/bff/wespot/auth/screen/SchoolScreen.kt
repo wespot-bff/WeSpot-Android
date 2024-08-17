@@ -195,13 +195,13 @@ fun SchoolScreen(
         ) {
             it()
         }
-
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .zIndex(1f), contentAlignment = Alignment.BottomCenter
+            .zIndex(1f),
+        contentAlignment = Alignment.BottomCenter,
     ) {
         ListBottomGradient(height = 120)
     }

@@ -132,7 +132,7 @@ fun VoteResultScreen(
             }
         }
 
-    if (state.onBoarding) {
+    if (state.onBoarding && !showLottie) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -329,7 +329,11 @@ fun VoteResultScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 104.dp),
+                .padding(bottom = 104.dp)
+                .blur(
+                    if (state.onBoarding) 10.dp else 0.dp,
+                    edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                ),
             contentAlignment = Alignment.BottomCenter,
         ) {
             DotIndicators(pagerState = pagerState)
