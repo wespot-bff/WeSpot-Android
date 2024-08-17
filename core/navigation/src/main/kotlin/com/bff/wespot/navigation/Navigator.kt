@@ -11,7 +11,7 @@ interface Navigator {
         targetId: Pair<String, Int>,
         date: Pair<String, String>,
         type: Pair<String, String>,
-    ) : Intent
+    ): Intent
 
     fun navigateToAuth(context: Context): Intent
 
@@ -21,6 +21,14 @@ interface Navigator {
     ): Intent
 
     fun navigateToSharing(context: Context)
+
+    fun navigateToKakao(
+        context: Context, title: String,
+        description: String,
+        imageUrl: String,
+        buttonText: String,
+        url: String,
+    )
 
     fun navigateToWebLink(context: Context, webLink: WebLink)
 }
