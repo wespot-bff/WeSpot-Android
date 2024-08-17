@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.WeSpot" parent="Theme.AppCompat.Light.NoActionBar"/>
+
+    <style name="Theme.Wespot.Starting" parent="Theme.SplashScreen">
+        <item name="android:statusBarColor">#1C1B1E</item>
+        <item name="android:navigationBarColor">#1C1B1E</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">#1C1B1E</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#1C1B1E</item>
+        <item name="android:windowSplashScreenAnimationDuration">0</item>
+        <item name="postSplashScreenTheme">@style/Theme.WeSpot</item>
+    </style>
+</resources>

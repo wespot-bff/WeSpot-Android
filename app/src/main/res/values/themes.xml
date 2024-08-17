@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.WeSpot" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.WeSpot" parent="android:Theme.Material.Light.NoActionBar"/>
+
+    <style name="Theme.WeSpot.Starting" parent="Theme.WeSpot">
+        <item name="android:statusBarColor">#1C1B1E</item>
+        <item name="android:navigationBarColor">#1C1B1E</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="windowSplashScreenBackground">@drawable/icon</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>
