@@ -92,9 +92,7 @@ fun NameScreen(
                         return@WsTextField
                     }
 
-                    if (name.length < 5) {
-                        error = false
-                    }
+                    error = false
                     action(AuthAction.OnNameChanged(name))
                 },
                 placeholder = stringResource(id = R.string.enter_name),

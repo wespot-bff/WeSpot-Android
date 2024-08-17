@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 
 data class AuthUiState(
     val schoolName: String = "",
-    val schoolList: Flow<PagingData<School>> = flow {  },
+    val schoolList: Flow<PagingData<School>> = flow { },
     val selectedSchool: School? = null,
     val grade: Int = -1,
     val gradeBottomSheet: Boolean = true,
