@@ -84,9 +84,9 @@ fun EditScreen(
             EditField(
                 title = stringResource(id = R.string.gender),
                 value = if (state.gender == "MALE") {
-                    stringResource(id = R.string.male_student)
+                    stringResource(id = com.bff.wespot.designsystem.R.string.male_student)
                 } else {
-                    stringResource(id = R.string.female_student)
+                    stringResource(id = com.bff.wespot.designsystem.R.string.female_student)
                 },
             ) {
                 action(AuthAction.Navigation(NavigationAction.NavigateToGenderScreen(true)))
@@ -233,9 +233,9 @@ private fun ConfirmBottomSheetContent(
                 Text(
                     text = "$name (${
                         if (gender == "MALE") {
-                            stringResource(id = R.string.male_student)
+                            stringResource(id = com.bff.wespot.designsystem.R.string.male_student)
                         } else {
-                            stringResource(id = R.string.female_student)
+                            stringResource(id = com.bff.wespot.designsystem.R.string.female_student)
                         }
                     })",
                     style = StaticTypeScale.Default.header1,
