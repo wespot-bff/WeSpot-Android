@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -226,6 +227,7 @@ private fun ConfirmBottomSheetContent(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Icon",
                 modifier = Modifier.size(56.dp),
+                tint = Color.Unspecified,
             )
             Column {
                 Text(
@@ -338,7 +340,7 @@ private fun RegisterBottomSheetContent(
 
         Column(
             verticalArrangement = Arrangement.spacedBy(30.dp),
-            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 36.dp),
+            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 20.dp),
         ) {
             TermRow(
                 title = stringResource(id = R.string.service_term),

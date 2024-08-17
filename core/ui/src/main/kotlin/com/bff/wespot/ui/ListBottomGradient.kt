@@ -11,11 +11,13 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.theme.Gray900
 
 @Composable
-fun ListBottomGradient() {
+fun ListBottomGradient(
+    height: Int = 70,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp)
+            .height(height.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
