@@ -25,6 +25,7 @@ interface Navigator {
     fun navigateToKakao(
         context: Context, title: String,
         description: String,
+        imageUrl: String,
         buttonText: String,
         url: String,
     )

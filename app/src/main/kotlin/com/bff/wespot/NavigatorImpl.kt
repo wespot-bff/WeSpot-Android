@@ -121,11 +121,12 @@ class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToKakao(
         context: Context,
         title: String,
+        imageUrl: String,
         description: String,
         buttonText: String,
         url: String,
     ) {
-        val feed = kakaoTemplate(title, description, buttonText, url)
+        val feed = kakaoTemplate(title, description, imageUrl, buttonText, url)
         if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
             ShareClient.instance.shareDefault(context, feed) { sharingResult, error ->
                 if (error != null) {
@@ -187,14 +188,15 @@ class NavigatorImpl @Inject constructor() : Navigator {
     private fun kakaoTemplate(
         title: String,
         description: String,
+        imageUrl: String,
         buttonText: String,
-        url: String
+        url: String,
     ): FeedTemplate =
         FeedTemplate(
             content = Content(
                 title = title,
                 description = description,
-                imageUrl = "http://k.kakaocdn.net/dn/bTYZpF/btqCmI8nJ4K/3kU1p3kUvKQKUkKkTgKQSK/img_640x640.jpg",
+                imageUrl = imageUrl,
                 link = Link(
                     webUrl = url,
                     mobileWebUrl = url,
