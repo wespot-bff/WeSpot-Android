@@ -1,11 +1,14 @@
 package com.bff.wespot.designsystem.component.input
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,6 +29,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +38,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Gray400
-import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -62,7 +65,15 @@ fun WsTextField(
         }
     }
 
-    Box(modifier = Modifier.wrapContentSize()) {
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .border(
+                BorderStroke(1.dp, WeSpotThemeManager.colors.primaryColor),
+                shape = WeSpotThemeManager.shapes.small
+            )
+            .padding(1.dp)
+    ) {
         OutlinedTextField(
             modifier = Modifier
                 .heightIn(
@@ -115,16 +126,12 @@ fun WsTextField(
                 unfocusedContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 focusedPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
                 unfocusedPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
-                focusedBorderColor = if (textFieldType == WsTextFieldType.Message) {
-                    WeSpotThemeManager.colors.cardBackgroundColor
-                } else {
-                    Primary400
-                },
-                unfocusedBorderColor = WeSpotThemeManager.colors.cardBackgroundColor,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
                 disabledContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 disabledPlaceholderColor = Gray400,
-                disabledBorderColor = WeSpotThemeManager.colors.cardBackgroundColor,
-                errorBorderColor = WeSpotThemeManager.colors.dangerColor,
+                disabledBorderColor = Color.Transparent,
+                errorBorderColor = Color.Transparent,
                 errorContainerColor = WeSpotThemeManager.colors.cardBackgroundColor,
                 errorPlaceholderColor = WeSpotThemeManager.colors.disableBtnTxtColor,
             ),
