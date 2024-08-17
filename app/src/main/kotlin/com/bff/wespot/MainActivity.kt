@@ -53,7 +53,6 @@ import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -65,6 +64,7 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.dynamic.within
@@ -227,17 +227,12 @@ private fun MainScreen(
         navigateScreenFromNavArgs(navArgs, navController)
     }
 
-    if (toast.show) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(toast.message),
-                showToast = toast.show,
-                toastType = toast.type,
-                closeToast = {
-                    toast = toast.copy(show = false)
-                },
-            )
-        }
+    TopToast(
+        message = stringResource(toast.message),
+        toastType = toast.type,
+        showToast = toast.show
+    ) {
+        toast = toast.copy(show = false)
     }
 
     LaunchedEffect(Unit) {

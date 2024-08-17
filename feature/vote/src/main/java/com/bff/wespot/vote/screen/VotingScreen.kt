@@ -39,13 +39,13 @@ import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.ReportBottomSheet
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
@@ -156,16 +156,14 @@ fun VotingScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 8.dp),
-        contentAlignment = Alignment.TopCenter,
+    TopToast(
+        message = toastMessage,
+        toastType = WSToastType.Success,
+        showToast = toast,
     ) {
-        WSToast(text = toastMessage, toastType = WSToastType.Success, showToast = toast) {
-            toast = false
-        }
+        toast = false
     }
+
 
     if (state.loading) {
         LoadingAnimation()

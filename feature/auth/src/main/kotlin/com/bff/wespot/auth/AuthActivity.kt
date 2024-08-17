@@ -8,14 +8,12 @@ import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.auth.screen.AuthNavGraph
@@ -29,7 +27,6 @@ import com.bff.wespot.auth.screen.destinations.SchoolScreenDestination
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.viewmodel.AuthViewModel
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
@@ -39,6 +36,7 @@ import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
@@ -130,13 +128,12 @@ class AuthActivity : ComponentActivity() {
                 }
 
                 if (toastMessage != null) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-                        WSToast(
-                            text = toastMessage,
-                            toastType = WSToastType.Success,
-                            showToast = showToast,
-                            closeToast = { showToast = false },
-                        )
+                    TopToast(
+                        message = toastMessage,
+                        toastType = WSToastType.Success,
+                        showToast = showToast,
+                    ) {
+                        showToast = false
                     }
                 }
             }

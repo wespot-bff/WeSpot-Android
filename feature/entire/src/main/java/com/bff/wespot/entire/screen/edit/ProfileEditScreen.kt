@@ -46,7 +46,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
@@ -62,6 +61,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.WebLink
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
@@ -102,6 +102,7 @@ fun ProfileEditScreen(
                 toast = it.toastState
                 focusManager.clearFocus()
             }
+
             else -> {}
         }
     }
@@ -212,7 +213,7 @@ fun ProfileEditScreen(
                         action(EntireEditAction.OnIntroductionEditDoneButtonClicked)
                     },
                     enabled =
-                        isEdited &&
+                    isEdited &&
                             state.hasProfanity.not() &&
                             state.introductionInput.length in 1..20,
                     text = stringResource(id = R.string.edit_done),
@@ -230,17 +231,12 @@ fun ProfileEditScreen(
         }
     }
 
-    if (toast.show) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(toast.message),
-                showToast = toast.show,
-                toastType = toast.type,
-                closeToast = {
-                    toast = toast.copy(show = false)
-                },
-            )
-        }
+    TopToast(
+        message = stringResource(toast.message),
+        toastType = toast.type,
+        showToast = toast.show
+    ) {
+        toast = toast.copy(show = false)
     }
 
     if (state.isLoading) {
@@ -338,9 +334,11 @@ fun ProfileIntroductionItem(
                 content.length > INTRODUCTION_MAX_LENGTH -> {
                     stringResource(R.string.introduction_limit)
                 }
+
                 hasProfanity -> {
                     stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
                 }
+
                 else -> ""
             }
 

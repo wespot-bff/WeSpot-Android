@@ -31,10 +31,10 @@ import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -113,13 +113,12 @@ fun GradeScreen(
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize().padding(it), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(id = R.string.more_than_14_to_register),
-                toastType = WSToastType.Error,
-                showToast = toast,
-                closeToast = { toast = false },
-            )
+        TopToast(
+            message = stringResource(id = R.string.more_than_14_to_register),
+            toastType = WSToastType.Error,
+            showToast = toast
+        ) {
+            toast = false
         }
 
         if (state.gradeBottomSheet) {
