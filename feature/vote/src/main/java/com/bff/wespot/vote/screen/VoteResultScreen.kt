@@ -167,7 +167,7 @@ fun VoteResultScreen(
         }
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && state.onBoarding) {
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S && state.onBoarding) {
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -144,8 +142,8 @@ fun VotingScreen(
     ) {
         if (state.loading && showGuideScreen) {
             return@Scaffold
-        } else if (showGuideScreen) {
-            VotingGuideScreen(it)
+        } else if (!showGuideScreen) {
+            VotingGuideScreen(it, navigator)
         } else {
             VotingProgressScreen(
                 state = state,
@@ -245,7 +243,7 @@ private fun VotingProgressScreen(
         }
         Text(
             text =
-                "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
+            "${state.currentVote.voteUser.name}${stringResource(id = R.string.vote_question)}",
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
@@ -284,13 +282,13 @@ private fun VotingProgressScreen(
                         }
                     },
                     buttonType =
-                        if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
-                            selected == voteItem.id
-                        ) {
-                            WSOutlineButtonType.Highlight
-                        } else {
-                            WSOutlineButtonType.None
-                        },
+                    if (state.selectedVote[state.pageNumber - 1].voteOptionId == voteItem.id ||
+                        selected == voteItem.id
+                    ) {
+                        WSOutlineButtonType.Highlight
+                    } else {
+                        WSOutlineButtonType.None
+                    },
                     paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                 ) {
                     Text(
@@ -320,31 +318,36 @@ private fun VotingProgressScreen(
 }
 
 @Composable
-private fun VotingGuideScreen(paddingValues: PaddingValues) {
+private fun VotingGuideScreen(
+    paddingValues: PaddingValues,
+    navigator: Navigator,
+) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = stringResource(R.string.guide_title),
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 24.dp),
         )
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.guide_image),
-                contentDescription = stringResource(
-                    id = R.string.vote,
-                ),
-                modifier = Modifier
-                    .width(261.dp)
-                    .height(201.dp),
-            )
-        }
-
-        WSButton(onClick = { }, text = stringResource(R.string.invite_friend_vote)) {
+        Image(
+            painter = painterResource(id = R.drawable.no_friends),
+            contentDescription = stringResource(
+                id = R.string.vote,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+        )
+    }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        WSButton(onClick = {
+            navigator.navigateToSharing(context)
+        }, text = stringResource(R.string.invite_friend_vote)) {
             it.invoke()
         }
     }

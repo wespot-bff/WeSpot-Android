@@ -78,7 +78,9 @@ internal fun EntireScreen(
                         modifier = Modifier
                             .clickable { navigator.navigateToSetting() }
                             .padding(end = 16.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_setting),
+                        imageVector = ImageVector.vectorResource(
+                           com.bff.wespot.designsystem.R.drawable.icn_settings
+                        ),
                         contentDescription = stringResource(R.string.setting_icon),
                         tint = WeSpotThemeManager.colors.secondaryBtnColor,
                     )
@@ -123,7 +125,9 @@ internal fun EntireScreen(
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
@@ -144,7 +148,9 @@ internal fun EntireScreen(
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )

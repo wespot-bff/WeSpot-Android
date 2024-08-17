@@ -167,7 +167,7 @@ private fun MainScreen(
                                 modifier = Modifier
                                     .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
                                     .size(width = 112.dp, height = 44.dp),
-                                painter = painterResource(id = R.drawable.logo),
+                                painter = painterResource(id = R.drawable.main_logo),
                                 contentDescription = stringResource(
                                     id = com.bff.wespot.message.R.string.wespot_logo,
                                 ),
@@ -175,13 +175,13 @@ private fun MainScreen(
                         },
                         action = {
                             IconButton(
-                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                                modifier = Modifier.padding(end = 16.dp),
                                 onClick = {
                                     navController.navigateToNavGraph(AppNavGraphs.notification)
                                 },
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.notification),
+                                    painter = painterResource(id = R.drawable.icn_alarm),
                                     contentDescription = stringResource(
                                         id = com.bff.wespot.message.R.string.notification_icon,
                                     ),
@@ -334,7 +334,7 @@ private fun TabItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = if(selected) {
+                painter = if (selected) {
                     icon
                 } else {
                     emptyIcon
