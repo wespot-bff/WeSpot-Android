@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeSpot</string>
+    <string name="top_bar_animated_content_label">Top Bar Animated content</string>
+    <string name="bottom_bar_animated_content_label">bottom bar animated content label</string>
 </resources>

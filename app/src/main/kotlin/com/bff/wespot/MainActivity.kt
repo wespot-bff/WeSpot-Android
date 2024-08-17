@@ -7,10 +7,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -153,56 +152,64 @@ private fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            AnimatedVisibility(
-                visible = isTopNavigationScreen,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                WSTopBar(
-                    title = "",
-                    navigation = {
-                        Image(
-                            modifier = Modifier
-                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                                .size(width = 112.dp, height = 44.dp),
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = stringResource(
-                                id = com.bff.wespot.message.R.string.wespot_logo,
-                            ),
-                        )
-                    },
-                    action = {
-                        IconButton(
-                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                            onClick = {
-                                navController.navigateToNavGraph(AppNavGraphs.notification)
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.notification),
+            AnimatedContent(
+                targetState = isTopNavigationScreen,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+                },
+                label = stringResource(com.bff.wespot.R.string.bottom_bar_animated_content_label),
+            ) { targetState ->
+                if (targetState) {
+                    WSTopBar(
+                        title = "",
+                        navigation = {
+                            Image(
+                                modifier = Modifier
+                                    .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                                    .size(width = 112.dp, height = 44.dp),
+                                painter = painterResource(id = R.drawable.logo),
                                 contentDescription = stringResource(
-                                    id = com.bff.wespot.message.R.string.notification_icon,
+                                    id = com.bff.wespot.message.R.string.wespot_logo,
                                 ),
                             )
-                        }
-                    },
-                )
+                        },
+                        action = {
+                            IconButton(
+                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                                onClick = {
+                                    navController.navigateToNavGraph(AppNavGraphs.notification)
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.notification),
+                                    contentDescription = stringResource(
+                                        id = com.bff.wespot.message.R.string.notification_icon,
+                                    ),
+                                )
+                            }
+                        },
+                    )
+                }
             }
         },
         bottomBar = {
-            AnimatedVisibility(
-                visible = isBottomNavigationScreen,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                val currentSelectedItem by navController.currentScreenAsState()
-                BottomNavigationTab(
-                    selectedNavigation = currentSelectedItem,
-                    onNavigationSelected = { selected ->
-                        navController.navigateToNavGraph(selected)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
+            AnimatedContent(
+                targetState = isBottomNavigationScreen,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+                },
+                label = stringResource(com.bff.wespot.R.string.top_bar_animated_content_label)
+            ) { targetState ->
+                if (targetState) {
+                    val currentSelectedItem by navController.currentScreenAsState()
+                    BottomNavigationTab(
+                        selectedNavigation = currentSelectedItem,
+                        onNavigationSelected = { selected ->
+                            navController.navigateToNavGraph(selected)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         },
     ) {
