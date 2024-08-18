@@ -12,11 +12,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -67,6 +67,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.viewmodel.MainViewModel
+import com.bff.wespot.util.clickableSingle
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -311,7 +312,7 @@ private fun NavController.checkCurrentScreen(position: NavigationBarPosition): S
 }
 
 @Composable
-private fun TabItem(
+private fun RowScope.TabItem(
     icon: Painter,
     emptyIcon: Painter,
     title: String,
@@ -322,7 +323,8 @@ private fun TabItem(
     Box(
         modifier = Modifier
             .size(80.dp)
-            .clickable { onClick.invoke() },
+            .weight(1f)
+            .clickableSingle { onClick.invoke() },
         contentAlignment = Alignment.Center,
     ) {
         Column(
