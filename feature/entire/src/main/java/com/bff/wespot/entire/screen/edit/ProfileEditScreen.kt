@@ -213,7 +213,7 @@ fun ProfileEditScreen(
                         action(EntireEditAction.OnIntroductionEditDoneButtonClicked)
                     },
                     enabled =
-                    isEdited &&
+                        isEdited &&
                             state.hasProfanity.not() &&
                             state.introductionInput.length in 1..20,
                     text = stringResource(id = R.string.edit_done),
@@ -234,7 +234,7 @@ fun ProfileEditScreen(
     TopToast(
         message = stringResource(toast.message),
         toastType = toast.type,
-        showToast = toast.show
+        showToast = toast.show,
     ) {
         toast = toast.copy(show = false)
     }

@@ -164,7 +164,6 @@ fun VotingScreen(
         toast = false
     }
 
-
     if (state.loading) {
         LoadingAnimation()
     }

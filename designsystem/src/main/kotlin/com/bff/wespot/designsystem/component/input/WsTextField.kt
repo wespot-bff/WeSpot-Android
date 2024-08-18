@@ -163,11 +163,11 @@ fun WsTextField(
                                 interactionSource,
                                 colors,
                                 WeSpotThemeManager.shapes.small,
-                                focusedBorderThickness = 1.dp
+                                focusedBorderThickness = 1.dp,
                             )
-                        }
+                        },
                     )
-                }
+                },
             )
         }
     }
@@ -178,7 +178,6 @@ private fun cursorColor(isError: Boolean): State<Color> {
     val color = TextFieldDefaults.colors()
     return rememberUpdatedState(if (isError) color.errorCursorColor else color.cursorColor)
 }
-
 
 sealed interface WsTextFieldType {
     @Composable

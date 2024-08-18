@@ -116,7 +116,7 @@ fun GradeScreen(
         TopToast(
             message = stringResource(id = R.string.more_than_14_to_register),
             toastType = WSToastType.Error,
-            showToast = toast
+            showToast = toast,
         ) {
             toast = false
         }

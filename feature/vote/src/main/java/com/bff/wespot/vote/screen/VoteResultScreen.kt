@@ -306,8 +306,8 @@ fun VoteResultScreen(
                                             launcher.launch(
                                                 navigator.navigateToInstaStory(
                                                     context,
-                                                    uri
-                                                )
+                                                    uri,
+                                                ),
                                             )
                                         }.onFailure {
                                             navigator.redirectToPlayStoreForInstagram(context)
@@ -598,7 +598,7 @@ private fun EmptyCard(rank: Int) {
                 } else {
                     42.dp
                 },
-            )
+            ),
     ) {
         if (rank == 2) {
             Image(
