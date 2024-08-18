@@ -1,4 +1,4 @@
-package com.bff.wespot.data.repository.vote
+package com.bff.wespot.data.paging.vote
 
 import com.bff.wespot.data.remote.source.vote.VoteDataSource
 import com.bff.wespot.domain.paging.BasePagingSource

@@ -1,4 +1,4 @@
-package com.bff.wespot.data.repository.auth
+package com.bff.wespot.data.paging.auth
 
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.domain.paging.BasePagingSource
