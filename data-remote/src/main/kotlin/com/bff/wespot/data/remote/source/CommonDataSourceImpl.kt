@@ -19,7 +19,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("check-profanity")
+                path("api/v1/check-profanity")
                 setBody(content)
             }
         }
@@ -28,7 +28,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("reports")
+                path("api/v1/reports")
                 setBody(report)
             }
         }
@@ -37,7 +37,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/characters")
+                path("api/v1/users/characters")
             }
         }
 
@@ -45,7 +45,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/backgrounds")
+                path("api/v1/users/backgrounds")
             }
         }
 
@@ -53,7 +53,7 @@ class CommonDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("users/me")
+                path("api/v1/users/me")
                 setBody(profile)
             }
         }

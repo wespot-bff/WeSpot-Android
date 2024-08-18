@@ -25,7 +25,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("messages")
+                path("api/v1/messages")
                 parameter("type", messageTypeDto.name)
                 parameter("cursorId", cursorId)
             }
@@ -37,7 +37,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("messages/send")
+                path("api/v1/messages/send")
                 setBody(sentMessageDto)
             }
         }
@@ -46,7 +46,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("messages/status/me")
+                path("api/v1/messages/status/me")
             }
         }
 
@@ -54,7 +54,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("messages/$messageId")
+                path("api/v1/messages/$messageId")
                 setBody(sentMessageDto)
             }
         }
@@ -63,7 +63,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("messages/$messageId")
+                path("api/v1/messages/$messageId")
             }
         }
 
@@ -71,7 +71,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("messages/blocked")
+                path("api/v1/messages/blocked")
                 parameter("cursorId", cursorId)
             }
         }

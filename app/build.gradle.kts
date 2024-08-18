@@ -59,6 +59,9 @@ dependencies {
     implementation(project(":feature:entire"))
     implementation(project(":feature:notification"))
 
+    implementation(libs.splash.screen)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.config)
     implementation(libs.kakao.sdk)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,4 +70,5 @@ dependencies {
     implementation(libs.bundles.orbit)
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.kakao.link)
 }

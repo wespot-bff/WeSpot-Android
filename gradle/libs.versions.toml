@@ -48,6 +48,8 @@ kakao_sdk = "2.12.1"
 
 paging3 = "3.3.2"
 
+splash-screen = "1.0.1"
+
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -110,6 +112,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-config = { module = "com.google.firebase:firebase-config-ktx"}
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
@@ -121,9 +124,12 @@ detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", v
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 
 kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sdk" }
+kakao_link = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakao_sdk" }
 
 paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
+
+splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen" }
 
 [bundles]
 androidx-compose = [
