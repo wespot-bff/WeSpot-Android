@@ -9,7 +9,9 @@ import java.time.LocalDateTime
 
 @Serializable
 data class NotificationListDto(
-    val notifications: List<NotificationDto>
+    val notifications: List<NotificationDto>,
+    val lastCursorId: Int,
+    val hasNext: Boolean,
 )
 
 @Serializable
