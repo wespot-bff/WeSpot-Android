@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
+import com.bff.wespot.domain.usecase.UpdateProfileCharacterUseCase
+import com.bff.wespot.domain.usecase.UpdateProfileIntroductionUseCase
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
@@ -16,6 +18,7 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.user.response.ProfileCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -29,8 +32,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EntireEditViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val profileRepository: ProfileRepository,
     private val commonRepository: CommonRepository,
+    private val updateProfileIntroductionUseCase: UpdateProfileIntroductionUseCase,
+    private val updateProfileCharacterUseCase: UpdateProfileCharacterUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
 ) : ViewModel(), ContainerHost<EntireEditUiState, EntireEditSideEffect> {
     override val container = container<EntireEditUiState, EntireEditSideEffect>(EntireEditUiState())
@@ -41,11 +46,14 @@ class EntireEditViewModel @Inject constructor(
         when (action) {
             EntireEditAction.OnCharacterEditScreenEntered -> {
                 handleCharacterEditScreenEntered()
+                observeProfileFlow()
             }
             EntireEditAction.OnIntroductionEditDoneButtonClicked -> updateIntroduction()
             is EntireEditAction.OnProfileEditScreenEntered -> {
-                getProfile()
+                handleProfileEditScreenEntered()
+                observeProfileFlow()
                 observeIntroductionInput()
+
                 if (action.isCompleteEdit) {
                     postEditDoneSideToast()
                 }
@@ -59,12 +67,6 @@ class EntireEditViewModel @Inject constructor(
 
     private fun handleCharacterEditScreenEntered() = intent {
         viewModelScope.launch {
-            launch {
-                userRepository.getProfile()
-                    .onSuccess { profile -> reduce { state.copy(profile = profile) } }
-                    .onFailure { Timber.e(it) }
-            }
-
             launch {
                 commonRepository.getBackgroundColors()
                     .onSuccess { backgroundColorList ->
@@ -83,15 +85,22 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun getProfile() = intent {
+    private fun handleProfileEditScreenEntered() {
         viewModelScope.launch {
-            userRepository.getProfile()
-                .onSuccess { profile ->
-                    reduce { state.copy(profile = profile) }
-                    handleIntroductionChanged(profile.introduction)
+            val introduction = profileRepository.getProfile().introduction
+            handleIntroductionChanged(introduction)
+        }
+    }
+
+    private fun observeProfileFlow() = intent {
+        viewModelScope.launch {
+            profileRepository.profileDataFlow
+                .distinctUntilChanged()
+                .catch { exception ->
+                    Timber.e(exception)
                 }
-                .onFailure {
-                    Timber.e(it)
+                .collect {
+                    reduce { state.copy(profile = it) }
                 }
         }
     }
@@ -150,7 +159,7 @@ class EntireEditViewModel @Inject constructor(
     private fun updateIntroduction() = intent {
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
-            userRepository.updateIntroduction(state.introductionInput)
+            updateProfileIntroductionUseCase(state.introductionInput)
                 .onSuccess {
                     postEditDoneSideToast()
                     reduce { state.copy(isLoading = false) }
@@ -165,7 +174,7 @@ class EntireEditViewModel @Inject constructor(
     private fun updateCharacter(character: ProfileCharacter) = intent {
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
-            userRepository.updateCharacter(character = character)
+            updateProfileCharacterUseCase(character = character)
                 .onSuccess {
                     postSideEffect(EntireEditSideEffect.NavigateToEntire)
                     reduce { state.copy(isLoading = false) }

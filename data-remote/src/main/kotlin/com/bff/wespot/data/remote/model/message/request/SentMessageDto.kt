@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class SentMessageDto (
     val receiverId: Int,
     val content: String,
-    val sender: String,
+    val senderName: String,
     val isAnonymous: Boolean,
 )

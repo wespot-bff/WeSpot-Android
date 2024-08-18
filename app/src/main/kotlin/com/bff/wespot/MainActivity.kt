@@ -6,6 +6,11 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -39,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -58,6 +65,8 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.state.MainAction
+import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -129,8 +138,11 @@ data class MainScreenNavArgs(
 private fun MainScreen(
     navigator: Navigator,
     navArgs: MainScreenNavArgs,
-    analyticsHelper: AnalyticsHelper
+    analyticsHelper: AnalyticsHelper,
+    viewModel: MainViewModel = hiltViewModel(),
 ) {
+    val action = viewModel::onAction
+
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
 
@@ -140,48 +152,64 @@ private fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (isTopNavigationScreen) {
-                WSTopBar(
-                    title = "",
-                    navigation = {
-                        Image(
-                            modifier = Modifier
-                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                                .size(width = 112.dp, height = 44.dp),
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = stringResource(
-                                id = com.bff.wespot.message.R.string.wespot_logo,
-                            ),
-                        )
-                    },
-                    action = {
-                        IconButton(
-                            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
-                            onClick = {
-                                navController.navigateToNavGraph(AppNavGraphs.notification)
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.notification),
+            AnimatedContent(
+                targetState = isTopNavigationScreen,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+                },
+                label = stringResource(com.bff.wespot.R.string.bottom_bar_animated_content_label),
+            ) { targetState ->
+                if (targetState) {
+                    WSTopBar(
+                        title = "",
+                        navigation = {
+                            Image(
+                                modifier = Modifier
+                                    .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                                    .size(width = 112.dp, height = 44.dp),
+                                painter = painterResource(id = R.drawable.logo),
                                 contentDescription = stringResource(
-                                    id = com.bff.wespot.message.R.string.notification_icon,
+                                    id = com.bff.wespot.message.R.string.wespot_logo,
                                 ),
                             )
-                        }
-                    },
-                )
+                        },
+                        action = {
+                            IconButton(
+                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                                onClick = {
+                                    navController.navigateToNavGraph(AppNavGraphs.notification)
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.notification),
+                                    contentDescription = stringResource(
+                                        id = com.bff.wespot.message.R.string.notification_icon,
+                                    ),
+                                )
+                            }
+                        },
+                    )
+                }
             }
         },
         bottomBar = {
-            if (isBottomNavigationScreen) {
-                val currentSelectedItem by navController.currentScreenAsState()
-                BottomNavigationTab(
-                    selectedNavigation = currentSelectedItem,
-                    onNavigationSelected = { selected ->
-                        navController.navigateToNavGraph(selected)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
+            AnimatedContent(
+                targetState = isBottomNavigationScreen,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+                },
+                label = stringResource(com.bff.wespot.R.string.top_bar_animated_content_label)
+            ) { targetState ->
+                if (targetState) {
+                    val currentSelectedItem by navController.currentScreenAsState()
+                    BottomNavigationTab(
+                        selectedNavigation = currentSelectedItem,
+                        onNavigationSelected = { selected ->
+                            navController.navigateToNavGraph(selected)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         },
     ) {
@@ -210,6 +238,10 @@ private fun MainScreen(
                 },
             )
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(MainAction.OnMainScreenEntered)
     }
 }
 

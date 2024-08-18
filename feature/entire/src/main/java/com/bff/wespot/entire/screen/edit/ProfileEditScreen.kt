@@ -1,5 +1,6 @@
 package com.bff.wespot.entire.screen.edit
 
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +34,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -59,7 +64,6 @@ import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -87,6 +91,8 @@ fun ProfileEditScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
+    val view = LocalView.current
+    val viewTreeObserver = view.viewTreeObserver
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
@@ -161,7 +167,7 @@ fun ProfileEditScreen(
 
             ProfileEditLockedItem(
                 title = stringResource(R.string.gender),
-                content = state.profile.gender,
+                content = state.profile.toGenderKorean(),
                 onClick = {
                     focusManager.clearFocus()
                     toast = ToastState(
@@ -191,13 +197,6 @@ fun ProfileEditScreen(
                 hasProfanity = state.hasProfanity,
                 onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
                 onFocusChanged = { focusState ->
-                    if (focusState.isFocused) {
-                        // 포커스 상태일 떄, 화면 제일 하단으로 스크롤
-                        coroutineScope.launch {
-                            delay(500)
-                            scrollState.animateScrollTo(scrollState.maxValue)
-                        }
-                    }
                     action(EntireEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
                 },
             )
@@ -246,6 +245,27 @@ fun ProfileEditScreen(
 
     if (state.isLoading) {
         LoadingAnimation()
+    }
+
+    DisposableEffect(viewTreeObserver) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val isKeyboardOpen = ViewCompat
+                .getRootWindowInsets(view)
+                ?.isVisible(WindowInsetsCompat.Type.ime())
+                ?: true
+
+            if (isKeyboardOpen) {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
+            }
+        }
+
+        viewTreeObserver.addOnGlobalLayoutListener(listener)
+
+        onDispose {
+            viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
     }
 
     LaunchedEffect(Unit) {

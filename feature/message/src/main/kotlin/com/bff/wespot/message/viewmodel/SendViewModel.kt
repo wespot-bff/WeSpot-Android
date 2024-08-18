@@ -178,7 +178,7 @@ class SendViewModel @Inject constructor(
                 SentMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    sender = if (state.isRandomName) state.randomName else state.sender,
+                    senderName = if (state.isRandomName) state.randomName else state.sender,
                     isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
@@ -227,7 +227,7 @@ class SendViewModel @Inject constructor(
                 SentMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    sender = if (state.isRandomName) state.randomName else state.sender,
+                    senderName = if (state.isRandomName) state.randomName else state.sender,
                     isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {

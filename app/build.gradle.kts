@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.junit)
+    implementation(libs.bundles.orbit)
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kakao.link)

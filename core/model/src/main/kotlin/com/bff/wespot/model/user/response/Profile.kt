@@ -17,5 +17,11 @@ data class Profile(
         return "$schoolName ${grade}학년 ${classNumber}반 $name"
     }
 
+    fun toGenderKorean(): String = when (this.gender) {
+        "FEMALE" -> "여학생"
+        "MALE" -> "남학생"
+        else -> ""
+    }
+
     fun toSchoolInfo() = "$schoolName ${grade}학년 ${classNumber}반"
 }
