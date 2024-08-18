@@ -114,7 +114,7 @@ internal fun EntireScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 20.dp, start = 4.dp, end = 4.dp),
+                    .padding(top = 20.dp),
             ) {
                 EntireListItem(text = stringResource(R.string.contact_channel)) {
                     activityNavigator.navigateToWebLink(context, WebLink.WESPOT_KAKAKO_CHANNEL)
@@ -127,7 +127,7 @@ internal fun EntireScreen(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 12.dp, horizontal = 4.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
@@ -150,7 +150,7 @@ internal fun EntireScreen(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 12.dp, horizontal = 4.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
