@@ -20,4 +20,5 @@ dependencies {
     implementation(libs.androidx.junit)
     implementation(libs.timber)
     implementation(libs.lottie)
+    implementation(libs.paging3)
 }

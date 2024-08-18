@@ -2,6 +2,7 @@ package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -25,6 +26,7 @@ class EntireViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
+    private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
@@ -68,7 +70,6 @@ class EntireViewModel @Inject constructor(
 
     private fun signOut() = intent {
         viewModelScope.launch {
-            // TODO Token 삭제
             postSideEffect(EntireSideEffect.NavigateToAuth)
         }
     }

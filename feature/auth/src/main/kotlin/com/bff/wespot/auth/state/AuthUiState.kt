@@ -1,10 +1,13 @@
 package com.bff.wespot.auth.state
 
+import androidx.paging.PagingData
 import com.bff.wespot.model.auth.response.School
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 data class AuthUiState(
     val schoolName: String = "",
-    val schoolList: List<School> = emptyList(),
+    val schoolList: Flow<PagingData<School>> = flow { },
     val selectedSchool: School? = null,
     val grade: Int = -1,
     val gradeBottomSheet: Boolean = true,
