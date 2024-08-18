@@ -21,7 +21,7 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("schools/search")
+                path("api/v1/schools/search")
                 parameter("name", search)
             }
         }
@@ -30,7 +30,7 @@ class AuthDataSourceImpl @Inject constructor(
         val client = httpClient.safeRequest<Any> {
             url {
                 method = HttpMethod.Post
-                path("auth/login")
+                path("api/v1/auth/login")
             }
             setBody(token)
         }
@@ -42,7 +42,7 @@ class AuthDataSourceImpl @Inject constructor(
         val client = httpClient.safeRequest<AuthTokenDto> {
             url {
                 method = HttpMethod.Post
-                path("auth/signup")
+                path("api/v1/auth/signup")
             }
             setBody(signUp)
         }
@@ -55,7 +55,7 @@ class AuthDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("auth/revoke")
+                path("api/v1/auth/revoke")
             }
             setBody(revokeReasonList)
         }

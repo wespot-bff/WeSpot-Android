@@ -8,10 +8,12 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
@@ -37,6 +39,7 @@ class AuthViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
+    private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
 
@@ -45,6 +48,11 @@ class AuthViewModel @Inject constructor(
 
     private val userInput = MutableStateFlow("")
     private val nameInput = MutableStateFlow("")
+
+    init {
+        val minVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MIN_VERSION)
+        Timber.d("minVersion: $minVersion")
+    }
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -62,7 +70,6 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
             is AuthAction.OnStartNameScreen -> monitorNameInput()
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
-            else -> {}
         }
     }
 
