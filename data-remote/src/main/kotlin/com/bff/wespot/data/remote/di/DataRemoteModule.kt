@@ -1,5 +1,7 @@
 package com.bff.wespot.data.remote.di
 
+import com.bff.wespot.data.remote.config.RemoteConfigDataSource
+import com.bff.wespot.data.remote.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.data.remote.source.CommonDataSourceImpl
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
@@ -64,4 +66,10 @@ abstract class DataRemoteModule {
     abstract fun bindsCommonDataSource(
         commonDataSourceImpl: CommonDataSourceImpl
     ): CommonDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsRemoteConfigDataSource(
+        remoteConfigDataSourceImpl: RemoteConfigDataSourceImpl
+    ): RemoteConfigDataSource
 }

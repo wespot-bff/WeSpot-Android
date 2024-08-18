@@ -1,5 +1,7 @@
 package com.bff.wespot.auth
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -175,5 +177,11 @@ class AuthActivity : ComponentActivity() {
                 }
             }
         })
+    }
+
+    companion object {
+        fun intent(context: Context): Intent {
+            return Intent(context, AuthActivity::class.java)
+        }
     }
 }

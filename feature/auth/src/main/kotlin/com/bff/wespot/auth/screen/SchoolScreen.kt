@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +25,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -55,6 +56,8 @@ fun SchoolScreen(
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    val pagingData = state.schoolList.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -105,7 +108,7 @@ fun SchoolScreen(
                 )
             }
 
-            if (state.schoolList.isEmpty()) {
+            if (pagingData.itemCount == 0) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     WSTextButton(
                         text = stringResource(id = R.string.no_school_found),
@@ -115,33 +118,45 @@ fun SchoolScreen(
                 }
             }
 
-            LazyColumn {
-                items(state.schoolList, key = { school ->
-                    school.id
-                }) { school ->
-                    WSListItem(
-                        title = school.name,
-                        subTitle = school.address,
-                        selected = state.selectedSchool?.name == school.name,
-                        imageContent = {
-                            Image(
-                                painter = painterResource(
-                                    id = if (school.type == "HIGH") {
-                                        com.bff.wespot.designsystem.R.drawable.hight_school
-                                    } else {
-                                        com.bff.wespot.designsystem.R.drawable.middle_school
+            when (pagingData.loadState.refresh) {
+                is LoadState.Error -> {
+                    // TODO: Handle error
+                }
+
+                else -> {
+                    LazyColumn {
+                        items(pagingData.itemCount, key = { index ->
+                            pagingData[index]?.id ?: index
+                        }) { index ->
+                            val school = pagingData[index]
+
+                            school?.let { school ->
+                                WSListItem(
+                                    title = school.name,
+                                    subTitle = school.address,
+                                    selected = state.selectedSchool?.name == school.name,
+                                    imageContent = {
+                                        Image(
+                                            painter = painterResource(
+                                                id = if (school.type == "HIGH") {
+                                                    com.bff.wespot.designsystem.R.drawable.hight_school
+                                                } else {
+                                                    com.bff.wespot.designsystem.R.drawable.middle_school
+                                                },
+                                            ),
+                                            contentDescription = stringResource(
+                                                id = com.bff.wespot.ui.R.string.school_icon,
+                                            ),
+                                            modifier = Modifier.size(56.dp),
+                                        )
                                     },
-                                ),
-                                contentDescription = stringResource(
-                                    id = com.bff.wespot.ui.R.string.school_icon,
-                                ),
-                                modifier = Modifier.size(56.dp),
-                            )
-                        },
-                        onClick = {
-                            action(AuthAction.OnSchoolSelected(school))
-                        },
-                    )
+                                    onClick = {
+                                        action(AuthAction.OnSchoolSelected(school))
+                                    },
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

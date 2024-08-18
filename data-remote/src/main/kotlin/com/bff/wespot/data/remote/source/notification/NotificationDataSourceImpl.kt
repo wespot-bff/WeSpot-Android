@@ -14,7 +14,7 @@ class NotificationDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("notifications")
+                path("api/v1/notifications")
             }
         }
 
@@ -22,7 +22,7 @@ class NotificationDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Patch
-                path("notifications/$id")
+                path("api/v1/notifications/$id")
             }
         }
 }

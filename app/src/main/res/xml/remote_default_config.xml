@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- Add other default parameters as needed -->
+    <entry>
+        <key>MIN_VERSION</key>
+        <value>1.0.0</value>
+    </entry>
+
+    <entry>
+        <key>BASE_URL</key>
+        <value>wespot</value>
+    </entry>
+
+    <entry>
+        <key>MOCK_BASE_URL</key>
+        <value>wespot</value>
+    </entry>
+</defaultsMap>

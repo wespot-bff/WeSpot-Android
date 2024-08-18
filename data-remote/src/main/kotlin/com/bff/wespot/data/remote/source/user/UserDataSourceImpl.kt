@@ -1,11 +1,11 @@
 package com.bff.wespot.data.remote.source.user
 
-import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
 import com.bff.wespot.data.remote.model.user.request.IntroductionDto
+import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
 import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
-import com.bff.wespot.network.extensions.safeRequest
-import com.bff.wespot.data.remote.model.user.response.UserListDto
 import com.bff.wespot.data.remote.model.user.response.ProfileDto
+import com.bff.wespot.data.remote.model.user.response.UserListDto
+import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
@@ -20,7 +20,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/search")
+                path("api/v1/users/search")
                 parameter("name", name)
                 parameter("cursorId", cursorId)
             }
@@ -30,7 +30,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/me")
+                path("api/v1/users/me")
             }
         }
 
@@ -38,7 +38,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("users/settings")
+                path("api/v1/users/settings")
             }
         }
 
@@ -48,7 +48,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("users/settings")
+                path("api/v1/users/settings")
             }
             setBody(notificationSetting)
         }
@@ -57,7 +57,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("users/me")
+                path("api/v1/users/me")
             }
             setBody(introduction)
         }
@@ -66,7 +66,7 @@ class UserDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
-                path("users/me")
+                path("api/v1/users/me")
             }
             setBody(character)
         }

@@ -3,19 +3,31 @@ package com.bff.wespot
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.WebLink
 import com.bff.wespot.navigation.util.buildIntent
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.share.WebSharerClient
+import com.kakao.sdk.template.model.Button
+import com.kakao.sdk.template.model.Content
+import com.kakao.sdk.template.model.FeedTemplate
+import com.kakao.sdk.template.model.Link
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 
 class NavigatorImpl @Inject constructor() : Navigator {
     private val sharingName = listOf(
         "instagram",
-        "kakao"
+        "kakao",
     )
 
     override fun navigateToMain(
@@ -106,6 +118,44 @@ class NavigatorImpl @Inject constructor() : Navigator {
         context.startActivity(webLinkIntent)
     }
 
+    override fun navigateToKakao(
+        context: Context,
+        title: String,
+        imageUrl: String,
+        description: String,
+        buttonText: String,
+        url: String,
+    ) {
+        val feed = kakaoTemplate(title, description, imageUrl, buttonText, url)
+        if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
+            ShareClient.instance.shareDefault(context, feed) { sharingResult, error ->
+                if (error != null) {
+                    Timber.e("Error => " + error.message)
+                } else if (sharingResult != null) {
+                    Timber.d("Success => " + sharingResult.intent)
+                    context.startActivity(sharingResult.intent)
+
+                    Timber.w("Warning Msg: ${sharingResult.warningMsg}")
+                    Timber.w("Argument Msg: ${sharingResult.argumentMsg}")
+                }
+            }
+        } else {
+            val shareUrl = WebSharerClient.instance.makeDefaultUrl(feed)
+
+            try {
+                KakaoCustomTabsClient.openWithDefault(context, shareUrl)
+            } catch (e: UnsupportedOperationException) {
+                Timber.e("Error => " + e.message)
+            }
+
+            try {
+                KakaoCustomTabsClient.open(context, shareUrl)
+            } catch (e: UnsupportedOperationException) {
+                Timber.e("Error => " + e.message)
+            }
+        }
+    }
+
     private fun redirectToPlayStoreForInstagram(context: Context) {
         val appStoreIntent = Intent(
             Intent.ACTION_VIEW,
@@ -114,4 +164,52 @@ class NavigatorImpl @Inject constructor() : Navigator {
         appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(appStoreIntent)
     }
+
+    private fun getImageUri(drawableId: Int, context: Context): Uri {
+        var bitmap: Bitmap?
+        bitmap = context.resources.getDrawable(drawableId, null).toBitmap()
+
+        val imagesFolder: File = File(context.cacheDir, "images")
+        var contentUri: Uri? = null
+        try {
+            imagesFolder.mkdirs()
+            val file = File(imagesFolder, "shared_image.png")
+            val stream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            stream.flush()
+            stream.close()
+            contentUri = FileProvider.getUriForFile(context, "com.bff.wespot.fileProvider", file)
+        } catch (e: Exception) {
+            Timber.e("Error => " + e.message)
+        }
+        return contentUri!!
+    }
+
+    private fun kakaoTemplate(
+        title: String,
+        description: String,
+        imageUrl: String,
+        buttonText: String,
+        url: String,
+    ): FeedTemplate =
+        FeedTemplate(
+            content = Content(
+                title = title,
+                description = description,
+                imageUrl = imageUrl,
+                link = Link(
+                    webUrl = url,
+                    mobileWebUrl = url,
+                ),
+            ),
+            buttons = listOf(
+                Button(
+                    buttonText,
+                    Link(
+                        webUrl = url,
+                        mobileWebUrl = url,
+                    ),
+                ),
+            ),
+        )
 }
