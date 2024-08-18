@@ -69,7 +69,6 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
@@ -78,7 +77,7 @@ import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
-import com.bff.wespot.ui.saveImage
+import com.bff.wespot.ui.saveBitmap
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
@@ -300,11 +299,19 @@ fun VoteResultScreen(
                             onClick = {
                                 MainScope().launch {
                                     val bitmap = snapshot.invoke()
-                                    val uri = saveImage(bitmap, context)
+                                    val uri = saveBitmap(context, bitmap)
 
                                     if (uri != null) {
-                                        val intent = navigator.navigateToInstaStory(context, uri)
-                                        launcher.launch(intent)
+                                        runCatching {
+                                            launcher.launch(
+                                                navigator.navigateToInstaStory(
+                                                    context,
+                                                    uri
+                                                )
+                                            )
+                                        }.onFailure {
+                                            navigator.redirectToPlayStoreForInstagram(context)
+                                        }
                                     }
                                 }
                             },
@@ -577,26 +584,9 @@ private fun RankTile(
 @Composable
 private fun EmptyCard(rank: Int) {
     val widthPixels = LocalConfiguration.current.screenWidthDp.dp
-    val version = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-    val user = VoteUser(
-        id = 0,
-        name = stringResource(id = nameList.random()),
-        introduction = stringResource(id = textList.random()),
-        profile = ProfileCharacter(
-            iconUrl = "",
-            backgroundColor = "#000000",
-        ),
-    )
 
     val cardWidth = remember {
         (widthPixels - 44.dp) / 3
-    }
-
-    val rankIcon = when (rank) {
-        1 -> R.drawable.first
-        2 -> R.drawable.second
-        else -> R.drawable.third
     }
 
     Column(
@@ -606,89 +596,22 @@ private fun EmptyCard(rank: Int) {
                 top = if (rank == 1) {
                     8.dp
                 } else {
-                    47.dp
+                    42.dp
                 },
             )
-            .blur(if (version) 10.dp else 0.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
     ) {
-        if (version) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 33.dp)
-                    .zIndex(1f),
-            ) {
-                Image(
-                    painter = painterResource(id = rankIcon),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .offset(
-                            x = 0.dp,
-                            y = if (rank == 1) {
-                                14.dp
-                            } else {
-                                11.dp
-                            },
-                        ),
-                )
-            }
-
-            Card(
-                modifier = Modifier
-                    .clip(WeSpotThemeManager.shapes.medium)
-                    .width(cardWidth)
-                    .zIndex(0f),
-                colors = CardDefaults.cardColors(
-                    containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
-                    contentColor = WeSpotThemeManager.colors.abledTxtColor,
-                ),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .padding(vertical = 12.dp)
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = "${(5..20).random()}${stringResource(id = R.string.ballot)}",
-                        style = StaticTypeScale.Default.body1,
-                        maxLines = 1,
-                        color = if (rank == 1) {
-                            Primary300
-                        } else {
-                            WeSpotThemeManager.colors.abledTxtColor
-                        },
-                    )
-                    Image(
-                        painter = painterResource(id = logoList.random()),
-                        contentDescription = stringResource(id = R.string.ballot),
-                        modifier = Modifier.size(48.dp),
-                    )
-                    Text(text = user.name, style = StaticTypeScale.Default.body2, maxLines = 1)
-                    MultiLineText(
-                        text = user.introduction,
-                        style = StaticTypeScale.Default.badge,
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        textAlign = TextAlign.Center,
-                        line = 2,
-                    )
-                }
-            }
+        if (rank == 2) {
+            Image(
+                painter = painterResource(id = R.drawable.blur_2),
+                contentDescription = "",
+                modifier = Modifier.width(cardWidth),
+            )
         } else {
-            if (rank == 2) {
-                Image(
-                    painter = painterResource(id = R.drawable.blur_2),
-                    contentDescription = "",
-                    modifier = Modifier.width(cardWidth),
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = R.drawable.blur_3),
-                    contentDescription = "",
-                    modifier = Modifier.width(cardWidth),
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.blur_3),
+                contentDescription = "",
+                modifier = Modifier.width(cardWidth),
+            )
         }
     }
 }
@@ -697,85 +620,26 @@ private fun EmptyCard(rank: Int) {
 private fun EmptyTile(
     rank: Int,
 ) {
-    val user = VoteUser(
-        id = 0,
-        name = stringResource(id = nameList.random()),
-        introduction = stringResource(id = textList.random()),
-        profile = ProfileCharacter(
-            iconUrl = "",
-            backgroundColor = "#000000",
-        ),
-    )
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp, vertical = 16.dp)
-                .blur(10.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
-        ) {
-            Text(text = "$rank", style = StaticTypeScale.Default.body1)
-
-            Spacer(modifier = Modifier.width(18.dp))
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (rank == 3) {
             Image(
-                painter = painterResource(id = logoList.random()),
-                contentDescription = stringResource(id = R.string.ballot),
-                modifier = Modifier.size(48.dp),
+                painter = painterResource(id = R.drawable.blur_4),
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp, horizontal = 4.dp),
+                contentScale = ContentScale.FillWidth,
             )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
-                Text(text = user.name, style = StaticTypeScale.Default.body2)
-                Text(text = user.introduction, style = StaticTypeScale.Default.body9)
-            }
-
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                Text(
-                    text = "${(1..10).random()}${stringResource(id = R.string.ballot)}",
-                    style = StaticTypeScale.Default.body2,
-                )
-            }
-        }
-    } else {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (rank == 3) {
-                Image(
-                    painter = painterResource(id = R.drawable.blur_4),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    contentScale = ContentScale.FillWidth,
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = R.drawable.blur_5),
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth,
-                )
-            }
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.blur_5),
+                contentDescription = "",
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth,
+            )
         }
     }
 }
-
-private val logoList = listOf(
-    R.drawable.logo1,
-    R.drawable.logo2,
-    R.drawable.logo3,
-)
-
-private val textList = listOf(
-    R.string.invite_friend_description,
-    R.string.analyzing_result,
-    R.string.first_icon,
-)
-
-private val nameList = listOf(
-    R.string.vote,
-    R.string.report,
-)
 
 private const val MIN_REQUIREMENT = 5
 private const val TODAY = 0

@@ -43,7 +43,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
-import com.bff.wespot.ui.saveImage
+import com.bff.wespot.ui.saveBitmap
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.IndividualViewModel
@@ -74,11 +74,12 @@ fun IndividualVoteScreen(
     val individual by viewModel.individual.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val intent = it.data
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val intent = it.data
+            }
         }
-    }
 
     Scaffold(
         topBar = {
@@ -189,11 +190,13 @@ fun IndividualVoteScreen(
                     onClick = {
                         MainScope().launch {
                             val bitmap = snapshot.invoke()
-                            val uri = saveImage(bitmap, context)
+                            val uri = saveBitmap(context, bitmap)
 
                             if (uri != null) {
                                 val intent = navigator.navigateToInstaStory(context, uri)
-                                launcher.launch(intent)
+                                intent?.let {
+                                    launcher.launch(intent)
+                                }
                             }
                         }
                     },
