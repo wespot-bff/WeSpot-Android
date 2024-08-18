@@ -70,7 +70,6 @@ class EntireViewModel @Inject constructor(
 
     private fun signOut() = intent {
         viewModelScope.launch {
-            dataStoreRepository.clear()
             postSideEffect(EntireSideEffect.NavigateToAuth)
         }
     }

@@ -14,5 +14,4 @@ class SchoolPagingRepository @Inject constructor(
     override fun pagingSource(parameter: Map<String, String>?):
             BasePagingSource<School, Paging<School>> =
         SchoolPagingSource(authDataSource, parameter?.get("search"))
-
 }
