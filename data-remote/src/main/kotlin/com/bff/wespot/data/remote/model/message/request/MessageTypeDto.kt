@@ -4,5 +4,3 @@ enum class MessageTypeDto {
     RECEIVED,
     SENT,
 }
-
-internal fun MessageTypeDto.type() = this.name.lowercase()
