@@ -177,7 +177,7 @@ class AuthViewModel @Inject constructor(
     private fun fetchSchoolList(search: String) = intent {
         viewModelScope.launch(dispatcher) {
             runCatching {
-                val result = pagingRepository.fetchResultStream(search)
+                val result = pagingRepository.fetchResultStream(mapOf("search" to search))
                 reduce {
                     state.copy(
                         schoolList = result,

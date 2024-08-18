@@ -11,6 +11,7 @@ import javax.inject.Inject
 class VoteSentPagingRepository @Inject constructor(
     private val voteDataSource: VoteDataSource
 ) : BasePagingRepository<SentVoteData, Paging<SentVoteData>>() {
-    override fun pagingSource(parameter: String?): BasePagingSource<SentVoteData, Paging<SentVoteData>> =
+    override fun pagingSource(parameter: Map<String, String>?):
+            BasePagingSource<SentVoteData, Paging<SentVoteData>> =
         VoteSentPagingSource(voteDataSource)
 }
