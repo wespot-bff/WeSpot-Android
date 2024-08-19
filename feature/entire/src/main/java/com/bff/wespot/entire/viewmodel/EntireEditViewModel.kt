@@ -87,8 +87,11 @@ class EntireEditViewModel @Inject constructor(
 
     private fun handleProfileEditScreenEntered() {
         viewModelScope.launch {
-            val introduction = profileRepository.getProfile().introduction
-            handleIntroductionChanged(introduction)
+            runCatching {
+                profileRepository.getProfile()
+            }.onSuccess { profile ->
+                handleIntroductionChanged(profile.introduction)
+            }
         }
     }
 
