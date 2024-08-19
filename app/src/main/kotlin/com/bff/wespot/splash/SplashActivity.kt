@@ -1,15 +1,19 @@
 package com.bff.wespot.splash
 
-import android.animation.ObjectAnimator
+import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.animation.DecelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.bff.wespot.R
 import com.bff.wespot.auth.AuthActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
@@ -17,25 +21,32 @@ class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                return@setKeepOnScreenCondition viewModel.start.value.not()
-            }
-            setOnExitAnimationListener { splashScreen ->
-                ObjectAnimator.ofFloat(
-                    splashScreen.view,
-                    View.TRANSLATION_Y,
-                    0f, splashScreen.view.height.toFloat()
-                ).apply {
-                    interpolator = DecelerateInterpolator()
-                    duration = 500L
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installSplashScreen().apply {
+                setKeepOnScreenCondition {
+                    return@setKeepOnScreenCondition viewModel.start.value.not()
+                }
+                setOnExitAnimationListener {
                     val intent = AuthActivity.intent(this@SplashActivity)
                     startActivity(intent)
-                    doOnEnd {
-                        splashScreen.remove()
-                        finish()
+                    finish()
+                }
+            }
+        } else {
+            setContentView(R.layout.activity_splash)
+            actionBar?.hide()
+
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    viewModel.start.collect {
+                        if (it) {
+                            delay(500)
+                            val intent = AuthActivity.intent(this@SplashActivity)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
-                    start()
                 }
             }
         }
