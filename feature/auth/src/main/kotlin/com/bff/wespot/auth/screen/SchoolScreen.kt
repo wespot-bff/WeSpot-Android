@@ -164,7 +164,6 @@ fun SchoolScreen(
                         }
                     }
                 }
-
             }
         }
     }

@@ -21,7 +21,7 @@ fun TopToast(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 12.dp),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.TopCenter,
     ) {
         WSToast(
             text = message,

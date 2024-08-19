@@ -40,7 +40,7 @@ fun CaptureBitmap(
                     Box(
                         modifier = Modifier
                             .wrapContentSize()
-                            .background(WeSpotThemeManager.colors.backgroundColor)
+                            .background(WeSpotThemeManager.colors.backgroundColor),
                     ) {
                         content.invoke()
                     }
@@ -66,7 +66,7 @@ fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILE
 
     val imageUri: Uri? = contentResolver.insert(
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        contentValues
+        contentValues,
     )
 
     return imageUri.also {
@@ -77,7 +77,6 @@ fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILE
         fileOutputStream?.close()
     }
 }
-
 
 @JvmField
 val DEFAULT_FILENAME = "${System.currentTimeMillis()}.png"

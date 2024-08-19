@@ -14,14 +14,14 @@ interface MultipleEventsCutterManager {
 
 @OptIn(FlowPreview::class)
 @Composable
-fun <T>multipleEventsCutter(
-    content: @Composable (MultipleEventsCutterManager) -> T
-) : T {
+fun <T> multipleEventsCutter(
+    content: @Composable (MultipleEventsCutterManager) -> T,
+): T {
     val debounceState = remember {
         MutableSharedFlow<() -> Unit>(
             replay = 0,
             extraBufferCapacity = 1,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
         )
     }
 
@@ -30,7 +30,7 @@ fun <T>multipleEventsCutter(
             override fun processEvent(event: () -> Unit) {
                 debounceState.tryEmit(event)
             }
-        }
+        },
     )
 
     LaunchedEffect(true) {

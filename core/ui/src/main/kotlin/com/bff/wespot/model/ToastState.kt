@@ -9,5 +9,5 @@ data class ToastState(
     val type: WSToastType,
 ) {
     constructor() :
-            this(false, com.bff.wespot.designsystem.R.string.cancel, WSToastType.Success)
+        this(false, com.bff.wespot.designsystem.R.string.cancel, WSToastType.Success)
 }

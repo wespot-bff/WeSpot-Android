@@ -35,7 +35,7 @@ fun Modifier.clickableSingle(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "clickable"
@@ -43,7 +43,7 @@ fun Modifier.clickableSingle(
         properties["onClickLabel"] = onClickLabel
         properties["role"] = role
         properties["onClick"] = onClick
-    }
+    },
 ) {
     multipleEventsCutter { manager ->
         Modifier.clickable(
@@ -52,7 +52,7 @@ fun Modifier.clickableSingle(
             onClick = { manager.processEvent { onClick() } },
             role = role,
             indication = LocalIndication.current,
-            interactionSource = remember { MutableInteractionSource() }
+            interactionSource = remember { MutableInteractionSource() },
         )
     }
 }

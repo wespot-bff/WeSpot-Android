@@ -110,7 +110,7 @@ fun ReservedMessageScreen(
         toastType = WSToastType.Success,
         showToast = showToast,
     ) {
-         showToast = false
+        showToast = false
     }
 
     LaunchedEffect(Unit) {

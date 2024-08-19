@@ -264,11 +264,10 @@ fun MessageEditScreen(
     TopToast(
         message = stringResource(R.string.toast_error_name_edit),
         toastType = WSToastType.Error,
-        showToast = toast
+        showToast = toast,
     ) {
         toast = false
     }
-
 
     LaunchedEffect(Unit) {
         action(SendAction.OnMessageEditScreenEntered(navArgs.isReservedMessage, navArgs.messageId))
