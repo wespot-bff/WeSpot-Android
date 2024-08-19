@@ -47,7 +47,6 @@ import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -164,7 +163,7 @@ class AuthActivity : ComponentActivity() {
                         cancelButtonClick = {
                             finish()
                         },
-                        onDismissRequest = {}
+                        onDismissRequest = {},
                     )
                 }
             }

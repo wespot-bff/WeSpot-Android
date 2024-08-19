@@ -47,8 +47,8 @@ class AuthViewModel @Inject constructor(
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAYSTORE_LINK),
-        )
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAYSTORE_LINK),
+        ),
     )
 
     private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()
