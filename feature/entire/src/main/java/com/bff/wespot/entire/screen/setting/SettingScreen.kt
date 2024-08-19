@@ -8,17 +8,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.component.EntireListItem
+import com.bff.wespot.entire.state.EntireAction
+import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.WebLink
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectAsState
 
 interface SettingNavigator {
     fun navigateUp()
@@ -33,8 +39,12 @@ interface SettingNavigator {
 fun SettingScreen(
     navigator: SettingNavigator,
     activityNavigator: Navigator,
+    viewModel: EntireViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+
+    val state by viewModel.collectAsState()
+    val action = viewModel::onAction
 
     Scaffold(
         topBar = {
@@ -56,25 +66,47 @@ fun SettingScreen(
             }
 
             HorizontalDivider(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
                 thickness = 1.dp,
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
             )
 
             EntireListItem(text = stringResource(R.string.privacy_policy)) {
-                activityNavigator.navigateToWebLink(context, WebLink.PRIVACY_POLICY)
+                activityNavigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.webLinkMap.getOrDefault(
+                        WebLink.PRIVACY_POLICY,
+                        context.getString(WebLink.PRIVACY_POLICY.url),
+                    ),
+                )
             }
 
             EntireListItem(text = stringResource(R.string.terms_of_service)) {
-                activityNavigator.navigateToWebLink(context, WebLink.TERMS_OF_SERVICE)
+                activityNavigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.webLinkMap.getOrDefault(
+                        WebLink.TERMS_OF_SERVICE,
+                        context.getString(WebLink.TERMS_OF_SERVICE.url),
+                    ),
+                )
             }
 
             EntireListItem(text = stringResource(R.string.latest_updates)) {
-                activityNavigator.navigateToWebLink(context, WebLink.PLAY_STORE)
+                activityNavigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.webLinkMap.getOrDefault(
+                        WebLink.PLAY_STORE,
+                        context.getString(WebLink.PLAY_STORE.url),
+                    ),
+                )
             }
 
             HorizontalDivider(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
                 thickness = 1.dp,
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
             )
@@ -87,5 +119,9 @@ fun SettingScreen(
                 navigator.navigateToAccountSetting()
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(EntireAction.OnSettingScreenEntered)
     }
 }

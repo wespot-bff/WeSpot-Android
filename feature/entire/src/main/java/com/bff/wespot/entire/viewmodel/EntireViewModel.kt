@@ -3,6 +3,7 @@ package com.bff.wespot.entire.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -10,6 +11,7 @@ import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
+import com.bff.wespot.navigation.util.WebLink
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -27,6 +29,7 @@ class EntireViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authRepository: AuthRepository,
     private val messageRepository: MessageRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
@@ -34,8 +37,12 @@ class EntireViewModel @Inject constructor(
 
     fun onAction(action: EntireAction) {
         when (action) {
-            EntireAction.OnEntireScreenEntered, EntireAction.OnRevokeScreenEntered ->
+            EntireAction.OnEntireScreenEntered -> {
                 observeProfileDataFlow()
+                fetchWebLinkFromRemoteConfig()
+            }
+            EntireAction.OnSettingScreenEntered -> fetchWebLinkFromRemoteConfig()
+            EntireAction.OnRevokeScreenEntered -> observeProfileDataFlow()
             EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnRevokeButtonClicked -> revokeUser()
@@ -57,6 +64,13 @@ class EntireViewModel @Inject constructor(
                     reduce { state.copy(profile = it) }
                 }
         }
+    }
+
+    private fun fetchWebLinkFromRemoteConfig() = intent {
+        val webLinkMap = WebLink.entries.associateWith { webLink ->
+            remoteConfigRepository.fetchFromRemoteConfig(webLink.name)
+        }
+        reduce { state.copy(webLinkMap = webLinkMap) }
     }
 
     private fun revokeUser() = intent {

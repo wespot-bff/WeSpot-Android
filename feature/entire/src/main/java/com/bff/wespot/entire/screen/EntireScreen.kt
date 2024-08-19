@@ -103,7 +103,13 @@ internal fun EntireScreen(
                 subTitle = stringResource(R.string.vote_question_banner_subtitle),
                 image = painterResource(id = R.drawable.vote_question_ask),
                 onBannerClick = {
-                    activityNavigator.navigateToWebLink(context, WebLink.VOTE_QUESTION_GOOGLE_FORM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.VOTE_QUESTION_GOOGLE_FORM,
+                            context.getString(WebLink.VOTE_QUESTION_GOOGLE_FORM.url),
+                        ),
+                    )
                 },
                 hasBorder = true,
                 bannerType = WSBannerType.Primary,
@@ -115,42 +121,79 @@ internal fun EntireScreen(
                     .padding(top = 20.dp, start = 4.dp, end = 4.dp),
             ) {
                 EntireListItem(text = stringResource(R.string.contact_channel)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_KAKAKO_CHANNEL)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.WESPOT_KAKAKO_CHANNEL,
+                            context.getString(WebLink.WESPOT_KAKAKO_CHANNEL.url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.official_sns)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_INSTARGRAM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.WESPOT_INSTARGRAM,
+                            context.getString(WebLink.WESPOT_INSTARGRAM.url),
+                        ),
+                    )
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
                 EntireListItem(text = stringResource(R.string.leave_store_review)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.PLAY_STORE)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.PLAY_STORE,
+                            context.getString(WebLink.PLAY_STORE.url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.send_feedback)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.USER_OPINION_GOOGLE_FORM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.USER_OPINION_GOOGLE_FORM,
+                            context.getString(WebLink.USER_OPINION_GOOGLE_FORM.url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.participate_in_research)) {
                     activityNavigator.navigateToWebLink(
-                        context,
-                        WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM,
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM,
+                            context.getString(WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM.url),
+                        ),
                     )
                 }
 
                 HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
                 EntireListItem(text = stringResource(R.string.wespot_makers)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_MAKERS)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            WebLink.WESPOT_MAKERS,
+                            context.getString(WebLink.WESPOT_MAKERS.url),
+                        ),
+                    )
                 }
             }
         }

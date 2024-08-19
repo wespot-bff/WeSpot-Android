@@ -12,4 +12,5 @@ data class EntireEditUiState(
     val backgroundColorList: List<BackgroundColor> = listOf(),
     val characterList: List<Character> = listOf(),
     val isLoading: Boolean = false,
+    val voteQuestionGoogleFormUrl: String = "",
 )

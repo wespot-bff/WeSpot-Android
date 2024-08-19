@@ -2,6 +2,7 @@ package com.bff.wespot.entire.state
 
 import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.model.user.response.Profile
+import com.bff.wespot.navigation.util.WebLink
 
 data class EntireUiState(
     val profile: Profile = Profile(),
@@ -11,4 +12,5 @@ data class EntireUiState(
     val unBlockList: List<Int> = listOf(),
     val unBlockMessageId: Int = -1,
     val isLoading: Boolean = false,
+    val webLinkMap: Map<WebLink, String> = mapOf(),
 )

@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileCharacterUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileIntroductionUseCase
+import com.bff.wespot.domain.util.RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
@@ -34,6 +36,7 @@ import javax.inject.Inject
 class EntireEditViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val commonRepository: CommonRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
     private val updateProfileIntroductionUseCase: UpdateProfileIntroductionUseCase,
     private val updateProfileCharacterUseCase: UpdateProfileCharacterUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
@@ -50,6 +53,7 @@ class EntireEditViewModel @Inject constructor(
             }
             EntireEditAction.OnIntroductionEditDoneButtonClicked -> updateIntroduction()
             is EntireEditAction.OnProfileEditScreenEntered -> {
+                fetchWebLinkFromRemoteConfig()
                 handleProfileEditScreenEntered()
                 observeProfileFlow()
                 observeIntroductionInput()
@@ -106,6 +110,11 @@ class EntireEditViewModel @Inject constructor(
                     reduce { state.copy(profile = it) }
                 }
         }
+    }
+
+    private fun fetchWebLinkFromRemoteConfig() = intent {
+        val webLink = remoteConfigRepository.fetchFromRemoteConfig(VOTE_QUESTION_GOOGLE_FORM_URL)
+        reduce { state.copy(voteQuestionGoogleFormUrl = webLink) }
     }
 
     private fun handleIntroductionChanged(introduction: String) = intent {
