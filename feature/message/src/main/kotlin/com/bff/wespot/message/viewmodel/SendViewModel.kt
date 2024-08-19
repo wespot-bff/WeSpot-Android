@@ -11,7 +11,7 @@ import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
-import com.bff.wespot.model.message.request.SentMessage
+import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -175,7 +175,7 @@ class SendViewModel @Inject constructor(
 
         viewModelScope.launch {
             messageRepository.postMessage(
-                SentMessage(
+                WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     senderName = if (state.isRandomName) state.randomName else state.sender,
@@ -224,7 +224,7 @@ class SendViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.editMessage(
                 messageId = messageId,
-                SentMessage(
+                WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     senderName = if (state.isRandomName) state.randomName else state.sender,
