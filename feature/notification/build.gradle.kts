@@ -22,4 +22,5 @@ dependencies {
     implementation(libs.coil.core)
     implementation(libs.coil.compose)
     implementation(libs.timber)
+    implementation(libs.paging3)
 }
