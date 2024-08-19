@@ -30,5 +30,5 @@ interface Navigator {
         url: String,
     )
 
-    fun navigateToWebLink(context: Context, webLink: WebLink)
+    fun navigateToWebLink(context: Context, webLink: String)
 }
