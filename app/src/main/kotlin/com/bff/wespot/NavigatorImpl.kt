@@ -112,6 +112,15 @@ class NavigatorImpl @Inject constructor() : Navigator {
         context.startActivity(webLinkIntent)
     }
 
+    override fun navigateToWebLink(context: Context, link: String) {
+        val webLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(link),
+        )
+        webLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(webLinkIntent)
+    }
+
     override fun navigateToKakao(
         context: Context,
         title: String,
