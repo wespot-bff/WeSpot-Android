@@ -2,6 +2,7 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.BasePagingRepository
@@ -204,6 +205,7 @@ class SendViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             runCatching {
                 val result = userListRepository.fetchResultStream(mapOf("name" to name))
+                    .cachedIn(viewModelScope)
                 reduce { state.copy(userList = result) }
             }
         }
