@@ -2,11 +2,14 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.bff.wespot.designsystem.component.indicator.WSToastType
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.message.R
+import com.bff.wespot.message.model.ClickedMessageUiModel
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
@@ -14,9 +17,11 @@ import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.ReceivedMessage
+import com.bff.wespot.model.message.response.SentMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
@@ -32,6 +37,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,6 +45,8 @@ class MessageViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
+    private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
+    private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
     private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
@@ -90,20 +98,23 @@ class MessageViewModel @Inject constructor(
             is MessageAction.OnMessageStorageScreenOpened -> {
                 handleMessageStorageScreenOpened(action.messageId, action.type)
             }
-            is MessageAction.OnMessageItemClicked ->
-                handleMessageItemClicked(action.message, action.type)
-            is MessageAction.OnOptionButtonClicked -> handleOptionButtonClicked(action.message)
+            is MessageAction.OnSentMessageClicked ->
+                handleSentMessageClicked(action.message)
+            is MessageAction.OnReceivedMessageClicked ->
+                handleReceivedMessageClicked(action.message)
+            is MessageAction.OnOptionButtonClicked ->
+                handleOptionButtonClicked(action.messageId, action.messageType)
             is MessageAction.OnOptionBottomSheetClicked -> {
                 handleOptionBottomSheetClicked(action.messageOptionType)
             }
-            is MessageAction.OnMessageDeleteButtonClicked -> {
-                handleDeleteMessageButtonClicked(action.messageId)
+            MessageAction.OnMessageDeleteButtonClicked -> {
+                handleDeleteMessageButtonClicked()
             }
-            is MessageAction.OnMessageReportButtonClicked -> {
-                handleReportMessageButtonClicked(action.messageId)
+            MessageAction.OnMessageReportButtonClicked -> {
+                handleReportMessageButtonClicked()
             }
-            is MessageAction.OnMessageBlockButtonClicked -> {
-                handleBlockMessageButtonClicked(action.messageId)
+            MessageAction.OnMessageBlockButtonClicked -> {
+                handleBlockMessageButtonClicked()
             }
             MessageAction.OnReservedMessageScreenEntered -> handleReservedMessageScreenEntered()
         }
@@ -143,7 +154,7 @@ class MessageViewModel @Inject constructor(
             }
 
             TimePeriod.NIGHT_TO_DAWN -> {
-                getReceivedMessageList()
+                getMessageStatus()
             }
         }
     }
@@ -162,28 +173,32 @@ class MessageViewModel @Inject constructor(
     }
 
     private fun getReceivedMessageList() = intent {
-        viewModelScope.launch {
-            messageRepository.getMessageList(MessageType.RECEIVED, cursorId = 0) // TODO 커서 구현
-                .onSuccess { receivedMessageList ->
-                    reduce {
-                        state.copy(
-                            receivedMessageList = receivedMessageList,
-                        )
-                    }
+        viewModelScope.launch(coroutineDispatcher) {
+            runCatching {
+                reduce {
+                    state.copy(
+                        receivedMessageList = messageReceivedRepository.fetchResultStream()
+                            .cachedIn(viewModelScope),
+                    )
                 }
+            }.onFailure { exception ->
+                Timber.e(exception)
+            }
         }
     }
 
     private fun getSentMessageList() = intent {
-        viewModelScope.launch {
-            messageRepository.getMessageList(MessageType.SENT, cursorId = 0) // TODO 커서 페이징 구현
-                .onSuccess { sentMessageList ->
-                    reduce {
-                        state.copy(
-                            sentMessageList = sentMessageList,
-                        )
-                    }
+        viewModelScope.launch(coroutineDispatcher) {
+            runCatching {
+                reduce {
+                    state.copy(
+                        sentMessageList = messageSentRepository.fetchResultStream()
+                            .cachedIn(viewModelScope),
+                    )
                 }
+            }.onFailure { exception ->
+                Timber.e(exception)
+            }
         }
     }
 
@@ -192,7 +207,12 @@ class MessageViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
-                    handleMessageItemClicked(message = message, type = type)
+                    when (type) {
+                        MessageType.SENT -> handleSentMessageClicked(message.toSentMessage())
+                        MessageType.RECEIVED -> handleReceivedMessageClicked(
+                            message.toReceivedMessage(),
+                        )
+                    }
                     reduce { state.copy(isLoading = false) }
                     postSideEffect(MessageSideEffect.ShowMessageDialog)
                 }
@@ -202,18 +222,39 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageItemClicked(message: Message, type: MessageType) = intent {
-        reduce { state.copy(clickedMessage = message) }
+    private fun handleReceivedMessageClicked(message: ReceivedMessage) = intent {
+        reduce {
+            state.copy(
+                clickedMessage = ClickedMessageUiModel(
+                    content = message.content,
+                    sender = message.senderName,
+                    receiver = message.receiver.toDescription(),
+                ),
+            )
+        }
 
-        if (message.isRead.not() && type == MessageType.RECEIVED) {
+        if (message.isRead.not()) {
             updateMessageReadStatus(messageId = message.id)
         }
     }
 
-    private fun handleOptionButtonClicked(message: Message) = intent {
+    private fun handleSentMessageClicked(message: SentMessage) = intent {
         reduce {
             state.copy(
-                optionButtonClickedMessage = message,
+                clickedMessage = ClickedMessageUiModel(
+                    content = message.content,
+                    sender = message.senderName,
+                    receiver = message.receiver.toDescription(),
+                ),
+            )
+        }
+    }
+
+    private fun handleOptionButtonClicked(messageId: Int, messageType: MessageType) = intent {
+        reduce {
+            state.copy(
+                optionButtonClickedMessageId = messageId,
+                optionButtonClickedMessageType = messageType,
             )
         }
     }
@@ -233,10 +274,15 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleDeleteMessageButtonClicked(messageId: Int) = intent {
+    private fun handleDeleteMessageButtonClicked() = intent {
         viewModelScope.launch {
-            messageStorageRepository.deleteMessage(messageId)
+            messageStorageRepository.deleteMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
+                    when (state.optionButtonClickedMessageType) {
+                        MessageType.RECEIVED -> getReceivedMessageList()
+                        MessageType.SENT -> getSentMessageList()
+                    }
+
                     postSideEffect(
                         MessageSideEffect.ShowToast(
                             ToastState(
@@ -246,14 +292,13 @@ class MessageViewModel @Inject constructor(
                             ),
                         ),
                     )
-                    getReceivedMessageList()
                 }
         }
     }
 
-    private fun handleReportMessageButtonClicked(messageId: Int) = intent {
+    private fun handleReportMessageButtonClicked() = intent {
         viewModelScope.launch {
-            commonRepository.sendReport(ReportType.MESSAGE, messageId)
+            commonRepository.sendReport(ReportType.MESSAGE, state.optionButtonClickedMessageId)
                 .onSuccess {
                     postSideEffect(
                         MessageSideEffect.ShowToast(
@@ -269,9 +314,9 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleBlockMessageButtonClicked(messageId: Int) = intent {
+    private fun handleBlockMessageButtonClicked() = intent {
         viewModelScope.launch {
-            messageStorageRepository.blockMessage(messageId)
+            messageStorageRepository.blockMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
                     postSideEffect(
                         MessageSideEffect.ShowToast(
