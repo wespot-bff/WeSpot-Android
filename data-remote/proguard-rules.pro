@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontobfuscate
+-keepattributes SourceFile,LineNumberTable
+
+-keep class com.bff.wespot.data.remote.model.** { *;}
+
+# ------------------ kotlin serialization -------------------
+-keep @kotlinx.serialization.Serializable class *
