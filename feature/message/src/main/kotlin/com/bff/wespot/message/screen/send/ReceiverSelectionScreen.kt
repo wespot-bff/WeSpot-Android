@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -76,6 +77,7 @@ fun ReceiverSelectionScreen(
     var dialogState by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
+    val pagingData = state.userList.collectAsLazyPagingItems()
     val action = viewModel::onAction
 
     Scaffold(
@@ -128,7 +130,7 @@ fun ReceiverSelectionScreen(
                 singleLine = true,
             )
 
-            if (state.userList.isEmpty()) {
+            if (pagingData.itemCount == 0) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -158,26 +160,35 @@ fun ReceiverSelectionScreen(
             LazyColumn(
                 modifier = Modifier.padding(top = 16.dp),
             ) {
-                items(state.userList, key = { user -> user.id }) { item ->
-                    WSListItem(
-                        title = item.name,
-                        subTitle = item.toSchoolInfo(),
-                        selected = state.selectedUser.id == item.id,
-                        backgroundColor = item.profileCharacter.backgroundColor,
-                        onClick = {
-                            keyboard?.hide()
-                            action(SendAction.OnUserSelected(item))
-                        },
-                        imageContent = {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(item.profileCharacter.iconUrl)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = stringResource(com.bff.wespot.ui.R.string.user_character_image),
-                            )
-                        },
-                    )
+                items(
+                    count = pagingData.itemCount,
+                    key = { index -> pagingData[index]?.id ?: index },
+                ) { index ->
+                    val item = pagingData[index]
+
+                    item?.let {
+                        WSListItem(
+                            title = item.name,
+                            subTitle = item.toSchoolInfo(),
+                            selected = state.selectedUser.id == item.id,
+                            backgroundColor = item.profileCharacter.backgroundColor,
+                            onClick = {
+                                keyboard?.hide()
+                                action(SendAction.OnUserSelected(item))
+                            },
+                            imageContent = {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(item.profileCharacter.iconUrl)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = stringResource(
+                                        com.bff.wespot.ui.R.string.user_character_image,
+                                    ),
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
