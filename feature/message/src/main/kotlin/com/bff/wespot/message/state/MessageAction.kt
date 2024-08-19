@@ -2,22 +2,27 @@ package com.bff.wespot.message.state
 
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.ReceivedMessage
+import com.bff.wespot.model.message.response.SentMessage
 
 sealed class MessageAction {
     data object OnHomeScreenEntered : MessageAction()
     data object OnReservedMessageScreenEntered : MessageAction()
+    data object OnMessageBlockButtonClicked : MessageAction()
+    data object OnMessageReportButtonClicked : MessageAction()
+    data object OnMessageDeleteButtonClicked : MessageAction()
     data class OnStorageChipSelected(val messageType: MessageType) : MessageAction()
     data class OnMessageStorageScreenOpened(
         val messageId: Int,
         val type: MessageType,
     ) : MessageAction()
-    data class OnMessageItemClicked(val message: Message, val type: MessageType) : MessageAction()
-    data class OnOptionButtonClicked(val message: Message) : MessageAction()
+    data class OnReceivedMessageClicked(val message: ReceivedMessage) : MessageAction()
+    data class OnSentMessageClicked(val message: SentMessage) : MessageAction()
+    data class OnOptionButtonClicked(
+        val messageId: Int,
+        val messageType: MessageType,
+    ) : MessageAction()
     data class OnOptionBottomSheetClicked(
         val messageOptionType: MessageOptionType,
     ) : MessageAction()
-    data class OnMessageDeleteButtonClicked(val messageId: Int) : MessageAction()
-    data class OnMessageBlockButtonClicked(val messageId: Int) : MessageAction()
-    data class OnMessageReportButtonClicked(val messageId: Int) : MessageAction()
 }
