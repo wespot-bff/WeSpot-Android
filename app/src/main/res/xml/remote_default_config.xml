@@ -15,4 +15,54 @@
         <key>MOCK_BASE_URL</key>
         <value>wespot</value>
     </entry>
+
+    <entry>
+        <key>VOTE_QUESTION_GOOGLE_FORM_URL</key>
+        <value>https://forms.gle/eiKdpjmwdxzvqm947</value>
+    </entry>
+
+    <entry>
+        <key>WESPOT_KAKAO_CHANNEL_URL</key>
+        <value>http://pf.kakao.com/_SEDcG</value>
+    </entry>
+
+    <entry>
+        <key>WESPOT_INSTAGRAM_URL</key>
+        <value>https://www.instagram.com/wespot.official/</value>
+    </entry>
+
+    <entry>
+        <key>USER_OPINION_GOOGLE_FORM_URL</key>
+        <value>https://forms.gle/BZbC5wpuMt9mynUG6</value>
+    </entry>
+
+    <entry>
+        <key>RESEARCH_PARTICIPATION_GOOGLE_FORM_URL</key>
+        <value>https://docs.google.com/forms/d/e/1FAIpQLSfkN2b752gRKtFRk9IUreFRacNXnj5jh4tlHWKp0n51IaObyw/viewform?usp=sf_link</value>
+    </entry>
+
+    <entry>
+        <key>WESPOT_MAKERS_URL</key>
+        <value>https://www.notion.so/WeSpot-Makers-87e988ab3c9e47f28c141ad1aa663b80?pvs=4</value>
+    </entry>
+
+    <entry>
+        <key>PROFILE_CHANGE_GOOGLE_FORM_URL</key>
+        <value>https://docs.google.com/forms/d/e/1FAIpQLSdFlTCYbGL4QDYJlzt8jeeeA-E3ITWIBeYS2B5cAZs2j8wosQ/viewform?usp=sf_link</value>
+    </entry>
+
+    <entry>
+        <key>PRIVACY_POLICY_URL</key>
+        <value>https://www.notion.so/2fa1c3002e14460f91462204b0daefbf?pvs=4</value>
+    </entry>
+
+    <entry>
+        <key>PLAY_STORE_URL</key>
+        <value>https://play.google.com/store/apps</value>
+    </entry>
+
+    <entry>
+        <key>TERMS_OF_SERVICE_URL</key>
+        <value>https://www.notion.so/yapp-workspace/0826c1435e0b4eba95ce62beb0aea425</value>
+    </entry>
 </defaultsMap>
