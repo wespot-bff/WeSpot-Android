@@ -17,4 +17,5 @@ data class AuthUiState(
     val loading: Boolean = false,
     val consents: List<Boolean> = listOf(false, false, false, false),
     val hasProfanity: Boolean = false,
+    val playStoreLink: String,
 )

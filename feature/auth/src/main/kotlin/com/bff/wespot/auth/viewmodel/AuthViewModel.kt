@@ -42,20 +42,20 @@ class AuthViewModel @Inject constructor(
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
-    private val remoteConfigRepository: RemoteConfigRepository,
+    remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
-    override val container = container<AuthUiState, AuthSideEffect>(AuthUiState())
+    override val container = container<AuthUiState, AuthSideEffect>(
+        AuthUiState(
+            playStoreLink =
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAYSTORE_LINK),
+        )
+    )
 
     private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()
     val loginState: LiveData<LoginState> = loginStateP
 
     private val userInput = MutableStateFlow("")
     private val nameInput = MutableStateFlow("")
-
-    init {
-        val minVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MIN_VERSION)
-        Timber.d("minVersion: $minVersion")
-    }
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -69,7 +69,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.Navigation -> handleNavigation(action.navigate)
             is AuthAction.LoginWithKakao -> loginWithKakao()
             is AuthAction.Signup -> signUp()
-            is AuthAction.AutoLogin -> autoLogin()
+            is AuthAction.AutoLogin -> autoLogin(action.versionCode)
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
             is AuthAction.OnStartNameScreen -> monitorNameInput()
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
@@ -96,9 +96,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun autoLogin() {
+    private fun autoLogin(versionCode: String) {
         viewModelScope.launch {
-            autoLoginUseCase().let {
+            autoLoginUseCase(versionCode).let {
                 loginStateP.postValue(it)
             }
         }
