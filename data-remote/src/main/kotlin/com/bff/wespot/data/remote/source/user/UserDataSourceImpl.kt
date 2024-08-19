@@ -16,7 +16,7 @@ import javax.inject.Inject
 class UserDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
 ) : UserDataSource {
-    override suspend fun getUserListByName(name: String, cursorId: Int): Result<UserListDto> =
+    override suspend fun getUserListByName(name: String, cursorId: Int?): Result<UserListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
