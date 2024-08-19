@@ -5,6 +5,7 @@ import com.bff.wespot.plugin.configure.configureKotlinAndroid
 import com.bff.wespot.plugin.configure.configureKtLint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.project
@@ -21,6 +22,10 @@ class AndroidFeaturePlugin: Plugin<Project>{
             val extension = extensions.getByType<LibraryExtension>()
             configureKotlinAndroid(extension)
             configureKtLint()
+
+            extensions.configure<LibraryExtension> {
+                defaultConfig.consumerProguardFiles("consumer-rules.pro")
+            }
 
             dependencies {
                 "implementation"(project(":domain"))
