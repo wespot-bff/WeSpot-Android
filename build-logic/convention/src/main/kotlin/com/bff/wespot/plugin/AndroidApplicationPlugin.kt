@@ -11,7 +11,7 @@ import java.io.File
 
 class AndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        val file = File(target.rootDir, "local.properties")
+        val file = File(target.rootProject.rootDir, "local.properties")
         val property = loadProperties(file.absolutePath)
 
         with(target) {
