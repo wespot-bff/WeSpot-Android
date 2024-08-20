@@ -47,7 +47,7 @@ class AuthViewModel @Inject constructor(
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAYSTORE_LINK),
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
         ),
     )
 

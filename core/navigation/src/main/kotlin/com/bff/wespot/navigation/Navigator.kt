@@ -22,16 +22,15 @@ interface Navigator {
     fun navigateToSharing(context: Context)
 
     fun navigateToKakao(
-        context: Context, title: String,
+        context: Context,
+        title: String,
         description: String,
         imageUrl: String,
         buttonText: String,
         url: String,
     )
 
-    fun navigateToWebLink(context: Context, webLink: String)
-
     fun redirectToPlayStoreForInstagram(context: Context)
 
-    fun navigateToWebLink(context: Context, link: String)
+    fun navigateToWebLink(context: Context, webLink: String)
 }
