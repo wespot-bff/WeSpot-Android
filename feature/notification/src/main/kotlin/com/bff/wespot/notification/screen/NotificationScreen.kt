@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.Gray400
@@ -50,6 +51,7 @@ fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel(),
 ) {
     val state by viewModel.collectAsState()
+    val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
     Scaffold(
@@ -61,15 +63,30 @@ fun NotificationScreen(
             )
         },
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
-        ) {
-            itemsIndexed(
-                items = state.notificationList,
-                key = { _, notification -> notification.id },
-            ) { index, item ->
-                NotificationListItem(isFirstItem = index == 0, notification = item) {
-                    action(NotificationAction.OnNotificationClicked(item))
+        when (pagingData.loadState.refresh) {
+            is LoadState.Error -> {
+                // TODO: Handle error
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.padding(it),
+                ) {
+                    items(
+                        count = pagingData.itemCount,
+                        key = { index -> pagingData[index]?.id ?: index },
+                    ) { index ->
+                        val item = pagingData[index]
+
+                        item?.let {
+                            NotificationListItem(
+                                isFirstItem = index == 0,
+                                notification = item,
+                            ) {
+                                action(NotificationAction.OnNotificationClicked(item))
+                            }
+                        }
+                    }
                 }
             }
         }

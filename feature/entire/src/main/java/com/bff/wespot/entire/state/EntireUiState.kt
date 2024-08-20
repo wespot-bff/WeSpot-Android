@@ -11,4 +11,5 @@ data class EntireUiState(
     val unBlockList: List<Int> = listOf(),
     val unBlockMessageId: Int = -1,
     val isLoading: Boolean = false,
+    val webLinkMap: Map<String, String> = mapOf(),
 )

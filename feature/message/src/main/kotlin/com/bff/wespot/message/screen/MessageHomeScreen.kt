@@ -50,7 +50,6 @@ import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
-import com.bff.wespot.model.message.response.MessageList
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -109,7 +108,7 @@ fun MessageHomeScreen(
 
             TimePeriod.NIGHT_TO_DAWN -> {
                 ReceivedMessageBanner(
-                    messageList = state.receivedMessageList,
+                    visible = state.hasUnReadMessage,
                     onBannerClick = {
                         navigateToNotificationScreen()
                     },
@@ -121,7 +120,7 @@ fun MessageHomeScreen(
                     title = state.timePeriod.title,
                     buttonText = stringResource(R.string.message_card_button_text_night),
                     imageRes = state.timePeriod.imageRes,
-                    isBannerVisible = state.receivedMessageList.hasUnReadMessages(),
+                    isBannerVisible = state.hasUnReadMessage,
                     onButtonClick = {
                     },
                 )
@@ -196,10 +195,10 @@ private fun MessageCard(
 }
 
 @Composable
-private fun ReceivedMessageBanner(messageList: MessageList, onBannerClick: () -> Unit) {
+private fun ReceivedMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
     AnimatedVisibility(
         modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
-        visible = messageList.hasUnReadMessages(),
+        visible = visible,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
         WSBanner(

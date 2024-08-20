@@ -3,10 +3,12 @@ package com.bff.wespot.entire.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
@@ -27,6 +29,7 @@ class EntireViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authRepository: AuthRepository,
     private val messageRepository: MessageRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
@@ -34,8 +37,12 @@ class EntireViewModel @Inject constructor(
 
     fun onAction(action: EntireAction) {
         when (action) {
-            EntireAction.OnEntireScreenEntered, EntireAction.OnRevokeScreenEntered ->
+            EntireAction.OnEntireScreenEntered -> {
                 observeProfileDataFlow()
+                fetchWebLinkFromRemoteConfig()
+            }
+            EntireAction.OnSettingScreenEntered -> fetchWebLinkFromRemoteConfig()
+            EntireAction.OnRevokeScreenEntered -> observeProfileDataFlow()
             EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnRevokeButtonClicked -> revokeUser()
@@ -57,6 +64,25 @@ class EntireViewModel @Inject constructor(
                     reduce { state.copy(profile = it) }
                 }
         }
+    }
+
+    private fun fetchWebLinkFromRemoteConfig() = intent {
+        val urlList = listOf(
+            RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL,
+            RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL,
+            RemoteConfigKey.WESPOT_INSTAGRAM_URL,
+            RemoteConfigKey.USER_OPINION_GOOGLE_FORM_URL,
+            RemoteConfigKey.RESEARCH_PARTICIPATION_GOOGLE_FORM_URL,
+            RemoteConfigKey.WESPOT_MAKERS_URL,
+            RemoteConfigKey.PROFILE_CHANGE_GOOGLE_FORM_URL,
+            RemoteConfigKey.PRIVACY_POLICY_URL,
+            RemoteConfigKey.PLAY_STORE_URL,
+            RemoteConfigKey.TERMS_OF_SERVICE_URL,
+        )
+        val webLinkMap = urlList.associateWith { webLink ->
+            remoteConfigRepository.fetchFromRemoteConfig(webLink)
+        }
+        reduce { state.copy(webLinkMap = webLinkMap) }
     }
 
     private fun revokeUser() = intent {

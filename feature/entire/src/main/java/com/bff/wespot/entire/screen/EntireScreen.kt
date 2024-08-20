@@ -41,6 +41,7 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.component.EntireListItem
 import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
@@ -48,7 +49,6 @@ import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.WebLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -105,7 +105,13 @@ internal fun EntireScreen(
                 subTitle = stringResource(R.string.vote_question_banner_subtitle),
                 image = painterResource(id = R.drawable.vote_question_ask),
                 onBannerClick = {
-                    activityNavigator.navigateToWebLink(context, WebLink.VOTE_QUESTION_GOOGLE_FORM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL,
+                            context.getString(R.string.vote_question_google_form_url),
+                        ),
+                    )
                 },
                 hasBorder = true,
                 bannerType = WSBannerType.Primary,
@@ -117,11 +123,23 @@ internal fun EntireScreen(
                     .padding(top = 20.dp),
             ) {
                 EntireListItem(text = stringResource(R.string.contact_channel)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_KAKAKO_CHANNEL)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL,
+                            context.getString(R.string.wespot_kakao_channel_url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.official_sns)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_INSTARGRAM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.WESPOT_INSTAGRAM_URL,
+                            context.getString(R.string.wespot_instagram_url),
+                        ),
+                    )
                 }
 
                 HorizontalDivider(
@@ -133,17 +151,32 @@ internal fun EntireScreen(
                 )
 
                 EntireListItem(text = stringResource(R.string.leave_store_review)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.PLAY_STORE)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.PLAY_STORE_URL,
+                            context.getString(R.string.play_store_url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.send_feedback)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.USER_OPINION_GOOGLE_FORM)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.USER_OPINION_GOOGLE_FORM_URL,
+                            context.getString(R.string.user_opinion_google_form_url),
+                        ),
+                    )
                 }
 
                 EntireListItem(text = stringResource(R.string.participate_in_research)) {
                     activityNavigator.navigateToWebLink(
-                        context,
-                        WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM,
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.RESEARCH_PARTICIPATION_GOOGLE_FORM_URL,
+                            context.getString(R.string.research_participation_google_form_url),
+                        ),
                     )
                 }
 
@@ -156,7 +189,13 @@ internal fun EntireScreen(
                 )
 
                 EntireListItem(text = stringResource(R.string.wespot_makers)) {
-                    activityNavigator.navigateToWebLink(context, WebLink.WESPOT_MAKERS)
+                    activityNavigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.webLinkMap.getOrDefault(
+                            RemoteConfigKey.WESPOT_MAKERS_URL,
+                            context.getString(R.string.wespot_makers_url),
+                        ),
+                    )
                 }
             }
         }

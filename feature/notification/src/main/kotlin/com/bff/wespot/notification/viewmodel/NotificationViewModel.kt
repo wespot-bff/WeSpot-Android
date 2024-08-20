@@ -2,7 +2,10 @@ package com.bff.wespot.notification.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
+import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.state.NotificationSideEffect
@@ -19,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
+    private val notificationListRepository: BasePagingRepository<Notification, Paging<Notification>>,
 ) : ViewModel(), ContainerHost<NotificationUiState, NotificationSideEffect> {
     override val container =
         container<NotificationUiState, NotificationSideEffect>(NotificationUiState())
@@ -34,13 +38,12 @@ class NotificationViewModel @Inject constructor(
 
     private fun getNotificationList() = intent {
         viewModelScope.launch {
-            notificationRepository.getNotificationList()
-                .onSuccess {
-                    reduce { state.copy(notificationList = it) }
-                }
-                .onFailure {
-                    Timber.e(it)
-                }
+            runCatching {
+                val result = notificationListRepository.fetchResultStream().cachedIn(viewModelScope)
+                reduce { state.copy(notificationList = result) }
+            }.onFailure {
+                Timber.e(it)
+            }
         }
     }
 

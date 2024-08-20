@@ -3,7 +3,6 @@ package com.bff.wespot.navigation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.bff.wespot.navigation.util.WebLink
 
 interface Navigator {
     fun navigateToMain(
@@ -30,7 +29,7 @@ interface Navigator {
         url: String,
     )
 
-    fun navigateToWebLink(context: Context, webLink: WebLink)
+    fun navigateToWebLink(context: Context, webLink: String)
 
     fun redirectToPlayStoreForInstagram(context: Context)
 }

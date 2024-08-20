@@ -14,13 +14,6 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource,
 ) : UserRepository {
-    override suspend fun getUserListByName(name: String, cursorId: Int): Result<List<User>> =
-        userDataSource.getUserListByName(name, cursorId).map { userListDto ->
-            userListDto.users.map { userDto ->
-                userDto.toUser()
-            }
-        }
-
     override suspend fun getProfile(): Result<Profile> =
         userDataSource.getProfile().map { profileDto ->
             profileDto.toProfile()

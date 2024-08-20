@@ -2,18 +2,22 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
-import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
-import com.bff.wespot.model.message.request.SentMessage
+import com.bff.wespot.model.common.Paging
+import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -28,8 +32,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SendViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
-    private val userRepository: UserRepository,
+    private val profileRepository: ProfileRepository,
+    private val userListRepository: BasePagingRepository<User, Paging<User>>,
     private val checkProfanityUseCase: CheckProfanityUseCase,
+    private val coroutineDispatcher: CoroutineDispatcher,
 ) : ViewModel(), ContainerHost<SendUiState, SendSideEffect> {
     override val container = container<SendUiState, SendSideEffect>(SendUiState())
 
@@ -153,10 +159,11 @@ class SendViewModel @Inject constructor(
 
     private fun getProfile() = intent {
         viewModelScope.launch {
-            userRepository.getProfile()
-                .onSuccess { profile ->
-                    reduce { state.copy(sender = profile.toDescription()) }
-                }
+            runCatching {
+                profileRepository.getProfile()
+            }.onSuccess { profile ->
+                reduce { state.copy(sender = profile.toDescription()) }
+            }
         }
     }
 
@@ -175,7 +182,7 @@ class SendViewModel @Inject constructor(
 
         viewModelScope.launch {
             messageRepository.postMessage(
-                SentMessage(
+                WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     senderName = if (state.isRandomName) state.randomName else state.sender,
@@ -195,15 +202,12 @@ class SendViewModel @Inject constructor(
     }
 
     private fun getUserList(name: String) = intent {
-        viewModelScope.launch {
-            userRepository.getUserListByName(name, cursorId = 0) // TODO 커서 페이징 구현
-                .onSuccess { userList ->
-                    reduce {
-                        state.copy(
-                            userList = userList,
-                        )
-                    }
-                }
+        viewModelScope.launch(coroutineDispatcher) {
+            runCatching {
+                val result = userListRepository.fetchResultStream(mapOf("name" to name))
+                    .cachedIn(viewModelScope)
+                reduce { state.copy(userList = result) }
+            }
         }
     }
 
@@ -224,7 +228,7 @@ class SendViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.editMessage(
                 messageId = messageId,
-                SentMessage(
+                WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     senderName = if (state.isRandomName) state.randomName else state.sender,

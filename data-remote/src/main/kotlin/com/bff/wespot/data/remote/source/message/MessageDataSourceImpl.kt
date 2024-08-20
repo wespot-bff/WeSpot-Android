@@ -1,8 +1,6 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.request.MessageTypeDto
-import com.bff.wespot.data.remote.model.message.request.SentMessageDto
-import com.bff.wespot.data.remote.model.message.request.type
+import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
@@ -19,21 +17,28 @@ import javax.inject.Inject
 class MessageDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
 ): MessageDataSource {
-    override suspend fun getMessageList(
-        messageTypeDto: MessageTypeDto,
-        cursorId: Int,
-    ): Result<MessageListDto> =
+    override suspend fun getReceivedMessageList(cursorId: Int?): Result<MessageListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("api/v1/messages")
-                parameter("type", messageTypeDto.type())
+                parameter("type", "RECEIVED")
+                parameter("cursorId", cursorId)
+            }
+        }
+
+    override suspend fun getSentMessageList(cursorId: Int?): Result<MessageListDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/messages")
+                parameter("type", "SENT")
                 parameter("cursorId", cursorId)
             }
         }
 
     override suspend fun postMessage(
-        sentMessageDto: SentMessageDto,
+        sentMessageDto: WrittenMessageDto,
     ): Result<MessageIdDto> =
         httpClient.safeRequest {
             url {
@@ -51,7 +56,7 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun editMessage(messageId: Int, sentMessageDto: SentMessageDto): Result<Unit> =
+    override suspend fun editMessage(messageId: Int, sentMessageDto: WrittenMessageDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put

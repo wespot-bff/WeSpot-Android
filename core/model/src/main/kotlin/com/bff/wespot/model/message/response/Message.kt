@@ -16,4 +16,27 @@ data class Message(
     val readAt: LocalDateTime?,
 ) {
     constructor() : this(-1, "", User(), "", LocalDateTime.MAX, false, false, false, false, null)
+
+    fun toSentMessage(): SentMessage = SentMessage(
+        id = id,
+        senderName = senderName,
+        receiver = receiver,
+        content = content,
+        receivedAt = receivedAt,
+        isRead = isRead,
+        isReported = isReported,
+        isBlocked = isBlocked,
+        isAnonymous = isAnonymous,
+        readAt = readAt,
+    )
+
+    fun toReceivedMessage(): ReceivedMessage = ReceivedMessage(
+        id = id,
+        senderName = senderName,
+        receiver = receiver,
+        content = content,
+        receivedAt = receivedAt,
+        isRead = isRead,
+        readAt = readAt,
+    )
 }

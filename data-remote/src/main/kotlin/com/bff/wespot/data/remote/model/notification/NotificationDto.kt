@@ -3,14 +3,23 @@ package com.bff.wespot.data.remote.model.notification
 import com.bff.wespot.data.remote.extensions.toISOLocalDateTime
 import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.model.notification.Notification
+import com.bff.wespot.model.notification.NotificationList
 import com.bff.wespot.model.notification.NotificationType
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
 data class NotificationListDto(
-    val notifications: List<NotificationDto>
-)
+    val notifications: List<NotificationDto>,
+    val lastCursorId: Int,
+    val hasNext: Boolean,
+) {
+    fun toNotificationList() = NotificationList(
+        data = notifications.map{ it.toNotification() },
+        lastCursorId = lastCursorId,
+        hasNext = hasNext,
+    )
+}
 
 @Serializable
 data class NotificationDto (
