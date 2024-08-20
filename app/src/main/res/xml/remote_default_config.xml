@@ -43,7 +43,7 @@
 
     <entry>
         <key>WESPOT_MAKERS_URL</key>
-        <value>https://www.notion.so/WeSpot-Makers-87e988ab3c9e47f28c141ad1aa663b80?pvs=4</value>
+        <value>https://gregarious-salesman-74d.notion.site/WeSpot-Makers-87e988ab3c9e47f28c141ad1aa663b80</value>
     </entry>
 
     <entry>
@@ -53,7 +53,7 @@
 
     <entry>
         <key>PRIVACY_POLICY_URL</key>
-        <value>https://www.notion.so/2fa1c3002e14460f91462204b0daefbf?pvs=4</value>
+        <value>https://gregarious-salesman-74d.notion.site/2fa1c3002e14460f91462204b0daefbf</value>
     </entry>
 
     <entry>
@@ -63,6 +63,16 @@
 
     <entry>
         <key>TERMS_OF_SERVICE_URL</key>
-        <value>https://www.notion.so/yapp-workspace/0826c1435e0b4eba95ce62beb0aea425</value>
+        <value>https://gregarious-salesman-74d.notion.site/08f77951919d42cc876a13792f887995</value>
+    </entry>
+
+    <entry>
+        <key>MARKETING_SERVICE_TERM</key>
+        <value>https://gregarious-salesman-74d.notion.site/b14afbb4f9194b5881fd198c8538aba8</value>
+    </entry>
+
+    <entry>
+        <key>SCHOOL_FORM</key>
+        <value>https://forms.gle/Y8hLydHZTU8zSAsZ7</value>
     </entry>
 </defaultsMap>
