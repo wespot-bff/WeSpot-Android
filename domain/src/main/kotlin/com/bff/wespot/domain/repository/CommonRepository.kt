@@ -2,6 +2,7 @@ package com.bff.wespot.domain.repository
 
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
+import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.ReportType
 
 interface CommonRepository {
@@ -14,4 +15,5 @@ interface CommonRepository {
         backgroundColor: String,
         iconUrl: String,
     ): Result<Unit>
+    suspend fun getKakaoContent(type: String): Result<KakaoContent>
 }

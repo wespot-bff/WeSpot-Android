@@ -45,6 +45,7 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
@@ -144,6 +145,7 @@ internal fun VoteHomeScreen(
     LaunchedEffect(Unit) {
         delay(EDIT_POPUP_TIME)
         action(VoteAction.GetSettingDialogOption)
+        action(VoteAction.GetKakaoContent)
     }
 }
 
@@ -323,14 +325,16 @@ private fun CardResultContent(
                         page = it,
                         onClick = {},
                         navigateToShare = {
-                            navigator.navigateToKakao(
-                                context = context,
-                                title = "",
-                                description = "",
-                                imageUrl = "",
-                                buttonText = "",
-                                url = "",
-                            )
+                            if (state.kakaoContent != KakaoContent.EMPTY) {
+                                navigator.navigateToKakao(
+                                    context = context,
+                                    title = state.kakaoContent.title,
+                                    description = state.kakaoContent.description,
+                                    imageUrl = state.kakaoContent.imageUrl,
+                                    buttonText = state.kakaoContent.buttonText,
+                                    url = state.kakaoContent.url,
+                                )
+                            }
                         }
                     )
                 } else {

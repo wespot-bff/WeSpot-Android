@@ -7,4 +7,5 @@ sealed class VoteAction {
     data class OnTabChanged(val index: Int) : VoteAction()
     data object GetSettingDialogOption : VoteAction()
     data class ChangeSettingDialog(val showDialog: Boolean) : VoteAction()
+    data object GetKakaoContent : VoteAction()
 }

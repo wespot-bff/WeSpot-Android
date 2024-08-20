@@ -181,7 +181,7 @@ internal fun VoteCard(
                 ) {
                     Text(
                         text = stringResource(R.string.ask_friend),
-                        style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
+                        style = StaticTypeScale.Default.body5.copy(fontSize = 14.sp * ratio),
                         maxLines = 1,
                     )
                 }
