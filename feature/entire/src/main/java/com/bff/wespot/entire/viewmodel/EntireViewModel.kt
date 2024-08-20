@@ -8,10 +8,10 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
-import com.bff.wespot.navigation.util.WebLink
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -67,8 +67,20 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun fetchWebLinkFromRemoteConfig() = intent {
-        val webLinkMap = WebLink.entries.associateWith { webLink ->
-            remoteConfigRepository.fetchFromRemoteConfig(webLink.name)
+        val urlList = listOf(
+            RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL,
+            RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL,
+            RemoteConfigKey.WESPOT_INSTAGRAM_URL,
+            RemoteConfigKey.USER_OPINION_GOOGLE_FORM_URL,
+            RemoteConfigKey.RESEARCH_PARTICIPATION_GOOGLE_FORM_URL,
+            RemoteConfigKey.WESPOT_MAKERS_URL,
+            RemoteConfigKey.PROFILE_CHANGE_GOOGLE_FORM_URL,
+            RemoteConfigKey.PRIVACY_POLICY_URL,
+            RemoteConfigKey.PLAY_STORE_URL,
+            RemoteConfigKey.TERMS_OF_SERVICE_URL,
+        )
+        val webLinkMap = urlList.associateWith { webLink ->
+            remoteConfigRepository.fetchFromRemoteConfig(webLink)
         }
         reduce { state.copy(webLinkMap = webLinkMap) }
     }

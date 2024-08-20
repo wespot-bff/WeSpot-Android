@@ -224,7 +224,7 @@ fun ProfileEditScreen(
                     onClick = {
                         activityNavigator.navigateToWebLink(
                             context = context,
-                            webLink = state.voteQuestionGoogleFormUrl,
+                            webLink = state.profileChangeGoogleFormUrl,
                         )
                     },
                     text = stringResource(R.string.request_change_profile),

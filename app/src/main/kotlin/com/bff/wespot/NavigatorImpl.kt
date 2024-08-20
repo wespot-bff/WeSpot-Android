@@ -9,7 +9,6 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.WebLink
 import com.bff.wespot.navigation.util.buildIntent
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient

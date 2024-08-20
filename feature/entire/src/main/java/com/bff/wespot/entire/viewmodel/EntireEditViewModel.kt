@@ -9,7 +9,7 @@ import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileCharacterUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileIntroductionUseCase
-import com.bff.wespot.domain.util.RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL
+import com.bff.wespot.domain.util.RemoteConfigKey.PROFILE_CHANGE_GOOGLE_FORM_URL
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
@@ -113,8 +113,8 @@ class EntireEditViewModel @Inject constructor(
     }
 
     private fun fetchWebLinkFromRemoteConfig() = intent {
-        val webLink = remoteConfigRepository.fetchFromRemoteConfig(VOTE_QUESTION_GOOGLE_FORM_URL)
-        reduce { state.copy(voteQuestionGoogleFormUrl = webLink) }
+        val webLink = remoteConfigRepository.fetchFromRemoteConfig(PROFILE_CHANGE_GOOGLE_FORM_URL)
+        reduce { state.copy(profileChangeGoogleFormUrl = webLink) }
     }
 
     private fun handleIntroductionChanged(introduction: String) = intent {

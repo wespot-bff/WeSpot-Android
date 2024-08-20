@@ -41,6 +41,7 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.component.EntireListItem
 import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
@@ -48,7 +49,6 @@ import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.WebLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -106,8 +106,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.VOTE_QUESTION_GOOGLE_FORM,
-                            context.getString(WebLink.VOTE_QUESTION_GOOGLE_FORM.url),
+                            RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL,
+                            context.getString(R.string.vote_question_google_form_url),
                         ),
                     )
                 },
@@ -124,8 +124,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.WESPOT_KAKAKO_CHANNEL,
-                            context.getString(WebLink.WESPOT_KAKAKO_CHANNEL.url),
+                            RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL,
+                            context.getString(R.string.wespot_kakao_channel_url),
                         ),
                     )
                 }
@@ -134,8 +134,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.WESPOT_INSTARGRAM,
-                            context.getString(WebLink.WESPOT_INSTARGRAM.url),
+                            RemoteConfigKey.WESPOT_INSTAGRAM_URL,
+                            context.getString(R.string.wespot_instagram_url),
                         ),
                     )
                 }
@@ -152,8 +152,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.PLAY_STORE,
-                            context.getString(WebLink.PLAY_STORE.url),
+                            RemoteConfigKey.PLAY_STORE_URL,
+                            context.getString(R.string.play_store_url),
                         ),
                     )
                 }
@@ -162,8 +162,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.USER_OPINION_GOOGLE_FORM,
-                            context.getString(WebLink.USER_OPINION_GOOGLE_FORM.url),
+                            RemoteConfigKey.USER_OPINION_GOOGLE_FORM_URL,
+                            context.getString(R.string.user_opinion_google_form_url),
                         ),
                     )
                 }
@@ -172,8 +172,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM,
-                            context.getString(WebLink.RESEARCH_PARTICIPATION_GOOGLE_FORM.url),
+                            RemoteConfigKey.RESEARCH_PARTICIPATION_GOOGLE_FORM_URL,
+                            context.getString(R.string.research_participation_google_form_url),
                         ),
                     )
                 }
@@ -190,8 +190,8 @@ internal fun EntireScreen(
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
-                            WebLink.WESPOT_MAKERS,
-                            context.getString(WebLink.WESPOT_MAKERS.url),
+                            RemoteConfigKey.WESPOT_MAKERS_URL,
+                            context.getString(R.string.wespot_makers_url),
                         ),
                     )
                 }

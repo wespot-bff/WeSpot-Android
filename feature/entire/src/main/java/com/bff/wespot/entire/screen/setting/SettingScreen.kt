@@ -17,12 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.component.EntireListItem
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.WebLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -77,8 +77,8 @@ fun SettingScreen(
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
-                        WebLink.PRIVACY_POLICY,
-                        context.getString(WebLink.PRIVACY_POLICY.url),
+                        RemoteConfigKey.PRIVACY_POLICY_URL,
+                        context.getString(R.string.privacy_policy_url),
                     ),
                 )
             }
@@ -87,8 +87,8 @@ fun SettingScreen(
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
-                        WebLink.TERMS_OF_SERVICE,
-                        context.getString(WebLink.TERMS_OF_SERVICE.url),
+                        RemoteConfigKey.TERMS_OF_SERVICE_URL,
+                        context.getString(R.string.terms_of_service_url),
                     ),
                 )
             }
@@ -97,8 +97,8 @@ fun SettingScreen(
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
-                        WebLink.PLAY_STORE,
-                        context.getString(WebLink.PLAY_STORE.url),
+                        RemoteConfigKey.PLAY_STORE_URL,
+                        context.getString(R.string.play_store_url),
                     ),
                 )
             }
