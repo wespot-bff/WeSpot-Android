@@ -2,4 +2,5 @@
 <resources>
     <string name="notification">알림</string>
     <string name="notification_icon">Notification Icon</string>
+    <string name="already_message_reserved">이미 세 통의 쪽지를 예약했어요</string>
 </resources>
