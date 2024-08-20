@@ -83,7 +83,7 @@ fun RevokeScreen(
 
                 Column(
                     modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 134.dp)
+                        .padding(start = 20.dp, end = 20.dp, top = 141.dp)
                         .background(
                             color = WeSpotThemeManager.colors.modalColor,
                             shape = RoundedCornerShape(20.dp),
