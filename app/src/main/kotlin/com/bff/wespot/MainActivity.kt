@@ -56,19 +56,15 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.message.screen.MessageScreenArgs
-import com.bff.wespot.message.screen.destinations.MessageScreenDestination
-import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.viewmodel.MainViewModel
 import com.bff.wespot.util.clickableSingle
-import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -178,7 +174,10 @@ private fun MainScreen(
                             IconButton(
                                 modifier = Modifier.padding(end = 16.dp),
                                 onClick = {
-                                    navController.navigateToNavGraph(AppNavGraphs.notification)
+                                    navController.navigateToNavGraph(
+                                        navGraph =  AppNavGraphs.notification,
+                                        restoreState = false,
+                                    )
                                 },
                             ) {
                                 Icon(
@@ -225,7 +224,7 @@ private fun MainScreen(
             )
         }
 
-        navigateScreenFromNavArgs(navArgs, navController)
+        navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
     }
 
     TopToast(
@@ -352,34 +351,26 @@ private fun RowScope.TabItem(
     }
 }
 
-private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController: NavController) {
+private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: NotificationNavigator) {
     when (navArgs.type) {
         NotificationType.MESSAGE -> {
-            navController.navigate(
-                ReceiverSelectionScreenDestination(
-                    ReceiverSelectionScreenArgs(false),
-                ) within AppNavGraphs.message
-            )
+            navigator.navigateToReceiverSelectionScreen()
         }
 
         NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
-            navController.navigate(
-                MessageScreenDestination(
-                    MessageScreenArgs(
-                        type = navArgs.type,
-                        messageId = navArgs.targetId,
-                    ),
-                ) within AppNavGraphs.message
-            )
+            navigator.navigateToMessageScreen(type = navArgs.type, messageId = navArgs.targetId)
         }
 
         NotificationType.VOTE -> {
+            navigator.navigateToVotingScreen()
         }
 
         NotificationType.VOTE_RESULT -> {
+            navigator.navigateToVoteResultScreen()
         }
 
         NotificationType.VOTE_RECEIVED -> {
+            navigator.navigateToVoteStorageScreen()
         }
 
         NotificationType.IDLE -> {
@@ -387,10 +378,10 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController:
     }
 }
 
-private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
+private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec, restoreState: Boolean = true) {
     this.navigate(navGraph) {
         launchSingleTop = true
-        restoreState = true
+        this.restoreState = restoreState
 
         popUpTo(this@navigateToNavGraph.graph.findStartDestination().id) {
             saveState = true
