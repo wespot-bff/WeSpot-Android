@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,15 +59,23 @@ fun CompleteScreen(
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Column {
-            WSButton(onClick = {
-                navigator.navigateToSharing(context)
-            }, text = stringResource(id = R.string.invite_friend_and_start)) {
+            WSButton(
+                onClick = {
+                    navigator.navigateToSharing(context)
+                },
+                text = stringResource(id = R.string.invite_friend_and_start),
+                paddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+            ) {
                 it.invoke()
             }
 
-            WSOutlineButton(onClick = {
-                viewModel.onAction(AuthAction.Signup)
-            }, text = stringResource(id = R.string.start)) {
+            WSOutlineButton(
+                onClick = {
+                    viewModel.onAction(AuthAction.Signup)
+                },
+                text = stringResource(id = R.string.start),
+                paddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+            ) {
                 it.invoke()
             }
         }

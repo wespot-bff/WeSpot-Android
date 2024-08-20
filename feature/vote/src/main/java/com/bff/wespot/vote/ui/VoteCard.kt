@@ -134,7 +134,9 @@ internal fun VoteCard(
             ) {
                 if (result.voteCount == 0) {
                     Image(
-                        painter = painterResource(id = R.drawable.no_vote),
+                        painter = painterResource(
+                            id = com.bff.wespot.designsystem.R.drawable.question,
+                        ),
                         contentDescription = stringResource(
                             id = R.string.vote_ongoing,
                         ),
@@ -177,6 +179,7 @@ internal fun VoteCard(
                     Text(
                         text = stringResource(R.string.ask_friend),
                         style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
+                        maxLines = 1,
                     )
                 }
             } else if (onClick != null) {
@@ -188,6 +191,7 @@ internal fun VoteCard(
                     Text(
                         text = stringResource(R.string.check_overall_result),
                         style = StaticTypeScale.Default.body3.copy(fontSize = 16.sp * ratio),
+                        maxLines = 1,
                     )
                 }
             } else {

@@ -3,6 +3,8 @@ package com.bff.wespot
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
@@ -15,13 +17,13 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
+import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
+import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
-import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
-import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
@@ -29,8 +31,8 @@ import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestina
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.ToastState
-import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
 import com.bff.wespot.vote.screen.destinations.IntroductionScreenDestination
@@ -209,7 +211,12 @@ private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeIn()
     }
-    return fadeIn() + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start)
+    return fadeIn() + slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Start,
+        animationSpec = spring(
+            stiffness = Spring.StiffnessMediumLow,
+        ),
+    )
 }
 
 private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
@@ -221,7 +228,12 @@ private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeOut()
     }
-    return fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
+    return fadeOut() + slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.End,
+        animationSpec = spring(
+            stiffness = Spring.StiffnessMediumLow,
+        ),
+    )
 }
 
 private val NavDestination.hostNavGraph: NavGraph

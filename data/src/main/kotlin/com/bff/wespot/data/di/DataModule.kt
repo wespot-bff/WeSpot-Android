@@ -91,6 +91,8 @@ abstract class DataModule {
         profileRepositoryImpl: ProfileRepositoryImpl
     ): ProfileRepository
 
+    @Binds
+    @Singleton
     abstract fun bindsRemoteConfigRepository(
         remoteConfigRepositoryImpl: RemoteConfigRepositoryImpl
     ): RemoteConfigRepository

@@ -212,6 +212,7 @@ private fun VoteHomeContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f),
+                contentAlignment = Alignment.Center,
             ) {
                 val composition by rememberLottieComposition(
                     spec = LottieCompositionSpec.RawRes(

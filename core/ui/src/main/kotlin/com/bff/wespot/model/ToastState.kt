@@ -8,5 +8,6 @@ data class ToastState(
     @StringRes val message: Int,
     val type: WSToastType,
 ) {
-    constructor() : this(false, -1, WSToastType.Success)
+    constructor() :
+        this(false, com.bff.wespot.designsystem.R.string.cancel, WSToastType.Success)
 }
