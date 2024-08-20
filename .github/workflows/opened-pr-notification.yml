@@ -29,6 +29,15 @@ jobs:
           echo MOCK_BASE_URL=\"${{ secrets.MOCK_BASE_URL }}\" >> ./local.properties
           echo FACEBOOK_APP_ID=\"${{ secrets.FACEBOOK_APP_ID }}\" >> ./local.properties
           echo BASE_URL=\"${{ secrets.BASE_URL }}\" >> ./local.properties
+          echo SIGNED_STORE_PASSWORD=${{ secrets.SIGNED_STORE_PASSWORD }} >> ./local.properties
+          echo SIGNED_KEY_ALIAS=${{ secrets.SIGNED_KEY_ALIAS }} >> ./local.properties
+          echo SIGNED_KEY_PASSWORD=${{ secrets.SIGNED_KEY_PASSWORD }} >> ./local.properties
+
+      - name: add keystore
+        run: |
+          mkdir ./app/keystore
+          echo '${{ secrets.RELEASE_KEYSTORE }}' > ./app/keystore/keystore.b64
+          base64 -d -i ./app/keystore/keystore.b64 > ./app/keystore/release.keystore
 
       - name: add google-services.json
         run: |

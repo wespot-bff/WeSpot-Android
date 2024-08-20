@@ -8,6 +8,7 @@ import com.bff.wespot.BuildConfig
 import com.bff.wespot.common.CHANNEL_DESCRIPTION
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.common.CHANNEL_NAME
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -19,6 +20,8 @@ class WeSpotApplication : Application() {
         initialTimber()
         initKakaoSdk()
         initNotificationChannel()
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 
     private fun initNotificationChannel() {
