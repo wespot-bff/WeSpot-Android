@@ -78,7 +78,9 @@ internal fun EntireScreen(
                         modifier = Modifier
                             .clickable { navigator.navigateToSetting() }
                             .padding(end = 16.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_setting),
+                        imageVector = ImageVector.vectorResource(
+                            com.bff.wespot.designsystem.R.drawable.icn_settings,
+                        ),
                         contentDescription = stringResource(R.string.setting_icon),
                         tint = WeSpotThemeManager.colors.secondaryBtnColor,
                     )
@@ -118,7 +120,7 @@ internal fun EntireScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 20.dp, start = 4.dp, end = 4.dp),
+                    .padding(top = 20.dp),
             ) {
                 EntireListItem(text = stringResource(R.string.contact_channel)) {
                     activityNavigator.navigateToWebLink(
@@ -143,7 +145,7 @@ internal fun EntireScreen(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 12.dp, horizontal = 4.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
@@ -181,7 +183,7 @@ internal fun EntireScreen(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 12.dp, horizontal = 4.dp),
                     thickness = 1.dp,
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )

@@ -8,12 +8,12 @@
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2"
-      android:fillColor="#00000000"
+      android:fillColor="#76777D"
       android:strokeColor="#76777D"
       android:fillAlpha="0.8"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M21.728,30.5C21.552,30.803 21.299,31.055 20.996,31.229C20.692,31.404 20.348,31.497 19.998,31.497C19.647,31.497 19.303,31.404 18.999,31.229C18.696,31.055 18.443,30.803 18.268,30.5"
+      android:pathData="M21.727,30.5C21.552,30.803 21.299,31.055 20.996,31.229C20.692,31.404 20.348,31.497 19.997,31.497C19.647,31.497 19.303,31.404 18.999,31.229C18.695,31.055 18.443,30.803 18.267,30.5"
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2"

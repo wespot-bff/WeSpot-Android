@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.auth.R
@@ -39,6 +41,7 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.ui.ListBottomGradient
 import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -156,6 +159,9 @@ fun SchoolScreen(
                                 )
                             }
                         }
+                        item {
+                            Spacer(modifier = Modifier.height(70.dp))
+                        }
                     }
                 }
             }
@@ -165,7 +171,8 @@ fun SchoolScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding(),
+            .imePadding()
+            .zIndex(2f),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
@@ -187,6 +194,15 @@ fun SchoolScreen(
         ) {
             it()
         }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .zIndex(1f),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        ListBottomGradient(height = 120)
     }
 
     LaunchedEffect(focusRequester) {

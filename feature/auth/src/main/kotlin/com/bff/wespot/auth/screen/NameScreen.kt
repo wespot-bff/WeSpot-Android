@@ -101,7 +101,9 @@ fun NameScreen(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 if (state.hasProfanity) {
@@ -145,7 +147,7 @@ fun NameScreen(
                     R.string.next
                 },
             ),
-            enabled = state.name.length > 1 && error.not(),
+            enabled = state.name.length > 1 && error.not() && state.hasProfanity.not(),
         ) {
             it.invoke()
         }

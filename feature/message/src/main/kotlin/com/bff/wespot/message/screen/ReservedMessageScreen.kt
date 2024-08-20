@@ -1,7 +1,6 @@
 package com.bff.wespot.message.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,14 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.R.string
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -35,6 +32,7 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.ReservedMessageItem
+import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -107,20 +105,12 @@ fun ReservedMessageScreen(
         }
     }
 
-    if (showToast) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 8.dp),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            WSToast(
-                text = stringResource(id = R.string.edit_done),
-                toastType = WSToastType.Success,
-                showToast = showToast,
-                closeToast = { showToast = false },
-            )
-        }
+    TopToast(
+        message = stringResource(id = R.string.edit_done),
+        toastType = WSToastType.Success,
+        showToast = showToast,
+    ) {
+        showToast = false
     }
 
     LaunchedEffect(Unit) {

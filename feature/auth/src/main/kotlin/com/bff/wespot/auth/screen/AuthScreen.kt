@@ -2,6 +2,7 @@ package com.bff.wespot.auth.screen
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,34 +66,36 @@ fun AuthScreen(
                     AuthCarouselItem.entries[it].resId,
                 ),
             )
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(id = AuthCarouselItem.entries[it].background),
-                    contentDescription = stringResource(R.string.onboarding_background),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                )
+            Column {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        painter = painterResource(id = AuthCarouselItem.entries[it].background),
+                        contentDescription = stringResource(R.string.onboarding_background),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f),
+                    )
 
-                LottieAnimation(
-                    composition = composition,
-                    iterations = LottieConstants.IterateForever,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                )
+                    LottieAnimation(
+                        composition = composition,
+                        iterations = LottieConstants.IterateForever,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f),
+                    )
+                }
+
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(id = AuthCarouselItem.entries[it].title),
+                        style = StaticTypeScale.Default.body2,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                    )
+                }
             }
-        }
-
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text(
-                text = stringResource(R.string.onboarding1),
-                style = StaticTypeScale.Default.body2,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 6.dp),
-            )
         }
 
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -136,8 +139,9 @@ fun AuthScreen(
 private enum class AuthCarouselItem(
     @RawRes val resId: Int,
     @DrawableRes val background: Int,
+    @StringRes val title: Int,
 ) {
-    FIRST(R.raw.onboarding01, R.drawable.onboarding_01_bkg),
-    SignUp(R.raw.onboarding02, R.drawable.onboarding_02_bkg),
-    Welcome(R.raw.onboarding03, R.drawable.onboarding_03_bkg),
+    FIRST(R.raw.onboarding01, R.drawable.onboarding_01_bkg, R.string.onboarding1),
+    SignUp(R.raw.onboarding02, R.drawable.onboarding_02_bkg, R.string.onboarding2),
+    Welcome(R.raw.onboarding03, R.drawable.onboarding_03_bkg, R.string.onboarding3),
 }

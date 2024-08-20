@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -41,13 +39,13 @@ import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.ReportBottomSheet
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
@@ -145,7 +143,7 @@ fun VotingScreen(
         if (state.loading && showGuideScreen) {
             return@Scaffold
         } else if (showGuideScreen) {
-            VotingGuideScreen(it)
+            VotingGuideScreen(it, navigator)
         } else {
             VotingProgressScreen(
                 state = state,
@@ -158,15 +156,12 @@ fun VotingScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 8.dp),
-        contentAlignment = Alignment.TopCenter,
+    TopToast(
+        message = toastMessage,
+        toastType = WSToastType.Success,
+        showToast = toast,
     ) {
-        WSToast(text = toastMessage, toastType = WSToastType.Success, showToast = toast) {
-            toast = false
-        }
+        toast = false
     }
 
     if (state.loading) {
@@ -320,31 +315,36 @@ private fun VotingProgressScreen(
 }
 
 @Composable
-private fun VotingGuideScreen(paddingValues: PaddingValues) {
+private fun VotingGuideScreen(
+    paddingValues: PaddingValues,
+    navigator: Navigator,
+) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
             text = stringResource(R.string.guide_title),
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(horizontal = 24.dp),
         )
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.guide_image),
-                contentDescription = stringResource(
-                    id = R.string.vote,
-                ),
-                modifier = Modifier
-                    .width(261.dp)
-                    .height(201.dp),
-            )
-        }
-
-        WSButton(onClick = { }, text = stringResource(R.string.invite_friend_vote)) {
+        Image(
+            painter = painterResource(id = R.drawable.no_friends),
+            contentDescription = stringResource(
+                id = R.string.vote,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+        )
+    }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        WSButton(onClick = {
+            navigator.navigateToSharing(context)
+        }, text = stringResource(R.string.invite_friend_vote)) {
             it.invoke()
         }
     }

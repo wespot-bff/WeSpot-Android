@@ -30,4 +30,6 @@ interface Navigator {
     )
 
     fun navigateToWebLink(context: Context, webLink: String)
+
+    fun redirectToPlayStoreForInstagram(context: Context)
 }

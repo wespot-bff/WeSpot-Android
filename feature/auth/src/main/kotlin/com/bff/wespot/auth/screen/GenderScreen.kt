@@ -77,7 +77,7 @@ fun GenderScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 GenderBox(
-                    title = stringResource(id = R.string.male_student),
+                    title = stringResource(id = com.bff.wespot.designsystem.R.string.male_student),
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.male_student,
                     ),
@@ -92,7 +92,7 @@ fun GenderScreen(
                     },
                 )
                 GenderBox(
-                    title = stringResource(id = R.string.female_student),
+                    title = stringResource(id = com.bff.wespot.designsystem.R.string.female_student),
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.female_student,
                     ),

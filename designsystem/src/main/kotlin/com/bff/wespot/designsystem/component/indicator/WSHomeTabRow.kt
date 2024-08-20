@@ -1,8 +1,10 @@
 package com.bff.wespot.designsystem.component.indicator
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -43,6 +45,9 @@ fun WSHomeTabRow(
                 color = WeSpotThemeManager.colors.abledTxtColor,
             )
         },
+        divider = {
+            HorizontalDivider(color = WeSpotThemeManager.colors.tertiaryBtnColor)
+        },
     ) {
         tabList.forEachIndexed { index, tab ->
             val selected = selectedTabIndex == index
@@ -50,8 +55,7 @@ fun WSHomeTabRow(
                 selected = selected,
                 onClick = { onTabSelected(index) },
                 modifier = Modifier
-                    .padding(vertical = 11.dp)
-                    .padding(horizontal = 20.dp),
+                    .padding(vertical = 11.dp),
             ) {
                 Text(
                     text = tab,
@@ -61,6 +65,13 @@ fun WSHomeTabRow(
                     } else {
                         WeSpotThemeManager.colors.disableIcnColor
                     },
+                    modifier = Modifier.padding(
+                        if (index == 0) {
+                            PaddingValues(start = 20.dp)
+                        } else {
+                            PaddingValues(end = 20.dp)
+                        },
+                    ),
                 )
             }
         }

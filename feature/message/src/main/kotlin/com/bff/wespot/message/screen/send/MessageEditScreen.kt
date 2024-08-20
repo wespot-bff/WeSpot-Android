@@ -30,7 +30,6 @@ import com.bff.wespot.designsystem.component.button.HeightRange
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.component.toggle.WSSwitch
@@ -46,6 +45,7 @@ import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -261,15 +261,12 @@ fun MessageEditScreen(
         }
     }
 
-    if (toast) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(R.string.toast_error_name_edit),
-                toastType = WSToastType.Error,
-                showToast = toast,
-                closeToast = { toast = false },
-            )
-        }
+    TopToast(
+        message = stringResource(R.string.toast_error_name_edit),
+        toastType = WSToastType.Error,
+        showToast = toast,
+    ) {
+        toast = false
     }
 
     LaunchedEffect(Unit) {

@@ -1,21 +1,23 @@
 package com.bff.wespot.ui
 
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.FileProvider
 import androidx.core.view.drawToBitmap
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 
 @Composable
 fun CaptureBitmap(
@@ -35,7 +37,13 @@ fun CaptureBitmap(
         factory = {
             composeView.apply {
                 setContent {
-                    content.invoke()
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .background(WeSpotThemeManager.colors.backgroundColor),
+                    ) {
+                        content.invoke()
+                    }
                 }
             }
         },
@@ -44,25 +52,31 @@ fun CaptureBitmap(
     return ::captureBitmap
 }
 
-suspend fun saveImage(image: Bitmap, context: Context): Uri? =
-    withContext(Dispatchers.IO) {
-        val imagesFolder = File(context.cacheDir, "images")
-        var uri: Uri? = null
+fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILENAME): Uri? {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
 
-        try {
-            imagesFolder.mkdirs()
-            val file = File(imagesFolder, "shared_image.png")
-            FileOutputStream(file).use { stream ->
-                if (image.compress(Bitmap.CompressFormat.PNG, 90, stream)) {
-                    stream.flush()
-                    uri = FileProvider.getUriForFile(context, "com.bff.wespot.fileProvider", file)
-                } else {
-                    Timber.e("Error", "Image compression failed")
-                }
-            }
-        } catch (e: IOException) {
-            Timber.e("Error", "IOException while trying to write file for sharing: ${e.message}")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
         }
-
-        uri
     }
+
+    val contentResolver = context.contentResolver
+
+    val imageUri: Uri? = contentResolver.insert(
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        contentValues,
+    )
+
+    return imageUri.also {
+        val fileOutputStream = imageUri?.let { contentResolver.openOutputStream(it) }
+        if (fileOutputStream != null) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+        }
+        fileOutputStream?.close()
+    }
+}
+
+@JvmField
+val DEFAULT_FILENAME = "${System.currentTimeMillis()}.png"

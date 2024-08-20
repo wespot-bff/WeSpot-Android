@@ -12,11 +12,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,7 +53,6 @@ import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -65,8 +64,10 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.viewmodel.MainViewModel
+import com.bff.wespot.util.clickableSingle
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -167,7 +168,7 @@ private fun MainScreen(
                                 modifier = Modifier
                                     .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
                                     .size(width = 112.dp, height = 44.dp),
-                                painter = painterResource(id = R.drawable.logo),
+                                painter = painterResource(id = R.drawable.main_logo),
                                 contentDescription = stringResource(
                                     id = com.bff.wespot.message.R.string.wespot_logo,
                                 ),
@@ -175,13 +176,13 @@ private fun MainScreen(
                         },
                         action = {
                             IconButton(
-                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, end = 4.dp),
+                                modifier = Modifier.padding(end = 16.dp),
                                 onClick = {
                                     navController.navigateToNavGraph(AppNavGraphs.notification)
                                 },
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.notification),
+                                    painter = painterResource(id = R.drawable.icn_alarm),
                                     contentDescription = stringResource(
                                         id = com.bff.wespot.message.R.string.notification_icon,
                                     ),
@@ -227,17 +228,12 @@ private fun MainScreen(
         navigateScreenFromNavArgs(navArgs, navController)
     }
 
-    if (toast.show) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-            WSToast(
-                text = stringResource(toast.message),
-                showToast = toast.show,
-                toastType = toast.type,
-                closeToast = {
-                    toast = toast.copy(show = false)
-                },
-            )
-        }
+    TopToast(
+        message = stringResource(toast.message),
+        toastType = toast.type,
+        showToast = toast.show
+    ) {
+        toast = toast.copy(show = false)
     }
 
     LaunchedEffect(Unit) {
@@ -316,7 +312,7 @@ private fun NavController.checkCurrentScreen(position: NavigationBarPosition): S
 }
 
 @Composable
-private fun TabItem(
+private fun RowScope.TabItem(
     icon: Painter,
     emptyIcon: Painter,
     title: String,
@@ -327,14 +323,15 @@ private fun TabItem(
     Box(
         modifier = Modifier
             .size(80.dp)
-            .clickable { onClick.invoke() },
+            .weight(1f)
+            .clickableSingle { onClick.invoke() },
         contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = if(selected) {
+                painter = if (selected) {
                     icon
                 } else {
                     emptyIcon

@@ -94,18 +94,13 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val intent = Intent("com.instagram.share.ADD_TO_STORY")
             .apply {
                 setDataAndType(null, "image/*")
+                setPackage("com.instagram.android")
             }
-        if (intent.resolveActivity(context.packageManager) == null) {
-            redirectToPlayStoreForInstagram(context)
-        }
-
-        intent.apply {
+        return intent.apply {
             putExtra("source_application", BuildConfig.FACEBOOK_APP_ID)
             setDataAndType(file, "image/jpeg")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-
-        return intent
     }
 
     override fun navigateToWebLink(context: Context, webLink: String) {
@@ -155,7 +150,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
         }
     }
 
-    private fun redirectToPlayStoreForInstagram(context: Context) {
+    override fun redirectToPlayStoreForInstagram(context: Context) {
         val appStoreIntent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"),
