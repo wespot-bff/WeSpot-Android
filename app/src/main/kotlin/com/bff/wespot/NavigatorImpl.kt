@@ -115,8 +115,8 @@ class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToKakao(
         context: Context,
         title: String,
-        imageUrl: String,
         description: String,
+        imageUrl: String,
         buttonText: String,
         url: String,
     ) {

@@ -15,6 +15,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.auth.screen.AuthNavGraph
 import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
@@ -28,6 +30,7 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.indicator.WSToastType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
@@ -57,15 +60,23 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val toastMessage = intent.getStringExtra(EXTRA_TOAST_MESSAGE)
-        login()
 
         setContent {
+            var showDialog by remember {
+                mutableStateOf(false)
+            }
+            val context = LocalContext.current
+
             val navController = rememberNavController()
             val engine = rememberNavHostEngine()
             var showToast by remember { mutableStateOf(true) }
 
             val state by viewModel.collectAsState()
             val action = viewModel::onAction
+
+            login {
+                showDialog = true
+            }
 
             viewModel.collectSideEffect {
                 when (it) {
@@ -136,16 +147,36 @@ class AuthActivity : ComponentActivity() {
                         showToast = false
                     }
                 }
-            }
+                if (state.loading) {
+                    LoadingAnimation()
+                }
 
-            if (state.loading) {
-                LoadingAnimation()
+                if (showDialog) {
+                    WSDialog(
+                        title = stringResource(R.string.new_version),
+                        subTitle = stringResource(R.string.update_to_new_version),
+                        okButtonText = stringResource(R.string.update),
+                        cancelButtonText = stringResource(R.string.cancel),
+                        okButtonClick = {
+                            navigator.navigateToWebLink(context, state.playStoreLink)
+                        },
+                        cancelButtonClick = {
+                            finish()
+                        },
+                        onDismissRequest = {},
+                    )
+                }
             }
         }
     }
 
-    private fun login() {
-        viewModel.onAction(AuthAction.AutoLogin)
+    private fun login(
+        showUpdateDialog: () -> Unit,
+    ) {
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val versionCode = packageInfo.versionName
+
+        viewModel.onAction(AuthAction.AutoLogin(versionCode))
         viewModel.loginState.observe(this) {
             loginState = it
         }
@@ -166,7 +197,10 @@ class AuthActivity : ComponentActivity() {
                             type = Pair(EXTRA_TYPE, type),
                         )
                         startActivity(intent)
+                    } else if (loginState == LoginState.FORCE_UPDATE) {
+                        showUpdateDialog()
                     }
+
                     content.viewTreeObserver.removeOnPreDrawListener(this)
                     true
                 } else {
