@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -62,21 +63,29 @@ fun NotificationScreen(
             )
         },
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
-        ) {
-            items(
-                count = pagingData.itemCount,
-                key = { index -> pagingData[index]?.id ?: index },
-            ) { index ->
-                val item = pagingData[index]
+        when (pagingData.loadState.refresh) {
+            is LoadState.Error -> {
+                // TODO: Handle error
+            }
 
-                item?.let {
-                    NotificationListItem(
-                        isFirstItem = index == 0,
-                        notification = item,
-                    ) {
-                        action(NotificationAction.OnNotificationClicked(item))
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.padding(it),
+                ) {
+                    items(
+                        count = pagingData.itemCount,
+                        key = { index -> pagingData[index]?.id ?: index },
+                    ) { index ->
+                        val item = pagingData[index]
+
+                        item?.let {
+                            NotificationListItem(
+                                isFirstItem = index == 0,
+                                notification = item,
+                            ) {
+                                action(NotificationAction.OnNotificationClicked(item))
+                            }
+                        }
                     }
                 }
             }
