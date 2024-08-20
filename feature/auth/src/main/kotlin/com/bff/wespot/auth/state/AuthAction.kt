@@ -21,7 +21,7 @@ sealed class AuthAction {
 
     data object Signup : AuthAction()
 
-    data object AutoLogin : AuthAction()
+    data class AutoLogin(val versionCode: String) : AuthAction()
 
     data object OnStartSchoolScreen : AuthAction()
 

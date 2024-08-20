@@ -5,4 +5,7 @@
     <string name="onboarding3">매일 저녁 딱 세 통만 보낼 수 있는\n비밀 쪽지로 마음을 표현해 볼까요?</string>
     <string name="onboarding_background">온보딩 배경</string>
     <string name="register_done">회원가입 완료</string>
+    <string name="new_version">세로운 버전 출시</string>
+    <string name="update_to_new_version">업데이트를 하고 새로운 기능을 만나보세요.</string>
+    <string name="update">업데이트</string>
 </resources>
