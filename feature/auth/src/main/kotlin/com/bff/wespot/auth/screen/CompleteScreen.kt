@@ -43,7 +43,6 @@ fun CompleteScreen(
 
     val state by viewModel.collectAsState()
 
-
     val activity = (LocalContext.current as? Activity)
     val context = LocalContext.current
 

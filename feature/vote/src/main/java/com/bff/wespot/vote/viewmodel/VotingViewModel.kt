@@ -32,9 +32,11 @@ class VotingViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
-    override val container = container<VotingUiState, VotingSideEffect>(VotingUiState(
-        playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL)
-    ))
+    override val container = container<VotingUiState, VotingSideEffect>(
+        VotingUiState(
+            playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
+        ),
+    )
 
     fun onAction(action: VotingAction) {
         when (action) {

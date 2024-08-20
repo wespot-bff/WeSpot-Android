@@ -227,7 +227,7 @@ fun IndividualVoteScreen(
     TopToast(
         message = stringResource(R.string.next_update),
         toastType = WSToastType.Error,
-        showToast = showToast
+        showToast = showToast,
     ) {
         showToast = false
     }

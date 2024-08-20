@@ -47,15 +47,15 @@ class AuthViewModel @Inject constructor(
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
             termsOfServiceLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.TERMS_OF_SERVICE_URL),
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.TERMS_OF_SERVICE_URL),
             privacyPolicyLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PRIVACY_POLICY_URL),
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PRIVACY_POLICY_URL),
             schoolForm = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.SCHOOL_FORM),
             marketingLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MARKETING_SERVICE_TERM),
-        )
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MARKETING_SERVICE_TERM),
+        ),
     )
 
     private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()

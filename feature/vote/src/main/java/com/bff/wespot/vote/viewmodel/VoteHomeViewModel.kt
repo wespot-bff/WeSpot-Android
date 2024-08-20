@@ -42,8 +42,8 @@ class VoteHomeViewModel @Inject constructor(
 ) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(
         VoteUiState(
-            playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL)
-        )
+            playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
+        ),
     )
 
     private val _currentDate = MutableStateFlow(LocalDate.now().toDateTimeString())

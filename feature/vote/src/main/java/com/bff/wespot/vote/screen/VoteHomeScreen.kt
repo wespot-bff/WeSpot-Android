@@ -335,7 +335,7 @@ private fun CardResultContent(
                                     url = state.kakaoContent.url,
                                 )
                             }
-                        }
+                        },
                     )
                 } else {
                     VoteCard(
