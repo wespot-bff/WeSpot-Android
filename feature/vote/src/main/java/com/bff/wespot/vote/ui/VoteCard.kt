@@ -57,6 +57,7 @@ internal fun VoteCard(
     question: String,
     pagerState: PagerState = rememberPagerState { 0 },
     page: Int,
+    navigateToShare: () -> Unit = {},
     onClick: (() -> Unit)? = null,
 ) {
     val height = LocalConfiguration.current.screenHeightDp.dp
@@ -172,7 +173,9 @@ internal fun VoteCard(
             }
             if (result.voteCount == 0) {
                 WSButton(
-                    onClick = {},
+                    onClick = {
+                        navigateToShare.invoke()
+                    },
                     buttonType = WSButtonType.Secondary,
                     paddingValues = PaddingValues(horizontal = 60.dp, vertical = 24.dp * ratio),
                 ) {

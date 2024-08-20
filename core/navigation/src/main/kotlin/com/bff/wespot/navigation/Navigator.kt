@@ -19,7 +19,7 @@ interface Navigator {
         file: Uri,
     ): Intent
 
-    fun navigateToSharing(context: Context)
+    fun navigateToSharing(context: Context, text: String)
 
     fun navigateToKakao(
         context: Context,

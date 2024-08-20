@@ -277,7 +277,14 @@ fun VoteResultScreen(
                         WSButton(
                             enabled = state.isLoading.not(),
                             onClick = {
-                                navigator.navigateToSharing(context)
+                                navigator.navigateToKakao(
+                                    context,
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                )
                             },
                             paddingValues = PaddingValues(
                                 end = 87.dp,

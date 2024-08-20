@@ -7,4 +7,5 @@ data class VoteUiState(
     val isLoading: Boolean = false,
     val selectedTabIndex: Int = 0,
     val showSettingDialog: Boolean = false,
+    val playStoreLink: String,
 )

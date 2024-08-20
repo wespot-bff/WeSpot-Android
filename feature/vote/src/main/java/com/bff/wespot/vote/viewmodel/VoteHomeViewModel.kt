@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.util.toDateTimeString
 import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -33,8 +35,11 @@ class VoteHomeViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val voteRepository: VoteRepository,
     private val dataStoreRepository: DataStoreRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
-    override val container = container<VoteUiState, VoteSideEffect>(VoteUiState())
+    override val container = container<VoteUiState, VoteSideEffect>(VoteUiState(
+        playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL)
+    ))
 
     private val _currentDate = MutableStateFlow(LocalDate.now().toDateTimeString())
     val currentDate: StateFlow<String> = _currentDate.asStateFlow()

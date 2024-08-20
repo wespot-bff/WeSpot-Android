@@ -36,8 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.bff.wespot.analytic.LocalAnalyticsHelper
-import com.bff.wespot.analytic.buttonClick
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -104,7 +102,8 @@ internal fun VoteHomeScreen(
                     RESULT_SCREEN -> CardResultContent(
                         state = state,
                         action = viewModel::onAction,
-                        navigator = voteNavigator,
+                        voteNavigator = voteNavigator,
+                        navigator = navigator,
                     )
                 }
             }
@@ -183,7 +182,10 @@ private fun VoteHomeContent(
     voteNavigator: VoteNavigator,
     navigator: Navigator,
 ) {
-    val analyticsHelper = LocalAnalyticsHelper.current
+    val state by viewModel.collectAsState()
+    val context = LocalContext.current
+
+    val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
     Column(
         modifier = Modifier
@@ -197,8 +199,7 @@ private fun VoteHomeContent(
             subTitle = stringResource(id = R.string.invite_friend_description),
             bannerType = WSBannerType.Primary,
             onBannerClick = {
-                analyticsHelper.buttonClick("vote_home", "invite_friend")
-                navigator.navigateToSharing(context)
+                navigator.navigateToSharing(context, message + state.playStoreLink)
             },
         )
 
@@ -283,9 +284,11 @@ private fun VoteHomeContent(
 private fun CardResultContent(
     state: VoteUiState,
     action: (VoteAction) -> Unit,
-    navigator: VoteNavigator,
+    voteNavigator: VoteNavigator,
+    navigator: Navigator,
 ) {
     val pagerState = rememberPagerState { state.voteResults.size }
+    val context = LocalContext.current
 
     Image(
         painter = painterResource(id = R.drawable.vote_background),
@@ -319,6 +322,16 @@ private fun CardResultContent(
                         question = state.voteResults[it].voteOption.content,
                         page = it,
                         onClick = {},
+                        navigateToShare = {
+                            navigator.navigateToKakao(
+                                context = context,
+                                title = "",
+                                description = "",
+                                imageUrl = "",
+                                buttonText = "",
+                                url = "",
+                            )
+                        }
                     )
                 } else {
                     VoteCard(
@@ -327,7 +340,7 @@ private fun CardResultContent(
                         pagerState = pagerState,
                         page = it,
                         onClick = {
-                            navigator.navigateToVoteResultScreen(
+                            voteNavigator.navigateToVoteResultScreen(
                                 VoteResultScreenArgs(false),
                             )
                         },
@@ -343,7 +356,7 @@ private fun CardResultContent(
             Spacer(modifier = Modifier.height(10.dp))
 
             WSButton(onClick = {
-                navigator.navigateToVoteStorageScreen()
+                voteNavigator.navigateToVoteStorageScreen()
             }, text = stringResource(R.string.check_my_vote)) {
                 it.invoke()
             }

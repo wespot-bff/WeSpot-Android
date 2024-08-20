@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
@@ -28,8 +30,11 @@ class VotingViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val commonRepository: CommonRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
-    override val container = container<VotingUiState, VotingSideEffect>(VotingUiState())
+    override val container = container<VotingUiState, VotingSideEffect>(VotingUiState(
+        playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL)
+    ))
 
     fun onAction(action: VotingAction) {
         when (action) {
