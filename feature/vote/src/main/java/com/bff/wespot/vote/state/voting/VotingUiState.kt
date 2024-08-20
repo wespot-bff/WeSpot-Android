@@ -11,4 +11,5 @@ data class VotingUiState(
     val selectedVote: List<VoteResultUpload> = emptyList(),
     val start: Boolean = true,
     val loading: Boolean = false,
+    val playStoreLink: String,
 )

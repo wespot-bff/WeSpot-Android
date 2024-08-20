@@ -48,4 +48,6 @@
     <string name="auto_select">선택하셨던 캐릭터와 배경색은 저장되지 않으며\n기본 캐릭터와 배경색으로 자동 설정됩니다</string>
     <string name="yes_stop">네 중단할래요</string>
     <string name="analysis_result">우리 반 투표 결과를 분석하고 있어요</string>
+    <string name="next_update">나중에 추가될 기능이에요</string>
+    <string name="who_send">누가 보냈는지 궁금해요</string>
 </resources>

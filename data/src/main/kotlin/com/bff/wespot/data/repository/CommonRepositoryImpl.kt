@@ -8,6 +8,7 @@ import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
+import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.ReportType
 import javax.inject.Inject
 
@@ -42,4 +43,8 @@ class CommonRepositoryImpl @Inject constructor(
                 )
             )
         )
+
+    override suspend fun getKakaoContent(type: String): Result<KakaoContent> =
+        commonDataSource.getKakaoContent(type)
+            .mapCatching { it.toKakaoContent() }
 }

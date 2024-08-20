@@ -69,6 +69,7 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
@@ -277,7 +278,16 @@ fun VoteResultScreen(
                         WSButton(
                             enabled = state.isLoading.not(),
                             onClick = {
-                                navigator.navigateToSharing(context)
+                                if (state.kakaoContent != KakaoContent.EMPTY) {
+                                    navigator.navigateToKakao(
+                                        context,
+                                        state.kakaoContent.title,
+                                        state.kakaoContent.description,
+                                        state.kakaoContent.imageUrl,
+                                        state.kakaoContent.buttonText,
+                                        state.kakaoContent.url,
+                                    )
+                                }
                             },
                             paddingValues = PaddingValues(
                                 end = 87.dp,
@@ -364,6 +374,7 @@ fun VoteResultScreen(
         if (state.isVoting) {
             action(ResultAction.GetOnBoarding)
         }
+        action(ResultAction.GetKakaoContent)
     }
 
     BackHandler {

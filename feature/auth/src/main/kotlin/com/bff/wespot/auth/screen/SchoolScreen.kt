@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +42,7 @@ import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.ListBottomGradient
 import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
@@ -53,12 +55,14 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun SchoolScreen(
     edit: Boolean,
     viewModel: AuthViewModel,
+    navigator: Navigator,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val context = LocalContext.current
 
     val pagingData = state.schoolList.collectAsLazyPagingItems()
 
@@ -115,7 +119,12 @@ fun SchoolScreen(
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     WSTextButton(
                         text = stringResource(id = R.string.no_school_found),
-                        onClick = { },
+                        onClick = {
+                            navigator.navigateToWebLink(
+                                context = context,
+                                webLink = state.schoolForm,
+                            )
+                        },
                         buttonType = WSTextButtonType.Underline,
                     )
                 }
