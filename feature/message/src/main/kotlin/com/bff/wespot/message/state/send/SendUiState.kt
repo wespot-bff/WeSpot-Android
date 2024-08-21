@@ -17,4 +17,5 @@ data class SendUiState(
     val isReservedMessage: Boolean = false,
     val messageId: Int = -1,
     val isLoading: Boolean = false,
+    val messageSendFailedDialogContent: String = "",
 )
