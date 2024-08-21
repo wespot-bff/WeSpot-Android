@@ -64,14 +64,15 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
-import com.bff.wespot.viewmodel.MainViewModel
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.clickableSingle
+import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
+import org.orbitmvi.orbit.compose.collectAsState
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -143,6 +144,7 @@ private fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val action = viewModel::onAction
+    val uiState by viewModel.collectAsState()
 
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
@@ -214,6 +216,7 @@ private fun MainScreen(
             }
         },
     ) {
+        analyticsHelper.updateUserId(uiState.userId)
         CompositionLocalProvider(
             LocalAnalyticsHelper provides analyticsHelper,
         ) {
