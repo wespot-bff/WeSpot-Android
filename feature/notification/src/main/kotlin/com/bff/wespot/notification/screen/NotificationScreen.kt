@@ -39,13 +39,13 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.R
-import com.bff.wespot.notification.common.checkMessageSentTime
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
+import java.time.LocalTime
 
 interface NotificationNavigator {
     fun navigateUp()
@@ -236,4 +236,12 @@ fun NotificationListItem(
             color = WeSpotThemeManager.colors.cardBackgroundColor,
         )
     }
+}
+
+internal fun checkMessageSentTime(): Boolean {
+    val currentTime = LocalTime.now()
+    val eveningStartTime = LocalTime.of(17, 0)
+    val nightStartTime = LocalTime.of(22, 0)
+
+    return currentTime >= eveningStartTime && currentTime < nightStartTime
 }
