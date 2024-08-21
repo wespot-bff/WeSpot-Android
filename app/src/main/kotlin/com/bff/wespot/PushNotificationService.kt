@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -65,7 +66,13 @@ class PushNotificationService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setSmallIcon(R.mipmap.ic_notification)
+            .setColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.ic_launcher_background,
+                )
+            )
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(true)
