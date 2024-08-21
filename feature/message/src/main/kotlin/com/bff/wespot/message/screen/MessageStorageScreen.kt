@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -36,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.paging.LoadState
@@ -400,9 +400,7 @@ private fun MessageContentDialog(
             ) {
                 MessageDialogText("To.\n" + message.receiver)
 
-                MessageDialogText(message.content)
-
-                Spacer(modifier = Modifier.weight(1f))
+                MessageDialogText(message.content, Modifier.weight(1f))
 
                 MessageDialogText(
                     text = "From.\n" + message.sender,
@@ -427,12 +425,17 @@ private fun MessageContentDialog(
 }
 
 @Composable
-private fun MessageDialogText(text: String, textAlign: TextAlign = TextAlign.Start) {
+private fun MessageDialogText(
+    text: String,
+    modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start,
+) {
     Text(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         text = text,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
+        overflow = TextOverflow.Ellipsis,
         textAlign = textAlign,
     )
 }
