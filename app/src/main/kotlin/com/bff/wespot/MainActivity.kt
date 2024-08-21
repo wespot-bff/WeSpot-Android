@@ -60,6 +60,9 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
+import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
@@ -112,9 +115,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs {
-        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
-        val date = intent.getStringExtra("date") ?: ""
-        val type = intent.getStringExtra("type") ?: ""
+        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
+        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
 
         return MainScreenNavArgs(
             targetId = targetId,
@@ -176,7 +179,6 @@ private fun MainScreen(
                                 onClick = {
                                     navController.navigateToNavGraph(
                                         navGraph =  AppNavGraphs.notification,
-                                        restoreState = false,
                                     )
                                 },
                             ) {
@@ -378,12 +380,16 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: Not
     }
 }
 
-private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec, restoreState: Boolean = true) {
+private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
     this.navigate(navGraph) {
         launchSingleTop = true
-        this.restoreState = restoreState
+        restoreState = when (navGraph.route) {
+            AppNavGraphs.message.route,
+            AppNavGraphs.notification.route -> false
+            else -> true
+        }
 
-        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id) {
+        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id ) {
             saveState = true
         }
     }
