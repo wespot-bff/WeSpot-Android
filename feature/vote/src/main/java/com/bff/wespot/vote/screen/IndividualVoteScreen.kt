@@ -35,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -78,6 +80,8 @@ fun IndividualVoteScreen(
 ) {
     val individual by viewModel.individual.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    val analyticsHelper = LocalAnalyticsHelper.current
 
     var showToast by remember { mutableStateOf(false) }
 
@@ -231,4 +235,6 @@ fun IndividualVoteScreen(
     ) {
         showToast = false
     }
+
+    TrackScreenViewEvent(screenName = "receive_vote_screen")
 }
