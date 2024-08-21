@@ -12,4 +12,5 @@ data class VotingUiState(
     val start: Boolean = true,
     val loading: Boolean = false,
     val playStoreLink: String,
+    val addQuestionLink: String,
 )

@@ -80,6 +80,8 @@ fun VotingScreen(
     val action = viewModel::onAction
     val analyticsHelper = LocalAnalyticsHelper.current
 
+    val context = LocalContext.current
+
     analyticsHelper.logEvent(
         AnalyticsEvent(
             type = "vote_screen_view",
@@ -212,6 +214,10 @@ fun VotingScreen(
                 showReportDialog = false
             },
             cancelButtonClick = {
+                navigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.addQuestionLink,
+                )
                 showReportDialog = false
             },
         ) {

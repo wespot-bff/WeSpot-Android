@@ -35,6 +35,8 @@ class VotingViewModel @Inject constructor(
     override val container = container<VotingUiState, VotingSideEffect>(
         VotingUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
+            addQuestionLink =
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL),
         ),
     )
 
