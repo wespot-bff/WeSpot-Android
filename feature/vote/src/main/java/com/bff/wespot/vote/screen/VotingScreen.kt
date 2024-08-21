@@ -85,8 +85,8 @@ fun VotingScreen(
             type = "vote_screen_view",
             extras = listOf(
                 Param("screen_name", "vote_screen"),
-            )
-        )
+            ),
+        ),
     )
 
     var submitButton by remember { mutableStateOf(false) }
@@ -366,8 +366,8 @@ private fun VotingGuideScreen(
                     extras = listOf(
                         Param("screen_name", "vote_empty_screen"),
                         Param("invite_clicked", "true"),
-                    )
-                )
+                    ),
+                ),
             )
 
             val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)

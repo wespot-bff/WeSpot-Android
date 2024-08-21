@@ -95,8 +95,8 @@ fun CompleteScreen(
                             extras = listOf(
                                 Param("screen_name", "complete_sign_up"),
                                 Param("invite_clicked", inviteClicked.toString()),
-                            )
-                        )
+                            ),
+                        ),
                     )
                     viewModel.onAction(AuthAction.Signup)
                 },

@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.analytic.DebugAnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.auth.screen.AuthNavGraph
 import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
@@ -51,7 +50,6 @@ import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
