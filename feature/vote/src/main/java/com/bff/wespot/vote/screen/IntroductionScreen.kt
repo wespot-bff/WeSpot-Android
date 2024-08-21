@@ -73,7 +73,7 @@ fun IntroductionScreen(
     ) {
         Box(modifier = Modifier.padding(it)) {
             com.bff.wespot.ui.IntroductionScreen(
-                name = "",
+                name = stringResource(R.string.write_introduction_for_friends, state.name),
                 introduction = state.introduction,
                 onTextChange = {
                     action(ProfileAction.UpdateIntroduction(introduction = it))
