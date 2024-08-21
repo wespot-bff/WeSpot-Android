@@ -80,6 +80,15 @@ fun VotingScreen(
     val action = viewModel::onAction
     val analyticsHelper = LocalAnalyticsHelper.current
 
+    analyticsHelper.logEvent(
+        AnalyticsEvent(
+            type = "vote_screen_view",
+            extras = listOf(
+                Param("screen_name", "vote_screen"),
+            )
+        )
+    )
+
     var submitButton by remember { mutableStateOf(false) }
 
     var toast by remember {
@@ -351,9 +360,6 @@ private fun VotingGuideScreen(
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(onClick = {
-            val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
-            navigator.navigateToSharing(context, message + state.playStoreLink)
-        }, text = stringResource(R.string.invite_friend_vote)) {
             analyticsHelper.logEvent(
                 AnalyticsEvent(
                     type = "empty_vote_invite_friend",
@@ -363,6 +369,10 @@ private fun VotingGuideScreen(
                     )
                 )
             )
+
+            val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
+            navigator.navigateToSharing(context, message + state.playStoreLink)
+        }, text = stringResource(R.string.invite_friend_vote)) {
             it.invoke()
         }
     }
