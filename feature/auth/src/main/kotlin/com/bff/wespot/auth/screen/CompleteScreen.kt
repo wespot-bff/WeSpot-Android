@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsEvent.Param
 import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
@@ -128,4 +129,6 @@ fun CompleteScreen(
             cancelButtonText = stringResource(id = R.string.cancel),
         )
     }
+
+    TrackScreenViewEvent(screenName = "complete_screen", id = state.uuid)
 }

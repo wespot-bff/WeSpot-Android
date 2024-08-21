@@ -110,7 +110,7 @@ fun GenderScreen(
             }
         }
     }
-    TrackScreenViewEvent(screenName = "gender_screen")
+    TrackScreenViewEvent(screenName = "gender_screen", id = state.uuid)
 }
 
 @Composable

@@ -168,7 +168,7 @@ fun GradeScreen(
             }
         }
     }
-    TrackScreenViewEvent(screenName = "grade_screen")
+    TrackScreenViewEvent(screenName = "grade_screen", id = state.uuid)
 }
 
 @Composable

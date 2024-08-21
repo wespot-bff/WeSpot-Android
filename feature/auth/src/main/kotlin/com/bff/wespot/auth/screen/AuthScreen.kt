@@ -35,7 +35,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
@@ -53,7 +52,6 @@ fun AuthScreen(
     viewModel: AuthViewModel,
 ) {
     val pagerState = rememberPagerState { 3 }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,8 +133,6 @@ fun AuthScreen(
             )
         }
     }
-
-    TrackScreenViewEvent(screenName = "login_screen")
 }
 
 private enum class AuthCarouselItem(

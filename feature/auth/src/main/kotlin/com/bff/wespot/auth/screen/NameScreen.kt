@@ -164,5 +164,5 @@ fun NameScreen(
         action(AuthAction.OnStartNameScreen)
     }
 
-    TrackScreenViewEvent(screenName = "name_screen")
+    TrackScreenViewEvent(screenName = "name_screen", id = state.uuid)
 }

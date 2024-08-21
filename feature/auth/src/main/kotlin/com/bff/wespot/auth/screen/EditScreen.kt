@@ -162,7 +162,7 @@ fun EditScreen(
         }
     }
 
-    TrackScreenViewEvent(screenName = "edit_screen")
+    TrackScreenViewEvent(screenName = "edit_screen", id = state.uuid)
 }
 
 @Composable

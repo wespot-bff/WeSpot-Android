@@ -12,14 +12,20 @@ val LocalAnalyticsHelper = staticCompositionLocalOf<AnalyticsHelper> {
     NoOpAnalyticsHelper()
 }
 
-fun AnalyticsHelper.logScreenView(screenName: String, startTime: String) {
+fun AnalyticsHelper.logScreenView(screenName: String, startTime: String, id: String?) {
+    val param = mutableListOf(
+        Param(ParamKeys.SCREEN_NAME, screenName),
+        Param("start_time", startTime),
+    )
+
+    id?.let {
+        param.add(Param("userId", id))
+    }
+
     logEvent(
         AnalyticsEvent(
             type = Types.SCREEN_VIEW,
-            extras = listOf(
-                Param(ParamKeys.SCREEN_NAME, screenName),
-                Param("start_time", startTime),
-            ),
+            extras = param,
         ),
     )
 }
@@ -39,12 +45,13 @@ fun AnalyticsHelper.buttonClick(screenName: String, buttonId: String) {
 @Composable
 fun TrackScreenViewEvent(
     screenName: String,
+    id: String? = null,
     analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current,
 ) = DisposableEffect(Unit) {
     val time = System.currentTimeMillis()
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     val startTime = dateFormat.format(time)
-    analyticsHelper.logScreenView(screenName, startTime)
+    analyticsHelper.logScreenView(screenName, startTime, id)
     onDispose {}
 }

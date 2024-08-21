@@ -143,5 +143,5 @@ fun ClassScreen(
         keyboard?.show()
     }
 
-    TrackScreenViewEvent(screenName = "class_screen")
+    TrackScreenViewEvent(screenName = "class_screen", id = state.uuid)
 }

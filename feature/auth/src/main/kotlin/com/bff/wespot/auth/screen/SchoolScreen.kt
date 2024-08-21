@@ -225,5 +225,5 @@ fun SchoolScreen(
         action(AuthAction.OnStartSchoolScreen)
     }
 
-    TrackScreenViewEvent(screenName = "school_screen")
+    TrackScreenViewEvent(screenName = "school_screen", id = state.uuid)
 }
