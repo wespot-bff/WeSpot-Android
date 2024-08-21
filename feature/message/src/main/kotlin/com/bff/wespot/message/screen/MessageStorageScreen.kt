@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -179,7 +178,7 @@ fun MessageStorageScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         val hasReservedMessages = state.messageStatus.hasReservedMessages() &&
-                            state.messageStatus.remainingMessages >= 0
+                            state.messageStatus.countRemainingMessages >= 0
                         val isEveningToNight = state.timePeriod == TimePeriod.EVENING_TO_NIGHT
                         val isBannerVisible = hasReservedMessages && isEveningToNight
 

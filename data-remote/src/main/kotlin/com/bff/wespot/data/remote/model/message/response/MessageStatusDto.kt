@@ -6,10 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MessageStatusDto (
     val isSendAllowed: Boolean,
-    val remainingMessages: Int,
+    val countRemainingMessages: Int,
+    val countUnReadMessages: Int,
 ) {
     fun toMessageStatus() = MessageStatus(
         isSendAllowed = isSendAllowed,
-        remainingMessages = remainingMessages,
+        countRemainingMessages = countRemainingMessages,
+        countUnReadMessages = countUnReadMessages,
     )
 }

@@ -108,7 +108,7 @@ fun MessageHomeScreen(
 
             TimePeriod.NIGHT_TO_DAWN -> {
                 ReceivedMessageBanner(
-                    visible = state.hasUnReadMessage,
+                    visible = state.messageStatus.hasUnReadMessages(),
                     onBannerClick = {
                         navigateToNotificationScreen()
                     },
@@ -120,7 +120,7 @@ fun MessageHomeScreen(
                     title = state.timePeriod.title,
                     buttonText = stringResource(R.string.message_card_button_text_night),
                     imageRes = state.timePeriod.imageRes,
-                    isBannerVisible = state.hasUnReadMessage,
+                    isBannerVisible = state.messageStatus.hasUnReadMessages(),
                     onButtonClick = {
                     },
                 )
