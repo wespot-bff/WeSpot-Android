@@ -1,6 +1,7 @@
 package com.bff.wespot.message.state.send
 
 import androidx.paging.PagingData
+import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,4 +19,5 @@ data class SendUiState(
     val messageId: Int = -1,
     val isLoading: Boolean = false,
     val messageSendFailedDialogContent: String = "",
+    val kakaoContent: KakaoContent = KakaoContent.EMPTY,
 )
