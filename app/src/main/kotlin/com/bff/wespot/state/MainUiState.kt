@@ -1,4 +1,5 @@
 package com.bff.wespot.state
 
-class MainUiState {
-}
+data class MainUiState (
+    val isPushNotificationNavigation: Boolean = true
+)

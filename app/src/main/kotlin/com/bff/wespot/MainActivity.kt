@@ -71,6 +71,7 @@ import com.bff.wespot.util.clickableSingle
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
+import org.orbitmvi.orbit.compose.collectAsState
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -141,6 +142,7 @@ private fun MainScreen(
     analyticsHelper: AnalyticsHelper,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
     val navController = rememberNavController()
@@ -226,7 +228,10 @@ private fun MainScreen(
             )
         }
 
-        navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
+        if (state.isPushNotificationNavigation) {
+            action(MainAction.OnNavigateByPushNotification)
+            navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
+        }
     }
 
     TopToast(
