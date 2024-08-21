@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,6 +51,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
         val intent = Intent(this, AuthActivity::class.java)
         for (key in message.data.keys) {
+            Timber.d("$key to ${message.data[key]}")
             intent.putExtra(key, message.data[key])
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
