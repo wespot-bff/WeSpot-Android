@@ -21,6 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.analytic.AnalyticsEvent
+import com.bff.wespot.analytic.AnalyticsEvent.Param
+import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
@@ -45,6 +48,11 @@ fun CompleteScreen(
 
     val activity = (LocalContext.current as? Activity)
     val context = LocalContext.current
+    var inviteClicked by remember {
+        mutableStateOf(false)
+    }
+
+    val analyticsHelper = LocalAnalyticsHelper.current
 
     val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
@@ -70,6 +78,7 @@ fun CompleteScreen(
                         context,
                         message + state.playStoreLink,
                     )
+                    inviteClicked = true
                 },
                 text = stringResource(id = R.string.invite_friend_and_start),
                 paddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
@@ -79,6 +88,15 @@ fun CompleteScreen(
 
             WSOutlineButton(
                 onClick = {
+                    analyticsHelper.logEvent(
+                        AnalyticsEvent(
+                            type = "invite_friend_before_sign_up",
+                            extras = listOf(
+                                Param("screen_name", "complete_sign_up"),
+                                Param("invite_clicked", inviteClicked.toString()),
+                            )
+                        )
+                    )
                     viewModel.onAction(AuthAction.Signup)
                 },
                 text = stringResource(id = R.string.start),

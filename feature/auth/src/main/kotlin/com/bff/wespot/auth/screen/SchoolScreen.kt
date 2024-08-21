@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -223,4 +224,6 @@ fun SchoolScreen(
     LaunchedEffect(Unit) {
         action(AuthAction.OnStartSchoolScreen)
     }
+
+    TrackScreenViewEvent(screenName = "school_screen")
 }

@@ -14,6 +14,8 @@ ksp {
 }
 
 dependencies {
+    implementation(project(":core:analytics"))
+
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
