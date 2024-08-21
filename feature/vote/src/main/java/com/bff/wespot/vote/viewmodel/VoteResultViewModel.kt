@@ -3,9 +3,11 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.vote.response.VoteResults
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.state.result.ResultSideEffect
@@ -26,6 +28,7 @@ class VoteResultViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val dataStoreRepository: DataStoreRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
+    private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
     override val container = container<ResultUiState, ResultSideEffect>(
         ResultUiState(
@@ -38,6 +41,7 @@ class VoteResultViewModel @Inject constructor(
             is ResultAction.LoadVoteResults -> loadVoteResults(action.date)
             is ResultAction.GetOnBoarding -> getOnBoarding()
             is ResultAction.SetVoteOnBoarding -> setVoteOnBoarding()
+            is ResultAction.GetKakaoContent -> getKakaoContent()
         }
     }
 
@@ -78,6 +82,18 @@ class VoteResultViewModel @Inject constructor(
             state.copy(
                 onBoarding = false,
             )
+        }
+    }
+
+    private fun getKakaoContent() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            commonRepository.getKakaoContent(KakaoSharingType.TELL.name)
+                .onSuccess {
+                    reduce { state.copy(kakaoContent = it) }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 }

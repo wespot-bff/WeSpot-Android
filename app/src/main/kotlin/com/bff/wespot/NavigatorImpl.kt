@@ -46,7 +46,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
-    override fun navigateToSharing(context: Context) {
+    override fun navigateToSharing(context: Context, text: String) {
         val sendIntent = Intent(Intent.ACTION_SEND)
         sendIntent.setType("text/plain")
 
@@ -64,8 +64,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
                     "com.kakao.talk.activity.IntentFilterActivity",
                 )
             )
-            putExtra(Intent.EXTRA_SUBJECT, "메시지 제목")
-            putExtra(Intent.EXTRA_TEXT, "메시지 내용")
+            putExtra(Intent.EXTRA_TEXT, text)
             setType("text/plain")
         }
 
@@ -79,8 +78,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
                 ),
             )
             setType("text/plain")
-            putExtra(Intent.EXTRA_SUBJECT, "메시지 제목")
-            putExtra(Intent.EXTRA_TEXT, "메시지 내용")
+            putExtra(Intent.EXTRA_TEXT, text)
         }
 
         chooser.add(instaIntent)

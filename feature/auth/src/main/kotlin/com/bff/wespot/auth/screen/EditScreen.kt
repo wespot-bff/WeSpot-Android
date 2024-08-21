@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -39,7 +42,9 @@ import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.WSBottomSheet
+import com.bff.wespot.util.clickableSingle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -48,6 +53,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun EditScreen(
     viewModel: AuthViewModel,
+    navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -143,10 +149,12 @@ fun EditScreen(
     }
 
     if (register) {
-        WSBottomSheet(closeSheet = { register = true }) {
+        WSBottomSheet(closeSheet = { register = false }) {
             RegisterBottomSheetContent(
                 action = action,
                 checked = state.consents,
+                state = state,
+                navigator = navigator,
             ) {
                 action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
@@ -286,9 +294,13 @@ private fun ConfirmBottomSheetContent(
 @Composable
 private fun RegisterBottomSheetContent(
     action: (AuthAction) -> Unit,
+    state: AuthUiState,
     checked: List<Boolean>,
+    navigator: Navigator,
     onClicked: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -339,13 +351,17 @@ private fun RegisterBottomSheetContent(
         }
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(30.dp),
             modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 20.dp),
         ) {
             TermRow(
                 title = stringResource(id = R.string.service_term),
-                url = "",
                 checked = checked[1],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.termsOfServiceLink,
+                    )
+                },
                 onClicked = {
                     action(
                         AuthAction.OnConsentChanged(
@@ -364,8 +380,13 @@ private fun RegisterBottomSheetContent(
 
             TermRow(
                 title = stringResource(id = R.string.privacy_term),
-                url = "",
                 checked = checked[2],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.privacyPolicyLink,
+                    )
+                },
                 onClicked = {
                     action(
                         AuthAction.OnConsentChanged(
@@ -384,8 +405,13 @@ private fun RegisterBottomSheetContent(
 
             TermRow(
                 title = stringResource(id = R.string.marketing_term),
-                url = "",
                 checked = checked[3],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.marketingLink,
+                    )
+                },
                 onClicked = {
                     action(
                         AuthAction.OnConsentChanged(
@@ -416,15 +442,19 @@ private fun RegisterBottomSheetContent(
 @Composable
 private fun TermRow(
     title: String,
-    url: String,
     checked: Boolean,
+    navigateToWebLink: () -> Unit,
     onClicked: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 22.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .clickableSingle {
+                navigateToWebLink.invoke()
+            }
+            .padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
     ) {
         Icon(
             painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),

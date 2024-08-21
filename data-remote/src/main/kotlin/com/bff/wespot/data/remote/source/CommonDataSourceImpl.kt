@@ -3,10 +3,12 @@ package com.bff.wespot.data.remote.source
 import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
 import com.bff.wespot.data.remote.model.common.CharacterListDto
 import com.bff.wespot.data.remote.model.common.EditProfileDto
+import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.path
@@ -55,6 +57,15 @@ class CommonDataSourceImpl @Inject constructor(
                 method = HttpMethod.Put
                 path("api/v1/users/me")
                 setBody(profile)
+            }
+        }
+
+    override suspend fun getKakaoContent(type: String): Result<KakaoContentDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/auth/kakao/template")
+                parameter("type", type.lowercase())
             }
         }
 }

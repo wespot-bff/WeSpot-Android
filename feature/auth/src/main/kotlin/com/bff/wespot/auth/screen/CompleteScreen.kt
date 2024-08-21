@@ -29,6 +29,7 @@ import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 @Destination
@@ -40,8 +41,12 @@ fun CompleteScreen(
         mutableStateOf(false)
     }
 
+    val state by viewModel.collectAsState()
+
     val activity = (LocalContext.current as? Activity)
     val context = LocalContext.current
+
+    val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
     Box(
         modifier = Modifier
@@ -61,7 +66,10 @@ fun CompleteScreen(
         Column {
             WSButton(
                 onClick = {
-                    navigator.navigateToSharing(context)
+                    navigator.navigateToSharing(
+                        context,
+                        message + state.playStoreLink,
+                    )
                 },
                 text = stringResource(id = R.string.invite_friend_and_start),
                 paddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),

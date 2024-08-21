@@ -22,6 +22,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.IndividualReceived
 import com.bff.wespot.model.vote.response.IndividualSent
@@ -42,6 +46,7 @@ import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.saveBitmap
 import com.bff.wespot.vote.R
@@ -73,6 +78,8 @@ fun IndividualVoteScreen(
 ) {
     val individual by viewModel.individual.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    var showToast by remember { mutableStateOf(false) }
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -169,12 +176,12 @@ fun IndividualVoteScreen(
             ) {
                 WSButton(
                     onClick = {
-                        navigator.navigateToSharing(context)
+                        showToast = true
                     },
                     paddingValues = PaddingValues(
                         end = 87.dp,
                     ),
-                    text = stringResource(id = R.string.tell_friend),
+                    text = stringResource(R.string.who_send),
                 ) {
                     it.invoke()
                 }
@@ -215,5 +222,13 @@ fun IndividualVoteScreen(
                 }
             }
         }
+    }
+
+    TopToast(
+        message = stringResource(R.string.next_update),
+        toastType = WSToastType.Error,
+        showToast = showToast,
+    ) {
+        showToast = false
     }
 }

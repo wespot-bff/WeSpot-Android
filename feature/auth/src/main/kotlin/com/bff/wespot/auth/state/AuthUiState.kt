@@ -18,4 +18,8 @@ data class AuthUiState(
     val consents: List<Boolean> = listOf(false, false, false, false),
     val hasProfanity: Boolean = false,
     val playStoreLink: String,
+    val termsOfServiceLink: String,
+    val privacyPolicyLink: String,
+    val schoolForm: String,
+    val marketingLink: String,
 )

@@ -143,7 +143,7 @@ fun VotingScreen(
         if (state.loading && showGuideScreen) {
             return@Scaffold
         } else if (showGuideScreen) {
-            VotingGuideScreen(it, navigator)
+            VotingGuideScreen(it, navigator, state)
         } else {
             VotingProgressScreen(
                 state = state,
@@ -318,6 +318,7 @@ private fun VotingProgressScreen(
 private fun VotingGuideScreen(
     paddingValues: PaddingValues,
     navigator: Navigator,
+    state: VotingUiState,
 ) {
     val context = LocalContext.current
 
@@ -343,7 +344,8 @@ private fun VotingGuideScreen(
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(onClick = {
-            navigator.navigateToSharing(context)
+            val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
+            navigator.navigateToSharing(context, message + state.playStoreLink)
         }, text = stringResource(R.string.invite_friend_vote)) {
             it.invoke()
         }

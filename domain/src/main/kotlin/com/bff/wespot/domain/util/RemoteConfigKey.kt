@@ -14,4 +14,6 @@ object RemoteConfigKey {
     const val PRIVACY_POLICY_URL = "PRIVACY_POLICY_URL"
     const val PLAY_STORE_URL = "PLAY_STORE_URL"
     const val TERMS_OF_SERVICE_URL = "TERMS_OF_SERVICE_URL"
+    const val SCHOOL_FORM = "SCHOOL_FORM"
+    const val MARKETING_SERVICE_TERM = "MARKETING_SERVICE_TERM"
 }
