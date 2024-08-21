@@ -9,6 +9,8 @@ import com.bff.wespot.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ class MainViewModel @Inject constructor(
     fun onAction(action: MainAction) {
         when (action) {
             MainAction.OnMainScreenEntered -> handleMainScreenEntered()
+            MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
         }
     }
 
@@ -28,5 +31,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             cacheProfileUseCase()
         }
+    }
+
+    private fun handleNavigateByPushNotification() = intent {
+        reduce { state.copy(isPushNotificationNavigation = false) }
     }
 }
