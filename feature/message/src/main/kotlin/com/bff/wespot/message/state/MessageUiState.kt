@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.flow
 
 data class MessageUiState(
     val timePeriod: TimePeriod = TimePeriod.DAWN_TO_EVENING,
-    val messageStatus: MessageStatus = MessageStatus(false, -1),
+    val messageStatus: MessageStatus = MessageStatus(false, -1, -1),
     val myProfile: Profile = Profile(),
-    val hasUnReadMessage: Boolean = false,
     val receivedMessageList: Flow<PagingData<ReceivedMessage>> = flow { },
     val sentMessageList: Flow<PagingData<SentMessage>> = flow { },
     val clickedMessage: ClickedMessageUiModel = ClickedMessageUiModel(),
