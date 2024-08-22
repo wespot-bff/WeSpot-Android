@@ -9,7 +9,7 @@ class NotificationPagingSource(
     private val notificationDataSource: NotificationDataSource,
 ) : BasePagingSource<Notification, Paging<Notification>>() {
     override suspend fun fetchItems(cursorId: Int?): Paging<Notification> {
-        val response = notificationDataSource.getNotification()
+        val response = notificationDataSource.getNotification(cursorId)
         val data = response.getOrThrow()
         return data.toNotificationList()
     }
