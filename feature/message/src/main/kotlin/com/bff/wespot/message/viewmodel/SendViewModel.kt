@@ -151,7 +151,7 @@ class SendViewModel @Inject constructor(
                             selectedUser = message.receiver,
                             messageInput = message.content,
                             isRandomName = message.isAnonymous,
-                            randomName = message.senderName,
+                            sender = message.senderName,
                         )
                     }
                     // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러온다.
