@@ -52,7 +52,6 @@ fun AuthScreen(
     viewModel: AuthViewModel,
 ) {
     val pagerState = rememberPagerState { 3 }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()

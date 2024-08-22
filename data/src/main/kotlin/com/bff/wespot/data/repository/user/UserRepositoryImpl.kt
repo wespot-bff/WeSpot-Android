@@ -4,7 +4,9 @@ import com.bff.wespot.data.mapper.user.toNotificationSettingDto
 import com.bff.wespot.data.mapper.user.toProfileCharacterDto
 import com.bff.wespot.data.remote.model.user.request.IntroductionDto
 import com.bff.wespot.data.remote.source.user.UserDataSource
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.user.UserRepository
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.user.response.NotificationSetting
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.user.response.ProfileCharacter
@@ -13,11 +15,17 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource,
+    private val dataStoreRepository: DataStoreRepository,
 ) : UserRepository {
-    override suspend fun getProfile(): Result<Profile> =
-        userDataSource.getProfile().map { profileDto ->
+    override suspend fun getProfile(): Result<Profile> {
+        val profile = userDataSource.getProfile().map { profileDto ->
+            dataStoreRepository.saveString(DataStoreKey.NAME, profileDto.name)
+            dataStoreRepository.saveString(DataStoreKey.ID, profileDto.id.toString())
             profileDto.toProfile()
         }
+
+        return profile
+    }
 
     override suspend fun getNotificationSetting(): Result<NotificationSetting> =
         userDataSource.getNotificationSetting().mapCatching { it.toNotificationSetting() }

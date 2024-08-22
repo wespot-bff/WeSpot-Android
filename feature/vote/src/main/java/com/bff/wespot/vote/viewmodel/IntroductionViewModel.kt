@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.vote.state.profile.ProfileAction
 import com.bff.wespot.vote.state.profile.ProfileSideEffect
 import com.bff.wespot.vote.state.profile.ProfileUiState
@@ -28,6 +30,7 @@ class IntroductionViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val dispatcher: CoroutineDispatcher,
     private val checkProfanityUseCase: CheckProfanityUseCase,
+    private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel(), ContainerHost<ProfileUiState, ProfileSideEffect> {
     override val container: Container<ProfileUiState, ProfileSideEffect> =
         container(
@@ -38,6 +41,21 @@ class IntroductionViewModel @Inject constructor(
         )
 
     private val userInput = MutableStateFlow("")
+
+    init {
+        viewModelScope.launch {
+            dataStoreRepository.getString(DataStoreKey.NAME)
+                .collect {
+                    intent {
+                        reduce {
+                            state.copy(
+                                name = it,
+                            )
+                        }
+                    }
+                }
+        }
+    }
 
     fun onAction(action: ProfileAction) {
         when (action) {
