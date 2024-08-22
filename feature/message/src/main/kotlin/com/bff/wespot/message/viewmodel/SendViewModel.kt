@@ -200,6 +200,7 @@ class SendViewModel @Inject constructor(
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
+                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
                 }
             }.onFailure {
@@ -245,7 +246,6 @@ class SendViewModel @Inject constructor(
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) {
-                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
                 }
             }

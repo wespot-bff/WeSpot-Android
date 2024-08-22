@@ -245,7 +245,7 @@ fun MessageEditScreen(
         if (timeoutDialog) {
             WSDialog(
                 title = stringResource(R.string.timeout_dialog_title),
-                subTitle = stringResource(R.string.timeout_dialog_subtitle),
+                subTitle = state.messageSendFailedDialogContent,
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
                 okButtonClick = {
