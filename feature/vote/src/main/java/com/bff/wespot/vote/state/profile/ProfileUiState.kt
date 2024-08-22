@@ -4,5 +4,6 @@ data class ProfileUiState(
     val introduction: String = "",
     val iconUrl: String,
     val backgroundColor: String,
+    val name: String = "",
     val hasProfanity: Boolean = false,
 )

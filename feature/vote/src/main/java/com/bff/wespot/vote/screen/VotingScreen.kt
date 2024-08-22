@@ -34,6 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.analytic.AnalyticsEvent
+import com.bff.wespot.analytic.AnalyticsEvent.Param
+import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
@@ -73,6 +78,18 @@ fun VotingScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val analyticsHelper = LocalAnalyticsHelper.current
+
+    val context = LocalContext.current
+
+    analyticsHelper.logEvent(
+        AnalyticsEvent(
+            type = "vote_screen_view",
+            extras = listOf(
+                Param("screen_name", "vote_screen"),
+            ),
+        ),
+    )
 
     var submitButton by remember { mutableStateOf(false) }
 
@@ -143,7 +160,7 @@ fun VotingScreen(
         if (state.loading && showGuideScreen) {
             return@Scaffold
         } else if (showGuideScreen) {
-            VotingGuideScreen(it, navigator, state)
+            VotingGuideScreen(it, navigator, state, analyticsHelper)
         } else {
             VotingProgressScreen(
                 state = state,
@@ -197,6 +214,10 @@ fun VotingScreen(
                 showReportDialog = false
             },
             cancelButtonClick = {
+                navigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.addQuestionLink,
+                )
                 showReportDialog = false
             },
         ) {
@@ -319,6 +340,7 @@ private fun VotingGuideScreen(
     paddingValues: PaddingValues,
     navigator: Navigator,
     state: VotingUiState,
+    analyticsHelper: AnalyticsHelper,
 ) {
     val context = LocalContext.current
 
@@ -344,10 +366,22 @@ private fun VotingGuideScreen(
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         WSButton(onClick = {
+            analyticsHelper.logEvent(
+                AnalyticsEvent(
+                    type = "empty_vote_invite_friend",
+                    extras = listOf(
+                        Param("screen_name", "vote_empty_screen"),
+                        Param("invite_clicked", "true"),
+                    ),
+                ),
+            )
+
             val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
             navigator.navigateToSharing(context, message + state.playStoreLink)
         }, text = stringResource(R.string.invite_friend_vote)) {
             it.invoke()
         }
     }
+
+    TrackScreenViewEvent(screenName = "vote_empty_screen")
 }

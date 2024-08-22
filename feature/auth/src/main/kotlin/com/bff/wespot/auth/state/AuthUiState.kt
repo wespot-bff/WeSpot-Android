@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.bff.wespot.model.auth.response.School
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.util.UUID
 
 data class AuthUiState(
     val schoolName: String = "",
@@ -22,4 +23,5 @@ data class AuthUiState(
     val privacyPolicyLink: String,
     val schoolForm: String,
     val marketingLink: String,
+    val uuid: String = UUID.randomUUID().toString(),
 )

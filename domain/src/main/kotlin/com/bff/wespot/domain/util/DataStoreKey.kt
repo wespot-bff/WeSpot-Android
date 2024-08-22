@@ -8,4 +8,6 @@ object DataStoreKey {
     const val PUSH_TOKEN = "push_token"
     const val SETTING_DIALOG = "setting_dialog"
     const val VOTE_ONBOARDING = "vote_onboarding"
+    const val NAME = "name"
+    const val ID = "id"
 }

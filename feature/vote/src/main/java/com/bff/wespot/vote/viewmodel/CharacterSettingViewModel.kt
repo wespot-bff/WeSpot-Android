@@ -3,6 +3,8 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CharacterSettingViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
+    private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel() {
     val characters: StateFlow<List<Character>> = flow {
         commonRepository.getCharacters()
@@ -37,4 +40,6 @@ class CharacterSettingViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList(),
     )
+
+    val name = dataStoreRepository.getString(DataStoreKey.NAME)
 }

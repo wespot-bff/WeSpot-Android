@@ -2,7 +2,9 @@ package com.bff.wespot.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
@@ -17,8 +19,23 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val cacheProfileUseCase: CacheProfileUseCase,
-): ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
+    private val dataStoreRepository: DataStoreRepository,
+) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
     override val container = container<MainUiState, MainSideEffect>(MainUiState())
+
+    init {
+        viewModelScope.launch {
+            dataStoreRepository.getString(DataStoreKey.ID).collect {
+                intent {
+                    if (it.isNotEmpty()) {
+                        reduce {
+                            state.copy(userId = it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun onAction(action: MainAction) {
         when (action) {

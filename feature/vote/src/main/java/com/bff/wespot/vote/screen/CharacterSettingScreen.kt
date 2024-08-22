@@ -37,6 +37,7 @@ fun CharacterSettingScreen(
 ) {
     val color by viewModel.backgroundColor.collectAsStateWithLifecycle()
     val character by viewModel.characters.collectAsStateWithLifecycle()
+    val name by viewModel.name.collectAsStateWithLifecycle(initialValue = "")
 
     var showDialog by remember {
         mutableStateOf(false)
@@ -66,7 +67,7 @@ fun CharacterSettingScreen(
     ) {
         Box(modifier = Modifier.padding(it)) {
             CharacterScreen(
-                name = "",
+                name = stringResource(R.string.select_your_character, name),
                 characterList = character,
                 colorList = color,
             ) { iconUrl, color ->

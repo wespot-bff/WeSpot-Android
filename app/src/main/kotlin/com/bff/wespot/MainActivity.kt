@@ -66,8 +66,8 @@ import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
-import com.bff.wespot.viewmodel.MainViewModel
 import com.bff.wespot.util.clickableSingle
+import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -144,6 +144,7 @@ private fun MainScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val uiState by viewModel.collectAsState()
 
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
@@ -217,6 +218,7 @@ private fun MainScreen(
             }
         },
     ) {
+        analyticsHelper.updateUserId(uiState.userId)
         CompositionLocalProvider(
             LocalAnalyticsHelper provides analyticsHelper,
         ) {

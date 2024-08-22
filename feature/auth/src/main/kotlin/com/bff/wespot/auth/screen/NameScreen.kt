@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -162,4 +163,6 @@ fun NameScreen(
     LaunchedEffect(Unit) {
         action(AuthAction.OnStartNameScreen)
     }
+
+    TrackScreenViewEvent(screenName = "name_screen", id = state.uuid)
 }
