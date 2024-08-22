@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.BasePagingRepository
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
@@ -13,6 +14,7 @@ import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
+import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
@@ -27,12 +29,14 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SendViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val profileRepository: ProfileRepository,
+    private val commonRepository: CommonRepository,
     private val userListRepository: BasePagingRepository<User, Paging<User>>,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val coroutineDispatcher: CoroutineDispatcher,
@@ -45,7 +49,10 @@ class SendViewModel @Inject constructor(
 
     fun onAction(action: SendAction) {
         when (action) {
-            is SendAction.OnReceiverScreenEntered -> observeNameInput()
+            is SendAction.OnReceiverScreenEntered -> {
+                getKakaoContent()
+                observeNameInput()
+            }
             is SendAction.OnMessageEditScreenEntered -> {
                 handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
             }
@@ -237,10 +244,23 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
+                if (exception.status == 400) {
+                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
                 }
             }
+        }
+    }
+
+    private fun getKakaoContent() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            commonRepository.getKakaoContent(KakaoSharingType.FIND.name)
+                .onSuccess {
+                    reduce { state.copy(kakaoContent = it) }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 

@@ -56,19 +56,18 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.message.screen.MessageScreenArgs
-import com.bff.wespot.message.screen.destinations.MessageScreenDestination
-import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.state.MainAction
+import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
+import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.state.MainAction
 import com.bff.wespot.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
-import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -117,9 +116,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs {
-        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
-        val date = intent.getStringExtra("date") ?: ""
-        val type = intent.getStringExtra("type") ?: ""
+        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
+        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
 
         return MainScreenNavArgs(
             targetId = targetId,
@@ -143,6 +142,7 @@ private fun MainScreen(
     analyticsHelper: AnalyticsHelper,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val uiState by viewModel.collectAsState()
 
@@ -180,7 +180,9 @@ private fun MainScreen(
                             IconButton(
                                 modifier = Modifier.padding(end = 16.dp),
                                 onClick = {
-                                    navController.navigateToNavGraph(AppNavGraphs.notification)
+                                    navController.navigateToNavGraph(
+                                        navGraph =  AppNavGraphs.notification,
+                                    )
                                 },
                             ) {
                                 Icon(
@@ -228,7 +230,10 @@ private fun MainScreen(
             )
         }
 
-        navigateScreenFromNavArgs(navArgs, navController)
+        if (state.isPushNotificationNavigation) {
+            action(MainAction.OnNavigateByPushNotification)
+            navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
+        }
     }
 
     TopToast(
@@ -355,34 +360,26 @@ private fun RowScope.TabItem(
     }
 }
 
-private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController: NavController) {
+private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: NotificationNavigator) {
     when (navArgs.type) {
         NotificationType.MESSAGE -> {
-            navController.navigate(
-                ReceiverSelectionScreenDestination(
-                    ReceiverSelectionScreenArgs(false),
-                ) within AppNavGraphs.message
-            )
+            navigator.navigateToReceiverSelectionScreen()
         }
 
         NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
-            navController.navigate(
-                MessageScreenDestination(
-                    MessageScreenArgs(
-                        type = navArgs.type,
-                        messageId = navArgs.targetId,
-                    ),
-                ) within AppNavGraphs.message
-            )
+            navigator.navigateToMessageScreen(type = navArgs.type, messageId = navArgs.targetId)
         }
 
         NotificationType.VOTE -> {
+            navigator.navigateToVotingScreen()
         }
 
         NotificationType.VOTE_RESULT -> {
+            navigator.navigateToVoteResultScreen()
         }
 
         NotificationType.VOTE_RECEIVED -> {
+            navigator.navigateToVoteStorageScreen()
         }
 
         NotificationType.IDLE -> {
@@ -393,9 +390,13 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navController:
 private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
     this.navigate(navGraph) {
         launchSingleTop = true
-        restoreState = true
+        restoreState = when (navGraph.route) {
+            AppNavGraphs.message.route,
+            AppNavGraphs.notification.route -> false
+            else -> true
+        }
 
-        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id) {
+        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id ) {
             saveState = true
         }
     }

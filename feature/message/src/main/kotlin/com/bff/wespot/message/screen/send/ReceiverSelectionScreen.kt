@@ -48,6 +48,8 @@ import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -67,6 +69,7 @@ data class ReceiverSelectionScreenArgs(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceiverSelectionScreen(
+    activityNavigator: Navigator,
     navigator: ReceiverSelectionNavigator,
     navArgs: ReceiverSelectionScreenArgs,
     viewModel: SendViewModel,
@@ -74,6 +77,7 @@ fun ReceiverSelectionScreen(
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
+    val context = LocalContext.current
     var dialogState by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
@@ -148,7 +152,16 @@ fun ReceiverSelectionScreen(
                                 )
                             }
                             .clickable {
-                                action(SendAction.OnInviteFriendTextClicked)
+                                if (state.kakaoContent != KakaoContent.EMPTY) {
+                                    activityNavigator.navigateToKakao(
+                                        context = context,
+                                        title = state.kakaoContent.title,
+                                        description = state.kakaoContent.description,
+                                        imageUrl = state.kakaoContent.imageUrl,
+                                        buttonText = state.kakaoContent.buttonText,
+                                        url = state.kakaoContent.url,
+                                    )
+                                }
                             },
                         text = stringResource(R.string.invite_friend_text),
                         style = StaticTypeScale.Default.body5,

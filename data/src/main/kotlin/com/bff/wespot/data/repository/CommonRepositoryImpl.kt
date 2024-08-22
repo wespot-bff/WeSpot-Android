@@ -19,7 +19,7 @@ class CommonRepositoryImpl @Inject constructor(
         commonDataSource.checkProfanity(ProfanityDto(content))
 
     override suspend fun sendReport(report: ReportType, targetId: Int): Result<Unit> =
-        commonDataSource.sendReport(ReportDto(report, targetId))
+        commonDataSource.sendReport(ReportDto(targetId, report))
 
     override suspend fun getCharacters(): Result<List<Character>> =
         commonDataSource.getCharacters()

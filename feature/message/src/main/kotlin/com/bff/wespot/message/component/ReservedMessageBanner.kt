@@ -21,7 +21,7 @@ internal fun ReservedMessageBanner(
 ) {
     AnimatedVisibility(
         modifier = Modifier.padding(paddingValues),
-        visible = messageStatus.hasReservedMessages() && messageStatus.remainingMessages >= 0,
+        visible = messageStatus.hasReservedMessages() && messageStatus.countRemainingMessages >= 0,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
         if (messageStatus.hasRemainingMessages()) {
@@ -32,7 +32,7 @@ internal fun ReservedMessageBanner(
                 ),
                 subTitle = stringResource(
                     R.string.reserved_message_banner_subtitle,
-                    messageStatus.remainingMessages,
+                    messageStatus.countRemainingMessages,
                 ),
                 image = painterResource(id = R.drawable.reserved_message),
                 onBannerClick = { onBannerClick() },

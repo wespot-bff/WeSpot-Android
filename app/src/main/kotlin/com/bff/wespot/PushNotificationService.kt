@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,6 +51,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
         val intent = Intent(this, AuthActivity::class.java)
         for (key in message.data.keys) {
+            Timber.d("$key to ${message.data[key]}")
             intent.putExtra(key, message.data[key])
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -65,7 +68,13 @@ class PushNotificationService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setSmallIcon(R.mipmap.ic_notification)
+            .setColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.ic_launcher_background,
+                )
+            )
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(true)

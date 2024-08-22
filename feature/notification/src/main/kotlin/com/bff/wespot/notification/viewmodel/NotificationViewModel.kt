@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.domain.repository.BasePagingRepository
+import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.notification.Notification
@@ -23,13 +24,17 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val notificationListRepository: BasePagingRepository<Notification, Paging<Notification>>,
+    private val messageRepository: MessageRepository,
 ) : ViewModel(), ContainerHost<NotificationUiState, NotificationSideEffect> {
     override val container =
         container<NotificationUiState, NotificationSideEffect>(NotificationUiState())
 
     fun onActon(action: NotificationAction) {
         when (action) {
-            NotificationAction.OnNotificationScreenEntered -> getNotificationList()
+            NotificationAction.OnNotificationScreenEntered -> {
+                getNotificationList()
+                getMessageStatus()
+            }
             is NotificationAction.OnNotificationClicked -> handleNotificationClicked(
                 action.notification,
             )
@@ -48,7 +53,21 @@ class NotificationViewModel @Inject constructor(
     }
 
     private fun handleNotificationClicked(notification: Notification) {
-        updateNotificationReadStatus(notification.id)
+        if (notification.isNew) {
+            updateNotificationReadStatus(notification.id)
+        }
+    }
+
+    private fun getMessageStatus() = intent {
+        viewModelScope.launch {
+            messageRepository.getMessageStatus()
+                .onSuccess {
+                    reduce { state.copy(isSendAllowed = it.isSendAllowed) }
+                }
+                .onFailure { exception ->
+                    Timber.d(exception)
+                }
+        }
     }
 
     private fun updateNotificationReadStatus(id: Int) = intent {

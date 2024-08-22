@@ -40,6 +40,7 @@ class MainViewModel @Inject constructor(
     fun onAction(action: MainAction) {
         when (action) {
             MainAction.OnMainScreenEntered -> handleMainScreenEntered()
+            MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
         }
     }
 
@@ -47,5 +48,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             cacheProfileUseCase()
         }
+    }
+
+    private fun handleNavigateByPushNotification() = intent {
+        reduce { state.copy(isPushNotificationNavigation = false) }
     }
 }

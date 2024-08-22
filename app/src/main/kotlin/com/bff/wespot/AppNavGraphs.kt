@@ -170,6 +170,9 @@ fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavi
     )
 }
 
+fun DestinationScopeWithNoDependencies<*>.notificationNavigator(): NotificationNavigatorImpl =
+    NotificationNavigatorImpl(navController)
+
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
@@ -193,6 +196,7 @@ internal fun AppNavigation(
         engine = engine,
         modifier = modifier,
         dependenciesContainerBuilder = {
+            dependency(notificationNavigator())
             dependency(currentNavigator())
             dependency(navigator)
             dependency(sendViewModel)

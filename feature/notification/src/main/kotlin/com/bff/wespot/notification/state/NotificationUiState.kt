@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.flow
 
 data class NotificationUiState(
     val notificationList: Flow<PagingData<Notification>> = flow { },
+    val isSendAllowed: Boolean = false,
 )

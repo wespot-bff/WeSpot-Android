@@ -20,10 +20,10 @@ enum class NotificationType {
 fun convertNotificationType(type: String): NotificationType =
     when (type) {
         NotificationType.MESSAGE.name -> NotificationType.MESSAGE
-        NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE
-        NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE
-        NotificationType.VOTE.name -> NotificationType.MESSAGE
-        NotificationType.VOTE_RESULT.name -> NotificationType.MESSAGE
-        NotificationType.VOTE_RECEIVED.name -> NotificationType.MESSAGE
+        NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE_SENT
+        NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE_RECEIVED
+        NotificationType.VOTE.name -> NotificationType.VOTE
+        NotificationType.VOTE_RESULT.name -> NotificationType.VOTE_RESULT
+        NotificationType.VOTE_RECEIVED.name -> NotificationType.VOTE_RECEIVED
         else -> NotificationType.IDLE
     }
