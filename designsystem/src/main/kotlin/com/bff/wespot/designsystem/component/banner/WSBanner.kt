@@ -1,6 +1,9 @@
 package com.bff.wespot.designsystem.component.banner
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Accessible
@@ -83,13 +87,15 @@ fun WSBanner(
     title: String,
     icon: Painter? = null,
     subTitle: String? = null,
+    onBannerClick: () -> Unit = {},
     bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(20.dp)
             .height(80.dp)
             .fillMaxWidth()
+            .clickable { onBannerClick.invoke() }
             .clip(WeSpotThemeManager.shapes.medium)
             .background(bannerType.backgroundColor()),
     ) {
@@ -103,7 +109,8 @@ fun WSBanner(
                     painter = icon,
                     contentDescription = stringResource(id = R.string.banner_icon),
                     modifier = Modifier
-                        .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 12.dp),
+                        .padding(20.dp),
+                    tint = WeSpotThemeManager.colors.txtTitleColor,
                 )
             }
 
@@ -111,6 +118,83 @@ fun WSBanner(
                 modifier = Modifier
                     .padding(vertical = 18.dp)
                     .padding(start = if (icon != null) 0.dp else 20.dp),
+            ) {
+                Text(
+                    text = title,
+                    color = bannerType.titleColor(),
+                    style = bannerType.titleTextStyle(),
+                )
+
+                subTitle?.let { subTitle ->
+                    Text(
+                        text = subTitle,
+                        color = bannerType.subTitleColor().copy(alpha = 0.8f),
+                        style = bannerType.subTitleTextStyle(),
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.right_arrow),
+                    contentDescription = stringResource(id = R.string.right_arrow),
+                    tint = WeSpotThemeManager.colors.abledIconColor,
+                    modifier = Modifier
+                        .padding(end = 24.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun WSBanner(
+    title: String,
+    image: Painter,
+    subTitle: String? = null,
+    hasBorder: Boolean = false,
+    onBannerClick: () -> Unit,
+    bannerType: WSBannerType = WSBannerType.Primary,
+) {
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .fillMaxWidth()
+            .clip(WeSpotThemeManager.shapes.medium)
+            .let {
+                if (hasBorder) {
+                    it.border(
+                        width = 1.dp,
+                        color = WeSpotThemeManager.colors.primaryColor,
+                        shape = WeSpotThemeManager.shapes.medium,
+                    )
+                } else {
+                    it
+                }
+            }
+            .background(bannerType.backgroundColor())
+            .clickable { onBannerClick() },
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = image,
+                contentDescription = stringResource(id = R.string.banner_icon),
+                modifier = Modifier
+                    .padding(start = 18.dp, top = 20.dp, bottom = 20.dp, end = 12.dp)
+                    .size(40.dp),
+            )
+
+            Column(
+                modifier = Modifier.padding(top = 18.dp, bottom = 18.dp),
             ) {
                 Text(
                     text = title,
@@ -203,7 +287,9 @@ private fun WSBannerPreview() {
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
-            Column {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
                 WSBanner(
                     icon = Icons.AutoMirrored.Default.Send,
                     title = stringResource(id = R.string.message_arrived),
@@ -225,7 +311,10 @@ private fun WSBannerPreview() {
                 WSBanner(
                     title = stringResource(id = R.string.message_arrived),
                     subTitle = stringResource(id = R.string.open_inbox_for_message),
-                    bannerType = WSBannerType.Secondary,
+                    bannerType = WSBannerType.Primary,
+                    hasBorder = true,
+                    image = painterResource(id = R.drawable.insta),
+                    onBannerClick = { },
                 )
             }
         }

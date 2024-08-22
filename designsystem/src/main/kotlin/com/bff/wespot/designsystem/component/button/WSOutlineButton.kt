@@ -2,6 +2,7 @@ package com.bff.wespot.designsystem.component.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -12,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Primary400
+import com.bff.wespot.designsystem.theme.Primary500
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
@@ -21,6 +23,7 @@ fun WSOutlineButton(
     text: String = "",
     enabled: Boolean = true,
     buttonType: WSOutlineButtonType = WSOutlineButtonType.Primary,
+    paddingValues: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
     WSButton(
@@ -29,7 +32,9 @@ fun WSOutlineButton(
         buttonType = buttonType.buttonType(),
         borderStroke = BorderStroke(1.dp, buttonType.borderColor()),
         pressedBorderStroke = BorderStroke(1.dp, buttonType.borderPressedColor()),
+        paddingValues = paddingValues,
         enabled = enabled,
+        background = buttonType.backgroundColor(),
     ) {
         content(it)
     }
@@ -44,6 +49,9 @@ sealed interface WSOutlineButtonType {
     @Composable
     fun borderPressedColor(): Color
 
+    @Composable
+    fun backgroundColor(): Color?
+
     data object Primary : WSOutlineButtonType {
         override fun buttonType() = WSButtonType.Tertiary
 
@@ -52,6 +60,35 @@ sealed interface WSOutlineButtonType {
 
         @Composable
         override fun borderPressedColor() = Color(0xFFADB08D)
+
+        @Composable
+        override fun backgroundColor() = null
+    }
+
+    data object Highlight : WSOutlineButtonType {
+        override fun buttonType() = WSButtonType.Tertiary
+
+        @Composable
+        override fun borderColor() = Primary400
+
+        @Composable
+        override fun borderPressedColor() = Color(0xFFADB08D)
+
+        @Composable
+        override fun backgroundColor() = Primary500
+    }
+
+    data object None : WSOutlineButtonType {
+        override fun buttonType() = WSButtonType.Tertiary
+
+        @Composable
+        override fun borderColor() = Color.Transparent
+
+        @Composable
+        override fun borderPressedColor() = Color.Transparent
+
+        @Composable
+        override fun backgroundColor() = null
     }
 }
 

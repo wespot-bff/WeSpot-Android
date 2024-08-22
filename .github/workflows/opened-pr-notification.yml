@@ -24,11 +24,25 @@ jobs:
 
       - name: add local.properties
         run: |
-          echo KAKAO_API_KEY=\"${{ secrets.KAKAO_API_KEY }}\" >> ./local.properties
+          echo KAKAO_APP_KEY=\"${{ secrets.KAKAO_APP_KEY }}\" >> ./local.properties
           echo SCHEME_KAKAO_APP_KEY=\"${{ secrets.SCHEME_KAKAO_APP_KEY }}\" >> ./local.properties
+          echo MOCK_BASE_URL=\"${{ secrets.MOCK_BASE_URL }}\" >> ./local.properties
+          echo FACEBOOK_APP_ID=\"${{ secrets.FACEBOOK_APP_ID }}\" >> ./local.properties
+          echo BASE_URL=\"${{ secrets.BASE_URL }}\" >> ./local.properties
+          echo SIGNED_STORE_PASSWORD=${{ secrets.SIGNED_STORE_PASSWORD }} >> ./local.properties
+          echo SIGNED_KEY_ALIAS=${{ secrets.SIGNED_KEY_ALIAS }} >> ./local.properties
+          echo SIGNED_KEY_PASSWORD=${{ secrets.SIGNED_KEY_PASSWORD }} >> ./local.properties
+
+      - name: add keystore
+        run: |
+          mkdir ./app/keystore
+          echo '${{ secrets.RELEASE_KEYSTORE }}' > ./app/keystore/keystore.b64
+          base64 -d -i ./app/keystore/keystore.b64 > ./app/keystore/release.keystore
 
       - name: add google-services.json
-        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./app/google-services.json
+        run: |
+          echo '${{ secrets.GOOGLE_SERVICES_JSON_DEV }}' > ./app/src/dev/google-services.json
+          echo '${{ secrets.GOOGLE_SERVICES_JSON_PROD }}' > ./app/src/prod/google-services.json
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

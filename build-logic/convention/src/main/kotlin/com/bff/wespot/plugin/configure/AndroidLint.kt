@@ -21,6 +21,8 @@ internal fun Project.configureKtLint() {
                 "ktlint_standard_function-naming" to "disabled",
                 "ktlint_standard_function-signature" to "disabled",
                 "ktlint_standard_class-naming" to "disabled",
+                "ktlint_standard_annotation" to "disabled",
+                "ktlint_standard_blank-line-before-declaration" to "disabled",
                 "ktlint_standard_string-template-indent" to "disabled",
                 "ktlint_standard_multiline-expression-wrapping" to "disabled"
             )

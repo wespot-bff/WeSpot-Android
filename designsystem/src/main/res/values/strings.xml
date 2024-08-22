@@ -28,4 +28,13 @@
     <string name="letter_sender">From.</string>
     <string name="letter_opened">읽음</string>
     <string name="letter_image">Letter Image</string>
+    <string name="entire">전체</string>
+    <string name="invalid_message">invalid_message</string>
+    <string name="blocked_message_title">\n차단 처리된 쪽지입니다</string>
+    <string name="reported_message_title">\n신고 처리된 쪽지입니다</string>
+    <string name="has_profanity">비속어가 포함되어 있어요</string>
+    <string name="close">닫기</string>
+    <string name="male_student">남학생</string>
+    <string name="female_student">여학생</string>
+    <string name="invite_message">투표와 쪽지로 마음을 전할 수 있는 우리만의 공간,\n위스팟에서 기다릴게! 📮\n</string>
 </resources>

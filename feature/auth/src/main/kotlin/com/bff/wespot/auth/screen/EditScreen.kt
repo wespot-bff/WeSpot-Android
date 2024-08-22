@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,26 +27,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
+import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.AuthUiState
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.util.OrientationPreviews
+import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.WSBottomSheet
+import com.bff.wespot.util.clickableSingle
+import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun EditScreen(viewModel: AuthViewModel = viewModel()) {
+fun EditScreen(
+    viewModel: AuthViewModel,
+    navigator: Navigator,
+) {
     val state by viewModel.collectAsState()
+    val action = viewModel::onAction
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -57,7 +68,13 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                },
+            )
         },
     ) {
         Column(
@@ -67,32 +84,48 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
             EditField(
                 title = stringResource(id = R.string.name),
                 value = state.name,
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToNameScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.gender),
-                value = state.gender,
-            )
+                value = if (state.gender == "MALE") {
+                    stringResource(id = com.bff.wespot.designsystem.R.string.male_student)
+                } else {
+                    stringResource(id = com.bff.wespot.designsystem.R.string.female_student)
+                },
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToGenderScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.get_class),
                 value = state.classNumber.toString(),
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToClassScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.grade),
                 value = "${state.grade}학년",
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToGradeScreen(true)))
+            }
 
             EditField(
                 title = stringResource(id = R.string.school),
                 value = state.selectedSchool?.name ?: "",
-            )
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToSchoolScreen(true)))
+            }
         }
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        WSButton(onClick = { }, text = stringResource(id = R.string.confirm)) {
+        WSButton(onClick = {
+            firstEnter = true
+        }, text = stringResource(id = R.string.confirm)) {
             it.invoke()
         }
     }
@@ -117,16 +150,26 @@ fun EditScreen(viewModel: AuthViewModel = viewModel()) {
     }
 
     if (register) {
-        WSBottomSheet(closeSheet = { register = true }) {
-            RegisterBottomSheetContent()
+        WSBottomSheet(closeSheet = { register = false }) {
+            RegisterBottomSheetContent(
+                action = action,
+                checked = state.consents,
+                state = state,
+                navigator = navigator,
+            ) {
+                action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
+            }
         }
     }
+
+    TrackScreenViewEvent(screenName = "edit_screen", id = state.uuid)
 }
 
 @Composable
 private fun EditField(
     title: String,
     value: String,
+    onClicked: () -> Unit,
 ) {
     Column {
         Text(
@@ -136,7 +179,7 @@ private fun EditField(
         )
 
         WSButton(
-            onClick = {},
+            onClick = onClicked,
             buttonType = WSButtonType.Tertiary,
         ) {
             Box(
@@ -195,14 +238,15 @@ private fun ConfirmBottomSheetContent(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Icon",
                 modifier = Modifier.size(56.dp),
+                tint = Color.Unspecified,
             )
             Column {
                 Text(
                     text = "$name (${
-                        if (gender == "male") {
-                            stringResource(id = R.string.male_student)
+                        if (gender == "MALE") {
+                            stringResource(id = com.bff.wespot.designsystem.R.string.male_student)
                         } else {
-                            stringResource(id = R.string.female_student)
+                            stringResource(id = com.bff.wespot.designsystem.R.string.female_student)
                         }
                     })",
                     style = StaticTypeScale.Default.header1,
@@ -251,10 +295,14 @@ private fun ConfirmBottomSheetContent(
 }
 
 @Composable
-private fun RegisterBottomSheetContent() {
-    var checked by remember {
-        mutableStateOf(listOf(false, false, false, false))
-    }
+private fun RegisterBottomSheetContent(
+    action: (AuthAction) -> Unit,
+    state: AuthUiState,
+    checked: List<Boolean>,
+    navigator: Navigator,
+    onClicked: () -> Unit,
+) {
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -291,9 +339,9 @@ private fun RegisterBottomSheetContent() {
                     },
                     modifier = Modifier.clickable {
                         if (checked[0]) {
-                            checked = listOf(false, false, false, false)
+                            action(AuthAction.OnConsentChanged(listOf(false, false, false, false)))
                         } else {
-                            checked = listOf(true, true, true, true)
+                            action(AuthAction.OnConsentChanged(listOf(true, true, true, true)))
                         }
                     },
                 )
@@ -306,60 +354,86 @@ private fun RegisterBottomSheetContent() {
         }
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(30.dp),
-            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 36.dp),
+            modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 20.dp),
         ) {
             TermRow(
                 title = stringResource(id = R.string.service_term),
-                url = "",
                 checked = checked[1],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.termsOfServiceLink,
+                    )
+                },
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[1]) {
-                            this[1] = false
-                            this[0] = false
-                        } else {
-                            this[1] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[1]) {
+                                    this[1] = false
+                                    this[0] = false
+                                } else {
+                                    this[1] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
             TermRow(
                 title = stringResource(id = R.string.privacy_term),
-                url = "",
                 checked = checked[2],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.privacyPolicyLink,
+                    )
+                },
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[2]) {
-                            this[2] = false
-                            this[0] = false
-                        } else {
-                            this[2] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[2]) {
+                                    this[2] = false
+                                    this[0] = false
+                                } else {
+                                    this[2] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
 
             TermRow(
                 title = stringResource(id = R.string.marketing_term),
-                url = "",
                 checked = checked[3],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.marketingLink,
+                    )
+                },
                 onClicked = {
-                    checked = checked.toMutableList().apply {
-                        if (this[3]) {
-                            this[3] = false
-                            this[0] = false
-                        } else {
-                            this[3] = true
-                        }
-                    }
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[3]) {
+                                    this[3] = false
+                                    this[0] = false
+                                } else {
+                                    this[3] = true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
         }
 
         WSButton(
-            onClick = { },
+            onClick = onClicked,
             text = stringResource(id = R.string.accept_and_start),
             enabled = checked.drop(1).take(2).all { it },
         ) {
@@ -371,15 +445,19 @@ private fun RegisterBottomSheetContent() {
 @Composable
 private fun TermRow(
     title: String,
-    url: String,
     checked: Boolean,
+    navigateToWebLink: () -> Unit,
     onClicked: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 22.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .clickableSingle {
+                navigateToWebLink.invoke()
+            }
+            .padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
     ) {
         Icon(
             painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
@@ -402,16 +480,6 @@ private fun TermRow(
                 contentDescription = "화살 아이콘",
                 tint = WeSpotThemeManager.colors.disableIcnColor,
             )
-        }
-    }
-}
-
-@Composable
-@OrientationPreviews
-private fun EditScreenPreview() {
-    WeSpotTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            EditScreen()
         }
     }
 }

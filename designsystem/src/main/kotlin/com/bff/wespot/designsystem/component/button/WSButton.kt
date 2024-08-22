@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -33,14 +35,18 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
+data class HeightRange(val minHeight: Dp, val maxHeight: Dp)
+
 @Composable
 fun WSButton(
     onClick: () -> Unit,
     text: String = "",
     buttonType: WSButtonType = WSButtonType.Primary,
     paddingValues: PaddingValues = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
+    heightRange: HeightRange? = null,
     enabled: Boolean = true,
     borderStroke: BorderStroke? = null,
+    background: Color? = null,
     pressedBorderStroke: BorderStroke? = null,
     content: @Composable RowScope.(text: @Composable () -> Unit) -> Unit,
 ) {
@@ -56,14 +62,20 @@ fun WSButton(
             .padding(paddingValues),
     ) {
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = if (heightRange == null) {
+                Modifier.fillMaxWidth()
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(heightRange.minHeight, heightRange.maxHeight)
+            },
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
                 contentColor = buttonType.textColor(),
                 containerColor = if (isPressed) {
                     buttonType.pressColor()
                 } else {
-                    buttonType.background()
+                    background ?: buttonType.background()
                 },
                 disabledContentColor = WeSpotThemeManager.colors.disableBtnTxtColor.copy(alpha = 0.8f),
                 disabledContainerColor = WeSpotThemeManager.colors.disableBtnColor,

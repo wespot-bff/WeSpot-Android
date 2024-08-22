@@ -5,7 +5,7 @@ targetSdk = "34"
 versionName = "1.0.0"
 versionCode = "1"
 
-gradle-plugin = "8.5.0"
+gradle-plugin = "8.5.1"
 kotlin = "2.0.0"
 kotlinx-serialization-json = "1.7.0"
 kotlinx-collections-immutable = "0.3.7"
@@ -13,11 +13,13 @@ core-ktx = "1.13.1"
 ksp = "2.0.0-1.0.22"
 ktlint = "12.1.1"
 detekt = "1.23.6"
+kotlinx-coroutines = "1.8.1"
+java-inject = "1"
 
-lifecycle-runtime-ktx = "2.8.2"
+lifecycle-runtime-ktx = "2.8.3"
 activity-compose = "1.9.0"
 compose-bom = "2024.06.00"
-lifecycle = "2.8.2"
+lifecycle = "2.8.3"
 navigation = "2.7.7"
 hilt = "2.51.1"
 hilt-navigation-compose = "1.2.0"
@@ -28,7 +30,7 @@ orbit = "8.0.0"
 material = "1.12.0"
 google-services = "4.4.2"
 crashlytics = "3.0.2"
-firebase = "33.1.1"
+firebase = "33.1.2"
 
 junit = "4.13.2"
 junit-version = "1.2.1"
@@ -36,8 +38,17 @@ espresso-core = "3.6.1"
 appcompat = "1.7.0"
 
 compose-destination = "1.10.2"
-lottie = "6.4.1"
+lottie = "6.5.0"
+timber = "5.0.1"
 datastore = "1.1.1"
+google-protobuf-plguin = "0.9.4"
+google-protobuf = "3.25.3"
+
+kakao_sdk = "2.12.1"
+
+paging3 = "3.3.2"
+
+splash-screen = "1.0.1"
 
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
@@ -45,6 +56,8 @@ kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+java-inject = { module = "javax.inject:javax.inject", version.ref = "java-inject" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
@@ -65,7 +78,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-compose-destination = { group = "io.github.raamcosta.compose-destinations", name = "core", version.ref = "compose-destination" }
 androidx-compose-destination-compiler = { group = "io.github.raamcosta.compose-destinations", name = "ksp", version.ref = "compose-destination" }
 
-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 
 compose-compiler-extension = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
@@ -78,8 +91,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor-client" }
 ktor-client-engine-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-client" }
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor-client"}
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor-client" }
-ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor-client" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor-client" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor-client" }
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor-client" }
@@ -88,8 +101,10 @@ orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbi
 orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbit" }
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }
 
-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-
+datastore-prefereces = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+datastore = { group = "androidx.datastore", name ="datastore", version.ref = "datastore"}
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "google-protobuf" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "google-protobuf" }
 
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 crashlytics-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlytics" }
@@ -97,14 +112,24 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-config = { module = "com.google.firebase:firebase-config-ktx"}
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
+
+kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sdk" }
+kakao_link = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakao_sdk" }
+
+paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
+paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
+
+splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen" }
 
 [bundles]
 androidx-compose = [
@@ -126,7 +151,7 @@ ktor-client = [
     "ktor-client-core",
     "ktor-client-engine-cio",
     "ktor-client-content-negotiation",
-    "ktor-client-okhttp",
+    "ktor-client-auth",
     "ktor-client-json",
     "ktor-client-logging",
     "ktor-serialization",
@@ -138,6 +163,7 @@ orbit = ["orbit-core", "orbit-compose", "orbit-viewmodel"]
 android-application = { id = "com.android.application", version.ref = "gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -146,6 +172,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plguin" }
 
 # Gradle Plugin
 wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified" }

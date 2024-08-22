@@ -6,14 +6,18 @@ import com.bff.wespot.plugin.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.konan.properties.loadProperties
+import java.io.File
 
 class AndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        val file = File(target.rootProject.rootDir, "local.properties")
+        val property = loadProperties(file.absolutePath)
+
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
-                apply("com.bff.wespot.lint")
             }
 
             extensions.configure<ApplicationExtension> {
@@ -25,6 +29,38 @@ class AndroidApplicationPlugin : Plugin<Project> {
 
                     targetSdk = libs.findVersion("targetSdk").get().toString().toInt()
                     applicationId = "com.bff.wespot"
+                }
+
+                signingConfigs {
+                    create("release") {
+                        storeFile = file("keystore/release.keystore")
+                        storePassword = property.getProperty("SIGNED_STORE_PASSWORD")
+                        keyAlias = property.getProperty("SIGNED_KEY_ALIAS")
+                        keyPassword = property.getProperty("SIGNED_KEY_PASSWORD")
+                    }
+                }
+
+                buildTypes {
+                    debug {
+                        isMinifyEnabled = false
+                        isShrinkResources = false
+
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
+                    }
+
+                    release {
+                        isMinifyEnabled = true
+                        isShrinkResources = true
+
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
+                        signingConfig = signingConfigs.getByName("release")
+                    }
                 }
             }
         }

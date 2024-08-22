@@ -17,15 +17,27 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://devrepo.kakao.com/nexus/content/groups/public/")
+        }
     }
 }
 
 rootProject.name = "WeSpot"
 include(":app")
 include(":feature:auth")
+include(":feature:message")
 include(":domain")
 include(":data")
+include(":data-remote")
 include(":designsystem")
 include(":core:model")
 include(":core:common")
 include(":core:ui")
+include(":core:network")
+include(":core:navigation")
+include(":feature:vote")
+include(":feature:entire")
+include(":data-local")
+include(":feature:notification")
+include(":core:analytics")

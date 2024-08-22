@@ -8,4 +8,8 @@ dependencies {
 
 dependencies {
     implementation(project(":core:model"))
+
+    implementation(libs.paging3.domain)
+    implementation(libs.java.inject)
+    implementation(libs.kotlin.coroutines)
 }

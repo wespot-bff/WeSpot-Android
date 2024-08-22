@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vote_question_google_form_url">https://forms.gle/eiKdpjmwdxzvqm947</string>
+    <string name="wespot_kakao_channel_url">http://pf.kakao.com/_SEDcG</string>
+    <string name="wespot_instagram_url">https://www.instagram.com/wespot.official/</string>
+    <string name="user_opinion_google_form_url">https://forms.gle/BZbC5wpuMt9mynUG6</string>
+    <string name="research_participation_google_form_url">https://docs.google.com/forms/d/e/1FAIpQLSfkN2b752gRKtFRk9IUreFRacNXnj5jh4tlHWKp0n51IaObyw/viewform?usp=sf_link</string>
+    <string name="wespot_makers_url">https://www.notion.so/WeSpot-Makers-87e988ab3c9e47f28c141ad1aa663b80?pvs=4</string>
+    <string name="profile_change_google_form_url">https://docs.google.com/forms/d/e/1FAIpQLSdFlTCYbGL4QDYJlzt8jeeeA-E3ITWIBeYS2B5cAZs2j8wosQ/viewform?usp=sf_link</string>
+    <string name="privacy_policy_url">https://www.notion.so/2fa1c3002e14460f91462204b0daefbf?pvs=4</string>
+    <string name="play_store_url">https://play.google.com/store/apps</string>
+    <string name="terms_of_service_url">https://www.notion.so/yapp-workspace/0826c1435e0b4eba95ce62beb0aea425</string>
+</resources>

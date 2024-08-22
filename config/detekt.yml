@@ -18,11 +18,16 @@ complexity:
   LongParameterList:
     active: false
 
+  TooManyFunctions:
+    active: false
+
 coroutines:
   active: true
 
 empty-blocks:
   active: true
+  EmptyFunctionBlock:
+    active: false
 
 formatting:
   active: true

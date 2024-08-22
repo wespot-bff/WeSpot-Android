@@ -26,29 +26,42 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
+import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
+fun GenderScreen(
+    viewModel: AuthViewModel,
+    edit: Boolean,
+) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
     Scaffold(
         topBar = {
-            WSTopBar(title = stringResource(id = R.string.register), canNavigateBack = true)
+            WSTopBar(
+                title = stringResource(id = R.string.register),
+                canNavigateBack = true,
+                navigateUp = {
+                    action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                },
+            )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -65,28 +78,39 @@ fun GenderScreen(viewModel: AuthViewModel = viewModel()) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 GenderBox(
-                    title = stringResource(id = R.string.male_student),
+                    title = stringResource(id = com.bff.wespot.designsystem.R.string.male_student),
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.male_student,
                     ),
-                    selected = "male" == state.gender,
+                    selected = "MALE" == state.gender,
                     onClicked = {
-                        action(AuthAction.OnGenderChanged("male"))
+                        action(AuthAction.OnGenderChanged("MALE"))
+                        if (edit) {
+                            action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                            return@GenderBox
+                        }
+                        action(AuthAction.Navigation(NavigationAction.NavigateToNameScreen(false)))
                     },
                 )
                 GenderBox(
-                    title = stringResource(id = R.string.female_student),
+                    title = stringResource(id = com.bff.wespot.designsystem.R.string.female_student),
                     icon = painterResource(
                         id = com.bff.wespot.ui.R.drawable.female_student,
                     ),
-                    selected = "female" == state.gender,
+                    selected = "FEMALE" == state.gender,
                     onClicked = {
-                        action(AuthAction.OnGenderChanged("female"))
+                        action(AuthAction.OnGenderChanged("FEMALE"))
+                        if (edit) {
+                            action(AuthAction.Navigation(NavigationAction.PopBackStack))
+                            return@GenderBox
+                        }
+                        action(AuthAction.Navigation(NavigationAction.NavigateToNameScreen(false)))
                     },
                 )
             }
         }
     }
+    TrackScreenViewEvent(screenName = "gender_screen", id = state.uuid)
 }
 
 @Composable
