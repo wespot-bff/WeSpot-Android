@@ -2,7 +2,6 @@ package com.bff.wespot.data.repository.notification
 
 import com.bff.wespot.data.remote.source.notification.NotificationDataSource
 import com.bff.wespot.domain.repository.notification.NotificationRepository
-import com.bff.wespot.model.notification.Notification
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
