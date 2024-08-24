@@ -189,7 +189,9 @@ fun NotificationListItem(
             Box {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = stringResource(R.string.notification_icon),
+                    contentDescription = stringResource(
+                        com.bff.wespot.designsystem.R.string.notification_icon,
+                    ),
                     tint = WeSpotThemeManager.colors.primaryBtnColor,
                 )
 

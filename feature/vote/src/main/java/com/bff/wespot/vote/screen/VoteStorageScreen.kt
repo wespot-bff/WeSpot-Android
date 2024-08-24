@@ -178,20 +178,24 @@ private fun ReceivedVoteScreen(
         }
 
         else -> {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(bottom = 20.dp),
-            ) {
-                items(data.itemCount) { index ->
-                    val item = data[index]
+            if (data.itemCount == 0) {
+                EmptyResultScreen()
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(bottom = 20.dp),
+                ) {
+                    items(data.itemCount) { index ->
+                        val item = data[index]
 
-                    item?.let {
-                        if (it.receivedVoteResults.isNotEmpty()) {
-                            VoteDateList(
-                                votes = item.receivedVoteResults,
-                                date = item.date,
-                                action = action,
-                            )
+                        item?.let {
+                            if (it.receivedVoteResults.isNotEmpty()) {
+                                VoteDateList(
+                                    votes = item.receivedVoteResults,
+                                    date = item.date,
+                                    action = action,
+                                )
+                            }
                         }
                     }
                 }
@@ -220,20 +224,24 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
         }
 
         else -> {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(bottom = 20.dp),
-            ) {
-                items(data.itemCount) { index ->
-                    val item = data[index]
+            if (data.itemCount == 0) {
+                EmptyResultScreen()
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(bottom = 20.dp),
+                ) {
+                    items(data.itemCount) { index ->
+                        val item = data[index]
 
-                    item?.let {
-                        if (it.sentVoteResults.isNotEmpty()) {
-                            VoteDateList(
-                                votes = item.getSentVoteResult(),
-                                date = item.date,
-                                action = action,
-                            )
+                        item?.let {
+                            if (it.sentVoteResults.isNotEmpty()) {
+                                VoteDateList(
+                                    votes = item.getSentVoteResult(),
+                                    date = item.date,
+                                    action = action,
+                                )
+                            }
                         }
                     }
                 }
