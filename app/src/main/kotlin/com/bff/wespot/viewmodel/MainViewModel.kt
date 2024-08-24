@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -48,6 +49,7 @@ class MainViewModel @Inject constructor(
         when (action) {
             MainAction.OnMainScreenEntered -> handleMainScreenEntered()
             MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
+            is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
         }
     }
 
@@ -58,32 +60,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getNotificationSettingStatus() {
+    private fun getNotificationSettingStatus() = intent {
         viewModelScope.launch(coroutineDispatcher) {
             val isSetUp = dataStoreRepository
                 .getBoolean(DataStoreKey.IS_NOTIFICATION_SET_UP)
                 .first()
 
-            if (isSetUp) {
-
+            if (isSetUp.not()) {
+                postSideEffect(MainSideEffect.ShowNotificationSettingDialog)
             }
         }
     }
 
-    private fun postNotificationSetting() = intent {
-        val updatedNotificationSetting = NotificationSetting(
-            isEnableVoteNotification = state.isEnableVoteNotification,
-            isEnableMessageNotification = state.isEnableMessageNotification,
-            isEnableMarketingNotification = state.isEnableMarketingNotification,
-        )
-
-        if (updatedNotificationSetting != state.initialNotificationSetting) {
-            viewModelScope.launch {
-                userRepository.updateNotificationSetting(updatedNotificationSetting)
-                    .onFailure {
-                        Timber.e(it)
-                    }
-            }
+    private fun handleNotificationSet(isEnableNotification: Boolean) = intent {
+        viewModelScope.launch {
+            userRepository.setFeatureNotificationSetting(isEnableNotification)
+                .onFailure {
+                    Timber.e(it)
+                }
         }
     }
 
