@@ -3,6 +3,7 @@ package com.bff.wespot.domain.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.bff.wespot.model.common.Paging
+import com.bff.wespot.model.exception.NetworkException
 import java.io.IOException
 
 abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>() {
@@ -26,6 +27,8 @@ abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>()
                 nextKey = nextKey,
             )
         } catch (e: IOException) {
+            LoadResult.Error(e)
+        } catch (e: NetworkException) {
             LoadResult.Error(e)
         }
     }
