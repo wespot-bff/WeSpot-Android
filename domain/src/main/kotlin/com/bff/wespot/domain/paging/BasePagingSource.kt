@@ -27,6 +27,8 @@ abstract class BasePagingSource<T : Any, R : Paging<T>> : PagingSource<Int, T>()
             )
         } catch (e: IOException) {
             LoadResult.Error(e)
+        } catch (e: Exception) {
+            LoadResult.Error(e)
         }
     }
 
