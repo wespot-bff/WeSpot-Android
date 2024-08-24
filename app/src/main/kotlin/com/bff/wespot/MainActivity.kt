@@ -53,6 +53,7 @@ import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -64,14 +65,17 @@ import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
+import com.bff.wespot.R.string
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.state.MainAction
+import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -148,9 +152,18 @@ private fun MainScreen(
 
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
+    var showNotificationDialog by remember { mutableStateOf(false) }
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
+
+    viewModel.collectSideEffect {
+        when (it) {
+            MainSideEffect.ShowNotificationSettingDialog -> {
+                showNotificationDialog = true
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -160,7 +173,7 @@ private fun MainScreen(
                 transitionSpec = {
                     fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
                 },
-                label = stringResource(com.bff.wespot.R.string.bottom_bar_animated_content_label),
+                label = stringResource(string.bottom_bar_animated_content_label),
             ) { targetState ->
                 if (targetState) {
                     WSTopBar(
@@ -203,7 +216,7 @@ private fun MainScreen(
                 transitionSpec = {
                     fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
                 },
-                label = stringResource(com.bff.wespot.R.string.top_bar_animated_content_label)
+                label = stringResource(string.top_bar_animated_content_label)
             ) { targetState ->
                 if (targetState) {
                     val currentSelectedItem by navController.currentScreenAsState()
@@ -242,6 +255,25 @@ private fun MainScreen(
         showToast = toast.show
     ) {
         toast = toast.copy(show = false)
+    }
+
+    if (showNotificationDialog) {
+        WSDialog(
+            title = stringResource(string.notification_setting_dialog_title),
+            subTitle = stringResource(string.notification_setting_dialog_subtitle)
+                .replace(" ", "\u00A0"),
+            okButtonText = stringResource(string.agree),
+            cancelButtonText = stringResource(string.disagree),
+            okButtonClick = {
+                action(MainAction.OnNotificationSet(true))
+                showNotificationDialog = false
+            },
+            cancelButtonClick = {
+                action(MainAction.OnNotificationSet(false))
+                showNotificationDialog = false
+            },
+            onDismissRequest = { }
+        )
     }
 
     LaunchedEffect(Unit) {
