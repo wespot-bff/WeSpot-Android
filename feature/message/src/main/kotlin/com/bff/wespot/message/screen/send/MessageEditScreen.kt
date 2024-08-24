@@ -196,8 +196,10 @@ fun MessageEditScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(68.dp))
+        }
 
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             WSButton(
                 onClick = {
                     if (state.isReservedMessage) {
@@ -206,12 +208,6 @@ fun MessageEditScreen(
                         reserveDialog = true
                     }
                 },
-                paddingValues = PaddingValues(
-                    start = 20.dp,
-                    end = 20.dp,
-                    top = 32.dp,
-                    bottom = 12.dp,
-                ),
                 text = stringResource(
                     if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
                 ),
