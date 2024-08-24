@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
+import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -169,8 +170,8 @@ fun WSBanner(
             .let {
                 if (hasBorder) {
                     it.border(
-                        width = 1.dp,
-                        color = WeSpotThemeManager.colors.primaryColor,
+                        width = (0.6).dp,
+                        color = Primary400,
                         shape = WeSpotThemeManager.shapes.medium,
                     )
                 } else {
