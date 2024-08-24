@@ -123,12 +123,15 @@ fun ProfileEditScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(modifier = Modifier.clickable { navigator.navigateToCharacterEditScreen() }) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .clickable { navigator.navigateToCharacterEditScreen() },
+            ) {
                 Box(
                     modifier = Modifier
                         .size(90.dp)
                         .clip(CircleShape)
-                        .padding(top = 16.dp)
                         .background(hexToColor(state.profile.profileCharacter.backgroundColor)),
                     contentAlignment = Alignment.Center,
                 ) {
