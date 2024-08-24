@@ -1,7 +1,6 @@
 package com.bff.wespot.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,12 +17,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -94,21 +94,22 @@ fun CharacterScreen(
                     .background(hexToColor(color)),
                 contentAlignment = Alignment.Center,
             ) {
+                Spacer(modifier = Modifier.height(4.dp))
                 AsyncImage(
                     model = ImageRequest
                         .Builder(LocalContext.current)
                         .data(character)
                         .build(),
                     contentDescription = stringResource(id = R.string.user_character_image),
-                    modifier = Modifier.size(75.dp),
+                    modifier = Modifier.size(120.dp),
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(42.dp))
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Column {
+            Column(
+                modifier = Modifier.wrapContentHeight(),
+            ) {
                 SelectionTypeChipGroup(chipSelection) {
                     chipSelection = it
                 }
@@ -138,13 +139,22 @@ fun CharacterScreen(
                             )
                         }
                     }
-
+                }
+                Box(
+                    modifier = Modifier
+                        .background(WeSpotThemeManager.colors.modalColor),
+                ) {
                     WSButton(
                         onClick = {
                             navigateToNext(character, color)
                         },
                         text = stringResource(
                             if (isEditing) R.string.edit_done else R.string.complete,
+                        ),
+                        paddingValues = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            bottom = 12.dp,
                         ),
                     ) {
                         it.invoke()
@@ -209,19 +219,17 @@ private fun SelectionTypeChip(
                 modifier = Modifier.padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Image(
+                Icon(
                     painter = icon,
                     contentDescription = text,
                     modifier = Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(
-                        if (isSelected) {
-                            Color(0xFFD9D9D9)
-                        } else {
-                            Color(0xFF76777D)
-                        },
-                    ),
+                    tint = if (isSelected) {
+                        Color(0xFFD9D9D9)
+                    } else {
+                        Color(0xFF76777D)
+                    },
                 )
-                Text(text = text, style = StaticTypeScale.Default.body6)
+                AutoSizeText(text = text, style = StaticTypeScale.Default.body6, maxLines = 1)
             }
         },
         border = if (!isSelected) {
