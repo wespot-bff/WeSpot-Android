@@ -193,7 +193,7 @@ private fun MainScreen(
                                     Icon(
                                         painter = painterResource(id = R.drawable.icn_alarm),
                                         contentDescription = stringResource(
-                                            id = com.bff.wespot.message.R.string.notification_icon,
+                                            id = R.string.notification_icon,
                                         ),
                                     )
                                 }
@@ -209,7 +209,7 @@ private fun MainScreen(
                                     Icon(
                                         painter = painterResource(id = R.drawable.icn_settings),
                                         contentDescription = stringResource(
-                                            id = com.bff.wespot.message.R.string.notification_icon,
+                                            id = R.string.setting_icon,
                                         ),
                                     )
                                 }

@@ -37,4 +37,6 @@
     <string name="male_student">남학생</string>
     <string name="female_student">여학생</string>
     <string name="invite_message">투표와 쪽지로 마음을 전할 수 있는 우리만의 공간,\n위스팟에서 기다릴게! 📮\n</string>
+    <string name="notification_icon">Notification Icon</string>
+    <string name="setting_icon">Setting Icon</string>
 </resources>
