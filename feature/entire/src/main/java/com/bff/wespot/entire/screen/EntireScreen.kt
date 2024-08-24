@@ -77,7 +77,7 @@ internal fun EntireScreen(
                     Icon(
                         modifier = Modifier
                             .clickable { navigator.navigateToSetting() }
-                            .padding(end = 16.dp),
+                            .padding(end = 8.dp),
                         imageVector = ImageVector.vectorResource(
                             com.bff.wespot.designsystem.R.drawable.icn_settings,
                         ),
