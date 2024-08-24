@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -253,21 +251,18 @@ fun ProfileContent(
             )
         }
 
-        FilterChip(
-            shape = WeSpotThemeManager.shapes.extraLarge,
-            onClick = { onClick() },
-            selected = false,
-            label = {
-                Text(
-                    text = stringResource(R.string.profile_edit),
-                    style = StaticTypeScale.Default.body9,
-                )
-            },
-            border = null,
-            colors = FilterChipDefaults.filterChipColors(
-                containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                labelColor = WeSpotThemeManager.colors.txtTitleColor,
-            ),
-        )
+        Box(
+            modifier = Modifier
+                .clip(WeSpotThemeManager.shapes.extraLarge)
+                .clickable { onClick() }
+                .background(WeSpotThemeManager.colors.secondaryBtnColor),
+        ) {
+            Text(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                text = stringResource(R.string.profile_edit),
+                style = StaticTypeScale.Default.body9,
+                color = Color(0xFFF7F7F8),
+            )
+        }
     }
 }
