@@ -390,14 +390,6 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: Not
 private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
     this.navigate(navGraph) {
         launchSingleTop = true
-        restoreState = when (navGraph.route) {
-            AppNavGraphs.message.route,
-            AppNavGraphs.notification.route -> false
-            else -> true
-        }
-
-        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id ) {
-            saveState = true
-        }
+        popUpTo(this@navigateToNavGraph.graph.findStartDestination().id)
     }
 }
