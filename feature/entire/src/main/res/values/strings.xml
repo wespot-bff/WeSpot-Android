@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="setting_icon">Setting Icon</string>
     <string name="vote_question_banner_title">선택지 추가하기</string>
     <string name="vote_question_banner_subtitle">다양한 선택지로 더 재밌게 투표해보세요</string>
     <string name="contact_channel">문의 채널 바로가기</string>

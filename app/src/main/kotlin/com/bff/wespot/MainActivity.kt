@@ -57,6 +57,7 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
@@ -67,10 +68,11 @@ import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.R.string
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
+import com.bff.wespot.state.MainAction
 import com.bff.wespot.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
+import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
@@ -175,35 +177,55 @@ private fun MainScreen(
                 },
                 label = stringResource(string.bottom_bar_animated_content_label),
             ) { targetState ->
-                if (targetState) {
+                if (targetState != BarType.NONE) {
                     WSTopBar(
                         title = "",
                         navigation = {
-                            Image(
-                                modifier = Modifier
-                                    .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                                    .size(width = 112.dp, height = 44.dp),
-                                painter = painterResource(id = R.drawable.main_logo),
-                                contentDescription = stringResource(
-                                    id = com.bff.wespot.message.R.string.wespot_logo,
-                                ),
-                            )
-                        },
-                        action = {
-                            IconButton(
-                                modifier = Modifier.padding(end = 16.dp),
-                                onClick = {
-                                    navController.navigateToNavGraph(
-                                        navGraph =  AppNavGraphs.notification,
-                                    )
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icn_alarm),
+                            if (isTopNavigationScreen == BarType.DEFAULT) {
+                                Image(
+                                    modifier = Modifier
+                                        .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                                        .size(width = 112.dp, height = 44.dp),
+                                    painter = painterResource(id = R.drawable.main_logo),
                                     contentDescription = stringResource(
-                                        id = com.bff.wespot.message.R.string.notification_icon,
+                                        id = com.bff.wespot.message.R.string.wespot_logo,
                                     ),
                                 )
+                            }
+                        },
+                        action = {
+                            if (isTopNavigationScreen == BarType.DEFAULT) {
+                                IconButton(
+                                    modifier = Modifier.padding(end = 8.dp),
+                                    onClick = {
+                                        navController.navigateToNavGraph(
+                                            navGraph = AppNavGraphs.notification,
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icn_alarm),
+                                        contentDescription = stringResource(
+                                            id = R.string.notification_icon,
+                                        ),
+                                    )
+                                }
+                            } else if (isTopNavigationScreen == BarType.ENTIRE) {
+                                IconButton(
+                                    modifier = Modifier.padding(end = 8.dp),
+                                    onClick = {
+                                        navController.navigate(
+                                            SettingScreenDestination within AppNavGraphs.entire,
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icn_settings),
+                                        contentDescription = stringResource(
+                                            id = R.string.setting_icon,
+                                        ),
+                                    )
+                                }
                             }
                         },
                     )
@@ -218,7 +240,7 @@ private fun MainScreen(
                 },
                 label = stringResource(string.top_bar_animated_content_label)
             ) { targetState ->
-                if (targetState) {
+                if (targetState == BarType.DEFAULT) {
                     val currentSelectedItem by navController.currentScreenAsState()
                     BottomNavigationTab(
                         selectedNavigation = currentSelectedItem,
@@ -333,8 +355,8 @@ private fun NavController.currentScreenAsState(): State<NavGraphSpec> {
 
 @Stable
 @Composable
-private fun NavController.checkCurrentScreen(position: NavigationBarPosition): State<Boolean> {
-    val showBar = remember { mutableStateOf(false) }
+private fun NavController.checkCurrentScreen(position: NavigationBarPosition): State<BarType> {
+    val showBar = remember { mutableStateOf(BarType.NONE) }
 
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->

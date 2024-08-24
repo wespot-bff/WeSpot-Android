@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,18 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
-import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.domain.util.RemoteConfigKey
@@ -55,7 +50,6 @@ interface EntireNavigator {
     fun navigateToProfileEditScreen(args: ProfileEditNavArgs)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 internal fun EntireScreen(
@@ -67,25 +61,7 @@ internal fun EntireScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    Scaffold(
-        topBar = {
-            WSTopBar(
-                title = "",
-                action = {
-                    Icon(
-                        modifier = Modifier
-                            .clickable { navigator.navigateToSetting() }
-                            .padding(end = 8.dp),
-                        imageVector = ImageVector.vectorResource(
-                            com.bff.wespot.designsystem.R.drawable.icn_settings,
-                        ),
-                        contentDescription = stringResource(R.string.setting_icon),
-                        tint = WeSpotThemeManager.colors.secondaryBtnColor,
-                    )
-                },
-            )
-        },
-    ) {
+    Scaffold {
         Column(
             modifier = Modifier
                 .padding(it)
