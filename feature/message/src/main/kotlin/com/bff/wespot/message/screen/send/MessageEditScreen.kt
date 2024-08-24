@@ -224,6 +224,7 @@ fun MessageEditScreen(
             SendExitDialog(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
+                    exitDialog = false
                     navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { exitDialog = false },
