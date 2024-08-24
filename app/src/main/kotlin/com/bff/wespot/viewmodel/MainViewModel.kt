@@ -75,6 +75,9 @@ class MainViewModel @Inject constructor(
     private fun handleNotificationSet(isEnableNotification: Boolean) = intent {
         viewModelScope.launch {
             userRepository.setFeatureNotificationSetting(isEnableNotification)
+                .onSuccess {
+                    dataStoreRepository.saveBoolean(DataStoreKey.IS_NOTIFICATION_SET_UP, true)
+                }
                 .onFailure {
                     Timber.e(it)
                 }
