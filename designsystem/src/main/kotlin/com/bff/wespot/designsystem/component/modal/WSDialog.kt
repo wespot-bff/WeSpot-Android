@@ -54,6 +54,18 @@ fun WSDialog(
                         cancelButtonClick = cancelButtonClick,
                     )
                 }
+
+                is WSDialogType.OneButton -> {
+                    Box(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+                        WSButton(
+                            text = okButtonText,
+                            onClick = okButtonClick,
+                            buttonType = WSButtonType.Primary,
+                            paddingValues = PaddingValues(0.dp),
+                            content = { it() },
+                        )
+                    }
+                }
             }
         }
     }
@@ -122,6 +134,7 @@ private fun WSDialogTwoButton(
 
 sealed interface WSDialogType {
     data object TowButton : WSDialogType
+    data object OneButton : WSDialogType
 }
 
 @OrientationPreviews
