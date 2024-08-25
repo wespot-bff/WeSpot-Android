@@ -107,10 +107,6 @@ class CommonNavGraphNavigator(
         navController.navigate(ReservedMessageScreenDestination(args) within navGraph)
     }
 
-    override fun navigateNotificationScreen() {
-        navController.navigate(NotificationScreenDestination within navGraph)
-    }
-
     override fun navigateToResultScreen(args: VoteResultScreenArgs) {
         navController.navigate(VoteResultScreenDestination(args) within navGraph)
     }
