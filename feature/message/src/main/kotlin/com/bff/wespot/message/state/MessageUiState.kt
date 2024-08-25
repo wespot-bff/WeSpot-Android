@@ -25,4 +25,6 @@ data class MessageUiState(
     val messageOptionType: MessageOptionType = MessageOptionType.DELETE,
     val reservedMessageList: List<Message> = listOf(),
     val isLoading: Boolean = false,
+    val messageStartTime: String = "17:00",
+    val messageReceiveTime: String = "22:00",
 )
