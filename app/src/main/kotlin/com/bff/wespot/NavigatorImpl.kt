@@ -46,6 +46,17 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
+    override fun navigateToAuthWithExtra(
+        context: Context,
+        targetId: Pair<String, Int>,
+        date: Pair<String, String>,
+        type: Pair<String, String>
+    ): Intent {
+        val intent = context.buildIntent<AuthActivity>(targetId, date, type)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        return intent
+    }
+
     override fun navigateToSharing(context: Context, text: String) {
         val sendIntent = Intent(Intent.ACTION_SEND)
         sendIntent.setType("text/plain")
