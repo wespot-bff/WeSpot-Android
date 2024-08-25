@@ -170,7 +170,7 @@ fun WSBanner(
             .let {
                 if (hasBorder) {
                     it.border(
-                        width = (0.6).dp,
+                        width = 1.dp,
                         color = Primary400,
                         shape = WeSpotThemeManager.shapes.medium,
                     )
