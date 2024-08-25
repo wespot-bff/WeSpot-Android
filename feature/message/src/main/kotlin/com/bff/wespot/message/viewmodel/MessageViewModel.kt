@@ -6,8 +6,10 @@ import androidx.paging.cachedIn
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.message.R
 import com.bff.wespot.message.model.ClickedMessageUiModel
 import com.bff.wespot.message.model.MessageOptionType
@@ -48,8 +50,18 @@ class MessageViewModel @Inject constructor(
     private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
     private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
     private val commonRepository: CommonRepository,
+    remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
-    override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
+    override val container = container<MessageUiState, MessageSideEffect>(
+        MessageUiState(
+            messageStartTime = remoteConfigRepository.fetchFromRemoteConfig(
+                RemoteConfigKey.MESSAGE_START_TIME,
+            ),
+            messageReceiveTime = remoteConfigRepository.fetchFromRemoteConfig(
+                RemoteConfigKey.MESSAGE_RECEIVE_TIME,
+            ),
+        ),
+    )
 
     private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val remainingTimeMillis: StateFlow<Long> = _remainingTimeMillis.asStateFlow()
@@ -74,7 +86,10 @@ class MessageViewModel @Inject constructor(
                 delay(1000)
                 intent {
                     // TimePeriod가 변경되는 경우, UI 업데이트 수행
-                    val currentTimePeriod = getCurrentTimePeriod()
+                    val currentTimePeriod = getCurrentTimePeriod(
+                        messageStartTime = state.messageStartTime,
+                        messageReceiveTime = state.messageReceiveTime,
+                    )
                     if (state.timePeriod != currentTimePeriod) {
                         updateTimePeriod(currentTimePeriod)
                     }
@@ -120,8 +135,11 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleHomeScreenEntered() {
-        val currentTimePeriod = getCurrentTimePeriod()
+    private fun handleHomeScreenEntered() = intent {
+        val currentTimePeriod = getCurrentTimePeriod(
+            messageStartTime = state.messageStartTime,
+            messageReceiveTime = state.messageReceiveTime,
+        )
         updateTimePeriod(currentTimePeriod)
         timeChecker.start()
     }
