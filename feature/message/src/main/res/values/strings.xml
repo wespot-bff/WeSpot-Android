@@ -31,7 +31,7 @@
     <string name="send_exit_dialog_ok_button">네 그만할래요</string>
     <string name="receiver">받는 사람</string>
     <string name="message_write_title">쪽지 내용을 작성해주세요\n상대에게 익명으로 전달해 드릴게요</string>
-    <string name="message_write_text_holder">오늘 바나나 우유 고마웠어! 점심 시간에 경기하는 거 봤는데 잘 하더라! 다치지 말고 화이팅 해!</string>
+    <string name="message_write_text_holder">나랑 등교 같이할래?</string>
     <string name="message_length_limit">200자 이내로 입력해 주세요</string>
     <string name="write_done">작성 완료</string>
     <string name="toast_error_name_edit">닉네임은 직접 수정이 어려워요</string>

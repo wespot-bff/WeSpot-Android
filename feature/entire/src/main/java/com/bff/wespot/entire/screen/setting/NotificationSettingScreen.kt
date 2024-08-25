@@ -1,12 +1,10 @@
 package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,6 +25,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.util.OnLifecycleEvent
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -46,9 +45,7 @@ fun NotificationSettingScreen(
     val state by viewModel.collectAsState()
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
         return
     }
 

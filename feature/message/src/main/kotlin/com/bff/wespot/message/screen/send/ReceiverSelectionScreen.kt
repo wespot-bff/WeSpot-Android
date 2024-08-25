@@ -249,6 +249,7 @@ fun ReceiverSelectionScreen(
         SendExitDialog(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
+                dialogState = false
                 navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
             },
             cancelButtonClick = { dialogState = false },

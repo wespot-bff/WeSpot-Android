@@ -1,14 +1,13 @@
 package com.bff.wespot.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,25 +80,29 @@ fun ReservedMessageItem(
                 )
             }
 
-            FilterChip(
-                shape = WeSpotThemeManager.shapes.extraLarge,
-                onClick = { onClick() },
-                selected = false,
-                label = {
-                    Text(
-                        text = if (chipEnabled) chipText else chipDisabledText,
-                        style = StaticTypeScale.Default.body6,
-                    )
-                },
-                enabled = chipEnabled,
-                border = null,
-                colors = FilterChipDefaults.filterChipColors(
-                    containerColor = WeSpotThemeManager.colors.secondaryBtnColor,
-                    labelColor = Color(0xFFF7F7F8),
-                    disabledContainerColor = Gray600,
-                    disabledLabelColor = Gray400,
-                ),
-            )
+            Box(
+                modifier = Modifier
+                    .clip(WeSpotThemeManager.shapes.extraLarge)
+                    .clickable { onClick() }
+                    .let {
+                        if (chipEnabled) {
+                            it.background(WeSpotThemeManager.colors.secondaryBtnColor)
+                        } else {
+                            it.background(Gray600)
+                        }
+                    },
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    text = if (chipEnabled) chipText else chipDisabledText,
+                    style = StaticTypeScale.Default.body9,
+                    color = if (chipEnabled) {
+                        Color(0xFFF7F7F8)
+                    } else {
+                        Gray400
+                    },
+                )
+            }
         }
 
         HorizontalDivider(
