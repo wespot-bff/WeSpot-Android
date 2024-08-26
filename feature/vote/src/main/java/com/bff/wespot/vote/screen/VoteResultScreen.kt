@@ -653,5 +653,5 @@ private fun EmptyTile(
 }
 
 private const val MIN_REQUIREMENT = 5
-private const val TODAY = 0
-private const val YESTERDAY = 1
+private const val TODAY = 1
+private const val YESTERDAY = 0
