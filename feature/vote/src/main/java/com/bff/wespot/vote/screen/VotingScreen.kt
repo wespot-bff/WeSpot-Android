@@ -309,12 +309,14 @@ private fun VotingProgressScreen(
                         },
                     paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                 ) {
-                    Text(
-                        text = voteItem.content,
-                        style = StaticTypeScale.Default.body3,
-                        modifier = Modifier.padding(vertical = 14.dp),
-                        textAlign = TextAlign.Start,
-                    )
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = voteItem.content,
+                            style = StaticTypeScale.Default.body3,
+                            modifier = Modifier.padding(vertical = 18.dp, horizontal = 14.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
                 }
             }
         }

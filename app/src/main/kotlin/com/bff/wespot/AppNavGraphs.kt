@@ -3,6 +3,8 @@ package com.bff.wespot
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
@@ -159,6 +161,7 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
             }
             if (result) BarType.DEFAULT else BarType.NONE
         }
+
         NavigationBarPosition.TOP -> {
             hierarchy.forEach { destination ->
                 when (destination.route) {
@@ -224,6 +227,19 @@ private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeIn()
     }
+
+    if (target.destination.hierarchy.any { it.route == "vote/voting_screen" } &&
+        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        return slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Start,
+            animationSpec = spring(
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+            initialOffset = {
+                it / 3
+            },
+        )
+    }
     return fadeIn()
 }
 
@@ -236,6 +252,15 @@ private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeOut()
     }
+    if (target.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        return slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.End,
+            animationSpec = spring(
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+        )
+    }
+
     return fadeOut()
 }
 
