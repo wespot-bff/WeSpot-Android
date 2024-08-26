@@ -99,6 +99,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
+        checkEnteredFromPushNotification()
 
         setContent {
             WeSpotTheme {
@@ -122,6 +123,14 @@ class MainActivity : ComponentActivity() {
             if (!hasPermission) {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+        }
+    }
+
+    private fun checkEnteredFromPushNotification() {
+        val data = getMainScreenArgsFromIntent()
+
+        if (data.type != NotificationType.IDLE) {
+            viewModel.onAction(MainAction.OnNavigateByPushNotification(data))
         }
     }
 
@@ -261,7 +270,6 @@ private fun MainScreen(
         }
 
         if (state.isPushNotificationNavigation) {
-            action(MainAction.OnNavigateByPushNotification)
             navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
         }
     }

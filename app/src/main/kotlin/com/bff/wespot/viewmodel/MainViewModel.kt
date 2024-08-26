@@ -2,21 +2,22 @@ package com.bff.wespot.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.MainScreenNavArgs
+import com.bff.wespot.analytic.AnalyticsEvent
+import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
-import com.bff.wespot.model.user.response.NotificationSetting
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -27,7 +28,9 @@ class MainViewModel @Inject constructor(
     private val cacheProfileUseCase: CacheProfileUseCase,
     private val dataStoreRepository: DataStoreRepository,
     private val userRepository: UserRepository,
+    private val profileRepository: ProfileRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
+    private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
     override val container = container<MainUiState, MainSideEffect>(MainUiState())
 
@@ -48,7 +51,10 @@ class MainViewModel @Inject constructor(
     fun onAction(action: MainAction) {
         when (action) {
             MainAction.OnMainScreenEntered -> handleMainScreenEntered()
-            MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
+            is MainAction.OnNavigateByPushNotification -> {
+                handleNavigateByPushNotification()
+                trackPushNotificationClicked(action.data)
+            }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
         }
     }
@@ -70,5 +76,23 @@ class MainViewModel @Inject constructor(
 
     private fun handleNavigateByPushNotification() = intent {
         reduce { state.copy(isPushNotificationNavigation = false) }
+    }
+
+    private fun trackPushNotificationClicked(data: MainScreenNavArgs) {
+        viewModelScope.launch(coroutineDispatcher) {
+            val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
+
+            analyticsHelper.logEvent(
+                event = AnalyticsEvent(
+                    type = "push_notification_clicked",
+                    extras = listOf(
+                        AnalyticsEvent.Param("userId", userId.toString()),
+                        AnalyticsEvent.Param("date", data.date),
+                        AnalyticsEvent.Param("targetId", data.targetId.toString()),
+                        AnalyticsEvent.Param("type", data.type.name),
+                    )
+                )
+            )
+        }
     }
 }
