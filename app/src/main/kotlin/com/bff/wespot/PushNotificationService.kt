@@ -9,11 +9,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.DataStoreKey.PUSH_TOKEN
+import com.bff.wespot.splash.SplashActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +59,7 @@ class PushNotificationService : FirebaseMessagingService() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val notificationId: Int = (System.currentTimeMillis()).toInt()
 
-        val intent = Intent(this, AuthActivity::class.java)
+        val intent = Intent(this, SplashActivity::class.java)
         for (key in message.data.keys) {
             Timber.d("$key to ${message.data[key]}")
             intent.putExtra(key, message.data[key])

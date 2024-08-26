@@ -2,6 +2,7 @@ package com.bff.wespot.data.repository.user
 
 import com.bff.wespot.data.mapper.user.toNotificationSettingDto
 import com.bff.wespot.data.mapper.user.toProfileCharacterDto
+import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
 import com.bff.wespot.data.remote.model.user.request.IntroductionDto
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -26,6 +27,16 @@ class UserRepositoryImpl @Inject constructor(
 
         return profile
     }
+
+    override suspend fun setFeatureNotificationSetting(
+        isEnableNotification: Boolean,
+    ): Result<Unit> =
+        userDataSource.setFeatureNotificationSetting(
+            FeatureNotificationSettingDto(
+                isEnableVoteNotification = isEnableNotification,
+                isEnableMessageNotification = isEnableNotification,
+            )
+        )
 
     override suspend fun getNotificationSetting(): Result<NotificationSetting> =
         userDataSource.getNotificationSetting().mapCatching { it.toNotificationSetting() }
