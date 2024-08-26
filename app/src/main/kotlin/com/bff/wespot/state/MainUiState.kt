@@ -6,4 +6,5 @@ data class MainUiState (
     val isPushNotificationNavigation: Boolean = true,
     val userId: String = "",
     val restriction: Restriction = Restriction.Empty,
+    val kakaoChannel: String,
 )
