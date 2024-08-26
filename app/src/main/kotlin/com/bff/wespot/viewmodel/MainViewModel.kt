@@ -2,6 +2,7 @@ package com.bff.wespot.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val cacheProfileUseCase: CacheProfileUseCase,
     private val dataStoreRepository: DataStoreRepository,
+    private val commonRepository: CommonRepository,
 ) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
     override val container = container<MainUiState, MainSideEffect>(MainUiState())
 
@@ -44,9 +46,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleMainScreenEntered() {
+    private fun handleMainScreenEntered() = intent {
         viewModelScope.launch {
             cacheProfileUseCase()
+            commonRepository.getRestriction()
+                .onSuccess {
+                    reduce {
+                        state.copy(restriction = it)
+                    }
+                }
         }
     }
 

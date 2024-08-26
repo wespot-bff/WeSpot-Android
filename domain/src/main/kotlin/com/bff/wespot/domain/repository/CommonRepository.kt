@@ -4,6 +4,7 @@ import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.ReportType
+import com.bff.wespot.model.common.Restriction
 
 interface CommonRepository {
     suspend fun checkProfanity(content: String): Result<Unit>
@@ -16,4 +17,5 @@ interface CommonRepository {
         iconUrl: String,
     ): Result<Unit>
     suspend fun getKakaoContent(type: String): Result<KakaoContent>
+    suspend fun getRestriction(): Result<Restriction>
 }

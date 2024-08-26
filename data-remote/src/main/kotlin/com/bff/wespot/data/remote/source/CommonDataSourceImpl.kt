@@ -6,6 +6,7 @@ import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
+import com.bff.wespot.data.remote.model.common.RestrictionDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -66,6 +67,14 @@ class CommonDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v1/auth/kakao/template")
                 parameter("type", type.lowercase())
+            }
+        }
+
+    override suspend fun checkRestriction(): Result<RestrictionDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/restrictions/status")
             }
         }
 }
