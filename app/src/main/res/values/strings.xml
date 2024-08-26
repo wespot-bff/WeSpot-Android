@@ -2,8 +2,4 @@
     <string name="app_name">WeSpot</string>
     <string name="top_bar_animated_content_label">Top Bar Animated content</string>
     <string name="bottom_bar_animated_content_label">bottom bar animated content label</string>
-    <string name="notification_setting_dialog_subtitle">해당 기기로 반 투표 및 익명 쪽지 등 서비스 이용에 필요한 안내 사항을 푸시 알림으로 보내드리겠습니다. 앱 푸시 수신에 동의하시겠습니까?</string>
-    <string name="notification_setting_dialog_title">‘WeSpot’ 에서\n알림을 보내고자 합니다</string>
-    <string name="agree">동의</string>
-    <string name="disagree">미동의</string>
 </resources>

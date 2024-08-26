@@ -56,28 +56,12 @@ class MainViewModel @Inject constructor(
     private fun handleMainScreenEntered() {
         viewModelScope.launch(coroutineDispatcher) {
             cacheProfileUseCase()
-            getNotificationSettingStatus()
-        }
-    }
-
-    private fun getNotificationSettingStatus() = intent {
-        viewModelScope.launch(coroutineDispatcher) {
-            val isSetUp = dataStoreRepository
-                .getBoolean(DataStoreKey.IS_NOTIFICATION_SET_UP)
-                .first()
-
-            if (isSetUp.not()) {
-                postSideEffect(MainSideEffect.ShowNotificationSettingDialog)
-            }
         }
     }
 
     private fun handleNotificationSet(isEnableNotification: Boolean) = intent {
         viewModelScope.launch {
             userRepository.setFeatureNotificationSetting(isEnableNotification)
-                .onSuccess {
-                    dataStoreRepository.saveBoolean(DataStoreKey.IS_NOTIFICATION_SET_UP, true)
-                }
                 .onFailure {
                     Timber.e(it)
                 }

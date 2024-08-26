@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -43,9 +45,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -53,7 +53,6 @@ import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -68,7 +67,6 @@ import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.R.string
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
@@ -77,12 +75,21 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
+
+    private val notificationPermissionLauncher by lazy {
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            viewModel.onAction(MainAction.OnNotificationSet(isGranted))
+        }
+    }
+
     @Inject
     lateinit var navigator: Navigator
 
@@ -99,6 +106,7 @@ class MainActivity : ComponentActivity() {
                     navigator = navigator,
                     navArgs = getMainScreenArgsFromIntent(),
                     analyticsHelper = analyticsHelper,
+                    viewModel = viewModel,
                 )
             }
         }
@@ -112,11 +120,7 @@ class MainActivity : ComponentActivity() {
             ) == PackageManager.PERMISSION_GRANTED
 
             if (!hasPermission) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    0
-                )
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
@@ -146,7 +150,7 @@ private fun MainScreen(
     navigator: Navigator,
     navArgs: MainScreenNavArgs,
     analyticsHelper: AnalyticsHelper,
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: MainViewModel,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -154,18 +158,9 @@ private fun MainScreen(
 
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
-    var showNotificationDialog by remember { mutableStateOf(false) }
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
-
-    viewModel.collectSideEffect {
-        when (it) {
-            MainSideEffect.ShowNotificationSettingDialog -> {
-                showNotificationDialog = true
-            }
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -277,25 +272,6 @@ private fun MainScreen(
         showToast = toast.show
     ) {
         toast = toast.copy(show = false)
-    }
-
-    if (showNotificationDialog) {
-        WSDialog(
-            title = stringResource(string.notification_setting_dialog_title),
-            subTitle = stringResource(string.notification_setting_dialog_subtitle)
-                .replace(" ", "\u00A0"),
-            okButtonText = stringResource(string.agree),
-            cancelButtonText = stringResource(string.disagree),
-            okButtonClick = {
-                action(MainAction.OnNotificationSet(true))
-                showNotificationDialog = false
-            },
-            cancelButtonClick = {
-                action(MainAction.OnNotificationSet(false))
-                showNotificationDialog = false
-            },
-            onDismissRequest = { }
-        )
     }
 
     LaunchedEffect(Unit) {
