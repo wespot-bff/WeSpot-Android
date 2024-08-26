@@ -3,6 +3,8 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.bff.wespot.analytic.AnalyticsEvent
+import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.BasePagingRepository
@@ -30,6 +32,8 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +44,7 @@ class SendViewModel @Inject constructor(
     private val userListRepository: BasePagingRepository<User, Paging<User>>,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val coroutineDispatcher: CoroutineDispatcher,
+    private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel(), ContainerHost<SendUiState, SendSideEffect> {
     override val container = container<SendUiState, SendSideEffect>(SendUiState())
 
@@ -196,6 +201,7 @@ class SendViewModel @Inject constructor(
                     isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
+                trackMessageSendEvent()
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
@@ -270,6 +276,22 @@ class SendViewModel @Inject constructor(
         }
         nameInput.value = ""
         messageInput.value = ""
+    }
+
+    private suspend fun trackMessageSendEvent() {
+        val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
+        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        val sendTime = LocalDateTime.now().format(formatter)
+
+        analyticsHelper.logEvent(
+            event = AnalyticsEvent(
+                type = "message_send",
+                extras = listOf(
+                    AnalyticsEvent.Param("userId", userId.toString()),
+                    AnalyticsEvent.Param("time", sendTime),
+                ),
+            ),
+        )
     }
 
     companion object {
