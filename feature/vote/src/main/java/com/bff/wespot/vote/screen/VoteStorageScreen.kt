@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -355,6 +356,7 @@ private fun VoteItem(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
                     if (isReceived) {
                         Image(
@@ -382,11 +384,18 @@ private fun VoteItem(
                     }
 
                     Column {
-                        Text(text = title, style = StaticTypeScale.Default.body4)
+                        Text(
+                            text = title,
+                            style = StaticTypeScale.Default.body4,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                         Text(
                             text = subTitle,
                             style = StaticTypeScale.Default.body7,
                             color = WeSpotThemeManager.colors.txtSubColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -395,6 +404,7 @@ private fun VoteItem(
                     Icon(
                         painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
                         contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow),
+                        modifier = Modifier.padding(start = 14.dp),
                     )
                 }
             }
