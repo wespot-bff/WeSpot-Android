@@ -18,7 +18,7 @@ class NetworkStateChecker @Inject constructor(
 
     private val validTransportTypes = listOf(
         NetworkCapabilities.TRANSPORT_WIFI,
-        NetworkCapabilities.TRANSPORT_CELLULAR
+        NetworkCapabilities.TRANSPORT_CELLULAR,
     )
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {

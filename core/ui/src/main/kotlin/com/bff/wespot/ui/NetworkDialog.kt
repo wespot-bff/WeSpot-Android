@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.network.NetworkState
 
-
 @Composable
 fun NetworkDialog(
     context: Context,

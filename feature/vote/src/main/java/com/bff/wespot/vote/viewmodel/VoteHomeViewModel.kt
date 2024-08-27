@@ -1,6 +1,5 @@
 package com.bff.wespot.vote.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.util.toDateTimeString
@@ -11,12 +10,10 @@ import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.common.KakaoSharingType
-import com.bff.wespot.network.NetworkStateChecker
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
