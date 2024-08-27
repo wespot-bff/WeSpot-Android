@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
         val data = getMainScreenArgsFromIntent()
 
         if (data.type != NotificationType.IDLE) {
-            viewModel.onAction(MainAction.OnNavigateByPushNotification(data))
+            viewModel.onAction(MainAction.OnEnteredByPushNotification(data))
         }
     }
 
@@ -270,6 +270,7 @@ private fun MainScreen(
         }
 
         if (state.isPushNotificationNavigation) {
+            action(MainAction.OnNavigateByPushNotification)
             navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
         }
     }

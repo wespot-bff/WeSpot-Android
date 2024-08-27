@@ -51,8 +51,9 @@ class MainViewModel @Inject constructor(
     fun onAction(action: MainAction) {
         when (action) {
             MainAction.OnMainScreenEntered -> handleMainScreenEntered()
-            is MainAction.OnNavigateByPushNotification -> {
-                handleNavigateByPushNotification()
+            MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
+            is MainAction.OnEnteredByPushNotification -> {
+                handleEnteredByPushNotification()
                 trackPushNotificationClicked(action.data)
             }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
@@ -72,6 +73,10 @@ class MainViewModel @Inject constructor(
                     Timber.e(it)
                 }
         }
+    }
+
+    private fun handleEnteredByPushNotification() = intent {
+        reduce { state.copy(isPushNotificationNavigation = true) }
     }
 
     private fun handleNavigateByPushNotification() = intent {
