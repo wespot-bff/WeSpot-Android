@@ -10,4 +10,5 @@ data class ResultUiState(
     val isVoting: Boolean,
     val onBoarding: Boolean = false,
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
+    val isNavigateFromNotification: Boolean,
 )

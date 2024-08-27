@@ -99,6 +99,7 @@ interface VoteResultNavigator {
 
 data class VoteResultScreenArgs(
     val isVoting: Boolean,
+    val isNavigateFromNotification: Boolean = false,
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -378,7 +379,11 @@ fun VoteResultScreen(
     }
 
     BackHandler {
-        voteNavigator.navigateToVoteHome()
+        if (state.isNavigateFromNotification) {
+            voteNavigator.navigateUp()
+        } else {
+            voteNavigator.navigateToVoteHome()
+        }
     }
 }
 
