@@ -134,15 +134,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs {
-        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
-        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
-        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
+    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
+        val targetId = getStringExtra(EXTRA_TARGET_ID)?.toIntOrNull() ?: -1
+        val date = getStringExtra(EXTRA_DATE).orEmpty()
+        val type = convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
 
-        return MainScreenNavArgs(
+        removeExtra(EXTRA_TARGET_ID)
+        removeExtra(EXTRA_DATE)
+        removeExtra(EXTRA_TYPE)
+
+        MainScreenNavArgs(
             targetId = targetId,
             date = date,
-            type = convertNotificationType(type),
+            type = type
         )
     }
 }
