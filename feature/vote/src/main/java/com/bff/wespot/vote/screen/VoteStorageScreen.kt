@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -50,6 +51,7 @@ import com.bff.wespot.model.vote.response.SentVoteResult
 import com.bff.wespot.model.vote.response.StorageVoteResult
 import com.bff.wespot.ui.ListBottomGradient
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.util.hexToColor
@@ -78,6 +80,8 @@ fun VoteStorageScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val context = LocalContext.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     var selectedTab by remember {
         mutableStateOf(RECEIVED_SCREEN)
@@ -153,6 +157,8 @@ fun VoteStorageScreen(
             ListBottomGradient()
         }
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     if (state.isLoading) {
         LoadingAnimation()
