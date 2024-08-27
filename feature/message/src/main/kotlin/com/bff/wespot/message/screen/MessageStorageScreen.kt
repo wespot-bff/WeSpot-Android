@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.paging.LoadState
@@ -433,7 +432,6 @@ private fun MessageDialogText(
         text = text,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
-        overflow = TextOverflow.Ellipsis,
         textAlign = textAlign,
     )
 }

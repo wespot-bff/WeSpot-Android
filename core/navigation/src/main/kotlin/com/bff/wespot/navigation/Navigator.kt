@@ -14,6 +14,13 @@ interface Navigator {
 
     fun navigateToAuth(context: Context): Intent
 
+    fun navigateToAuthWithExtra(
+        context: Context,
+        targetId: Pair<String, Int>,
+        date: Pair<String, String>,
+        type: Pair<String, String>,
+    ): Intent
+
     fun navigateToInstaStory(
         context: Context,
         file: Uri,

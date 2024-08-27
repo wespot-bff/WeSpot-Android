@@ -59,4 +59,7 @@
     <string name="unblock">차단 해제</string>
     <string name="unblock_done">해제 완료</string>
     <string name="unblock_dialog_title">차단 해제하시나요?</string>
+    <string name="marketing_dialog_result_content"><![CDATA[전송자 : WeSpot\n일시 : %1$s\n내용 : %2$s\n\n광고성 정보 수신 동의는 전체 탭 > 설정 > [알림 설정] 에서 변경 가능합니다.]]></string>
+    <string name="marketing_notification_agree">수신 동의 처리 완료</string>
+    <string name="marketing_notification_disagree">수신 거부 처리 완료</string>
 </resources>

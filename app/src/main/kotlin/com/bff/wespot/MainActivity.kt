@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -48,9 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -75,6 +75,7 @@ import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
+import com.bff.wespot.R.string
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.util.clickableSingle
@@ -90,6 +91,16 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
+
+    private val notificationPermissionLauncher by lazy {
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            viewModel.onAction(MainAction.OnNotificationSet(isGranted))
+        }
+    }
+
     @Inject
     lateinit var navigator: Navigator
 
@@ -106,6 +117,7 @@ class MainActivity : ComponentActivity() {
                     navigator = navigator,
                     navArgs = getMainScreenArgsFromIntent(),
                     analyticsHelper = analyticsHelper,
+                    viewModel = viewModel,
                 )
             }
         }
@@ -119,11 +131,7 @@ class MainActivity : ComponentActivity() {
             ) == PackageManager.PERMISSION_GRANTED
 
             if (!hasPermission) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    0
-                )
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
@@ -153,7 +161,7 @@ private fun MainScreen(
     navigator: Navigator,
     navArgs: MainScreenNavArgs,
     analyticsHelper: AnalyticsHelper,
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: MainViewModel,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -173,7 +181,7 @@ private fun MainScreen(
                 transitionSpec = {
                     fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
                 },
-                label = stringResource(com.bff.wespot.R.string.bottom_bar_animated_content_label),
+                label = stringResource(string.bottom_bar_animated_content_label),
             ) { targetState ->
                 if (targetState != BarType.NONE) {
                     WSTopBar(
@@ -236,7 +244,7 @@ private fun MainScreen(
                 transitionSpec = {
                     fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
                 },
-                label = stringResource(com.bff.wespot.R.string.top_bar_animated_content_label)
+                label = stringResource(string.top_bar_animated_content_label)
             ) { targetState ->
                 if (targetState == BarType.DEFAULT) {
                     val currentSelectedItem by navController.currentScreenAsState()
@@ -277,7 +285,6 @@ private fun MainScreen(
         toast = toast.copy(show = false)
     }
 
-    Timber.d("MainScreen: ${state.restriction.restrictionType}")
     if (state.restriction.restrictionType != RestrictionType.NONE) {
         RestrictionBottomSheet(
             content = when (state.restriction.restrictionType) {
