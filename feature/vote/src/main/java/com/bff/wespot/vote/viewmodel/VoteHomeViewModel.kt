@@ -10,6 +10,7 @@ import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.common.KakaoSharingType
+import com.bff.wespot.network.NetworkStateChecker
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -39,6 +40,7 @@ class VoteHomeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val commonRepository: CommonRepository,
+    private val networkStateChecker: NetworkStateChecker,
 ) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(
         VoteUiState(
@@ -48,6 +50,8 @@ class VoteHomeViewModel @Inject constructor(
 
     private val _currentDate = MutableStateFlow(LocalDate.now().toDateTimeString())
     val currentDate: StateFlow<String> = _currentDate.asStateFlow()
+
+    val networkState = networkStateChecker.networkState
 
     private val dateJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
         withContext(dispatcher) {
