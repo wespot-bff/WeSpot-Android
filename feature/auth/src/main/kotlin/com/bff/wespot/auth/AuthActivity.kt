@@ -1,7 +1,5 @@
 package com.bff.wespot.auth
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -196,9 +194,9 @@ class AuthActivity : ComponentActivity() {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
                     if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
-                        val date = intent.getStringExtra("date") ?: ""
-                        val type = intent.getStringExtra("type") ?: ""
+                        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+                        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
+                        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
 
                         val intent = navigator.navigateToMain(
                             this@AuthActivity,
@@ -218,11 +216,5 @@ class AuthActivity : ComponentActivity() {
                 }
             }
         })
-    }
-
-    companion object {
-        fun intent(context: Context): Intent {
-            return Intent(context, AuthActivity::class.java)
-        }
     }
 }

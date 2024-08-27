@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
+import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingUiState
 import com.bff.wespot.model.user.response.NotificationSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -18,8 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationSettingViewModel @Inject constructor(
     private val userRepository: UserRepository,
-) : ViewModel(), ContainerHost<NotificationSettingUiState, NotificationSettingAction> {
-    override val container = container<NotificationSettingUiState, NotificationSettingAction>(
+) : ViewModel(), ContainerHost<NotificationSettingUiState, NotificationSettingSideEffect> {
+    override val container = container<NotificationSettingUiState, NotificationSettingSideEffect>(
         NotificationSettingUiState(),
     )
 
@@ -34,11 +36,14 @@ class NotificationSettingViewModel @Inject constructor(
             is NotificationSettingAction.OnMessageNotificationSwitched -> {
                 handleMessageNotificationSwitched()
             }
-            is NotificationSettingAction.OnEventNotificationSwitched -> {
-                handleEventNotificationSwitched()
+            is NotificationSettingAction.OnMarketingNotificationSwitched -> {
+                handleMarketingNotificationSwitched()
             }
             NotificationSettingAction.OnNotificationSettingScreenExited -> {
                 postNotificationSetting()
+            }
+            NotificationSettingAction.SetMarketingNotificationEnable -> {
+                setMarketingNotification(true)
             }
         }
     }
@@ -79,9 +84,23 @@ class NotificationSettingViewModel @Inject constructor(
         reduce { state.copy(isEnableMessageNotification = state.isEnableMessageNotification.not()) }
     }
 
-    private fun handleEventNotificationSwitched() = intent {
+    private fun handleMarketingNotificationSwitched() = intent {
+        // 변경되는 상태를 기준으로 SideEffect 방출
+        when (state.isEnableMarketingNotification.not()) {
+            true -> {
+                postSideEffect(NotificationSettingSideEffect.ShowMarketingDialog)
+            }
+
+            false -> {
+                postSideEffect(NotificationSettingSideEffect.ShowMarketingResultDialog)
+                setMarketingNotification(false)
+            }
+        }
+    }
+
+    private fun setMarketingNotification(isEnable: Boolean) = intent {
         reduce {
-            state.copy(isEnableMarketingNotification = state.isEnableMarketingNotification.not())
+            state.copy(isEnableMarketingNotification = isEnable)
         }
     }
 

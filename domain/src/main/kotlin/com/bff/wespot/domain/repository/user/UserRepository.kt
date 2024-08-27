@@ -9,6 +9,8 @@ interface UserRepository {
 
     suspend fun getNotificationSetting(): Result<NotificationSetting>
 
+    suspend fun setFeatureNotificationSetting(isEnableNotification: Boolean): Result<Unit>
+
     suspend fun updateNotificationSetting(notificationSetting: NotificationSetting): Result<Unit>
 
     suspend fun updateIntroduction(introduction: String): Result<Unit>

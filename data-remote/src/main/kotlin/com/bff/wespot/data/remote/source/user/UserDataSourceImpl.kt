@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.user
 
+import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
 import com.bff.wespot.data.remote.model.user.request.IntroductionDto
 import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
 import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
@@ -40,6 +41,17 @@ class UserDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v1/users/settings")
             }
+        }
+
+    override suspend fun setFeatureNotificationSetting(
+        featureNotificationSettingDto: FeatureNotificationSettingDto
+    ): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("api/v1/users/settings")
+            }
+            setBody(featureNotificationSettingDto)
         }
 
     override suspend fun updateNotificationSetting(
