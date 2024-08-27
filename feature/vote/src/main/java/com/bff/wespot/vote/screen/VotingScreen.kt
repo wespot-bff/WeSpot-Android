@@ -65,7 +65,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface VotingNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
-    fun navigateToResultScreen(args: VoteResultScreenArgs)
+    fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,7 +113,7 @@ fun VotingScreen(
     viewModel.collectSideEffect {
         when (it) {
             VotingSideEffect.NavigateToResult -> {
-                votingNavigator.navigateToResultScreen(
+                votingNavigator.navigateToVoteResultScreen(
                     VoteResultScreenArgs(
                         isVoting = true,
                     ),
