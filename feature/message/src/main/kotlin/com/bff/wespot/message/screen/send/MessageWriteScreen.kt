@@ -21,9 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -37,6 +39,7 @@ import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
+import com.bff.wespot.ui.NetworkDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -65,6 +68,8 @@ fun MessageWriteScreen(
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -172,6 +177,8 @@ fun MessageWriteScreen(
             cancelButtonClick = { dialogState = false },
         )
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(focusRequester) {
         focusRequester.requestFocus()
