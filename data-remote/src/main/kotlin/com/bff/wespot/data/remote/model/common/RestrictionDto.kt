@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RestrictionDto(
     val restrictionType: String,
-    val endDate: String,
+    val releaseDate: String,
 ) {
     fun toRestriction(): Restriction = Restriction(
         restrictionType = RestrictionType.valueOf(restrictionType),
-        endDate = endDate.toLocalDateFromDashPattern(),
+        releaseDate = releaseDate.toLocalDateFromDashPattern(),
     )
 }
