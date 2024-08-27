@@ -418,7 +418,7 @@ private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: Not
         }
 
         NotificationType.VOTE_RESULT -> {
-            navigator.navigateToVoteResultScreen()
+            navigator.navigateToVoteResultScreen(isNavigateFromNotification = false)
         }
 
         NotificationType.VOTE_RECEIVED -> {
