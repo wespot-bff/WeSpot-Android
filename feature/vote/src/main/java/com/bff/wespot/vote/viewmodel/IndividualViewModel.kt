@@ -1,8 +1,8 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class IndividualViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : BaseViewModel() {
     val individual = flow {
         val isReceived = savedStateHandle["isReceived"] ?: false
         val date = savedStateHandle["date"] ?: LocalDate.now().toDateString()
