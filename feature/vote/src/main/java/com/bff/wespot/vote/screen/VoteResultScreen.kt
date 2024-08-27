@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -76,6 +77,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.ui.saveBitmap
@@ -114,6 +116,7 @@ fun VoteResultScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val context = LocalContext.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
@@ -360,6 +363,8 @@ fun VoteResultScreen(
     if (state.isLoading) {
         showLottie = true
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(voteType) {
         val today = LocalDate.now()
