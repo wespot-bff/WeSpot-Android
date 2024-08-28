@@ -97,23 +97,16 @@ class PushNotificationService : FirebaseMessagingService() {
     }
 
     private fun trackPushNotification(message: RemoteMessage) {
-        coroutineScope.launch(coroutineDispatcher) {
-            val userId = runCatching {
-                profileRepository.getProfile().id
-            }.getOrNull()
-
-            val paramList = mutableListOf(AnalyticsEvent.Param("userId", userId.toString()))
-            for (key in message.data.keys) {
-                paramList.add(AnalyticsEvent.Param(key, message.data[key].toString()))
-            }
-
-            analyticsHelper.logEvent(
-                AnalyticsEvent(
-                    type = "push_notification_received",
-                    extras = paramList,
-                ),
-            )
+        val paramList = message.data.map { (key, value) ->
+            AnalyticsEvent.Param(key, value.toString())
         }
+
+        analyticsHelper.logEvent(
+            AnalyticsEvent(
+                type = "push_notification_received",
+                extras = paramList
+            )
+        )
     }
 
     override fun onDestroy() {

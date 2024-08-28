@@ -261,7 +261,6 @@ private fun MainScreen(
             }
         },
     ) {
-        analyticsHelper.updateUserId(uiState.userId)
         CompositionLocalProvider(
             LocalAnalyticsHelper provides analyticsHelper,
         ) {

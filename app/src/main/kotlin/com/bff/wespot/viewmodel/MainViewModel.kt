@@ -6,7 +6,6 @@ import com.bff.wespot.MainScreenNavArgs
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
@@ -28,7 +27,6 @@ class MainViewModel @Inject constructor(
     private val cacheProfileUseCase: CacheProfileUseCase,
     private val dataStoreRepository: DataStoreRepository,
     private val userRepository: UserRepository,
-    private val profileRepository: ProfileRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
@@ -42,6 +40,7 @@ class MainViewModel @Inject constructor(
                         reduce {
                             state.copy(userId = it)
                         }
+                        analyticsHelper.updateUserId(it)
                     }
                 }
             }
@@ -85,13 +84,10 @@ class MainViewModel @Inject constructor(
 
     private fun trackPushNotificationClicked(data: MainScreenNavArgs) {
         viewModelScope.launch(coroutineDispatcher) {
-            val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
-
             analyticsHelper.logEvent(
                 event = AnalyticsEvent(
                     type = "push_notification_clicked",
                     extras = listOf(
-                        AnalyticsEvent.Param("userId", userId.toString()),
                         AnalyticsEvent.Param("date", data.date),
                         AnalyticsEvent.Param("targetId", data.targetId.toString()),
                         AnalyticsEvent.Param("type", data.type.name),
