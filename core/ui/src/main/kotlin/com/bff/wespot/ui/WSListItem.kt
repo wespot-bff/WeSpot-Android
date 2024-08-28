@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -79,15 +80,21 @@ fun WSListItem(
             }
 
             Column(
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 16.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Text(text = title, style = StaticTypeScale.Default.body2, maxLines = 1)
+                Text(
+                    text = title,
+                    style = StaticTypeScale.Default.body2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
                 Text(
                     text = subTitle,
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtSubColor,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

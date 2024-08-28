@@ -32,11 +32,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.common.util.timeDifference
@@ -185,7 +187,7 @@ private fun ReceivedVoteScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(bottom = 20.dp),
                 ) {
-                    items(data.itemCount) { index ->
+                    items(data.itemCount, key = data.itemKey { it.date }) { index ->
                         val item = data[index]
 
                         item?.let {
@@ -231,7 +233,7 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(bottom = 20.dp),
                 ) {
-                    items(data.itemCount) { index ->
+                    items(data.itemCount, key = data.itemKey { it.date }) { index ->
                         val item = data[index]
 
                         item?.let {
@@ -278,7 +280,7 @@ private fun VoteDateList(
                 is SentVoteResult -> {
                     VoteItem(
                         new = false,
-                        title = data.voteOption.content,
+                        title = stringResource(R.string.vote_for, data.user.name),
                         subTitle = context.getString(
                             R.string.sent_subtitle,
                             data.voteOption.content,
@@ -354,6 +356,7 @@ private fun VoteItem(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
                     if (isReceived) {
                         Image(
@@ -381,11 +384,18 @@ private fun VoteItem(
                     }
 
                     Column {
-                        Text(text = title, style = StaticTypeScale.Default.body4)
+                        Text(
+                            text = title,
+                            style = StaticTypeScale.Default.body4,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                         Text(
                             text = subTitle,
                             style = StaticTypeScale.Default.body7,
                             color = WeSpotThemeManager.colors.txtSubColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -394,6 +404,7 @@ private fun VoteItem(
                     Icon(
                         painter = painterResource(id = com.bff.wespot.designsystem.R.drawable.right_arrow),
                         contentDescription = stringResource(id = com.bff.wespot.designsystem.R.string.right_arrow),
+                        modifier = Modifier.padding(start = 14.dp),
                     )
                 }
             }
