@@ -6,6 +6,7 @@ import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
+import com.bff.wespot.data.remote.model.common.RestrictionDto
 
 interface CommonDataSource {
     suspend fun checkProfanity(content: ProfanityDto): Result<Unit>
@@ -17,4 +18,6 @@ interface CommonDataSource {
     ): Result<Unit>
 
     suspend fun getKakaoContent(type: String): Result<KakaoContentDto>
+
+    suspend fun checkRestriction(): Result<RestrictionDto>
 }

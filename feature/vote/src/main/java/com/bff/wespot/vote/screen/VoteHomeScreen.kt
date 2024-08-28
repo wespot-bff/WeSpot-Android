@@ -149,7 +149,9 @@ internal fun VoteHomeScreen(
     LaunchedEffect(Unit) {
         delay(EDIT_POPUP_TIME)
         action(VoteAction.GetSettingDialogOption)
-        action(VoteAction.GetKakaoContent)
+        if (state.kakaoContent == KakaoContent.EMPTY) {
+            action(VoteAction.GetKakaoContent)
+        }
     }
 }
 
