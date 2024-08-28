@@ -2,12 +2,12 @@ package com.bff.wespot.auth.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
@@ -21,7 +21,6 @@ import com.bff.wespot.model.auth.response.School
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.constants.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -38,12 +37,11 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val authRepository: AuthRepository,
-    private val dispatcher: CoroutineDispatcher,
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
     remoteConfigRepository: RemoteConfigRepository,
-) : ViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
+) : BaseViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =
@@ -117,7 +115,7 @@ class AuthViewModel @Inject constructor(
                 loading = true,
             )
         }
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             val result = authRepository.signUp(
                 SignUp(
                     name = state.name,
@@ -153,7 +151,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun monitorUserInput() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             userInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
@@ -164,7 +162,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun monitorNameInput() = intent {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             nameInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
@@ -182,7 +180,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun fetchSchoolList(search: String) = intent {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             runCatching {
                 val result = pagingRepository.fetchResultStream(mapOf("search" to search))
                 reduce {

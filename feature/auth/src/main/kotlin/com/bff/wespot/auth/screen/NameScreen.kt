@@ -20,9 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
@@ -33,6 +35,7 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.ui.NetworkDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -56,6 +59,9 @@ fun NameScreen(
     var error by remember {
         mutableStateOf(false)
     }
+
+    val context = LocalContext.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -153,6 +159,8 @@ fun NameScreen(
             it.invoke()
         }
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(key1 = focusRequester) {
         focusRequester.requestFocus()

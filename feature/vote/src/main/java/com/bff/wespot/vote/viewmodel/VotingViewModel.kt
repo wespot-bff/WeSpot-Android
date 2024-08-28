@@ -1,7 +1,7 @@
 package com.bff.wespot.vote.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.RemoteConfigRepository
@@ -15,7 +15,6 @@ import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -28,10 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 class VotingViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
-    private val coroutineDispatcher: CoroutineDispatcher,
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
-) : ViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
+) : BaseViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
     override val container = container<VotingUiState, VotingSideEffect>(
         VotingUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),

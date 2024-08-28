@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -50,6 +51,7 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -83,6 +85,8 @@ fun ReceiverSelectionScreen(
     val state by viewModel.collectAsState()
     val pagingData = state.userList.collectAsLazyPagingItems()
     val action = viewModel::onAction
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -255,6 +259,8 @@ fun ReceiverSelectionScreen(
             cancelButtonClick = { dialogState = false },
         )
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(focusRequester) {
         focusRequester.requestFocus()

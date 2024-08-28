@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.analytic.AnalyticsEvent
@@ -49,6 +50,7 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReportBottomSheet
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.hexToColor
@@ -79,6 +81,7 @@ fun VotingScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val analyticsHelper = LocalAnalyticsHelper.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -224,6 +227,8 @@ fun VotingScreen(
             showReportDialog = false
         }
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         if (state.start) {

@@ -48,6 +48,7 @@ import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.saveBitmap
@@ -82,6 +83,8 @@ fun IndividualVoteScreen(
     val context = LocalContext.current
 
     val analyticsHelper = LocalAnalyticsHelper.current
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     var showToast by remember { mutableStateOf(false) }
 
@@ -235,6 +238,8 @@ fun IndividualVoteScreen(
     ) {
         showToast = false
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     TrackScreenViewEvent(screenName = "receive_vote_screen")
 }

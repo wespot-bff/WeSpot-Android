@@ -17,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.R.string
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -31,6 +33,7 @@ import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReservedMessageItem
 import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
@@ -58,6 +61,9 @@ fun ReservedMessageScreen(
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -112,6 +118,8 @@ fun ReservedMessageScreen(
     ) {
         showToast = false
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         action(MessageAction.OnReservedMessageScreenEntered)
