@@ -5,7 +5,6 @@ import com.bff.wespot.data.remote.source.vote.VoteDataSource
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.IndividualReceived
-import com.bff.wespot.model.vote.response.IndividualSent
 import com.bff.wespot.model.vote.response.VoteItems
 import com.bff.wespot.model.vote.response.VoteResults
 import javax.inject.Inject
@@ -42,11 +41,5 @@ class VoteRepositoryImpl @Inject constructor(
         voteDataSource.getReceivedVote(date, optionId)
             .mapCatching {
                 it.toIndividualReceived()
-            }
-
-    override suspend fun getSentVote(date: String, optionId: Int): Result<IndividualSent> =
-        voteDataSource.getSentVote(date, optionId)
-            .mapCatching {
-                it.toIndividualSent()
             }
 }
