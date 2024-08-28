@@ -535,6 +535,7 @@ private fun RankCard(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(user.profile.iconUrl)
+                        .allowHardware(false)
                         .build(),
                     modifier = Modifier
                         .size(48.dp)
@@ -573,6 +574,7 @@ private fun RankTile(
             model = ImageRequest
                 .Builder(LocalContext.current)
                 .data(user.profile.iconUrl)
+                .allowHardware(false)
                 .build(),
             contentDescription = stringResource(id = R.string.ballot),
             modifier = Modifier

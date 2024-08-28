@@ -164,9 +164,15 @@ fun IndividualVoteScreen(
                             val uri = saveBitmap(context, bitmap)
 
                             if (uri != null) {
-                                val intent = navigator.navigateToInstaStory(context, uri)
-                                intent.let {
-                                    launcher.launch(intent)
+                                runCatching {
+                                    launcher.launch(
+                                        navigator.navigateToInstaStory(
+                                            context,
+                                            uri,
+                                        ),
+                                    )
+                                }.onFailure {
+                                    navigator.redirectToPlayStoreForInstagram(context)
                                 }
                             }
                         }
