@@ -52,4 +52,5 @@
     <string name="who_send">누가 보냈는지 궁금해요</string>
     <string name="select_your_character">%1$s님을 잘 나타낼 수 있는\n캐릭터를 선택해 주세요</string>
     <string name="write_introduction_for_friends">친구들에게 %1$s님을 소개하는\n한 줄을 작성해 주세요</string>
+    <string name="vote_for">%1$s에게 투표했어요</string>
 </resources>

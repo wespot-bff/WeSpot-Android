@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.bff.wespot.MainScreenNavArgs
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
+import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
@@ -29,8 +32,12 @@ class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
+    private val commonRepository: CommonRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
-    override val container = container<MainUiState, MainSideEffect>(MainUiState())
+    override val container = container<MainUiState, MainSideEffect>(MainUiState(
+        kakaoChannel = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL)
+    ))
 
     init {
         viewModelScope.launch {
@@ -58,9 +65,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleMainScreenEntered() {
+    private fun handleMainScreenEntered() = intent {
         viewModelScope.launch(coroutineDispatcher) {
             cacheProfileUseCase()
+            commonRepository.getRestriction()
+                .onSuccess {
+                    reduce {
+                        state.copy(restriction = it)
+                    }
+                }
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,6 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -38,10 +41,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -52,12 +57,15 @@ import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
+import com.bff.wespot.designsystem.component.button.WSButton
+import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
@@ -65,15 +73,18 @@ import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
+import com.bff.wespot.state.MainAction
+import com.bff.wespot.state.MainUiState
 import com.bff.wespot.R.string
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.state.MainAction
+import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import timber.log.Timber
 import javax.inject.Inject
@@ -286,6 +297,19 @@ private fun MainScreen(
         toast = toast.copy(show = false)
     }
 
+    if (state.restriction.restrictionType != RestrictionType.NONE) {
+        RestrictionBottomSheet(
+            content = when (state.restriction.restrictionType) {
+                RestrictionType.TEMPORARY_BAN_MESSAGE_REPORT -> RestrictionContent.TYPE1
+                RestrictionType.PERMANENT_BAN_MESSAGE_REPORT -> RestrictionContent.TYPE2
+                RestrictionType.PERMANENT_BAN_VOTE_REPORT -> RestrictionContent.TYPE3
+                else -> RestrictionContent.TYPE1
+            },
+            state = state,
+            navigator = navigator,
+        )
+    }
+
     LaunchedEffect(Unit) {
         action(MainAction.OnMainScreenEntered)
     }
@@ -402,7 +426,10 @@ private fun RowScope.TabItem(
     }
 }
 
-private fun navigateScreenFromNavArgs(navArgs: MainScreenNavArgs, navigator: NotificationNavigator) {
+private fun navigateScreenFromNavArgs(
+    navArgs: MainScreenNavArgs,
+    navigator: NotificationNavigator
+) {
     when (navArgs.type) {
         NotificationType.MESSAGE -> {
             navigator.navigateToReceiverSelectionScreen()
@@ -434,4 +461,157 @@ private fun NavController.navigateToNavGraph(navGraph: NavGraphSpec) {
         launchSingleTop = true
         popUpTo(this@navigateToNavGraph.graph.findStartDestination().id)
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RestrictionBottomSheet(
+    content: RestrictionContent,
+    state: MainUiState,
+    navigator: Navigator,
+) {
+    val context = LocalContext.current
+    val bottomSheetState = rememberModalBottomSheetState()
+    val coroutineScope = rememberCoroutineScope()
+
+    WSBottomSheet(
+        sheetState = bottomSheetState,
+        closeSheet = {
+            coroutineScope.launch {
+                bottomSheetState.hide()
+            }
+        }
+    ) {
+        Column(
+            modifier = Modifier.padding(28.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = stringResource(content.title),
+                style = StaticTypeScale.Default.body1,
+                modifier = Modifier.padding(bottom = 10.dp),
+                color = WeSpotThemeManager.colors.txtTitleColor,
+            )
+
+            BulletPoint(text = stringResource(content.body1))
+
+            BulletPoint(
+                text = stringResource(
+                    content.body2,
+                    state.restriction.toKoreanDate()
+                ),
+            )
+
+            BulletPoint(text = stringResource(content.body3))
+
+            if (content.body4 != null) {
+                BulletPoint(text = stringResource(content.body4))
+            }
+
+            if (content.buttonNumber == 1) {
+                WSButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.hide()
+                        }
+                    },
+                    text = stringResource(com.bff.wespot.auth.R.string.confirm),
+                    paddingValues = PaddingValues(
+                        start = 0.dp,
+                        end = 0.dp,
+                        top = 24.dp,
+                        bottom = 10.dp
+                    ),
+                ) {
+                    it.invoke()
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        WSButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    bottomSheetState.hide()
+                                }
+                            },
+                            buttonType = WSButtonType.Secondary,
+                            text = stringResource(R.string.close),
+                            paddingValues = PaddingValues(0.dp),
+                        ) {
+                            it()
+                        }
+                    }
+
+                    Box(modifier = Modifier.weight(1f)) {
+                        WSButton(
+                            onClick = {
+                                navigator.navigateToWebLink(context, state.kakaoChannel)
+                            },
+                            text = stringResource(com.bff.wespot.R.string.one_on_one),
+                            paddingValues = PaddingValues(0.dp),
+                        ) {
+                            it()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BulletPoint(text: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(
+            text = "•",
+            style = StaticTypeScale.Default.body6,
+            color = WeSpotThemeManager.colors.txtSubColor,
+        )
+
+        Text(
+            text = text,
+            style = StaticTypeScale.Default.body6,
+            color = WeSpotThemeManager.colors.txtSubColor,
+        )
+    }
+}
+
+private enum class RestrictionContent(
+    @StringRes val title: Int,
+    @StringRes val body1: Int,
+    @StringRes val body2: Int,
+    @StringRes val body3: Int,
+    @StringRes val body4: Int? = null,
+    val buttonNumber: Int = 1,
+) {
+    TYPE1(
+        com.bff.wespot.R.string.restriction_title,
+        com.bff.wespot.R.string.restriction_type1_body1,
+        com.bff.wespot.R.string.restriction_type1_body2,
+        com.bff.wespot.R.string.restriction_type1_body3,
+        com.bff.wespot.R.string.restriction_type1_body4,
+    ),
+
+    TYPE2(
+        com.bff.wespot.R.string.restriction_title,
+        com.bff.wespot.R.string.restriction_type1_body1,
+        com.bff.wespot.R.string.restriction_type2_body2,
+        com.bff.wespot.R.string.restriction_type2_body3,
+    ),
+
+    TYPE3(
+        com.bff.wespot.R.string.restriction_title,
+        com.bff.wespot.R.string.restriction_type1_body1,
+        com.bff.wespot.R.string.restriction_type3_body2,
+        com.bff.wespot.R.string.restriction_type3_body3,
+        null,
+        2,
+    );
 }

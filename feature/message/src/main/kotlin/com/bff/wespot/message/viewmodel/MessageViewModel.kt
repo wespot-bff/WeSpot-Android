@@ -1,8 +1,8 @@
 package com.bff.wespot.message.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
@@ -25,7 +25,6 @@ import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.ReceivedMessage
 import com.bff.wespot.model.message.response.SentMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -44,14 +43,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MessageViewModel @Inject constructor(
-    private val coroutineDispatcher: CoroutineDispatcher,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
     private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
     private val commonRepository: CommonRepository,
     remoteConfigRepository: RemoteConfigRepository,
-) : ViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
+) : BaseViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(
         MessageUiState(
             messageStartTime = remoteConfigRepository.fetchFromRemoteConfig(

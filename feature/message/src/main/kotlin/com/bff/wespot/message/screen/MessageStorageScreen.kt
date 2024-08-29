@@ -31,11 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.designsystem.component.list.WSMessageItem
@@ -59,6 +61,7 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
@@ -82,6 +85,9 @@ fun MessageStorageScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showMessageDialog by remember { mutableStateOf(false) }
     var showMessageOptionDialog by remember { mutableStateOf(false) }
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -331,6 +337,8 @@ fun MessageStorageScreen(
     if (state.isLoading) {
         LoadingAnimation()
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         when (type) {

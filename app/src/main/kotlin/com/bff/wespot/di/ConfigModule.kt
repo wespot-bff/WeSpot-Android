@@ -1,11 +1,14 @@
 package com.bff.wespot.di
 
+import android.content.Context
 import com.bff.wespot.R
+import com.bff.wespot.network.NetworkStateChecker
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -24,5 +27,13 @@ object ConfigModule {
         }
 
         return remoteConfig
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkStateChecker(
+        @ApplicationContext context: Context,
+    ): NetworkStateChecker {
+        return NetworkStateChecker(context)
     }
 }

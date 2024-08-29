@@ -1,7 +1,7 @@
 package com.bff.wespot.vote.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.util.toDateTimeString
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -14,7 +14,6 @@ import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -34,12 +33,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VoteHomeViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatcher,
     private val voteRepository: VoteRepository,
     private val dataStoreRepository: DataStoreRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val commonRepository: CommonRepository,
-) : ViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
+) : BaseViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(
         VoteUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
@@ -50,7 +48,7 @@ class VoteHomeViewModel @Inject constructor(
     val currentDate: StateFlow<String> = _currentDate.asStateFlow()
 
     private val dateJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-        withContext(dispatcher) {
+        withContext(coroutineDispatcher) {
             var previousDate = LocalDate.now().toDateTimeString()
             while (isActive) {
                 val currentDate = LocalDate.now().toDateTimeString()
@@ -87,7 +85,7 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getFirstVoteResults(date: String) = intent {
         reduce { state.copy(isLoading = true) }
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             try {
                 voteRepository.getFirstVoteResults(date)
                     .onSuccess {
@@ -109,7 +107,7 @@ class VoteHomeViewModel @Inject constructor(
     }
 
     private fun getSetting() = intent {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             dataStoreRepository.getBoolean(DataStoreKey.SETTING_DIALOG).collect {
                 if (!it) {
                     reduce { state.copy(showSettingDialog = !it) }
@@ -124,7 +122,7 @@ class VoteHomeViewModel @Inject constructor(
     }
 
     private fun getKakaoContent() = intent {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             commonRepository.getKakaoContent(KakaoSharingType.TELL.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }

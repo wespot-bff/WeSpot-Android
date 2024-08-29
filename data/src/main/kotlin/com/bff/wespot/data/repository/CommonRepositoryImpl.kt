@@ -10,6 +10,7 @@ import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.ReportType
+import com.bff.wespot.model.common.Restriction
 import javax.inject.Inject
 
 class CommonRepositoryImpl @Inject constructor(
@@ -47,4 +48,8 @@ class CommonRepositoryImpl @Inject constructor(
     override suspend fun getKakaoContent(type: String): Result<KakaoContent> =
         commonDataSource.getKakaoContent(type)
             .mapCatching { it.toKakaoContent() }
+
+    override suspend fun getRestriction(): Result<Restriction> =
+        commonDataSource.checkRestriction()
+            .mapCatching { it.toRestriction() }
 }

@@ -11,4 +11,8 @@
     <string name="introduction_placeholder">안녕 나는 1반의 비타민</string>
     <string name="edit_complete">작성 완료</string>
     <string name="edit_done">작성 완료</string>
+    <string name="no_internet">인터넷 연결이 원할하지 않아요</string>
+    <string name="enable_wifi">데이터에 접근하려면, 셀룰러 데이터를 켜거나 Wi-Fi를 사용해 주세요</string>
+    <string name="ok">확인</string>
+    <string name="setting">설정</string>
 </resources>

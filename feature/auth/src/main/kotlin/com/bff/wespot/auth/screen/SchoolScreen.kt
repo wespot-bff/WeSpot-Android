@@ -28,8 +28,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
@@ -45,6 +47,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.ListBottomGradient
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -66,6 +69,8 @@ fun SchoolScreen(
     val context = LocalContext.current
 
     val pagingData = state.schoolList.collectAsLazyPagingItems()
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -138,9 +143,10 @@ fun SchoolScreen(
 
                 else -> {
                     LazyColumn {
-                        items(pagingData.itemCount, key = { index ->
-                            pagingData[index]?.id ?: index
-                        }) { index ->
+                        items(
+                            pagingData.itemCount,
+                            key = pagingData.itemKey { it.id },
+                        ) { index ->
                             val school = pagingData[index]
 
                             school?.let { school ->
@@ -214,6 +220,8 @@ fun SchoolScreen(
     ) {
         ListBottomGradient(height = 120)
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(focusRequester) {
         focusRequester.requestFocus()
