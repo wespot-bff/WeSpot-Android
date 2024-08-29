@@ -20,5 +20,5 @@ interface MessageDataSource {
 
     suspend fun getMessage(messageId: Int): Result<MessageDto>
 
-    suspend fun getBlockedMessage(cursorId: Int): Result<BlockedMessageListDto>
+    suspend fun getBlockedMessage(cursorId: Int?): Result<BlockedMessageListDto>
 }

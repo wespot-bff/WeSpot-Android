@@ -73,7 +73,7 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getBlockedMessage(cursorId: Int): Result<BlockedMessageListDto> =
+    override suspend fun getBlockedMessage(cursorId: Int?): Result<BlockedMessageListDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
