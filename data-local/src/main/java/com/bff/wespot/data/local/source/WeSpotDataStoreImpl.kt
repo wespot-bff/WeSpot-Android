@@ -44,8 +44,8 @@ class WeSpotDataStoreImpl @Inject constructor(
 
     override fun getString(key: String): Flow<String> =
         datastore.data.distinctUntilChanged()
-            .catch {e ->
-                if(e is IOException) {
+            .catch { e ->
+                if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
                     throw e
@@ -57,8 +57,8 @@ class WeSpotDataStoreImpl @Inject constructor(
 
     override fun getBoolean(key: String): Flow<Boolean> =
         datastore.data.distinctUntilChanged()
-            .catch {e ->
-                if(e is IOException) {
+            .catch { e ->
+                if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
                     throw e
@@ -71,6 +71,14 @@ class WeSpotDataStoreImpl @Inject constructor(
     override suspend fun clear() {
         datastore.edit { preferences ->
             preferences.clear()
+        }
+    }
+
+    override suspend fun clear(vararg excludeKeys: String) {
+        datastore.edit { preferences ->
+            preferences.asMap().keys
+                .filterNot { key -> key.name in excludeKeys }
+                .forEach { key -> preferences.remove(key) }
         }
     }
 }
