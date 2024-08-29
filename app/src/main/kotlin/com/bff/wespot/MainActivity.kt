@@ -61,7 +61,7 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
@@ -136,16 +136,16 @@ class MainActivity : ComponentActivity() {
 
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
         val targetId = getStringExtra(EXTRA_TARGET_ID)?.toIntOrNull() ?: -1
-        val date = getStringExtra(EXTRA_DATE).orEmpty()
+        val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
         val type = convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
 
         removeExtra(EXTRA_TARGET_ID)
-        removeExtra(EXTRA_DATE)
+        removeExtra(EXTRA_USER_ID)
         removeExtra(EXTRA_TYPE)
 
         MainScreenNavArgs(
             targetId = targetId,
-            date = date,
+            userId = userId,
             type = type
         )
     }
@@ -153,7 +153,7 @@ class MainActivity : ComponentActivity() {
 
 data class MainScreenNavArgs(
     val type: NotificationType,
-    val date: String,
+    val userId: String,
     val targetId: Int,
 )
 

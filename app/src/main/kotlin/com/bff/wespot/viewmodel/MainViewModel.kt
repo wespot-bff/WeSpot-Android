@@ -40,7 +40,6 @@ class MainViewModel @Inject constructor(
                         reduce {
                             state.copy(userId = it)
                         }
-                        analyticsHelper.updateUserId(it)
                     }
                 }
             }
@@ -84,11 +83,11 @@ class MainViewModel @Inject constructor(
 
     private fun trackPushNotificationClicked(data: MainScreenNavArgs) {
         viewModelScope.launch(coroutineDispatcher) {
+            analyticsHelper.updateUserId(data.userId)
             analyticsHelper.logEvent(
                 event = AnalyticsEvent(
                     type = "push_notification_clicked",
                     extras = listOf(
-                        AnalyticsEvent.Param("date", data.date),
                         AnalyticsEvent.Param("targetId", data.targetId.toString()),
                         AnalyticsEvent.Param("type", data.type.name),
                     )
