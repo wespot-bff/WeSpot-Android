@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -178,8 +179,8 @@ fun ReceiverSelectionScreen(
                 modifier = Modifier.padding(top = 16.dp),
             ) {
                 items(
-                    count = pagingData.itemCount,
-                    key = { index -> pagingData[index]?.id ?: index },
+                    pagingData.itemCount,
+                    key = pagingData.itemKey { it.id },
                 ) { index ->
                     val item = pagingData[index]
 
