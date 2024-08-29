@@ -1,17 +1,20 @@
 package com.bff.wespot.entire.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
-import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
+import com.bff.wespot.model.common.Paging
+import com.bff.wespot.model.message.response.BlockedMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -28,11 +31,11 @@ import javax.inject.Inject
 class EntireViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authRepository: AuthRepository,
-    private val messageRepository: MessageRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val dataStoreRepository: DataStoreRepository,
-) : ViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
+    private val messageBlockedRepository: BasePagingRepository<BlockedMessage, Paging<BlockedMessage>>,
+) : BaseViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
     fun onAction(action: EntireAction) {
@@ -43,7 +46,7 @@ class EntireViewModel @Inject constructor(
             }
             EntireAction.OnSettingScreenEntered -> fetchWebLinkFromRemoteConfig()
             EntireAction.OnRevokeScreenEntered -> observeProfileDataFlow()
-            EntireAction.OnBlockListScreenEntered -> getUnBlockedMessage()
+            EntireAction.OnBlockListScreenEntered -> getBlockedMessageList()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
@@ -112,15 +115,13 @@ class EntireViewModel @Inject constructor(
         }
     }
 
-    private fun getUnBlockedMessage() = intent {
-        viewModelScope.launch {
-            messageRepository.getBlockedMessage(cursorId = 0) // TODO Cursor Paging
-                .onSuccess { blockedMessageList ->
-                    reduce { state.copy(blockedMessageList = blockedMessageList) }
-                }
-                .onFailure {
-                    Timber.e(it)
-                }
+    private fun getBlockedMessageList() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            runCatching {
+                val result = messageBlockedRepository.fetchResultStream()
+                    .cachedIn(viewModelScope)
+                reduce { state.copy(blockedMessageList = result) }
+            }
         }
     }
 
