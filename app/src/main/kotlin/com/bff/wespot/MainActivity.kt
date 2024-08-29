@@ -69,7 +69,7 @@ import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.notification.screen.NotificationNavigator
@@ -110,6 +110,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
+        checkEnteredFromPushNotification()
 
         setContent {
             WeSpotTheme {
@@ -136,22 +137,34 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs {
-        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
-        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
-        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
+    private fun checkEnteredFromPushNotification() {
+        val data = getMainScreenArgsFromIntent()
 
-        return MainScreenNavArgs(
+        if (data.type != NotificationType.IDLE) {
+            viewModel.onAction(MainAction.OnEnteredByPushNotification(data))
+        }
+    }
+
+    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
+        val targetId = getStringExtra(EXTRA_TARGET_ID)?.toIntOrNull() ?: -1
+        val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
+        val type = convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
+
+        removeExtra(EXTRA_TARGET_ID)
+        removeExtra(EXTRA_USER_ID)
+        removeExtra(EXTRA_TYPE)
+
+        MainScreenNavArgs(
             targetId = targetId,
-            date = date,
-            type = convertNotificationType(type),
+            userId = userId,
+            type = type
         )
     }
 }
 
 data class MainScreenNavArgs(
     val type: NotificationType,
-    val date: String,
+    val userId: String,
     val targetId: Int,
 )
 
@@ -259,7 +272,6 @@ private fun MainScreen(
             }
         },
     ) {
-        analyticsHelper.updateUserId(uiState.userId)
         CompositionLocalProvider(
             LocalAnalyticsHelper provides analyticsHelper,
         ) {
@@ -432,7 +444,7 @@ private fun navigateScreenFromNavArgs(
         }
 
         NotificationType.VOTE_RESULT -> {
-            navigator.navigateToVoteResultScreen()
+            navigator.navigateToVoteResultScreen(isNavigateFromNotification = false)
         }
 
         NotificationType.VOTE_RECEIVED -> {

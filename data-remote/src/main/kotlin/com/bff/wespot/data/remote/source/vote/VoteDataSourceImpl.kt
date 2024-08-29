@@ -2,7 +2,6 @@ package com.bff.wespot.data.remote.source.vote
 
 import com.bff.wespot.data.remote.model.vote.request.VoteResultsUploadDto
 import com.bff.wespot.data.remote.model.vote.response.IndividualReceivedDto
-import com.bff.wespot.data.remote.model.vote.response.IndividualSentDto
 import com.bff.wespot.data.remote.model.vote.response.VoteItemsDto
 import com.bff.wespot.data.remote.model.vote.response.VoteReceivedDto
 import com.bff.wespot.data.remote.model.vote.response.VoteResultsDto
@@ -79,18 +78,6 @@ class VoteDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v1/votes/received/options/$optionId")
-                parameter("date", date)
-            }
-        }
-
-    override suspend fun getSentVote(
-        date: String,
-        optionId: Int
-    ): Result<IndividualSentDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/votes/sent/options/$optionId")
                 parameter("date", date)
             }
         }

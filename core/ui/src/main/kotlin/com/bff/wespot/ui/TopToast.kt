@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.bff.wespot.designsystem.component.indicator.WSToast
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 
@@ -20,7 +21,8 @@ fun TopToast(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 12.dp),
+            .padding(top = 12.dp)
+            .zIndex(99f),
         contentAlignment = Alignment.TopCenter,
     ) {
         WSToast(

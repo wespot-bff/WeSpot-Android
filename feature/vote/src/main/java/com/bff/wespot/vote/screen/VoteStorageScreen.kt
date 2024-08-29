@@ -294,7 +294,6 @@ private fun VoteDateList(
                         isReceived = false,
                         profileCharacter = data.user.profile,
                     ) {
-                        action(StorageAction.ToIndividualVote(data.voteOption.id, date, false))
                     }
                 }
 

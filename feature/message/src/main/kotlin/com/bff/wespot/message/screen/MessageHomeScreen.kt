@@ -57,7 +57,7 @@ fun MessageHomeScreen(
     viewModel: MessageViewModel,
     navigateToReservedMessageScreen: () -> Unit,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
-    navigateToNotificationScreen: () -> Unit,
+    navigateToMessageStorageScreen: () -> Unit,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -110,7 +110,7 @@ fun MessageHomeScreen(
                 ReceivedMessageBanner(
                     visible = state.messageStatus.hasUnReadMessages(),
                     onBannerClick = {
-                        navigateToNotificationScreen()
+                        navigateToMessageStorageScreen()
                     },
                 )
 

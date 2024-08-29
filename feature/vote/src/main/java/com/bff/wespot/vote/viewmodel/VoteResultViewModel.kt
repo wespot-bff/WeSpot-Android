@@ -31,6 +31,7 @@ class VoteResultViewModel @Inject constructor(
     override val container = container<ResultUiState, ResultSideEffect>(
         ResultUiState(
             isVoting = savedStateHandle["isVoting"] ?: false,
+            isNavigateFromNotification = savedStateHandle["isNavigateFromNotification"] ?: false,
         ),
     )
 

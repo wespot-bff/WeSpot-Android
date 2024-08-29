@@ -8,7 +8,7 @@ interface Navigator {
     fun navigateToMain(
         context: Context,
         targetId: Pair<String, Int>,
-        date: Pair<String, String>,
+        userId: Pair<String, String>,
         type: Pair<String, String>,
     ): Intent
 
@@ -17,7 +17,7 @@ interface Navigator {
     fun navigateToAuthWithExtra(
         context: Context,
         targetId: Pair<String, Int>,
-        date: Pair<String, String>,
+        userId: Pair<String, String>,
         type: Pair<String, String>,
     ): Intent
 

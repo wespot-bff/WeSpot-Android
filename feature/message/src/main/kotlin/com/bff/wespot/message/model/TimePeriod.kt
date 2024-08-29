@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.message.R
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 enum class TimePeriod {
     DAWN_TO_EVENING,
@@ -39,11 +40,16 @@ enum class TimePeriod {
         }
 }
 
-internal fun getCurrentTimePeriod(): TimePeriod {
+internal fun getCurrentTimePeriod(
+    messageStartTime: String,
+    messageReceiveTime: String,
+): TimePeriod {
     val currentTime = LocalTime.now()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+
     val dawnStartTime = LocalTime.of(0, 0)
-    val eveningStartTime = LocalTime.of(17, 0)
-    val nightStartTime = LocalTime.of(22, 0)
+    val eveningStartTime = LocalTime.parse(messageStartTime, formatter)
+    val nightStartTime = LocalTime.parse(messageReceiveTime, formatter)
 
     return when {
         currentTime.isBetween(dawnStartTime, eveningStartTime) -> TimePeriod.DAWN_TO_EVENING

@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import timber.log.Timber
 import javax.inject.Inject
 
 class NetworkStateChecker @Inject constructor(
@@ -24,11 +25,13 @@ class NetworkStateChecker @Inject constructor(
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
+            Timber.d("Network available here")
             _networkState.value = NetworkState.Connected
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
+            Timber.d("Network lost here")
             _networkState.value = NetworkState.NotConnected
         }
     }
@@ -61,7 +64,7 @@ class NetworkStateChecker @Inject constructor(
         NetworkRequest.Builder().apply {
             validTransportTypes.onEach { addTransportType(it) }
         }.let {
-            manager.registerNetworkCallback(it.build(), networkCallback)
+            manager.requestNetwork(it.build(), networkCallback)
         }
     }
 }

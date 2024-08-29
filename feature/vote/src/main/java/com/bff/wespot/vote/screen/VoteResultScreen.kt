@@ -101,6 +101,7 @@ interface VoteResultNavigator {
 
 data class VoteResultScreenArgs(
     val isVoting: Boolean,
+    val isNavigateFromNotification: Boolean = false,
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -383,7 +384,11 @@ fun VoteResultScreen(
     }
 
     BackHandler {
-        voteNavigator.navigateToVoteHome()
+        if (state.isNavigateFromNotification) {
+            voteNavigator.navigateUp()
+        } else {
+            voteNavigator.navigateToVoteHome()
+        }
     }
 }
 
@@ -535,6 +540,7 @@ private fun RankCard(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(user.profile.iconUrl)
+                        .allowHardware(false)
                         .build(),
                     modifier = Modifier
                         .size(48.dp)
@@ -573,6 +579,7 @@ private fun RankTile(
             model = ImageRequest
                 .Builder(LocalContext.current)
                 .data(user.profile.iconUrl)
+                .allowHardware(false)
                 .build(),
             contentDescription = stringResource(id = R.string.ballot),
             modifier = Modifier
