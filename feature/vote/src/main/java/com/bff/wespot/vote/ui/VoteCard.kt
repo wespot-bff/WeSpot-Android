@@ -147,6 +147,7 @@ internal fun VoteCard(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(result.user.profile.iconUrl)
+                            .allowHardware(false)
                             .build(),
                         contentDescription = stringResource(R.string.user_icon),
                         modifier = Modifier.size(100.dp * ratio),

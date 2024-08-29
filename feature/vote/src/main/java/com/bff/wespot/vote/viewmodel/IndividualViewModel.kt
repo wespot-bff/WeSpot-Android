@@ -19,22 +19,14 @@ class IndividualViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
     val individual = flow {
-        val isReceived = savedStateHandle["isReceived"] ?: false
         val date = savedStateHandle["date"] ?: LocalDate.now().toDateString()
         val optionId = savedStateHandle["optionId"] ?: 0
-        if (isReceived) {
-            voteRepository.getReceivedVote(date, optionId)
-                .onSuccess {
-                    emit(it)
-                }
-                .onFailure {
-                    Timber.e(it)
-                }
-        } else {
-            voteRepository.getSentVote(date, optionId)
-                .onSuccess {
-                    emit(it)
-                }
-        }
+        voteRepository.getReceivedVote(date, optionId)
+            .onSuccess {
+                emit(it)
+            }
+            .onFailure {
+                Timber.e(it)
+            }
     }.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(5000), null)
 }
