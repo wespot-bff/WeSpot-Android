@@ -11,12 +11,14 @@ class AndroidApplicationFirebasePlugin: Plugin<Project> {
             with(pluginManager){
                 apply("com.google.gms.google-services")
                 apply("com.google.firebase.crashlytics")
+                apply("com.google.firebase.firebase-perf")
             }
 
             dependencies {
                 "implementation"(platform(libs.findLibrary("firebase-bom").get()))
                 "implementation"(libs.findLibrary("firebase-analytics").get())
                 "implementation"(libs.findLibrary("firebase-crashlytics").get())
+                "implementation"(libs.findLibrary("firebase-performance").get())
                 "implementation"(libs.findLibrary("firebase-messaging").get())
             }
         }
