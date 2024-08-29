@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.list.WSMessageItem
 import com.bff.wespot.designsystem.component.list.WSMessageItemType
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -133,8 +134,8 @@ fun MessageStorageScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                             ) {
                                 items(
-                                    count = pagingData.itemCount,
-                                    key = { index -> pagingData[index]?.id ?: index },
+                                    pagingData.itemCount,
+                                    key = pagingData.itemKey { it.id },
                                 ) { index ->
                                     val item = pagingData[index]
                                     item?.let {
@@ -211,8 +212,8 @@ fun MessageStorageScreen(
                         }
 
                         items(
-                            count = pagingData.itemCount,
-                            key = { index -> pagingData[index]?.id ?: index },
+                            pagingData.itemCount,
+                            key = pagingData.itemKey { it.id },
                         ) { index ->
                             val item = pagingData[index]
 
