@@ -134,8 +134,9 @@ class EntireViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            messageStorageRepository.blockMessage(state.unBlockMessageId)
+            messageStorageRepository.unBlockMessage(state.unBlockMessageId)
                 .onSuccess {
+                    // 해제 완료 버튼 토글을 위해, 차단 해제된 리스트에 추가
                     if (state.unBlockList.contains(state.unBlockMessageId).not()) {
                         val updatedList = state.unBlockList.toMutableList().apply {
                             add(state.unBlockMessageId)
