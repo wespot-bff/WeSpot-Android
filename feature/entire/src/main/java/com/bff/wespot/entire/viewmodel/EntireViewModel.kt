@@ -8,6 +8,7 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
+import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
@@ -107,7 +108,7 @@ class EntireViewModel @Inject constructor(
 
     private fun clearCachedData() {
         viewModelScope.launch {
-            launch { dataStoreRepository.clear() }
+            launch { dataStoreRepository.clear(DataStoreKey.PUSH_TOKEN) }
             launch { profileRepository.clearProfile() }
         }
     }
