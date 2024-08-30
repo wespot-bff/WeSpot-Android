@@ -29,6 +29,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -88,8 +89,8 @@ fun NotificationScreen(
                     modifier = Modifier.padding(it),
                 ) {
                     items(
-                        count = pagingData.itemCount,
-                        key = { index -> pagingData[index]?.id ?: index },
+                        pagingData.itemCount,
+                        key = pagingData.itemKey { it.id },
                     ) { index ->
                         val item = pagingData[index]
 

@@ -9,5 +9,7 @@ interface MessageStorageDataSource {
 
     suspend fun blockMessage(messageId: Int): Result<Unit>
 
+    suspend fun unBlockMessage(messageId: Int): Result<Unit>
+
     suspend fun getReservedMessage(): Result<ReservedMessageListDto>
 }

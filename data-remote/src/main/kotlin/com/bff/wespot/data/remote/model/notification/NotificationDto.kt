@@ -1,7 +1,6 @@
 package com.bff.wespot.data.remote.model.notification
 
 import com.bff.wespot.data.remote.extensions.toISOLocalDateTime
-import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.notification.NotificationList
 import com.bff.wespot.model.notification.NotificationType
@@ -25,7 +24,7 @@ data class NotificationListDto(
 data class NotificationDto (
     val id: Int,
     val type: String,
-    val date: String,
+    val userId: String,
     val targetId: Int,
     val content: String,
     val isNew: Boolean,
@@ -35,7 +34,7 @@ data class NotificationDto (
     fun toNotification(): Notification = Notification(
         id = id,
         type = type.convertToNotificationType(),
-        date = date.toLocalDateFromDashPattern(),
+        userId = userId,
         targetId = targetId,
         content = content,
         isNew = isNew,
