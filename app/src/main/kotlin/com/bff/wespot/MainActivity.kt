@@ -110,13 +110,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
-        checkEnteredFromPushNotification()
+
+        val navArgs = getMainScreenArgsFromIntent()
+        checkEnteredFromPushNotification(navArgs)
 
         setContent {
             WeSpotTheme {
                 MainScreen(
                     navigator = navigator,
-                    navArgs = getMainScreenArgsFromIntent(),
+                    navArgs = navArgs,
                     analyticsHelper = analyticsHelper,
                     viewModel = viewModel,
                 )
@@ -137,9 +139,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkEnteredFromPushNotification() {
-        val data = getMainScreenArgsFromIntent()
-
+    private fun checkEnteredFromPushNotification(data: MainScreenNavArgs) {
         if (data.type != NotificationType.IDLE) {
             viewModel.onAction(MainAction.OnEnteredByPushNotification(data))
         }

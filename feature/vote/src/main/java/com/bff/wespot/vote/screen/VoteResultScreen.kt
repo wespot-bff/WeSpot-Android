@@ -258,8 +258,8 @@ fun VoteResultScreen(
                                 id = R.string.real_time_vote,
                             ),
                         ),
-                        selectedItemIndex = voteType,
-                        onSelectedChanged = { voteType = it },
+                        selectedItemIndex = voteType xor 1,
+                        onSelectedChanged = { voteType = it xor 1 },
                     )
                 }
 
@@ -665,5 +665,5 @@ private fun EmptyTile(
 }
 
 private const val MIN_REQUIREMENT = 5
-private const val TODAY = 1
-private const val YESTERDAY = 0
+private const val TODAY = 0
+private const val YESTERDAY = 1

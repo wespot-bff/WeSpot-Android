@@ -68,7 +68,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ProfileEditNavigator {
-    fun navigateUp()
+    fun navigateToEntireScreen()
     fun navigateToCharacterEditScreen()
 }
 
@@ -111,7 +111,7 @@ fun ProfileEditScreen(
             WSTopBar(
                 title = stringResource(id = R.string.profile_edit),
                 canNavigateBack = true,
-                navigateUp = { navigator.navigateUp() },
+                navigateUp = { navigator.navigateToEntireScreen() },
             )
         },
     ) {

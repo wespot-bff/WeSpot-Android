@@ -1,11 +1,12 @@
 package com.bff.wespot.model.notification
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Notification(
     val id: Int,
     val type: NotificationType,
-    val userId: String,
+    val date: LocalDate,
     val targetId: Int,
     val content: String,
     val isNew: Boolean,
