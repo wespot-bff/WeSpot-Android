@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -32,14 +31,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.list.WSMessageItem
 import com.bff.wespot.designsystem.component.list.WSMessageItemType
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -60,6 +61,8 @@ import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
 import kotlinx.collections.immutable.persistentListOf
@@ -83,6 +86,9 @@ fun MessageStorageScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showMessageDialog by remember { mutableStateOf(false) }
     var showMessageOptionDialog by remember { mutableStateOf(false) }
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -128,8 +134,8 @@ fun MessageStorageScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                             ) {
                                 items(
-                                    count = pagingData.itemCount,
-                                    key = { index -> pagingData[index]?.id ?: index },
+                                    pagingData.itemCount,
+                                    key = pagingData.itemKey { it.id },
                                 ) { index ->
                                     val item = pagingData[index]
                                     item?.let {
@@ -206,8 +212,8 @@ fun MessageStorageScreen(
                         }
 
                         items(
-                            count = pagingData.itemCount,
-                            key = { index -> pagingData[index]?.id ?: index },
+                            pagingData.itemCount,
+                            key = pagingData.itemKey { it.id },
                         ) { index ->
                             val item = pagingData[index]
 
@@ -330,10 +336,10 @@ fun MessageStorageScreen(
     }
 
     if (state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        LoadingAnimation()
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         when (type) {
@@ -435,7 +441,6 @@ private fun MessageDialogText(
         text = text,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
-        overflow = TextOverflow.Ellipsis,
         textAlign = textAlign,
     )
 }

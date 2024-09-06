@@ -29,6 +29,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -52,7 +53,7 @@ interface NotificationNavigator {
     fun navigateToReceiverSelectionScreen()
     fun navigateToMessageScreen(messageId: Int, type: NotificationType)
     fun navigateToVotingScreen()
-    fun navigateToVoteResultScreen()
+    fun navigateToVoteResultScreen(isNavigateFromNotification: Boolean)
     fun navigateToVoteStorageScreen()
 }
 
@@ -88,8 +89,8 @@ fun NotificationScreen(
                     modifier = Modifier.padding(it),
                 ) {
                     items(
-                        count = pagingData.itemCount,
-                        key = { index -> pagingData[index]?.id ?: index },
+                        pagingData.itemCount,
+                        key = pagingData.itemKey { it.id },
                     ) { index ->
                         val item = pagingData[index]
 
@@ -129,7 +130,7 @@ fun NotificationScreen(
                                     }
 
                                     NotificationType.VOTE_RESULT -> {
-                                        navigator.navigateToVoteResultScreen()
+                                        navigator.navigateToVoteResultScreen(true)
                                     }
 
                                     NotificationType.VOTE_RECEIVED -> {
@@ -189,7 +190,9 @@ fun NotificationListItem(
             Box {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = stringResource(R.string.notification_icon),
+                    contentDescription = stringResource(
+                        com.bff.wespot.designsystem.R.string.notification_icon,
+                    ),
                     tint = WeSpotThemeManager.colors.primaryBtnColor,
                 )
 

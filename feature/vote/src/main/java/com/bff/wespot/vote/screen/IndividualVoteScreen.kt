@@ -6,15 +6,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,14 +38,12 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.vote.response.IndividualReceived
-import com.bff.wespot.model.vote.response.IndividualSent
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
-import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.saveBitmap
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.ui.VoteCard
@@ -83,6 +77,8 @@ fun IndividualVoteScreen(
 
     val analyticsHelper = LocalAnalyticsHelper.current
 
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+
     var showToast by remember { mutableStateOf(false) }
 
     val launcher =
@@ -115,58 +111,22 @@ fun IndividualVoteScreen(
                     .padding(it)
                     .padding(top = 60.dp, start = 36.dp, end = 36.dp),
             ) {
-                when (individual) {
-                    is IndividualReceived -> {
-                        val result = (individual as IndividualReceived).voteResult
-                        val user = result.user
-                        VoteCard(
-                            result = Result(
-                                user = VoteUser(
-                                    id = user.id,
-                                    name = user.name,
-                                    introduction = user.introduction,
-                                    profile = user.profile,
-                                ),
-                                voteCount = result.voteCount,
+                if (individual != null) {
+                    val result = (individual as IndividualReceived).voteResult
+                    val user = result.user
+                    VoteCard(
+                        result = Result(
+                            user = VoteUser(
+                                id = user.id,
+                                name = user.name,
+                                introduction = user.introduction,
+                                profile = user.profile,
                             ),
-                            question = result.voteOption.content,
-                            page = -1,
-                        )
-                    }
-
-                    is IndividualSent -> {
-                        val result = (individual as IndividualSent).voteResult
-
-                        val pagerState = rememberPagerState {
-                            result.voteUsers.size
-                        }
-
-                        Column {
-                            WSCarousel(
-                                pagerState = pagerState,
-                                pageSpacing = 4.dp,
-                                contentPadding = PaddingValues(horizontal = 46.dp),
-                            ) { index ->
-                                val user = result.voteUsers[index]
-                                VoteCard(
-                                    result = Result(
-                                        user = VoteUser(
-                                            id = user.id,
-                                            name = user.name,
-                                            introduction = "",
-                                            profile = user.profile,
-                                        ),
-                                        voteCount = 0,
-                                    ),
-                                    question = result.voteOption.content,
-                                    pagerState = pagerState,
-                                    page = index,
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            DotIndicators(pagerState = pagerState)
-                        }
-                    }
+                            voteCount = result.voteCount,
+                        ),
+                        question = result.voteOption.content,
+                        page = -1,
+                    )
                 }
             }
         }
@@ -204,9 +164,15 @@ fun IndividualVoteScreen(
                             val uri = saveBitmap(context, bitmap)
 
                             if (uri != null) {
-                                val intent = navigator.navigateToInstaStory(context, uri)
-                                intent?.let {
-                                    launcher.launch(intent)
+                                runCatching {
+                                    launcher.launch(
+                                        navigator.navigateToInstaStory(
+                                            context,
+                                            uri,
+                                        ),
+                                    )
+                                }.onFailure {
+                                    navigator.redirectToPlayStoreForInstagram(context)
                                 }
                             }
                         }
@@ -235,6 +201,8 @@ fun IndividualVoteScreen(
     ) {
         showToast = false
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     TrackScreenViewEvent(screenName = "receive_vote_screen")
 }

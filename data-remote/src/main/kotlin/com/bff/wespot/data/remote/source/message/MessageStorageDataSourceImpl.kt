@@ -34,6 +34,14 @@ class MessageStorageDataSourceImpl @Inject constructor(
             }
         }
 
+    override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("api/v1/messages/$messageId/unblock")
+            }
+        }
+
     override suspend fun getReservedMessage(): Result<ReservedMessageListDto> =
         httpClient.safeRequest {
             url {

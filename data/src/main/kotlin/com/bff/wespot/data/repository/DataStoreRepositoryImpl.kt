@@ -23,4 +23,8 @@ class DataStoreRepositoryImpl @Inject constructor(
     override suspend fun clear() {
         dataStore.clear()
     }
+
+    override suspend fun clear(vararg excludeKeys: String) {
+        dataStore.clear(excludeKeys = excludeKeys)
+    }
 }

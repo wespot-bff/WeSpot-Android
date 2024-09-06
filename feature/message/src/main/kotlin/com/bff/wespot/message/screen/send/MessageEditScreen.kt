@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.HeightRange
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -45,6 +47,7 @@ import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -79,6 +82,9 @@ fun MessageEditScreen(
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     viewModel.collectSideEffect {
         when (it) {
@@ -196,8 +202,10 @@ fun MessageEditScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(68.dp))
+        }
 
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             WSButton(
                 onClick = {
                     if (state.isReservedMessage) {
@@ -206,12 +214,6 @@ fun MessageEditScreen(
                         reserveDialog = true
                     }
                 },
-                paddingValues = PaddingValues(
-                    start = 20.dp,
-                    end = 20.dp,
-                    top = 32.dp,
-                    bottom = 12.dp,
-                ),
                 text = stringResource(
                     if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
                 ),
@@ -224,6 +226,7 @@ fun MessageEditScreen(
             SendExitDialog(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
+                    exitDialog = false
                     navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
                 },
                 cancelButtonClick = { exitDialog = false },
@@ -268,6 +271,8 @@ fun MessageEditScreen(
     ) {
         toast = false
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         action(SendAction.OnMessageEditScreenEntered(navArgs.isReservedMessage, navArgs.messageId))

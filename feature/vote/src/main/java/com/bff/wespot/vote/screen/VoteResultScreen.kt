@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
@@ -76,6 +77,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.ui.saveBitmap
@@ -99,6 +101,7 @@ interface VoteResultNavigator {
 
 data class VoteResultScreenArgs(
     val isVoting: Boolean,
+    val isNavigateFromNotification: Boolean = false,
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -114,6 +117,7 @@ fun VoteResultScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val context = LocalContext.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
@@ -254,8 +258,8 @@ fun VoteResultScreen(
                                 id = R.string.real_time_vote,
                             ),
                         ),
-                        selectedItemIndex = voteType,
-                        onSelectedChanged = { voteType = it },
+                        selectedItemIndex = voteType xor 1,
+                        onSelectedChanged = { voteType = it xor 1 },
                     )
                 }
 
@@ -361,6 +365,8 @@ fun VoteResultScreen(
         showLottie = true
     }
 
+    NetworkDialog(context = context, networkState = networkState)
+
     LaunchedEffect(voteType) {
         val today = LocalDate.now()
         action(
@@ -378,7 +384,11 @@ fun VoteResultScreen(
     }
 
     BackHandler {
-        voteNavigator.navigateToVoteHome()
+        if (state.isNavigateFromNotification) {
+            voteNavigator.navigateUp()
+        } else {
+            voteNavigator.navigateToVoteHome()
+        }
     }
 }
 
@@ -530,6 +540,7 @@ private fun RankCard(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(user.profile.iconUrl)
+                        .allowHardware(false)
                         .build(),
                     modifier = Modifier
                         .size(48.dp)
@@ -568,6 +579,7 @@ private fun RankTile(
             model = ImageRequest
                 .Builder(LocalContext.current)
                 .data(user.profile.iconUrl)
+                .allowHardware(false)
                 .build(),
             contentDescription = stringResource(id = R.string.ballot),
             modifier = Modifier

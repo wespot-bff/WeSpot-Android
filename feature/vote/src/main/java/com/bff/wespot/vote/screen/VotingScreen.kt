@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.analytic.AnalyticsEvent
@@ -49,6 +50,7 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReportBottomSheet
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.hexToColor
@@ -65,7 +67,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface VotingNavigator {
     fun navigateUp()
     fun navigateToVotingScreen()
-    fun navigateToResultScreen(args: VoteResultScreenArgs)
+    fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +81,7 @@ fun VotingScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val analyticsHelper = LocalAnalyticsHelper.current
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -113,7 +116,7 @@ fun VotingScreen(
     viewModel.collectSideEffect {
         when (it) {
             VotingSideEffect.NavigateToResult -> {
-                votingNavigator.navigateToResultScreen(
+                votingNavigator.navigateToVoteResultScreen(
                     VoteResultScreenArgs(
                         isVoting = true,
                     ),
@@ -225,6 +228,8 @@ fun VotingScreen(
         }
     }
 
+    NetworkDialog(context = context, networkState = networkState)
+
     LaunchedEffect(Unit) {
         if (state.start) {
             action(VotingAction.StartVoting)
@@ -309,12 +314,14 @@ private fun VotingProgressScreen(
                         },
                     paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp),
                 ) {
-                    Text(
-                        text = voteItem.content,
-                        style = StaticTypeScale.Default.body3,
-                        modifier = Modifier.padding(vertical = 14.dp),
-                        textAlign = TextAlign.Start,
-                    )
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = voteItem.content,
+                            style = StaticTypeScale.Default.body3,
+                            modifier = Modifier.padding(vertical = 18.dp, horizontal = 14.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
                 }
             }
         }

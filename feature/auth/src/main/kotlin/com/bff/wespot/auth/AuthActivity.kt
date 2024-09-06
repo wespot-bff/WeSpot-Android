@@ -1,7 +1,5 @@
 package com.bff.wespot.auth
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -37,10 +35,10 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -196,14 +194,14 @@ class AuthActivity : ComponentActivity() {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
                     if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
-                        val date = intent.getStringExtra("date") ?: ""
-                        val type = intent.getStringExtra("type") ?: ""
+                        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+                        val userId = intent.getStringExtra(EXTRA_USER_ID) ?: ""
+                        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
 
                         val intent = navigator.navigateToMain(
                             this@AuthActivity,
                             targetId = Pair(EXTRA_TARGET_ID, targetId),
-                            date = Pair(EXTRA_DATE, date),
+                            userId = Pair(EXTRA_USER_ID, userId),
                             type = Pair(EXTRA_TYPE, type),
                         )
                         startActivity(intent)
@@ -218,11 +216,5 @@ class AuthActivity : ComponentActivity() {
                 }
             }
         })
-    }
-
-    companion object {
-        fun intent(context: Context): Intent {
-            return Intent(context, AuthActivity::class.java)
-        }
     }
 }

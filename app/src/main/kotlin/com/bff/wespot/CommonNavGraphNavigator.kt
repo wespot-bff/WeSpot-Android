@@ -5,6 +5,7 @@ import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
+import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
@@ -107,14 +108,6 @@ class CommonNavGraphNavigator(
         navController.navigate(ReservedMessageScreenDestination(args) within navGraph)
     }
 
-    override fun navigateNotificationScreen() {
-        navController.navigate(NotificationScreenDestination within navGraph)
-    }
-
-    override fun navigateToResultScreen(args: VoteResultScreenArgs) {
-        navController.navigate(VoteResultScreenDestination(args) within navGraph)
-    }
-
     override fun navigateToVoteHome() {
         navController.popBackStack(navGraph.startRoute.route, inclusive = false, saveState = true)
     }
@@ -169,5 +162,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToProfileEditScreen(args: ProfileEditNavArgs) {
         navController.navigate(ProfileEditScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToEntireScreen() {
+        navController.navigate(EntireScreenDestination within navGraph)
     }
 }

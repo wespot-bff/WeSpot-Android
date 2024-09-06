@@ -1,8 +1,8 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
@@ -13,7 +13,6 @@ import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.state.result.ResultSideEffect
 import com.bff.wespot.vote.state.result.ResultUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -27,12 +26,12 @@ class VoteResultViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val voteRepository: VoteRepository,
     private val dataStoreRepository: DataStoreRepository,
-    private val coroutineDispatcher: CoroutineDispatcher,
     private val commonRepository: CommonRepository,
-) : ViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
+) : BaseViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
     override val container = container<ResultUiState, ResultSideEffect>(
         ResultUiState(
             isVoting = savedStateHandle["isVoting"] ?: false,
+            isNavigateFromNotification = savedStateHandle["isNavigateFromNotification"] ?: false,
         ),
     )
 

@@ -5,5 +5,6 @@ sealed class NotificationSettingAction {
     data object OnNotificationSettingScreenExited : NotificationSettingAction()
     data object OnVoteNotificationSwitched : NotificationSettingAction()
     data object OnMessageNotificationSwitched : NotificationSettingAction()
-    data object OnEventNotificationSwitched : NotificationSettingAction()
+    data object OnMarketingNotificationSwitched : NotificationSettingAction()
+    data object SetMarketingNotificationEnable : NotificationSettingAction()
 }

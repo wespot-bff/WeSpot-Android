@@ -8,11 +8,18 @@ interface Navigator {
     fun navigateToMain(
         context: Context,
         targetId: Pair<String, Int>,
-        date: Pair<String, String>,
+        userId: Pair<String, String>,
         type: Pair<String, String>,
     ): Intent
 
     fun navigateToAuth(context: Context): Intent
+
+    fun navigateToAuthWithExtra(
+        context: Context,
+        targetId: Pair<String, Int>,
+        userId: Pair<String, String>,
+        type: Pair<String, String>,
+    ): Intent
 
     fun navigateToInstaStory(
         context: Context,

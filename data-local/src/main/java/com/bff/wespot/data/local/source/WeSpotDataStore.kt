@@ -8,4 +8,5 @@ interface WeSpotDataStore {
     suspend fun saveBoolean(key: String, value: Boolean)
     fun getBoolean(key: String): Flow<Boolean>
     suspend fun clear()
+    suspend fun clear(vararg excludeKeys: String)
 }

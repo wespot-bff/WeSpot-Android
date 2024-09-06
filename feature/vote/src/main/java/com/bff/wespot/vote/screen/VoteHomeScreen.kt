@@ -50,8 +50,10 @@ import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.network.NetworkState
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
 import com.bff.wespot.vote.R
@@ -81,6 +83,7 @@ internal fun VoteHomeScreen(
     navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val action = viewModel::onAction
 
     Scaffold(
@@ -105,6 +108,7 @@ internal fun VoteHomeScreen(
                         action = viewModel::onAction,
                         voteNavigator = voteNavigator,
                         navigator = navigator,
+                        networkState = networkState,
                     )
                 }
             }
@@ -145,7 +149,9 @@ internal fun VoteHomeScreen(
     LaunchedEffect(Unit) {
         delay(EDIT_POPUP_TIME)
         action(VoteAction.GetSettingDialogOption)
-        action(VoteAction.GetKakaoContent)
+        if (state.kakaoContent == KakaoContent.EMPTY) {
+            action(VoteAction.GetKakaoContent)
+        }
     }
 }
 
@@ -288,6 +294,7 @@ private fun CardResultContent(
     action: (VoteAction) -> Unit,
     voteNavigator: VoteNavigator,
     navigator: Navigator,
+    networkState: NetworkState,
 ) {
     val pagerState = rememberPagerState { state.voteResults.size }
     val context = LocalContext.current
@@ -370,6 +377,8 @@ private fun CardResultContent(
     if (state.isLoading) {
         LoadingAnimation()
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         action(VoteAction.GetFirst(LocalDate.now().toDateString()))

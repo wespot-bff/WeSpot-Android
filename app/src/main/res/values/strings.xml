@@ -2,4 +2,14 @@
     <string name="app_name">WeSpot</string>
     <string name="top_bar_animated_content_label">Top Bar Animated content</string>
     <string name="bottom_bar_animated_content_label">bottom bar animated content label</string>
+    <string name="restriction_title">서비스 이용 제한 안내</string>
+    <string name="restriction_type1_body1">자동 신고 처리 시스템에 의한 신고 누적으로 서비스 이용이 제한되었습니다</string>
+    <string name="restriction_type1_body2">[이용 제한 기한]\n%1$s까지</string>
+    <string name="restriction_type1_body3">이용 제한은 기한이 종료된 다음 날 오전에 해제됩니다</string>
+    <string name="restriction_type1_body4">신고 누적 시 차후 영구적으로 이용 정지 될 수 있습니다</string>
+    <string name="restriction_type2_body2">[이용 제한 기한]\n영구 이용 제한</string>
+    <string name="restriction_type2_body3">요청에 따라 신고 사유를 확인해 드리거나, 이용 제한을 해제해 드리는 것은 불가능합니다</string>
+    <string name="restriction_type3_body2">[이용 제한 기한]\n학교·학년·반 정보 오기입</string>
+    <string name="restriction_type3_body3">이용 제한은 \'1:1 문의하기\'를 통한 개인 정보 수정 이후 해제됩니다</string>
+    <string name="one_on_one">1:1 문의하기</string>
 </resources>

@@ -138,6 +138,7 @@ private val bottomBarScreenNames = listOf(
 private val topBarScreenNames = listOf(
     "vote/vote_home_screen",
     "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}",
+    "entire/entire_screen",
 )
 
 fun NavDestination.navGraph(): NavGraphSpec {
@@ -152,14 +153,25 @@ fun NavDestination.navGraph(): NavGraphSpec {
     throw ClassNotFoundException("Unknown nav graph for destination $route")
 }
 
-internal fun NavDestination.checkDestination(position: NavigationBarPosition): Boolean {
-    val screenNames = when (position) {
-        NavigationBarPosition.BOTTOM -> bottomBarScreenNames
-        NavigationBarPosition.TOP -> topBarScreenNames
-    }
+internal fun NavDestination.checkDestination(position: NavigationBarPosition): BarType {
+    return when (position) {
+        NavigationBarPosition.BOTTOM -> {
+            val result = hierarchy.any { destination ->
+                bottomBarScreenNames.any { name -> destination.route == name }
+            }
+            if (result) BarType.DEFAULT else BarType.NONE
+        }
 
-    return hierarchy.any { destination ->
-        screenNames.any { name -> destination.route == name }
+        NavigationBarPosition.TOP -> {
+            hierarchy.forEach { destination ->
+                when (destination.route) {
+                    "entire/entire_screen" -> return BarType.ENTIRE
+                    "vote/vote_home_screen" -> return BarType.DEFAULT
+                    "message/message_screen?isMessageSent={isMessageSent}&type={type}&messageId={messageId}" -> return BarType.DEFAULT
+                }
+            }
+            BarType.NONE
+        }
     }
 }
 
@@ -215,12 +227,20 @@ private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeIn()
     }
-    return fadeIn() + slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Start,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessMediumLow,
-        ),
-    )
+
+    if (target.destination.hierarchy.any { it.route == "vote/voting_screen" } &&
+        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        return slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Start,
+            animationSpec = spring(
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+            initialOffset = {
+                it / 3
+            },
+        )
+    }
+    return fadeIn()
 }
 
 private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
@@ -232,12 +252,16 @@ private fun AnimatedContentTransitionScope<*>.defaultExitTransition(
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeOut()
     }
-    return fadeOut() + slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.End,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessMediumLow,
-        ),
-    )
+    if (target.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        return slideOutOfContainer(
+            AnimatedContentTransitionScope.SlideDirection.End,
+            animationSpec = spring(
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+        )
+    }
+
+    return fadeOut()
 }
 
 private val NavDestination.hostNavGraph: NavGraph

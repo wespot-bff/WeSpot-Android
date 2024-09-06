@@ -9,14 +9,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bff.wespot.R
-import com.bff.wespot.auth.AuthActivity
+import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
+import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
+    @Inject
+    lateinit var navigator: Navigator
+
     private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +35,7 @@ class SplashActivity : ComponentActivity() {
                     return@setKeepOnScreenCondition viewModel.start.value.not()
                 }
                 setOnExitAnimationListener {
-                    val intent = AuthActivity.intent(this@SplashActivity)
-                    startActivity(intent)
-                    finish()
+                    navigateToAuth()
                 }
             }
         } else {
@@ -42,13 +47,26 @@ class SplashActivity : ComponentActivity() {
                     viewModel.start.collect {
                         if (it) {
                             delay(500)
-                            val intent = AuthActivity.intent(this@SplashActivity)
-                            startActivity(intent)
-                            finish()
+                            navigateToAuth()
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun navigateToAuth() {
+        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
+        val userId = intent.getStringExtra("userId") ?: ""
+        val type = intent.getStringExtra("type") ?: ""
+
+        val intent = navigator.navigateToAuthWithExtra(
+            context = this@SplashActivity,
+            targetId = Pair(EXTRA_TARGET_ID, targetId),
+            userId = Pair(EXTRA_USER_ID, userId),
+            type = Pair(EXTRA_TYPE, type),
+        )
+        startActivity(intent)
+        finish()
     }
 }

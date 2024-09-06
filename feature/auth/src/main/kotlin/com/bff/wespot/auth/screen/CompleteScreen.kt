@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsEvent.Param
 import com.bff.wespot.analytic.LocalAnalyticsHelper
@@ -32,6 +33,7 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.NetworkDialog
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -52,6 +54,7 @@ fun CompleteScreen(
     var inviteClicked by remember {
         mutableStateOf(false)
     }
+    val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     val analyticsHelper = LocalAnalyticsHelper.current
 
@@ -129,6 +132,8 @@ fun CompleteScreen(
             cancelButtonText = stringResource(id = R.string.cancel),
         )
     }
+
+    NetworkDialog(context = context, networkState = networkState)
 
     TrackScreenViewEvent(screenName = "complete_screen", id = state.uuid)
 }

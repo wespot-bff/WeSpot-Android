@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -45,6 +46,7 @@ fun BlockListScreen(
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+    val pagingData = state.blockedMessageList.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -66,20 +68,27 @@ fun BlockListScreen(
             )
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(state.blockedMessageList, key = { message -> message.id }) { item ->
-                    ReservedMessageItem(
-                        title = stringResource(com.bff.wespot.designsystem.R.string.letter_sender),
-                        subTitle = item.senderName,
-                        backgroundColor = item.senderProfile.backgroundColor,
-                        iconUrl = item.senderProfile.iconUrl,
-                        chipText = stringResource(R.string.unblock),
-                        chipEnabled = item.id !in state.unBlockList,
-                        chipDisabledText = stringResource(R.string.unblock_done),
-                        onClick = {
-                            action(EntireAction.OnUnBlockButtonClicked(item.id))
-                            showDialog = true
-                        },
-                    )
+                items(
+                    pagingData.itemCount,
+                    key = pagingData.itemKey { it.id },
+                ) { index ->
+                    val item = pagingData[index]
+
+                    item?.let {
+                        ReservedMessageItem(
+                            title = stringResource(com.bff.wespot.designsystem.R.string.letter_sender),
+                            subTitle = item.senderName,
+                            backgroundColor = item.senderProfile.backgroundColor,
+                            iconUrl = item.senderProfile.iconUrl,
+                            chipText = stringResource(R.string.unblock),
+                            chipEnabled = item.id !in state.unBlockList,
+                            chipDisabledText = stringResource(R.string.unblock_done),
+                            onClick = {
+                                action(EntireAction.OnUnBlockButtonClicked(item.id))
+                                showDialog = true
+                            },
+                        )
+                    }
                 }
             }
         }
