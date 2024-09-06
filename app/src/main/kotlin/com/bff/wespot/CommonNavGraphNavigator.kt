@@ -5,6 +5,7 @@ import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
+import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
@@ -161,5 +162,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToProfileEditScreen(args: ProfileEditNavArgs) {
         navController.navigate(ProfileEditScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToEntireScreen() {
+        navController.navigate(EntireScreenDestination within navGraph)
     }
 }
