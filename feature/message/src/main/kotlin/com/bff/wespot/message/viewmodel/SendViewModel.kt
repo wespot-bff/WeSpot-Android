@@ -20,6 +20,7 @@ import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
+import com.bff.wespot.util.toBaseSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -249,9 +250,7 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) {
-                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
-                }
+                postSideEffect(exception.toBaseSideEffect())
             }
         }
     }

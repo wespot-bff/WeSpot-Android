@@ -5,4 +5,7 @@ sealed class SendSideEffect {
     data object NavigateToReservedMessage : SendSideEffect()
     data object ShowTimeoutDialog : SendSideEffect()
     data object CloseReserveDialog : SendSideEffect()
+    data class ShowToast(val message: String) : SendSideEffect()
+    data class ShowDialog(val message: String) : SendSideEffect()
+    data object NavigateUp : SendSideEffect()
 }
