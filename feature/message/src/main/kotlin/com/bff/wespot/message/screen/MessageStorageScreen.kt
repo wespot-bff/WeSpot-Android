@@ -220,10 +220,11 @@ fun MessageStorageScreen(
                             item?.let {
                                 WSMessageItem(
                                     userInfo = if (item.isBlocked.not() && item.isReported.not()) {
-                                        item.receiver.toDescription()
+                                        item.receiver.toUserInfoWithoutSchoolName()
                                     } else {
                                         null
                                     },
+                                    schoolName = item.receiver.toShortSchoolName(),
                                     date = item.receivedAt?.toStringWithDotSeparator() ?: "",
                                     wsMessageItemType = when {
                                         item.isBlocked -> WSMessageItemType.BlockedMessage
