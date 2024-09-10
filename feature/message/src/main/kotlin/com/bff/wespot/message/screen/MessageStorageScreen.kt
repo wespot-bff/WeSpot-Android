@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -220,10 +221,11 @@ fun MessageStorageScreen(
                             item?.let {
                                 WSMessageItem(
                                     userInfo = if (item.isBlocked.not() && item.isReported.not()) {
-                                        item.receiver.toDescription()
+                                        item.receiver.toUserInfoWithoutSchoolName()
                                     } else {
                                         null
                                     },
+                                    schoolName = item.receiver.toShortSchoolName(),
                                     date = item.receivedAt?.toStringWithDotSeparator() ?: "",
                                     wsMessageItemType = when {
                                         item.isBlocked -> WSMessageItemType.BlockedMessage
@@ -386,11 +388,17 @@ private fun MessageContentDialog(
     closeButtonClick: () -> Unit,
 ) {
     Dialog(onDismissRequest = { }) {
-        Box(
-            modifier = Modifier
-                .width(296.dp)
-                .heightIn(min = 376.dp, max = 424.dp),
-        ) {
+        Box(modifier = Modifier.width(296.dp)) {
+            Image(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .clickable { closeButtonClick() }
+                    .zIndex(1f),
+                painter = painterResource(id = R.drawable.close),
+                contentDescription = stringResource(id = R.string.close),
+            )
+
             Column(
                 modifier = Modifier
                     .clip(WeSpotThemeManager.shapes.extraLarge)
@@ -400,30 +408,18 @@ private fun MessageContentDialog(
                         color = Primary400,
                         shape = WeSpotThemeManager.shapes.extraLarge,
                     )
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                MessageDialogText("To.\n" + message.receiver)
+                Column {
+                    MessageDialogText("To.\n" + message.receiver)
 
-                MessageDialogText(message.content, Modifier.weight(1f))
+                    MessageDialogText(message.content, isMessageContent = true)
+                }
 
                 MessageDialogText(
                     text = "From.\n" + message.sender,
                     textAlign = TextAlign.End,
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, end = 8.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                Image(
-                    modifier = Modifier.clickable { closeButtonClick() },
-                    painter = painterResource(id = R.drawable.close),
-                    contentDescription = stringResource(id = R.string.close),
                 )
             }
         }
@@ -433,11 +429,16 @@ private fun MessageContentDialog(
 @Composable
 private fun MessageDialogText(
     text: String,
-    modifier: Modifier = Modifier,
     textAlign: TextAlign = TextAlign.Start,
+    isMessageContent: Boolean = false,
 ) {
     Text(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)
+            .let {
+                if (isMessageContent) it.heightIn(min = 192.dp, max = 240.dp) else it
+            },
         text = text,
         style = StaticTypeScale.Default.body4,
         color = WeSpotThemeManager.colors.txtTitleColor,
