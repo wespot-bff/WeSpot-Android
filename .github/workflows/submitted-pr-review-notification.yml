@@ -59,7 +59,7 @@ jobs:
           DISCORD_EMBEDS: |
             [
               {
-                "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
+                "title": "PR 수정 요청, 매튜짱 엉덩이 가져와 \n${{ github.event.pull_request.title }}",
                 "color": 13458524,
                 "description": "${{ github.event.review.html_url }}",
                 "fields": [
