@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.theme.Gray100
@@ -40,6 +41,7 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 fun WSMessageItem(
     date: String,
     wsMessageItemType: WSMessageItemType,
+    schoolName: String? = null,
     userInfo: String? = null,
     itemClick: () -> Unit,
     optionButtonClick: () -> Unit,
@@ -61,6 +63,7 @@ fun WSMessageItem(
                 userInfo = userInfo,
                 date = date,
                 wsMessageItemType = wsMessageItemType,
+                schoolName = schoolName,
             )
         }
     }
@@ -88,6 +91,7 @@ private fun WSLetterItemOptionButton(
 
 @Composable
 private fun WSLetterItemContent(
+    schoolName: String?,
     userInfo: String?,
     date: String,
     wsMessageItemType: WSMessageItemType,
@@ -121,9 +125,13 @@ private fun WSLetterItemContent(
 
         Column(modifier = Modifier.padding(top = 2.dp)) {
             Text(
-                text = wsMessageItemType.letterStatusText(),
+                text = schoolName?.let {
+                    wsMessageItemType.letterStatusText() + " $schoolName"
+                } ?: wsMessageItemType.letterStatusText(),
                 color = Gray100,
                 style = StaticTypeScale.Default.body9,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
 
             userInfo?.let {
@@ -131,6 +139,8 @@ private fun WSLetterItemContent(
                     text = userInfo,
                     color = Gray100,
                     style = StaticTypeScale.Default.body9,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -158,7 +168,6 @@ private fun WSLetterItemContent(
 }
 
 sealed interface WSMessageItemType {
-    // TODO 송신/차단/신고된 메세지는 다른 이모지 사용
     @Composable
     fun optionIcon(): ImageVector
 

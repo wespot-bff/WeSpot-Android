@@ -155,12 +155,14 @@ class SendViewModel @Inject constructor(
                             selectedUser = message.receiver,
                             messageInput = message.content,
                             isRandomName = message.isAnonymous,
-                            sender = message.senderName,
                         )
                     }
-                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러온다.
+                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러와 상태에 대입한다.
                     if (message.isAnonymous) {
+                        reduce { state.copy(randomName = message.senderName) }
                         getProfile()
+                    } else {
+                        reduce { state.copy(sender = message.senderName) }
                     }
 
                     messageInput.value = message.content
