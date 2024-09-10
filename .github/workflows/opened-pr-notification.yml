@@ -42,7 +42,7 @@ jobs:
       - name: add google-services.json
         run: |
           echo '${{ secrets.GOOGLE_SERVICES_JSON_DEV }}' > ./app/src/dev/google-services.json
-          echo '${{ secrets.GOOGLE_SERVICES_JSON_PROD }}' > ./app/src/prod/google-services.json
+          echo '${{ secrets.GOOGLE_SERVICES_JSON_REAL }}' > ./app/src/real/google-services.json
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -101,7 +101,7 @@ jobs:
                   "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
                   "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
                 },
-                "title": "PR 실패. 미쿠짱, 10번 아이언 가져와 🏌️‍♀️🏌️‍♀️ \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "title": "PR 실패. 제니짱, 10번 아이언 가져와 🏌️‍♀️🏌️‍♀️ \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
                 "color": 13458524,
                 "description": "${{ github.event.pull_request.html_url }}",
                 "fields": [
