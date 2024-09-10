@@ -33,9 +33,9 @@ android {
             applicationIdSuffix = ".dev"
         }
 
-        create("prod") {
+        create("real") {
             dimension = "wespot"
-            applicationIdSuffix = ".prod"
+            applicationIdSuffix = ".real"
         }
     }
 
