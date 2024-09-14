@@ -11,7 +11,6 @@ import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.DataStoreKey.PUSH_TOKEN
 import com.bff.wespot.splash.SplashActivity
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -29,9 +28,6 @@ class PushNotificationService : FirebaseMessagingService() {
 
     @Inject
     lateinit var dataStore: DataStoreRepository
-
-    @Inject
-    lateinit var profileRepository: ProfileRepository
 
     @Inject
     lateinit var coroutineDispatcher: CoroutineDispatcher
