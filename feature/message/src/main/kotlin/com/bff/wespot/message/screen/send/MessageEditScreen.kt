@@ -39,7 +39,6 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
-import com.bff.wespot.message.common.toSendSideEffect
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageScreenArgs
@@ -50,10 +49,9 @@ import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
-import kotlinx.coroutines.flow.map
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageEditNavigator {
     fun navigateUp()
@@ -88,9 +86,7 @@ fun MessageEditScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    viewModel.collectSideEffect(
-        baseSideEffectFlow = viewModel.sideEffect.map { it.toSendSideEffect() },
-    ) {
+    viewModel.collectSideEffect {
         when (it) {
             SendSideEffect.CloseReserveDialog -> {
                 reserveDialog = false
@@ -108,16 +104,6 @@ fun MessageEditScreen(
                 navigator.navigateToReservedMessageScreen(
                     args = ReservedMessageScreenArgs(true),
                 )
-            }
-
-            is SendSideEffect.ShowDialog -> {
-                // 승원이 형 답을 알려줘
-            }
-
-            is SendSideEffect.ShowToast -> {
-            }
-
-            is SendSideEffect.NavigateUp -> {
             }
         }
     }
