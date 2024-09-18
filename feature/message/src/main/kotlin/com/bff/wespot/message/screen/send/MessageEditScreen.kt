@@ -202,7 +202,8 @@ fun MessageEditScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(68.dp))
+            // 버튼과 버튼 외부 패딩만큼 높이를 추가한다.
+            Spacer(modifier = Modifier.height(82.dp))
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
