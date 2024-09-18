@@ -16,11 +16,11 @@ import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
-import com.bff.wespot.util.toBaseSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -60,7 +60,6 @@ class SendViewModel @Inject constructor(
             is SendAction.OnMessageEditScreenEntered -> {
                 handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
             }
-
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
@@ -206,9 +205,11 @@ class SendViewModel @Inject constructor(
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
+                if (exception.status == 400) {
                     reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                } else {
+                    postSideEffect(exception.toSideEffect())
                 }
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
@@ -252,7 +253,14 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
-                postSideEffect(exception.toBaseSideEffect())
+                if (exception.status == 400) {
+                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
+                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                } else {
+                    postSideEffect(exception.toSideEffect())
+                }
+            }.onFailure {
+                reduce { state.copy(isLoading = false) }
             }
         }
     }
