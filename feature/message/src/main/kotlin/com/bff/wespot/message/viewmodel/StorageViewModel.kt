@@ -120,14 +120,12 @@ class StorageViewModel @Inject constructor(
     }
 
     private fun checkTimePeriodEveningToNight() = intent {
-        val currentTimePeriod = getCurrentTimePeriod(
+        val timePeriod = getCurrentTimePeriod(
             messageStartTime = state.messageStartTime,
             messageReceiveTime = state.messageReceiveTime,
         )
-        if (currentTimePeriod == TimePeriod.EVENING_TO_NIGHT) {
-            reduce {
-                state.copy(isTimePeriodEveningToNight = true)
-            }
+        reduce {
+            state.copy(isTimePeriodEveningToNight = timePeriod == TimePeriod.EVENING_TO_NIGHT)
         }
     }
 
