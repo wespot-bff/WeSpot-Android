@@ -287,6 +287,8 @@ private fun EditField(
     isMessageContent: Boolean = false,
     onClicked: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Column {
         Text(
             text = title,
@@ -300,10 +302,17 @@ private fun EditField(
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(18.dp),
+                    .padding(18.dp)
+                    .let {
+                        if (isMessageContent) {
+                            it.verticalScroll(scrollState)
+                        } else {
+                            it
+                        }
+                    },
             ) {
                 Text(
                     text = value,
