@@ -14,10 +14,10 @@ import com.bff.wespot.message.state.MessageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
@@ -50,29 +50,23 @@ class MessageViewModel @Inject constructor(
     private val timerJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
         withContext(coroutineDispatcher) {
             previousTimeMills = System.currentTimeMillis()
-            while (_remainingTimeMillis.value > 0L) {
+            while (isActive) {
                 val delayMills = System.currentTimeMillis() - previousTimeMills
                 if (delayMills == 1000L) {
-                    _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
-                    previousTimeMills = System.currentTimeMillis()
-                }
-            }
-        }
-    }
+                    intent {
+                        val currentTimePeriod = getCurrentTimePeriod(
+                            messageStartTime = state.messageStartTime,
+                            messageReceiveTime = state.messageReceiveTime,
+                        )
 
-    private val timeChecker: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-        withContext(coroutineDispatcher) {
-            while (true) {
-                delay(1000)
-                intent {
-                    // TimePeriod가 변경되는 경우, UI 업데이트 수행
-                    val currentTimePeriod = getCurrentTimePeriod(
-                        messageStartTime = state.messageStartTime,
-                        messageReceiveTime = state.messageReceiveTime,
-                    )
-                    if (state.timePeriod != currentTimePeriod) {
                         updateTimePeriod(currentTimePeriod)
+
+                        // TimerPeriod 상태에 따라 타이머 시각 상태 변경
+                        if (currentTimePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                            _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
+                        }
                     }
+                    previousTimeMills = System.currentTimeMillis()
                 }
             }
         }
@@ -80,18 +74,31 @@ class MessageViewModel @Inject constructor(
 
     fun onAction(action: MessageAction) {
         when (action) {
-            is MessageAction.OnHomeScreenEntered -> handleHomeScreenEntered()
+            MessageAction.StartTimeTracking -> startTimer()
+            MessageAction.CancelTimeTracking -> cancelTimer()
             MessageAction.OnReservedMessageScreenEntered -> handleReservedMessageScreenEntered()
         }
     }
 
-    private fun handleHomeScreenEntered() = intent {
-        val currentTimePeriod = getCurrentTimePeriod(
-            messageStartTime = state.messageStartTime,
-            messageReceiveTime = state.messageReceiveTime,
-        )
-        updateTimePeriod(currentTimePeriod)
-        timeChecker.start()
+    private fun getMessageStatus() = intent {
+        viewModelScope.launch {
+            messageRepository.getMessageStatus()
+                .onSuccess { messageStatus ->
+                    reduce {
+                        state.copy(messageStatus = messageStatus)
+                    }
+                }
+        }
+    }
+
+    private fun startTimer() = intent {
+        if (!timerJob.isActive) {
+            timerJob.start()
+        }
+    }
+
+    private fun cancelTimer() {
+        timerJob.cancel()
     }
 
     private fun handleReservedMessageScreenEntered() = intent {
@@ -103,47 +110,22 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun updateTimePeriod(currentTimePeriod: TimePeriod) {
-        intent {
+    /**
+     * TimePeriod Default 값은 DAWN_TO_EVENING으로
+     * DAWN_TO_EVENING 상태에서 다른 행동을 수행하지 않기 때문에, TimePeriod가 변경되었을 때만 행동을 수행한다.
+     */
+    private fun updateTimePeriod(currentTimePeriod: TimePeriod) = intent {
+        if (state.timePeriod != currentTimePeriod) {
+            getMessageStatus()
+
+            // 메세지 전송 가능한 시간이 경우, 타이머 시각을 설정한다.
+            if (currentTimePeriod == TimePeriod.EVENING_TO_NIGHT) {
+                _remainingTimeMillis.value = getRemainingTimeMillis()
+            }
+
             reduce {
-                state.copy(
-                    timePeriod = currentTimePeriod,
-                )
+                state.copy(timePeriod = currentTimePeriod)
             }
-        }
-
-        when (currentTimePeriod) {
-            TimePeriod.DAWN_TO_EVENING -> {
-            }
-
-            TimePeriod.EVENING_TO_NIGHT -> {
-                getMessageStatus()
-                startTimer()
-            }
-
-            TimePeriod.NIGHT_TO_DAWN -> {
-                getMessageStatus()
-            }
-        }
-    }
-
-    private fun getMessageStatus() = intent {
-        viewModelScope.launch {
-            messageRepository.getMessageStatus()
-                .onSuccess { messageStatus ->
-                    reduce {
-                        state.copy(
-                            messageStatus = messageStatus,
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun startTimer() {
-        _remainingTimeMillis.value = getRemainingTimeMillis()
-        if (!timerJob.isActive) {
-            timerJob.start()
         }
     }
 
