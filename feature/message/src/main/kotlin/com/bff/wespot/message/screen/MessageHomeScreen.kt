@@ -54,7 +54,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MessageHomeScreen(
-    viewModel: MessageViewModel,
+    viewModel: MessageViewModel = hiltViewModel(),
     navigateToReservedMessageScreen: () -> Unit,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
