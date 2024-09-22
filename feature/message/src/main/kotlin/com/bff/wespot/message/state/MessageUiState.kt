@@ -12,4 +12,5 @@ data class MessageUiState(
     val messageStartTime: String = DEFAULT_MESSAGE_START_TIME,
     val messageReceiveTime: String = DEFAULT_MESSAGE_RECEIVE_TIME,
     val reservedMessageList: List<Message> = listOf(),
+    val isLoading: Boolean = false,
 )

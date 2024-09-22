@@ -103,9 +103,18 @@ class MessageViewModel @Inject constructor(
 
     private fun handleReservedMessageScreenEntered() = intent {
         viewModelScope.launch {
+            reduce { state.copy(isLoading = true) }
             messageStorageRepository.getReservedMessage()
                 .onSuccess { reservedMessageList ->
-                    reduce { state.copy(reservedMessageList = reservedMessageList) }
+                    reduce {
+                        state.copy(
+                            reservedMessageList = reservedMessageList,
+                            isLoading = false,
+                        )
+                    }
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }
