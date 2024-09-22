@@ -1,4 +1,4 @@
-package com.bff.wespot.message.screen
+package com.bff.wespot.message.screen.storage
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
@@ -38,6 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -55,10 +57,9 @@ import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.ClickedMessageUiModel
 import com.bff.wespot.message.model.MessageOptionType
-import com.bff.wespot.message.model.TimePeriod
-import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.MessageSideEffect
-import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.message.state.storage.StorageAction
+import com.bff.wespot.message.state.storage.StorageSideEffect
+import com.bff.wespot.message.viewmodel.StorageViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.notification.NotificationType
@@ -73,11 +74,11 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageStorageScreen(
-    viewModel: MessageViewModel,
     type: NotificationType,
     messageId: Int,
     navigateToReservedMessageScreen: () -> Unit,
     showToast: (ToastState) -> Unit,
+    viewModel: StorageViewModel = hiltViewModel(),
 ) {
     val chipList = persistentListOf(
         stringResource(R.string.received_message),
@@ -95,11 +96,11 @@ fun MessageStorageScreen(
     val action = viewModel::onAction
     viewModel.collectSideEffect {
         when (it) {
-            is MessageSideEffect.ShowToast -> {
+            is StorageSideEffect.ShowToast -> {
                 showToast(it.toastState)
             }
 
-            is MessageSideEffect.ShowMessageDialog -> {
+            is StorageSideEffect.ShowMessageDialog -> {
                 showMessageDialog = true
             }
         }
@@ -150,7 +151,7 @@ fun MessageStorageScreen(
                                             },
                                             itemClick = {
                                                 action(
-                                                    MessageAction.OnReceivedMessageClicked(
+                                                    StorageAction.OnReceivedMessageClicked(
                                                         message = item,
                                                     ),
                                                 )
@@ -158,7 +159,7 @@ fun MessageStorageScreen(
                                             },
                                             optionButtonClick = {
                                                 action(
-                                                    MessageAction.OnOptionButtonClicked(
+                                                    StorageAction.OnOptionButtonClicked(
                                                         messageId = item.id,
                                                         messageType = MessageType.RECEIVED,
                                                     ),
@@ -186,8 +187,7 @@ fun MessageStorageScreen(
                     ) {
                         val hasReservedMessages = state.messageStatus.hasReservedMessages() &&
                             state.messageStatus.countRemainingMessages >= 0
-                        val isEveningToNight = state.timePeriod == TimePeriod.EVENING_TO_NIGHT
-                        val isBannerVisible = hasReservedMessages && isEveningToNight
+                        val isBannerVisible = hasReservedMessages && state.isTimePeriodEveningToNight
 
                         if (isBannerVisible) {
                             item(span = { GridItemSpan(2) }) {
@@ -235,19 +235,19 @@ fun MessageStorageScreen(
                                     },
                                     itemClick = {
                                         action(
-                                            MessageAction.OnSentMessageClicked(message = item),
+                                            StorageAction.OnSentMessageClicked(message = item),
                                         )
                                         showMessageDialog = true
                                     },
                                     optionButtonClick = {
                                         action(
-                                            MessageAction.OnOptionButtonClicked(
+                                            StorageAction.OnOptionButtonClicked(
                                                 messageId = item.id,
                                                 messageType = MessageType.SENT,
                                             ),
                                         )
                                         action(
-                                            MessageAction.OnOptionBottomSheetClicked(
+                                            StorageAction.OnOptionBottomSheetClicked(
                                                 MessageOptionType.DELETE,
                                             ),
                                         )
@@ -273,7 +273,7 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.delete),
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
                         showMessageOptionDialog = true
                     },
                 )
@@ -281,7 +281,7 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.report_title),
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
                         showMessageOptionDialog = true
                     },
                 )
@@ -290,7 +290,7 @@ fun MessageStorageScreen(
                     text = stringResource(R.string.block),
                     showDivider = false,
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
                         showMessageOptionDialog = true
                     },
                 )
@@ -315,17 +315,17 @@ fun MessageStorageScreen(
                 when (state.messageOptionType) {
                     MessageOptionType.DELETE -> {
                         action(
-                            MessageAction.OnMessageDeleteButtonClicked,
+                            StorageAction.OnMessageDeleteButtonClicked,
                         )
                     }
                     MessageOptionType.BLOCK -> {
                         action(
-                            MessageAction.OnMessageBlockButtonClicked,
+                            StorageAction.OnMessageBlockButtonClicked,
                         )
                     }
                     MessageOptionType.REPORT -> {
                         action(
-                            MessageAction.OnMessageReportButtonClicked,
+                            StorageAction.OnMessageReportButtonClicked,
                         )
                     }
                 }
@@ -343,12 +343,19 @@ fun MessageStorageScreen(
 
     NetworkDialog(context = context, networkState = networkState)
 
+    LifecycleResumeEffect(Unit) {
+        action(StorageAction.StartTimeTracking)
+        onPauseOrDispose {
+            action(StorageAction.CancelTimeTracking)
+        }
+    }
+
     LaunchedEffect(Unit) {
         when (type) {
             NotificationType.MESSAGE_RECEIVED -> {
                 selectedChipIndex = RECEIVED_MESSAGE_INDEX
                 action(
-                    MessageAction.OnMessageStorageScreenOpened(
+                    StorageAction.OnMessageStorageScreenOpened(
                         messageId = messageId,
                         type = MessageType.RECEIVED,
                     ),
@@ -358,7 +365,7 @@ fun MessageStorageScreen(
             NotificationType.MESSAGE_SENT -> {
                 selectedChipIndex = SENT_MESSAGE_INDEX
                 action(
-                    MessageAction.OnMessageStorageScreenOpened(
+                    StorageAction.OnMessageStorageScreenOpened(
                         messageId = messageId,
                         type = MessageType.SENT,
                     ),
@@ -372,11 +379,11 @@ fun MessageStorageScreen(
     LaunchedEffect(selectedChipIndex) {
         when (selectedChipIndex) {
             RECEIVED_MESSAGE_INDEX -> {
-                action(MessageAction.OnStorageChipSelected(MessageType.RECEIVED))
+                action(StorageAction.OnStorageChipSelected(MessageType.RECEIVED))
             }
 
             SENT_MESSAGE_INDEX -> {
-                action(MessageAction.OnStorageChipSelected(MessageType.SENT))
+                action(StorageAction.OnStorageChipSelected(MessageType.SENT))
             }
         }
     }
