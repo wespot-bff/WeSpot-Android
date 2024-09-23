@@ -22,8 +22,8 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
+import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.ReceivedMessage
-import com.bff.wespot.model.message.response.SentMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -46,7 +46,7 @@ class StorageViewModel @Inject constructor(
     private val messageStorageRepository: MessageStorageRepository,
     private val commonRepository: CommonRepository,
     private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
-    private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
+    private val messageSentRepository: BasePagingRepository<Message, Paging<Message>>,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(
         StorageUiState(
@@ -174,7 +174,7 @@ class StorageViewModel @Inject constructor(
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
                     when (type) {
-                        MessageType.SENT -> handleSentMessageClicked(message.toSentMessage())
+                        MessageType.SENT -> handleSentMessageClicked(message)
                         MessageType.RECEIVED -> handleReceivedMessageClicked(
                             message.toReceivedMessage(),
                         )
@@ -204,7 +204,7 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    private fun handleSentMessageClicked(message: SentMessage) = intent {
+    private fun handleSentMessageClicked(message: Message) = intent {
         reduce {
             state.copy(
                 clickedMessage = ClickedMessageUiModel(
