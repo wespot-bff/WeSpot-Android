@@ -38,13 +38,13 @@ class MessageDataSourceImpl @Inject constructor(
         }
 
     override suspend fun postMessage(
-        sentMessageDto: WrittenMessageDto,
+        writtenMessageDto: WrittenMessageDto,
     ): Result<MessageIdDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/messages/send")
-                setBody(sentMessageDto)
+                setBody(writtenMessageDto)
             }
         }
 
@@ -56,12 +56,12 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun editMessage(messageId: Int, sentMessageDto: WrittenMessageDto): Result<Unit> =
+    override suspend fun editMessage(messageId: Int, writtenMessageDto: WrittenMessageDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
                 path("api/v1/messages/$messageId")
-                setBody(sentMessageDto)
+                setBody(writtenMessageDto)
             }
         }
 
