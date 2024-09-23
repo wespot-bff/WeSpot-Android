@@ -64,6 +64,12 @@ class VotingViewModel @Inject constructor(
             try {
                 voteRepository.getVoteQuestions()
                     .onSuccess {
+                        val profile = userRepository.getProfile().getOrDefault(Profile())
+                        reduce {
+                            state.copy(
+                                profile = profile,
+                            )
+                        }
                         if (it.voteItems.isEmpty()) {
                             postSideEffect(VotingSideEffect.ShowToast("투표 항목이 없습니다"))
                             reduce {
@@ -71,7 +77,6 @@ class VotingViewModel @Inject constructor(
                             }
                             return@onSuccess
                         }
-                        val profile = userRepository.getProfile().getOrDefault(Profile())
                         reduce {
                             state.copy(
                                 voteItems = it.voteItems,
@@ -81,7 +86,6 @@ class VotingViewModel @Inject constructor(
                                 start = false,
                                 selectedVote = List(it.voteItems.size) { VoteResultUpload() },
                                 loading = false,
-                                profile = profile,
                             )
                         }
                     }
