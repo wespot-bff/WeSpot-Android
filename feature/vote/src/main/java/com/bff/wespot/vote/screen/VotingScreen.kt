@@ -353,14 +353,17 @@ private fun VotingGuideScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = stringResource(R.string.guide_title),
+            text = stringResource(
+                R.string.guide_title,
+                state.profile.grade,
+                state.profile.classNumber
+            ),
             style = StaticTypeScale.Default.header1,
-            modifier = Modifier.padding(horizontal = 24.dp),
+            modifier = Modifier.padding(paddingValues).padding(horizontal = 24.dp),
         )
         Image(
             painter = painterResource(id = R.drawable.no_friends),

@@ -5,9 +5,11 @@ import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.common.ReportType
+import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItem
@@ -29,12 +31,13 @@ class VotingViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
+    private val userRepository: UserRepository,
 ) : BaseViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
     override val container = container<VotingUiState, VotingSideEffect>(
         VotingUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
             addQuestionLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL),
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL),
         ),
     )
 
@@ -68,6 +71,7 @@ class VotingViewModel @Inject constructor(
                             }
                             return@onSuccess
                         }
+                        val profile = userRepository.getProfile().getOrDefault(Profile())
                         reduce {
                             state.copy(
                                 voteItems = it.voteItems,
@@ -77,6 +81,7 @@ class VotingViewModel @Inject constructor(
                                 start = false,
                                 selectedVote = List(it.voteItems.size) { VoteResultUpload() },
                                 loading = false,
+                                profile = profile,
                             )
                         }
                     }
