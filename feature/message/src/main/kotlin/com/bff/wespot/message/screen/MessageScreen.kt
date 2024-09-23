@@ -24,6 +24,7 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.notification.NotificationType
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
@@ -47,6 +48,7 @@ internal fun MessageScreen(
     navArgs: MessageScreenArgs,
     sendViewModel: SendViewModel,
     showToast: (ToastState) -> Unit,
+    restricted: RestrictionArg,
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
     val tabList = persistentListOf(
@@ -88,6 +90,7 @@ internal fun MessageScreen(
                                     ReceiverSelectionScreenArgs(false),
                                 )
                             },
+                            restricted = restricted,
                         )
                     }
 

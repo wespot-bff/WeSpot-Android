@@ -48,6 +48,7 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
@@ -63,6 +64,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import timber.log.Timber
 
 interface VotingNavigator {
     fun navigateUp()
@@ -76,6 +78,7 @@ interface VotingNavigator {
 fun VotingScreen(
     votingNavigator: VotingNavigator,
     viewModel: VotingViewModel,
+    restricted: RestrictionArg,
     navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
@@ -85,6 +88,7 @@ fun VotingScreen(
 
     val context = LocalContext.current
 
+    Timber.d("VotingScreen: ${state.profile}")
     analyticsHelper.logEvent(
         AnalyticsEvent(
             type = "vote_screen_view",
@@ -160,7 +164,7 @@ fun VotingScreen(
             }
         },
     ) {
-        if (state.loading && showGuideScreen) {
+        if (state.loading && showGuideScreen && !restricted.restricted) {
             return@Scaffold
         } else if (showGuideScreen) {
             VotingGuideScreen(it, navigator, state, analyticsHelper)
