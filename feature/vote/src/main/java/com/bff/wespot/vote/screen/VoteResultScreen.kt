@@ -126,7 +126,7 @@ fun VoteResultScreen(
     }
 
     var showLottie by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
     val launcher =
@@ -359,10 +359,6 @@ fun VoteResultScreen(
         ) {
             DotIndicators(pagerState = pagerState)
         }
-    }
-
-    if (state.isLoading) {
-        showLottie = true
     }
 
     NetworkDialog(context = context, networkState = networkState)
