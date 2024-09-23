@@ -364,7 +364,7 @@ private fun VotingGuideScreen(
             text = stringResource(
                 R.string.guide_title,
                 state.profile.grade,
-                state.profile.classNumber
+                state.profile.classNumber,
             ),
             style = StaticTypeScale.Default.header1,
             modifier = Modifier.padding(paddingValues).padding(horizontal = 24.dp),

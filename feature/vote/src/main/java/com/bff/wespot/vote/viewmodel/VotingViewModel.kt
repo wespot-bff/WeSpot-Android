@@ -37,7 +37,7 @@ class VotingViewModel @Inject constructor(
         VotingUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
             addQuestionLink =
-            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL),
+                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.VOTE_QUESTION_GOOGLE_FORM_URL),
         ),
     )
 
