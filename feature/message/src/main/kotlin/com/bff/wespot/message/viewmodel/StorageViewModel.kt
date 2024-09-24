@@ -11,7 +11,6 @@ import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.message.R
-import com.bff.wespot.message.model.ClickedMessageUiModel
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
@@ -22,6 +21,7 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
+import com.bff.wespot.model.message.response.BaseMessage
 import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.ReceivedMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -95,10 +95,10 @@ class StorageViewModel @Inject constructor(
                 handleMessageStorageScreenOpened(action.messageId, action.type)
             }
             is StorageAction.OnSentMessageClicked -> {
-                handleSentMessageClicked(action.message)
+                handleMessageClicked(action.message, MessageType.SENT)
             }
             is StorageAction.OnReceivedMessageClicked -> {
-                handleReceivedMessageClicked(action.message)
+                handleMessageClicked(action.message, MessageType.RECEIVED)
             }
             is StorageAction.OnOptionButtonClicked -> {
                 handleOptionButtonClicked(action.messageId, action.messageType)
@@ -173,12 +173,7 @@ class StorageViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
-                    when (type) {
-                        MessageType.SENT -> handleSentMessageClicked(message)
-                        MessageType.RECEIVED -> handleReceivedMessageClicked(
-                            message.toReceivedMessage(),
-                        )
-                    }
+                    handleMessageClicked(message, type)
                     reduce { state.copy(isLoading = false) }
                     postSideEffect(StorageSideEffect.ShowMessageDialog)
                 }
@@ -188,31 +183,13 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    private fun handleReceivedMessageClicked(message: ReceivedMessage) = intent {
+    private fun handleMessageClicked(message: BaseMessage, type: MessageType) = intent {
         reduce {
-            state.copy(
-                clickedMessage = ClickedMessageUiModel(
-                    content = message.content,
-                    sender = message.senderName,
-                    receiver = message.receiver.toDescription(),
-                ),
-            )
+            state.copy(clickedMessage = message)
         }
 
-        if (message.isRead.not()) {
+        if (type == MessageType.RECEIVED) {
             updateMessageReadStatus(messageId = message.id)
-        }
-    }
-
-    private fun handleSentMessageClicked(message: Message) = intent {
-        reduce {
-            state.copy(
-                clickedMessage = ClickedMessageUiModel(
-                    content = message.content,
-                    sender = message.senderName,
-                    receiver = message.receiver.toDescription(),
-                ),
-            )
         }
     }
 
