@@ -6,7 +6,7 @@ import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.util.RemoteConfigKey

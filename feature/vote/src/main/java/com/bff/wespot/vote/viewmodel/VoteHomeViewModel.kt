@@ -5,7 +5,7 @@ import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.util.toDateTimeString
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey

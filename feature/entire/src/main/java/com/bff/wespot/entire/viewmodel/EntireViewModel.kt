@@ -5,8 +5,8 @@ import androidx.paging.cachedIn
 import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.DataStoreKey

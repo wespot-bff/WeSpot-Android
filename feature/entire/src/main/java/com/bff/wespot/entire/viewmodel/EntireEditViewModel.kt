@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileCharacterUseCase
