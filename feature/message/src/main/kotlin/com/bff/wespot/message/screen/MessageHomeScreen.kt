@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -54,7 +54,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MessageHomeScreen(
-    viewModel: MessageViewModel,
+    viewModel: MessageViewModel = hiltViewModel(),
     navigateToReservedMessageScreen: () -> Unit,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
@@ -132,8 +132,11 @@ fun MessageHomeScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnHomeScreenEntered)
+    LifecycleStartEffect(Unit) {
+        action(MessageAction.StartTimeTracking)
+        onStopOrDispose {
+            action(MessageAction.CancelTimeTracking)
+        }
     }
 }
 

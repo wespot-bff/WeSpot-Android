@@ -11,8 +11,8 @@ import javax.inject.Inject
 class MessageRepositoryImpl @Inject constructor(
     private val messageDataSource: MessageDataSource,
 ) : MessageRepository {
-    override suspend fun postMessage(sentMessage: WrittenMessage): Result<String> {
-        return messageDataSource.postMessage(sentMessage.toWrittenMessageDto()).mapCatching {
+    override suspend fun postMessage(writtenMessage: WrittenMessage): Result<String> {
+        return messageDataSource.postMessage(writtenMessage.toWrittenMessageDto()).mapCatching {
             it.toString()
         }
     }
@@ -23,8 +23,8 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun editMessage(messageId: Int, sentMessage: WrittenMessage): Result<Unit> =
-        messageDataSource.editMessage(messageId, sentMessage.toWrittenMessageDto())
+    override suspend fun editMessage(messageId: Int, writtenMessage: WrittenMessage): Result<Unit> =
+        messageDataSource.editMessage(messageId, writtenMessage.toWrittenMessageDto())
 
     override suspend fun getMessage(messageId: Int): Result<Message> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
