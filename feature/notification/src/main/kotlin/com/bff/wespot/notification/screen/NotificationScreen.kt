@@ -53,7 +53,10 @@ interface NotificationNavigator {
     fun navigateToReceiverSelectionScreen()
     fun navigateToMessageScreen(messageId: Int, type: NotificationType)
     fun navigateToVotingScreen()
-    fun navigateToVoteResultScreen(isNavigateFromNotification: Boolean)
+    fun navigateToVoteResultScreen(
+        isNavigateFromNotification: Boolean,
+        isTodayVoteResult: Boolean,
+    )
     fun navigateToVoteStorageScreen()
 }
 
@@ -130,7 +133,10 @@ fun NotificationScreen(
                                     }
 
                                     NotificationType.VOTE_RESULT -> {
-                                        navigator.navigateToVoteResultScreen(true)
+                                        navigator.navigateToVoteResultScreen(
+                                            isNavigateFromNotification = true,
+                                            isTodayVoteResult = item.isTodayVoteResult(),
+                                        )
                                     }
 
                                     NotificationType.VOTE_RECEIVED -> {

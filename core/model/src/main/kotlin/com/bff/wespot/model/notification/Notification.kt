@@ -12,4 +12,7 @@ data class Notification(
     val isNew: Boolean,
     val isEnable: Boolean,
     val createdAt: LocalDateTime,
-)
+) {
+    fun isTodayVoteResult(): Boolean =
+        type == NotificationType.VOTE_RESULT && LocalDate.now().equals(date)
+}
