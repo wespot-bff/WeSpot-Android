@@ -1,37 +1,33 @@
-package com.bff.wespot.data.repository.auth
+package com.bff.wespot.util
 
 import android.content.Context
-import com.bff.wespot.domain.repository.auth.KakaoLoginManager
 import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
-import javax.inject.Inject
+import timber.log.Timber
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class KakaoLoginManagerImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : KakaoLoginManager {
-    override suspend fun loginWithKakao(): KakaoAuthToken {
-        val loginState = getKakaoLoginState()
+class KakaoLoginManager {
+    suspend fun loginWithKakao(context: Context): KakaoAuthToken {
+        val loginState = getKakaoLoginState(context)
 
         return try {
             when (loginState) {
                 KaKaoLoginState.KAKAO_TALK_LOGIN -> {
 
-                    val token = UserApiClient.loginWithKakaoTalk()
+                    val token = UserApiClient.loginWithKakaoTalk(context)
                     KakaoAuthToken(
                         accessToken = token.accessToken,
                     )
                 }
 
                 KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> {
-                    val token = UserApiClient.loginWithKakaoAccount()
+                    val token = UserApiClient.loginWithKakaoAccount(context)
                     KakaoAuthToken(
                         accessToken = token.accessToken,
                     )
@@ -42,22 +38,25 @@ class KakaoLoginManagerImpl @Inject constructor(
                 throw error
             }
 
-            val token = UserApiClient.loginWithKakaoAccount()
+            val token = UserApiClient.loginWithKakaoAccount(context)
             KakaoAuthToken(
                 accessToken = token.accessToken,
             )
         }
     }
 
-    private suspend fun UserApiClient.Companion.loginWithKakaoTalk(): OAuthToken {
+    private suspend fun UserApiClient.Companion.loginWithKakaoTalk(context: Context): OAuthToken {
         return suspendCancellableCoroutine { continuation ->
             instance.loginWithKakaoTalk(context) { token, error ->
+                Timber.d("loginWithKakaoTalk token: $token, error: $error")
                 continuation.resumeTokenOrException(token, error)
             }
         }
     }
 
-    private suspend fun UserApiClient.Companion.loginWithKakaoAccount(): OAuthToken {
+    private suspend fun UserApiClient.Companion.loginWithKakaoAccount(
+        context: Context
+    ): OAuthToken {
         return suspendCancellableCoroutine { continuation ->
             instance.loginWithKakaoAccount(context) { token, error ->
                 continuation.resumeTokenOrException(token, error)
@@ -65,7 +64,7 @@ class KakaoLoginManagerImpl @Inject constructor(
         }
     }
 
-    private fun getKakaoLoginState(): KaKaoLoginState =
+    private fun getKakaoLoginState(context: Context): KaKaoLoginState =
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             KaKaoLoginState.KAKAO_TALK_LOGIN
         } else {

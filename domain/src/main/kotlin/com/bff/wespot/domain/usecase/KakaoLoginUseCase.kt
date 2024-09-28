@@ -2,20 +2,18 @@ package com.bff.wespot.domain.usecase
 
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
-import com.bff.wespot.domain.repository.auth.KakaoLoginManager
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.response.AuthToken
 import com.bff.wespot.model.auth.response.SignUpToken
 import com.bff.wespot.model.constants.LoginState
 import javax.inject.Inject
 
 class KakaoLoginUseCase @Inject constructor(
-    private val kakaoLoginManager: KakaoLoginManager,
     private val authRepository: AuthRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) {
-    suspend operator fun invoke(): Result<LoginState> {
-        val result = kakaoLoginManager.loginWithKakao()
+    suspend operator fun invoke(result: KakaoAuthToken): Result<LoginState> {
         return authRepository.sendKakaoToken(result)
             .map {
                 when (it) {
