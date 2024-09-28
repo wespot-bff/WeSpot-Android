@@ -64,7 +64,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import timber.log.Timber
 
 interface VotingNavigator {
     fun navigateUp()
@@ -88,7 +87,6 @@ fun VotingScreen(
 
     val context = LocalContext.current
 
-    Timber.d("VotingScreen: ${state.profile}")
     analyticsHelper.logEvent(
         AnalyticsEvent(
             type = "vote_screen_view",
