@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bff.wespot.R
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
@@ -59,12 +60,14 @@ class SplashActivity : ComponentActivity() {
         val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
         val userId = intent.getStringExtra("userId") ?: ""
         val type = intent.getStringExtra("type") ?: ""
+        val date = intent.getStringExtra("date") ?: ""
 
         val intent = navigator.navigateToAuthWithExtra(
             context = this@SplashActivity,
             targetId = Pair(EXTRA_TARGET_ID, targetId),
             userId = Pair(EXTRA_USER_ID, userId),
             type = Pair(EXTRA_TYPE, type),
+            date = Pair(EXTRA_DATE, date),
         )
         startActivity(intent)
         finish()
