@@ -210,7 +210,8 @@ fun MessageEditScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(68.dp))
+            // 버튼과 버튼 외부 패딩만큼 높이를 추가한다.
+            Spacer(modifier = Modifier.height(82.dp))
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
@@ -300,6 +301,8 @@ private fun EditField(
     isMessageContent: Boolean = false,
     onClicked: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Column {
         Text(
             text = title,
@@ -313,10 +316,17 @@ private fun EditField(
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(18.dp),
+                    .padding(18.dp)
+                    .let {
+                        if (isMessageContent) {
+                            it.verticalScroll(scrollState)
+                        } else {
+                            it
+                        }
+                    },
             ) {
                 Text(
                     text = value,

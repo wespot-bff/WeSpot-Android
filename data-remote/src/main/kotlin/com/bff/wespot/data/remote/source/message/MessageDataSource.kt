@@ -12,11 +12,11 @@ interface MessageDataSource {
 
     suspend fun getSentMessageList(cursorId: Int?): Result<MessageListDto>
 
-    suspend fun postMessage(sentMessageDto: WrittenMessageDto): Result<MessageIdDto>
+    suspend fun postMessage(writtenMessageDto: WrittenMessageDto): Result<MessageIdDto>
 
     suspend fun getMessageStatus(): Result<MessageStatusDto>
 
-    suspend fun editMessage(messageId: Int, sentMessageDto: WrittenMessageDto): Result<Unit>
+    suspend fun editMessage(messageId: Int, writtenMessageDto: WrittenMessageDto): Result<Unit>
 
     suspend fun getMessage(messageId: Int): Result<MessageDto>
 
