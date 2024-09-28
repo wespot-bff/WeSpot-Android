@@ -19,7 +19,6 @@ class KakaoLoginManager {
         return try {
             when (loginState) {
                 KaKaoLoginState.KAKAO_TALK_LOGIN -> {
-
                     val token = UserApiClient.loginWithKakaoTalk(context)
                     KakaoAuthToken(
                         accessToken = token.accessToken,
@@ -55,7 +54,7 @@ class KakaoLoginManager {
     }
 
     private suspend fun UserApiClient.Companion.loginWithKakaoAccount(
-        context: Context
+        context: Context,
     ): OAuthToken {
         return suspendCancellableCoroutine { continuation ->
             instance.loginWithKakaoAccount(context) { token, error ->
