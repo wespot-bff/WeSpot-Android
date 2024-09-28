@@ -5,11 +5,11 @@ import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.MessageStatus
 
 interface MessageRepository {
-    suspend fun postMessage(sentMessage: WrittenMessage): Result<String>
+    suspend fun postMessage(writtenMessage: WrittenMessage): Result<String>
 
     suspend fun getMessageStatus(): Result<MessageStatus>
 
-    suspend fun editMessage(messageId: Int, sentMessage: WrittenMessage): Result<Unit>
+    suspend fun editMessage(messageId: Int, writtenMessage: WrittenMessage): Result<Unit>
 
     suspend fun getMessage(messageId: Int): Result<Message>
 }

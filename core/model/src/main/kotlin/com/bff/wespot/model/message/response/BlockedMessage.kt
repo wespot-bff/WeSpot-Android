@@ -11,9 +11,6 @@ data class BlockedMessage(
     val receiver: User,
     val content: String,
     val receivedAt: LocalDateTime?,
-    val isRead: Boolean,
-    val isReported: Boolean,
-    val isBlocked: Boolean,
 ) {
-    constructor() : this(-1, "", Sender(), User(), "", LocalDateTime.MIN, false, false, false)
+    constructor() : this(-1, "", Sender(), User(), "", LocalDateTime.MIN)
 }

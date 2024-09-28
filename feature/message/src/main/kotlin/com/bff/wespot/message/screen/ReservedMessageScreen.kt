@@ -33,6 +33,7 @@ import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReservedMessageItem
 import com.bff.wespot.ui.TopToast
@@ -108,6 +109,10 @@ fun ReservedMessageScreen(
                     )
                 }
             }
+        }
+
+        if (state.isLoading) {
+            LoadingAnimation()
         }
     }
 

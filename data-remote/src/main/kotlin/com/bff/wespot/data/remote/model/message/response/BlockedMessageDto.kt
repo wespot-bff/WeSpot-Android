@@ -38,8 +38,5 @@ data class BlockedMessageDto(
         receiver = receiver.toUser(),
         content = content,
         receivedAt = receivedAt?.toISOLocalDateTime(),
-        isRead = isRead,
-        isReported = isReported,
-        isBlocked = isBlocked,
     )
 }
