@@ -1,4 +1,4 @@
-package com.bff.wespot.message.screen
+package com.bff.wespot.message.screen.storage
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
@@ -38,8 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.list.WSMessageItem
@@ -53,14 +56,16 @@ import com.bff.wespot.message.common.RECEIVED_MESSAGE_INDEX
 import com.bff.wespot.message.common.SENT_MESSAGE_INDEX
 import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.component.ReservedMessageBanner
-import com.bff.wespot.message.model.ClickedMessageUiModel
 import com.bff.wespot.message.model.MessageOptionType
-import com.bff.wespot.message.model.TimePeriod
-import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.MessageSideEffect
-import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.message.state.storage.StorageAction
+import com.bff.wespot.message.state.storage.StorageSideEffect
+import com.bff.wespot.message.viewmodel.StorageViewModel
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
+import com.bff.wespot.model.message.response.BaseMessage
+import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageStatus
+import com.bff.wespot.model.message.response.ReceivedMessage
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
@@ -73,11 +78,11 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageStorageScreen(
-    viewModel: MessageViewModel,
     type: NotificationType,
     messageId: Int,
     navigateToReservedMessageScreen: () -> Unit,
     showToast: (ToastState) -> Unit,
+    viewModel: StorageViewModel = hiltViewModel(),
 ) {
     val chipList = persistentListOf(
         stringResource(R.string.received_message),
@@ -95,11 +100,11 @@ fun MessageStorageScreen(
     val action = viewModel::onAction
     viewModel.collectSideEffect {
         when (it) {
-            is MessageSideEffect.ShowToast -> {
+            is StorageSideEffect.ShowToast -> {
                 showToast(it.toastState)
             }
 
-            is MessageSideEffect.ShowMessageDialog -> {
+            is StorageSideEffect.ShowMessageDialog -> {
                 showMessageDialog = true
             }
         }
@@ -118,145 +123,53 @@ fun MessageStorageScreen(
         ) { page ->
             when (page) {
                 RECEIVED_MESSAGE_INDEX -> {
-                    val pagingData = state.receivedMessageList.collectAsLazyPagingItems()
-
-                    when (pagingData.loadState.refresh) {
-                        is LoadState.Error -> {
-                            // TODO: Handle error
-                        }
-
-                        else -> {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 20.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                items(
-                                    pagingData.itemCount,
-                                    key = pagingData.itemKey { it.id },
-                                ) { index ->
-                                    val item = pagingData[index]
-                                    item?.let {
-                                        WSMessageItem(
-                                            userInfo = item.senderName,
-                                            date = item.receivedAt?.toStringWithDotSeparator() ?: "",
-                                            wsMessageItemType = if (item.isRead) {
-                                                WSMessageItemType.ReadReceivedMessage
-                                            } else {
-                                                WSMessageItemType.UnreadReceivedMessage
-                                            },
-                                            itemClick = {
-                                                action(
-                                                    MessageAction.OnReceivedMessageClicked(
-                                                        message = item,
-                                                    ),
-                                                )
-                                                showMessageDialog = true
-                                            },
-                                            optionButtonClick = {
-                                                action(
-                                                    MessageAction.OnOptionButtonClicked(
-                                                        messageId = item.id,
-                                                        messageType = MessageType.RECEIVED,
-                                                    ),
-                                                )
-                                                showBottomSheet = true
-                                            },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    val receivedMessageList = state.receivedMessageList.collectAsLazyPagingItems()
+                    ReceivedMessageStorageScreen(
+                        data = receivedMessageList,
+                        itemClick = { item ->
+                            action(StorageAction.OnReceivedMessageClicked(message = item))
+                            showMessageDialog = true
+                        },
+                        optionButtonClick = { messageId ->
+                            action(
+                                StorageAction.OnOptionButtonClicked(
+                                    messageId = messageId,
+                                    messageType = MessageType.RECEIVED,
+                                ),
+                            )
+                            showBottomSheet = true
+                        },
+                    )
                 }
 
                 SENT_MESSAGE_INDEX -> {
-                    val pagingData = state.sentMessageList.collectAsLazyPagingItems()
-
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        val hasReservedMessages = state.messageStatus.hasReservedMessages() &&
-                            state.messageStatus.countRemainingMessages >= 0
-                        val isEveningToNight = state.timePeriod == TimePeriod.EVENING_TO_NIGHT
-                        val isBannerVisible = hasReservedMessages && isEveningToNight
-
-                        if (isBannerVisible) {
-                            item(span = { GridItemSpan(2) }) {
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    ReservedMessageBanner(
-                                        paddingValues = PaddingValues(),
-                                        messageStatus = state.messageStatus,
-                                        onBannerClick = {
-                                            navigateToReservedMessageScreen()
-                                        },
-                                    )
-
-                                    Text(
-                                        modifier = Modifier.padding(top = 24.dp, start = 4.dp),
-                                        text = stringResource(
-                                            R.string.sent_message_storage_title,
-                                        ),
-                                        color = WeSpotThemeManager.colors.txtTitleColor,
-                                        style = StaticTypeScale.Default.body3,
-                                    )
-                                }
-                            }
-                        }
-
-                        items(
-                            pagingData.itemCount,
-                            key = pagingData.itemKey { it.id },
-                        ) { index ->
-                            val item = pagingData[index]
-
-                            item?.let {
-                                WSMessageItem(
-                                    userInfo = if (item.isBlocked.not() && item.isReported.not()) {
-                                        item.receiver.toUserInfoWithoutSchoolName()
-                                    } else {
-                                        null
-                                    },
-                                    schoolName = item.receiver.toShortSchoolName(),
-                                    date = item.receivedAt?.toStringWithDotSeparator() ?: "",
-                                    wsMessageItemType = when {
-                                        item.isBlocked -> WSMessageItemType.BlockedMessage
-                                        item.isReported -> WSMessageItemType.ReportedMessage
-                                        item.isRead -> WSMessageItemType.ReadSentMessage
-                                        else -> WSMessageItemType.UnreadSentMessage
-                                    },
-                                    itemClick = {
-                                        action(
-                                            MessageAction.OnSentMessageClicked(message = item),
-                                        )
-                                        showMessageDialog = true
-                                    },
-                                    optionButtonClick = {
-                                        action(
-                                            MessageAction.OnOptionButtonClicked(
-                                                messageId = item.id,
-                                                messageType = MessageType.SENT,
-                                            ),
-                                        )
-                                        action(
-                                            MessageAction.OnOptionBottomSheetClicked(
-                                                MessageOptionType.DELETE,
-                                            ),
-                                        )
-                                        showMessageOptionDialog = true
-                                    },
-                                )
-                            }
-                        }
-                    }
+                    val sentMessageList = state.sentMessageList.collectAsLazyPagingItems()
+                    SentMessageStorageScreen(
+                        data = sentMessageList,
+                        messageStatus = state.messageStatus,
+                        isBannerVisible = state.messageStatus.hasReservedMessages() &&
+                            state.isTimePeriodEveningToNight,
+                        itemClick = { item ->
+                            action(StorageAction.OnSentMessageClicked(message = item))
+                            showMessageDialog = true
+                        },
+                        optionButtonClick = { messageId ->
+                            action(
+                                StorageAction.OnOptionButtonClicked(
+                                    messageId = messageId,
+                                    messageType = MessageType.SENT,
+                                ),
+                            )
+                            // 보낸 쪽지인 경우, 삭제 옵션만 제공한다.
+                            action(
+                                StorageAction.OnOptionBottomSheetClicked(
+                                    MessageOptionType.DELETE,
+                                ),
+                            )
+                            showMessageOptionDialog = true
+                        },
+                        bannerClick = navigateToReservedMessageScreen,
+                    )
                 }
             }
         }
@@ -273,7 +186,7 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.delete),
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
                         showMessageOptionDialog = true
                     },
                 )
@@ -281,7 +194,7 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.report_title),
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
                         showMessageOptionDialog = true
                     },
                 )
@@ -290,7 +203,7 @@ fun MessageStorageScreen(
                     text = stringResource(R.string.block),
                     showDivider = false,
                     onClick = {
-                        action(MessageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
+                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
                         showMessageOptionDialog = true
                     },
                 )
@@ -315,17 +228,17 @@ fun MessageStorageScreen(
                 when (state.messageOptionType) {
                     MessageOptionType.DELETE -> {
                         action(
-                            MessageAction.OnMessageDeleteButtonClicked,
+                            StorageAction.OnMessageDeleteButtonClicked,
                         )
                     }
                     MessageOptionType.BLOCK -> {
                         action(
-                            MessageAction.OnMessageBlockButtonClicked,
+                            StorageAction.OnMessageBlockButtonClicked,
                         )
                     }
                     MessageOptionType.REPORT -> {
                         action(
-                            MessageAction.OnMessageReportButtonClicked,
+                            StorageAction.OnMessageReportButtonClicked,
                         )
                     }
                 }
@@ -343,12 +256,19 @@ fun MessageStorageScreen(
 
     NetworkDialog(context = context, networkState = networkState)
 
+    LifecycleStartEffect(Unit) {
+        action(StorageAction.StartTimeTracking)
+        onStopOrDispose {
+            action(StorageAction.CancelTimeTracking)
+        }
+    }
+
     LaunchedEffect(Unit) {
         when (type) {
             NotificationType.MESSAGE_RECEIVED -> {
                 selectedChipIndex = RECEIVED_MESSAGE_INDEX
                 action(
-                    MessageAction.OnMessageStorageScreenOpened(
+                    StorageAction.OnMessageStorageScreenOpened(
                         messageId = messageId,
                         type = MessageType.RECEIVED,
                     ),
@@ -358,7 +278,7 @@ fun MessageStorageScreen(
             NotificationType.MESSAGE_SENT -> {
                 selectedChipIndex = SENT_MESSAGE_INDEX
                 action(
-                    MessageAction.OnMessageStorageScreenOpened(
+                    StorageAction.OnMessageStorageScreenOpened(
                         messageId = messageId,
                         type = MessageType.SENT,
                     ),
@@ -372,19 +292,163 @@ fun MessageStorageScreen(
     LaunchedEffect(selectedChipIndex) {
         when (selectedChipIndex) {
             RECEIVED_MESSAGE_INDEX -> {
-                action(MessageAction.OnStorageChipSelected(MessageType.RECEIVED))
+                action(StorageAction.OnStorageChipSelected(MessageType.RECEIVED))
             }
 
             SENT_MESSAGE_INDEX -> {
-                action(MessageAction.OnStorageChipSelected(MessageType.SENT))
+                action(StorageAction.OnStorageChipSelected(MessageType.SENT))
             }
         }
     }
 }
 
 @Composable
+private fun ReceivedMessageStorageScreen(
+    data: LazyPagingItems<ReceivedMessage>,
+    itemClick: (ReceivedMessage) -> Unit,
+    optionButtonClick: (Int) -> Unit,
+) {
+    when (data.loadState.refresh) {
+        is LoadState.Error -> {
+        }
+
+        is LoadState.Loading -> {
+            LoadingAnimation()
+        }
+
+        else -> {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(
+                    data.itemCount,
+                    key = data.itemKey { it.id },
+                ) { index ->
+                    val item = data[index]
+                    item?.let {
+                        WSMessageItem(
+                            userInfo = item.senderName,
+                            date = item.receivedAt?.toStringWithDotSeparator() ?: "",
+                            wsMessageItemType = if (item.isRead) {
+                                WSMessageItemType.ReadReceivedMessage
+                            } else {
+                                WSMessageItemType.UnreadReceivedMessage
+                            },
+                            itemClick = {
+                                itemClick(it)
+                            },
+                            optionButtonClick = {
+                                optionButtonClick(it.id)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SentMessageStorageScreen(
+    data: LazyPagingItems<Message>,
+    messageStatus: MessageStatus,
+    isBannerVisible: Boolean,
+    itemClick: (Message) -> Unit,
+    optionButtonClick: (Int) -> Unit,
+    bannerClick: () -> Unit,
+) {
+    when (data.loadState.refresh) {
+        is LoadState.Error -> {
+        }
+
+        is LoadState.Loading -> {
+            LoadingAnimation()
+        }
+
+        else -> {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                if (isBannerVisible) {
+                    item(span = { GridItemSpan(2) }) {
+                        SentMessageStorageBanner(
+                            messageStatus = messageStatus,
+                            bannerClick = bannerClick,
+                        )
+                    }
+                }
+
+                items(
+                    data.itemCount,
+                    key = data.itemKey { it.id },
+                ) { index ->
+                    val item = data[index]
+
+                    item?.let {
+                        WSMessageItem(
+                            userInfo = if (item.isBlocked.not() && item.isReported.not()) {
+                                item.receiver.toUserInfoWithoutSchoolName()
+                            } else {
+                                null
+                            },
+                            schoolName = item.receiver.toShortSchoolName(),
+                            date = item.receivedAt?.toStringWithDotSeparator() ?: "",
+                            wsMessageItemType = when {
+                                item.isBlocked -> WSMessageItemType.BlockedMessage
+                                item.isReported -> WSMessageItemType.ReportedMessage
+                                item.isRead -> WSMessageItemType.ReadSentMessage
+                                else -> WSMessageItemType.UnreadSentMessage
+                            },
+                            itemClick = {
+                                itemClick(it)
+                            },
+                            optionButtonClick = {
+                                optionButtonClick(it.id)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SentMessageStorageBanner(
+    messageStatus: MessageStatus,
+    bannerClick: () -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        ReservedMessageBanner(
+            paddingValues = PaddingValues(),
+            messageStatus = messageStatus,
+            onBannerClick = bannerClick,
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 24.dp, start = 4.dp),
+            text = stringResource(
+                R.string.sent_message_storage_title,
+            ),
+            color = WeSpotThemeManager.colors.txtTitleColor,
+            style = StaticTypeScale.Default.body3,
+        )
+    }
+}
+
+@Composable
 private fun MessageContentDialog(
-    message: ClickedMessageUiModel,
+    message: BaseMessage,
     closeButtonClick: () -> Unit,
 ) {
     Dialog(onDismissRequest = { }) {
@@ -412,13 +476,13 @@ private fun MessageContentDialog(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
-                    MessageDialogText("To.\n" + message.receiver)
+                    MessageDialogText("To.\n" + message.receiver.toDescription())
 
                     MessageDialogText(message.content, isMessageContent = true)
                 }
 
                 MessageDialogText(
-                    text = "From.\n" + message.sender,
+                    text = "From.\n" + message.senderName,
                     textAlign = TextAlign.End,
                 )
             }

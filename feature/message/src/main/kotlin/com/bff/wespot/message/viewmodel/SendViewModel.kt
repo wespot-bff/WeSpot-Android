@@ -146,6 +146,7 @@ class SendViewModel @Inject constructor(
     }
 
     private fun getReservedMessage(messageId: Int) = intent {
+        reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
@@ -154,6 +155,7 @@ class SendViewModel @Inject constructor(
                             selectedUser = message.receiver,
                             messageInput = message.content,
                             isRandomName = message.isAnonymous,
+                            isLoading = false,
                         )
                     }
                     // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러와 상태에 대입한다.
@@ -165,6 +167,9 @@ class SendViewModel @Inject constructor(
                     }
 
                     messageInput.value = message.content
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }
