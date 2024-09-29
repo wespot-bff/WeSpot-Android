@@ -42,6 +42,7 @@ import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.TopToast
 import com.ramcosta.composedestinations.annotation.Destination
@@ -86,6 +87,10 @@ fun NotificationScreen(
                     message = R.string.notification_load_error_message,
                     type = WSToastType.Error,
                 )
+            }
+
+            is LoadState.Loading -> {
+                LoadingAnimation()
             }
 
             else -> {
