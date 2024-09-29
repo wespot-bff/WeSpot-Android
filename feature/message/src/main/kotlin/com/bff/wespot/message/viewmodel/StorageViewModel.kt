@@ -188,7 +188,7 @@ class StorageViewModel @Inject constructor(
             state.copy(clickedMessage = message)
         }
 
-        if (type == MessageType.RECEIVED) {
+        if (type == MessageType.RECEIVED || message.isRead.not()) {
             updateMessageReadStatus(messageId = message.id)
         }
     }
