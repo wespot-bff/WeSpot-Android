@@ -1,35 +1,52 @@
 package com.bff.wespot.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.component.modal.WSDialogType
 import com.bff.wespot.model.SideEffect
-import com.bff.wespot.model.SideEffectState
 
 @Composable
 fun SideEffectHandler(
-    state: SideEffectState,
-    onDismiss: () -> Unit,
-    onNavigate: () -> Unit,
+    effect: SideEffect,
+    onNavigate: () -> Unit = { },
 ) {
-    if (state.show) {
-        when (state.sideEffect) {
-            is SideEffect.ShowToast -> TopToast(
-                message = state.sideEffect.message,
-                toastType = WSToastType.Error,
-                showToast = true,
-                closeToast = onDismiss,
-            )
+    var isSideEffectHandled by remember { mutableStateOf(true) }
+
+    LaunchedEffect(effect) {
+        isSideEffectHandled = effect == SideEffect.None
+    }
+
+    if (isSideEffectHandled.not()) {
+        when (effect) {
+            SideEffect.None -> { }
+
+            SideEffect.Redirect -> onNavigate()
+
+            is SideEffect.ShowToast -> {
+                TopToast(
+                    message = effect.message,
+                    toastType = WSToastType.Error,
+                    showToast = true,
+                    closeToast = {
+                        isSideEffectHandled = true
+                    },
+                )
+            }
 
             is SideEffect.ShowDialog -> WSDialog(
                 dialogType = WSDialogType.OneButton,
-                title = state.sideEffect.message,
-                okButtonClick = onDismiss,
+                title = effect.message,
+                okButtonClick = {
+                    isSideEffectHandled = true
+                },
                 onDismissRequest = { },
             )
-
-            SideEffect.Redirect -> onNavigate()
         }
     }
 }
