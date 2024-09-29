@@ -4,6 +4,7 @@ import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.model.exception.NetworkExceptionViewType
 
 sealed class SideEffect {
+    data object None : SideEffect()
     data object Redirect : SideEffect()
     data class ShowToast(val message: String) : SideEffect()
     data class ShowDialog(val message: String) : SideEffect()
