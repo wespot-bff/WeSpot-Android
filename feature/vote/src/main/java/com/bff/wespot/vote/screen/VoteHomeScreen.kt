@@ -46,6 +46,7 @@ import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
@@ -81,6 +82,7 @@ internal fun VoteHomeScreen(
     viewModel: VoteHomeViewModel = hiltViewModel(),
     voteNavigator: VoteNavigator,
     navigator: Navigator,
+    restricted: RestrictionArg,
 ) {
     val state by viewModel.collectAsState()
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
@@ -101,6 +103,7 @@ internal fun VoteHomeScreen(
                         viewModel = viewModel,
                         voteNavigator = voteNavigator,
                         navigator = navigator,
+                        restricted = restricted,
                     )
 
                     RESULT_SCREEN -> CardResultContent(
@@ -189,6 +192,7 @@ private fun VoteHomeContent(
     viewModel: VoteHomeViewModel,
     voteNavigator: VoteNavigator,
     navigator: Navigator,
+    restricted: RestrictionArg,
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
@@ -278,6 +282,7 @@ private fun VoteHomeContent(
                             voteNavigator.navigateToVotingScreen()
                         },
                         text = stringResource(id = R.string.voting),
+                        enabled = !restricted.restricted,
                     ) {
                         it.invoke()
                     }

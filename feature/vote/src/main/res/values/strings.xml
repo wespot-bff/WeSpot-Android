@@ -29,7 +29,6 @@
     <string name="storage_subtitle">우리 반 친구 %1$s 명 나에게 투표했어요</string>
     <string name="sent_subtitle">우리 반에서 %1$s</string>
     <string name="white_logo">휜 로고</string>
-    <string name="guide_title">투표할 수 있는\n1학년 6반 친구들이 부족해요</string>
     <string name="invite_friend_vote">친구 초대하기</string>
     <string name="analyzing">분석 중이에요</string>
     <string name="need_more_vote">더 많은 친구들의 투표가 필요해요</string>
@@ -53,4 +52,5 @@
     <string name="select_your_character">%1$s님을 잘 나타낼 수 있는\n캐릭터를 선택해 주세요</string>
     <string name="write_introduction_for_friends">친구들에게 %1$s님을 소개하는\n한 줄을 작성해 주세요</string>
     <string name="vote_for">%1$s에게 투표했어요</string>
+    <string name="guide_title">투표할 수 있는\n%1$s학년 %2$s반 친구들이 부족해요</string>
 </resources>

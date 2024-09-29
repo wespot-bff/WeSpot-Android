@@ -48,6 +48,7 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
@@ -76,6 +77,7 @@ interface VotingNavigator {
 fun VotingScreen(
     votingNavigator: VotingNavigator,
     viewModel: VotingViewModel,
+    restricted: RestrictionArg,
     navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
@@ -160,7 +162,7 @@ fun VotingScreen(
             }
         },
     ) {
-        if (state.loading && showGuideScreen) {
+        if (state.loading && showGuideScreen && !restricted.restricted) {
             return@Scaffold
         } else if (showGuideScreen) {
             VotingGuideScreen(it, navigator, state, analyticsHelper)
@@ -353,14 +355,17 @@ private fun VotingGuideScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = stringResource(R.string.guide_title),
+            text = stringResource(
+                R.string.guide_title,
+                state.profile.grade,
+                state.profile.classNumber,
+            ),
             style = StaticTypeScale.Default.header1,
-            modifier = Modifier.padding(horizontal = 24.dp),
+            modifier = Modifier.padding(paddingValues).padding(horizontal = 24.dp),
         )
         Image(
             painter = painterResource(id = R.drawable.no_friends),
