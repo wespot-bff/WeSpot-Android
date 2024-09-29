@@ -69,8 +69,10 @@ import com.bff.wespot.model.message.response.ReceivedMessage
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.util.collectSideEffectAsState
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -94,6 +96,7 @@ fun MessageStorageScreen(
     var showMessageOptionDialog by remember { mutableStateOf(false) }
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val sideEffectState by viewModel.collectSideEffectAsState()
     val context = LocalContext.current
 
     val state by viewModel.collectAsState()
@@ -253,6 +256,8 @@ fun MessageStorageScreen(
     if (state.isLoading) {
         LoadingAnimation()
     }
+
+    SideEffectHandler(effect = sideEffectState)
 
     NetworkDialog(context = context, networkState = networkState)
 

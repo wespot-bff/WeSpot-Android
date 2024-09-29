@@ -51,6 +51,8 @@ import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
+import com.bff.wespot.ui.SideEffectHandler
+import com.bff.wespot.util.collectSideEffectAsState
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -63,6 +65,8 @@ fun MessageHomeScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    val sideEffectState by viewModel.collectSideEffectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (state.timePeriod) {
@@ -136,6 +140,8 @@ fun MessageHomeScreen(
             }
         }
     }
+
+    SideEffectHandler(effect = sideEffectState)
 
     LifecycleStartEffect(Unit) {
         action(MessageAction.StartTimeTracking)
