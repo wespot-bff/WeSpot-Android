@@ -45,13 +45,12 @@ import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.model.SideEffectState
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectBaseSideEffect
+import com.bff.wespot.util.collectSideEffectAsState
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -82,17 +81,13 @@ fun MessageEditScreen(
     var timeoutDialog by remember { mutableStateOf(false) }
     var toast by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
-    var sideEffectState by remember { mutableStateOf(SideEffectState()) }
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val sideEffectState by viewModel.collectSideEffectAsState()
     val context = LocalContext.current
-
-    viewModel.collectBaseSideEffect {
-        sideEffectState = SideEffectState(show = true, sideEffect = it)
-    }
 
     viewModel.collectSideEffect {
         when (it) {
@@ -284,8 +279,7 @@ fun MessageEditScreen(
     NetworkDialog(context = context, networkState = networkState)
 
     SideEffectHandler(
-        state = sideEffectState,
-        onDismiss = { sideEffectState = SideEffectState() },
+        effect = sideEffectState,
         onNavigate = { navigator.navigateUp() },
     )
 
