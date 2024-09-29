@@ -12,10 +12,12 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
 class WeSpotApplication : Application() {
 
+    @Inject
     lateinit var crashlytics: FirebaseCrashlytics
 
     override fun onCreate() {
