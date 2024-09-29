@@ -113,4 +113,12 @@ class PushNotificationService : FirebaseMessagingService() {
         super.onDestroy()
         coroutineScope.cancel()
     }
+
+    // Push Notification Keys
+    companion object {
+        const val KEY_DATE = "date"
+        const val KEY_TYPE = "type"
+        const val KEY_USER_ID = "userId"
+        const val KEY_TARGET_ID = "targetId"
+    }
 }
