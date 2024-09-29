@@ -3,6 +3,7 @@ package com.bff.wespot.domain.usecase
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.auth.KakaoLoginManager
+import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.auth.response.AuthToken
 import com.bff.wespot.model.auth.response.SignUpToken
@@ -11,10 +12,14 @@ import javax.inject.Inject
 
 class KakaoLoginUseCase @Inject constructor(
     private val kakaoLoginManager: KakaoLoginManager,
+    private val messagingRepository: MessagingRepository,
     private val authRepository: AuthRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) {
     suspend operator fun invoke(): Result<LoginState> {
+        val token = messagingRepository.getFcmToken()
+        dataStoreRepository.saveString(DataStoreKey.PUSH_TOKEN, token)
+
         val result = kakaoLoginManager.loginWithKakao()
         return authRepository.sendKakaoToken(result)
             .map {

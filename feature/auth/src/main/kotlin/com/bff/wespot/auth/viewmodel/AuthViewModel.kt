@@ -14,7 +14,6 @@ import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
-import com.bff.wespot.domain.usecase.UpdateFcmTokenUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
@@ -39,7 +38,6 @@ class AuthViewModel @Inject constructor(
     private val kakaoLoginUseCase: KakaoLoginUseCase,
     private val authRepository: AuthRepository,
     private val autoLoginUseCase: AutoLoginUseCase,
-    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
     remoteConfigRepository: RemoteConfigRepository,
@@ -86,16 +84,14 @@ class AuthViewModel @Inject constructor(
     private fun loginWithKakao() = intent {
         viewModelScope.launch {
             try {
-                updateFcmTokenUseCase().onSuccess {
-                    kakaoLoginUseCase().onSuccess {
-                        if (it == LoginState.LOGIN_SUCCESS) {
-                            postSideEffect(AuthSideEffect.NavigateToMainActivity)
-                        } else {
-                            postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
-                        }
-                    }.onFailure {
-                        Timber.e(it)
+                kakaoLoginUseCase().onSuccess {
+                    if (it == LoginState.LOGIN_SUCCESS) {
+                        postSideEffect(AuthSideEffect.NavigateToMainActivity)
+                    } else {
+                        postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
                     }
+                }.onFailure {
+                    Timber.e(it)
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -190,14 +186,6 @@ class AuthViewModel @Inject constructor(
                         schoolList = result,
                     )
                 }
-            }
-        }
-    }
-
-    private fun updateFcmToken() {
-        viewModelScope.launch {
-            updateFcmTokenUseCase().onFailure { exception ->
-                Timber.e(exception)
             }
         }
     }
