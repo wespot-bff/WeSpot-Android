@@ -67,7 +67,7 @@ fun CharacterSettingScreen(
     ) {
         Box(modifier = Modifier.padding(it)) {
             CharacterScreen(
-                name = stringResource(R.string.select_your_character, name),
+                name = name,
                 characterList = character,
                 colorList = color,
             ) { iconUrl, color ->

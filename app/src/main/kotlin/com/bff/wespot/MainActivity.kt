@@ -54,6 +54,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.bff.wespot.R.string
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.designsystem.R
@@ -68,13 +69,12 @@ import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
-import com.bff.wespot.R.string
 import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.ui.TopToast
@@ -284,7 +284,8 @@ private fun MainScreen(
                 navController = navController,
                 modifier = Modifier.padding(it),
                 navigator = navigator,
-                showToast = { toastState -> toast = toastState }
+                showToast = { toastState -> toast = toastState },
+                restricted = state.restriction.restrictionType != RestrictionType.NONE,
             )
         }
 

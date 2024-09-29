@@ -158,7 +158,7 @@ fun SchoolScreen(
                                         Image(
                                             painter = painterResource(
                                                 id = if (school.type == "HIGH") {
-                                                    com.bff.wespot.designsystem.R.drawable.hight_school
+                                                    com.bff.wespot.designsystem.R.drawable.high_school
                                                 } else {
                                                     com.bff.wespot.designsystem.R.drawable.middle_school
                                                 },

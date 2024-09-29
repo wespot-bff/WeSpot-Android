@@ -23,6 +23,7 @@ import com.bff.wespot.message.screen.storage.MessageStorageScreen
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.ToastState
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.notification.NotificationType
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
@@ -46,6 +47,7 @@ internal fun MessageScreen(
     messageNavigator: MessageNavigator,
     navArgs: MessageScreenArgs,
     showToast: (ToastState) -> Unit,
+    restricted: RestrictionArg,
 ) {
     val tabList = persistentListOf(
         stringResource(R.string.message_home_screen),
@@ -85,6 +87,7 @@ internal fun MessageScreen(
                                     ReceiverSelectionScreenArgs(false),
                                 )
                             },
+                            restricted = restricted,
                         )
                     }
 
