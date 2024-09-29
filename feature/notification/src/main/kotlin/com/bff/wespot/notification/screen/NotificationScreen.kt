@@ -81,7 +81,11 @@ fun NotificationScreen(
     ) {
         when (pagingData.loadState.refresh) {
             is LoadState.Error -> {
-                // TODO: Handle error
+                toast = ToastState(
+                    show = true,
+                    message = R.string.notification_load_error_message,
+                    type = WSToastType.Error,
+                )
             }
 
             else -> {
@@ -109,7 +113,7 @@ fun NotificationScreen(
                                             if (state.isSendAllowed) {
                                                 navigator.navigateToReceiverSelectionScreen()
                                             } else {
-                                                ToastState(
+                                                toast = ToastState(
                                                     show = true,
                                                     message = R.string.already_message_reserved,
                                                     type = WSToastType.Error,

@@ -45,6 +45,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.list.WSMessageItem
 import com.bff.wespot.designsystem.component.list.WSMessageItemType
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -129,6 +130,7 @@ fun MessageStorageScreen(
                     val receivedMessageList = state.receivedMessageList.collectAsLazyPagingItems()
                     ReceivedMessageStorageScreen(
                         data = receivedMessageList,
+                        showToast = showToast,
                         itemClick = { item ->
                             action(StorageAction.OnReceivedMessageClicked(message = item))
                             showMessageDialog = true
@@ -152,6 +154,7 @@ fun MessageStorageScreen(
                         messageStatus = state.messageStatus,
                         isBannerVisible = state.messageStatus.hasReservedMessages() &&
                             state.isTimePeriodEveningToNight,
+                        showToast = showToast,
                         itemClick = { item ->
                             action(StorageAction.OnSentMessageClicked(message = item))
                             showMessageDialog = true
@@ -312,9 +315,17 @@ private fun ReceivedMessageStorageScreen(
     data: LazyPagingItems<ReceivedMessage>,
     itemClick: (ReceivedMessage) -> Unit,
     optionButtonClick: (Int) -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     when (data.loadState.refresh) {
         is LoadState.Error -> {
+            showToast(
+                ToastState(
+                    show = true,
+                    message = R.string.load_message_error_message,
+                    type = WSToastType.Error,
+                ),
+            )
         }
 
         is LoadState.Loading -> {
@@ -366,9 +377,17 @@ private fun SentMessageStorageScreen(
     itemClick: (Message) -> Unit,
     optionButtonClick: (Int) -> Unit,
     bannerClick: () -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     when (data.loadState.refresh) {
         is LoadState.Error -> {
+            showToast(
+                ToastState(
+                    show = true,
+                    message = R.string.load_message_error_message,
+                    type = WSToastType.Error,
+                ),
+            )
         }
 
         is LoadState.Loading -> {
