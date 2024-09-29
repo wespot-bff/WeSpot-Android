@@ -1,30 +1,30 @@
 package com.bff.wespot.util
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.model.SideEffect
 
-@SuppressLint("ComposableNaming")
 @Composable
-fun BaseViewModel.collectBaseSideEffect(
+fun BaseViewModel.collectSideEffectAsState(
     lifecycleState: Lifecycle.State = androidx.lifecycle.Lifecycle.State.STARTED,
-    sideEffect: (suspend (sideEffect: SideEffect) -> Unit),
-) {
+): State<SideEffect> {
     val sideEffectFlow = this.sideEffect
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val callback by rememberUpdatedState(newValue = sideEffect)
-
-    LaunchedEffect(sideEffectFlow, lifecycleOwner) {
+    return produceState<SideEffect>(
+        initialValue = SideEffect.None,
+        key1 = sideEffectFlow,
+        key2 = lifecycleOwner,
+    ) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(lifecycleState) {
-            sideEffectFlow.collect { callback(it) }
+            sideEffectFlow.collect { sideEffect ->
+                value = sideEffect
+            }
         }
     }
 }
