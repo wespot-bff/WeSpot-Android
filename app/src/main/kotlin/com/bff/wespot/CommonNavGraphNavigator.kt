@@ -97,7 +97,7 @@ class CommonNavGraphNavigator(
 
     override fun navigateMessageScreen(args: MessageScreenArgs) {
         navController.navigate(MessageScreenDestination(args) within navGraph) {
-            popUpTo(MessageScreenDestination.route) { inclusive = false }
+            popUpTo((MessageScreenDestination(args) within navGraph).route) { inclusive = true }
         }
     }
 
@@ -111,7 +111,7 @@ class CommonNavGraphNavigator(
 
     override fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs) {
         navController.navigate(ReservedMessageScreenDestination(args) within navGraph) {
-            popUpTo(ReservedMessageScreenDestination.route) { inclusive = false }
+            popUpTo((ReservedMessageScreenDestination(args) within navGraph).route) { inclusive = true }
         }
     }
 
