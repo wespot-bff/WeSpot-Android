@@ -8,8 +8,13 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bff.wespot.PushNotificationService.Companion.KEY_DATE
+import com.bff.wespot.PushNotificationService.Companion.KEY_TARGET_ID
+import com.bff.wespot.PushNotificationService.Companion.KEY_TYPE
+import com.bff.wespot.PushNotificationService.Companion.KEY_USER_ID
 import com.bff.wespot.R
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
@@ -56,15 +61,17 @@ class SplashActivity : ComponentActivity() {
     }
 
     private fun navigateToAuth() {
-        val targetId = intent.getStringExtra("targetId")?.toInt() ?: -1
-        val userId = intent.getStringExtra("userId") ?: ""
-        val type = intent.getStringExtra("type") ?: ""
+        val targetId = intent.getStringExtra(KEY_TARGET_ID)?.toInt() ?: -1
+        val userId = intent.getStringExtra(KEY_USER_ID) ?: ""
+        val type = intent.getStringExtra(KEY_TYPE) ?: ""
+        val date = intent.getStringExtra(KEY_DATE) ?: ""
 
         val intent = navigator.navigateToAuthWithExtra(
             context = this@SplashActivity,
             targetId = Pair(EXTRA_TARGET_ID, targetId),
             userId = Pair(EXTRA_USER_ID, userId),
             type = Pair(EXTRA_TYPE, type),
+            date = Pair(EXTRA_DATE, date),
         )
         startActivity(intent)
         finish()

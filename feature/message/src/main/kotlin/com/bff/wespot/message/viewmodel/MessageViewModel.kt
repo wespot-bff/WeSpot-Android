@@ -2,7 +2,7 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.base.BaseViewModel
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.util.RemoteConfigKey

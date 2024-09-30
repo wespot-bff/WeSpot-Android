@@ -11,7 +11,6 @@ import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.user.response.NotificationSetting
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.user.response.ProfileCharacter
-import com.bff.wespot.model.user.response.User
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(

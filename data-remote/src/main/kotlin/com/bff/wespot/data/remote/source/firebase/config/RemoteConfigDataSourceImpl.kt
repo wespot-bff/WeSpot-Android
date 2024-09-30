@@ -1,4 +1,4 @@
-package com.bff.wespot.data.remote.config
+package com.bff.wespot.data.remote.source.firebase.config
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber

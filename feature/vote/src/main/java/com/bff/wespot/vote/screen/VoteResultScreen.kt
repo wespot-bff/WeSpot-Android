@@ -102,6 +102,7 @@ interface VoteResultNavigator {
 data class VoteResultScreenArgs(
     val isVoting: Boolean,
     val isNavigateFromNotification: Boolean = false,
+    val isTodayVoteResult: Boolean = false,
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -122,7 +123,9 @@ fun VoteResultScreen(
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
     var voteType by remember {
-        mutableStateOf(TODAY)
+        mutableStateOf(
+            if (state.isTodayVoteResult) TODAY else YESTERDAY,
+        )
     }
 
     var showLottie by remember {

@@ -9,8 +9,8 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.BasePagingRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase

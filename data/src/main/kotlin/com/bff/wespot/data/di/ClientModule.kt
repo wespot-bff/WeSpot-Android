@@ -6,7 +6,7 @@ import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
 import com.bff.wespot.data.remote.model.common.TokenDto
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.navigation.Navigator
