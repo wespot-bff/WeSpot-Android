@@ -148,7 +148,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
-        val targetId = getStringExtra(EXTRA_TARGET_ID)?.toIntOrNull() ?: -1
+        val targetId = getIntExtra(EXTRA_TARGET_ID, -1)
         val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
         val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
         val date = getStringExtra(EXTRA_DATE).orEmpty()
