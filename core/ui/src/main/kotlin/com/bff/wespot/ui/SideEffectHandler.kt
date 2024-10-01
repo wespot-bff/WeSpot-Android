@@ -15,16 +15,20 @@ import com.bff.wespot.model.SideEffect
 fun SideEffectHandler(
     effect: SideEffect,
     onNavigate: () -> Unit = { },
+    onDismiss: () -> Unit = { },
 ) {
-    var isSideEffectHandled by remember { mutableStateOf(true) }
+    var isImpression by remember { mutableStateOf(false) }
 
     LaunchedEffect(effect) {
-        isSideEffectHandled = effect == SideEffect.None
+        // 현재 노출 중인 컴포넌트가 없는지, SideEffect가 소비된 상태인지 확인
+        if (isImpression.not() && effect != SideEffect.Consumed) {
+            isImpression = true
+        }
     }
 
-    if (isSideEffectHandled.not()) {
+    if (isImpression) {
         when (effect) {
-            SideEffect.None -> { }
+            SideEffect.Consumed -> { }
 
             SideEffect.Redirect -> onNavigate()
 
@@ -34,7 +38,8 @@ fun SideEffectHandler(
                     toastType = WSToastType.Error,
                     showToast = true,
                     closeToast = {
-                        isSideEffectHandled = true
+                        isImpression = false
+                        onDismiss()
                     },
                 )
             }
@@ -43,7 +48,8 @@ fun SideEffectHandler(
                 dialogType = WSDialogType.OneButton,
                 title = effect.message,
                 okButtonClick = {
-                    isSideEffectHandled = true
+                    isImpression = false
+                    onDismiss()
                 },
                 onDismissRequest = { },
             )

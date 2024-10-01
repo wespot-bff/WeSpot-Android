@@ -61,6 +61,7 @@ import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.BaseMessage
@@ -73,7 +74,7 @@ import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
-import com.bff.wespot.util.collectSideEffectAsState
+import com.bff.wespot.util.collectSideEffect
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -97,11 +98,14 @@ fun MessageStorageScreen(
     var showMessageOptionDialog by remember { mutableStateOf(false) }
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
-    val sideEffectState by viewModel.collectSideEffectAsState()
     val context = LocalContext.current
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+
     viewModel.collectSideEffect {
         when (it) {
             is StorageSideEffect.ShowToast -> {
@@ -260,7 +264,10 @@ fun MessageStorageScreen(
         LoadingAnimation()
     }
 
-    SideEffectHandler(effect = sideEffectState)
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     NetworkDialog(context = context, networkState = networkState)
 
