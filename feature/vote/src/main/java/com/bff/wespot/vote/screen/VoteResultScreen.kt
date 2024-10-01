@@ -70,7 +70,6 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
@@ -79,11 +78,10 @@ import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.MultiLineText
 import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.ui.saveBitmap
-import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
@@ -135,8 +133,7 @@ fun VoteResultScreen(
         mutableStateOf(true)
     }
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -369,11 +366,6 @@ fun VoteResultScreen(
             DotIndicators(pagerState = pagerState)
         }
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     NetworkDialog(context = context, networkState = networkState)
 

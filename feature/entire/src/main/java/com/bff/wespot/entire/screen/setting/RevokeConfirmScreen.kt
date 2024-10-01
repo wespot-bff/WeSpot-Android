@@ -38,12 +38,11 @@ import com.bff.wespot.entire.R
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.viewmodel.EntireViewModel
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -68,8 +67,7 @@ fun RevokeConfirmScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     viewModel.collectSideEffect {
         when (it) {
@@ -155,11 +153,6 @@ fun RevokeConfirmScreen(
             onDismissRequest = { },
         )
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 }
 
 @Composable

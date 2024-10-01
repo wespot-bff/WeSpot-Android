@@ -21,8 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +46,6 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.user.response.ProfileCharacter
@@ -59,10 +56,9 @@ import com.bff.wespot.network.NetworkState
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
-import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -94,8 +90,7 @@ internal fun VoteHomeScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val action = viewModel::onAction
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     Scaffold(
         topBar = {
@@ -143,11 +138,6 @@ internal fun VoteHomeScreen(
             onDismissRequest = {},
         )
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     OnLifecycleEvent { owner, event ->
         when (event) {

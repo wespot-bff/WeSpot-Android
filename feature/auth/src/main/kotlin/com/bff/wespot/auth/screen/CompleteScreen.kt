@@ -32,11 +32,9 @@ import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.SideEffectHandler
-import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -63,8 +61,7 @@ fun CompleteScreen(
 
     val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     Box(
         modifier = Modifier
@@ -138,11 +135,6 @@ fun CompleteScreen(
             cancelButtonText = stringResource(id = R.string.cancel),
         )
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     NetworkDialog(context = context, networkState = networkState)
 

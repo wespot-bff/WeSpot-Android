@@ -28,13 +28,11 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.ReservedMessageItem
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -55,8 +53,7 @@ fun BlockListScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     val pagingData = state.blockedMessageList.collectAsLazyPagingItems()
 
@@ -136,11 +133,6 @@ fun BlockListScreen(
             )
         }
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     TopToast(
         message = stringResource(toast.message),

@@ -56,14 +56,13 @@ import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.viewmodel.EntireEditViewModel
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
@@ -99,8 +98,7 @@ fun ProfileEditScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     viewModel.collectSideEffect {
         when (it) {
@@ -244,11 +242,6 @@ fun ProfileEditScreen(
             }
         }
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     TopToast(
         message = stringResource(toast.message),

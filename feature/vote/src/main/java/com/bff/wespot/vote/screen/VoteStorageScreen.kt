@@ -47,7 +47,6 @@ import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.ReceivedVoteResult
 import com.bff.wespot.model.vote.response.SentVoteResult
@@ -56,9 +55,9 @@ import com.bff.wespot.ui.ListBottomGradient
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.RedDot
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
@@ -92,8 +91,7 @@ fun VoteStorageScreen(
         mutableStateOf(RECEIVED_SCREEN)
     }
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     viewModel.collectSideEffect {
         when (it) {
@@ -165,11 +163,6 @@ fun VoteStorageScreen(
             ListBottomGradient()
         }
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     NetworkDialog(context = context, networkState = networkState)
 

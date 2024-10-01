@@ -36,7 +36,6 @@ import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.notification.NotificationType
@@ -45,9 +44,8 @@ import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.RedDot
-import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalTime
@@ -77,8 +75,7 @@ fun NotificationScreen(
     val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
-    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
-    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+    viewModel.sideEffect.handleSideEffect()
 
     Scaffold(
         topBar = {
@@ -165,11 +162,6 @@ fun NotificationScreen(
             }
         }
     }
-
-    SideEffectHandler(
-        effect = sideEffectState,
-        onDismiss = { sideEffectState = SideEffect.Consumed },
-    )
 
     TopToast(
         message = stringResource(toast.message),
