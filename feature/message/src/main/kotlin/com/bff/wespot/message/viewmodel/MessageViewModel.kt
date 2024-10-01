@@ -117,6 +117,9 @@ class MessageViewModel @Inject constructor(
                         )
                     }
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
                 .onFailure {
                     reduce { state.copy(isLoading = false) }
                 }

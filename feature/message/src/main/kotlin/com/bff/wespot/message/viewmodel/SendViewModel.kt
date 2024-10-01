@@ -169,6 +169,9 @@ class SendViewModel @Inject constructor(
 
                     messageInput.value = message.content
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
                 .onFailure {
                     reduce { state.copy(isLoading = false) }
                 }
@@ -276,6 +279,9 @@ class SendViewModel @Inject constructor(
             commonRepository.getKakaoContent(KakaoSharingType.FIND.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
                     Timber.e(it)
