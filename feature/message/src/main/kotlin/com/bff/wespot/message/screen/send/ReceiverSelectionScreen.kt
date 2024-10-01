@@ -54,6 +54,7 @@ import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSListItem
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -88,6 +89,8 @@ fun ReceiverSelectionScreen(
     val action = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+
+    viewModel.sideEffect.handleSideEffect()
 
     Scaffold(
         topBar = {

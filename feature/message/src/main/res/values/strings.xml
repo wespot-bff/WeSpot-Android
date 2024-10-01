@@ -70,4 +70,5 @@
     <string name="message_storage_screen_crossfade">Message Storage Screen CrossFade</string>
     <string name="message_edit">수정하기</string>
     <string name="reserving_message">예약 중인 쪽지</string>
+    <string name="load_message_error_message">쪽지를 불러오는데 실패했어요</string>
 </resources>

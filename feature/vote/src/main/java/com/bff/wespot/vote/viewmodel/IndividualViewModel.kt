@@ -3,8 +3,10 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.domain.repository.vote.VoteRepository
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
@@ -24,6 +26,9 @@ class IndividualViewModel @Inject constructor(
         voteRepository.getReceivedVote(date, optionId)
             .onSuccess {
                 emit(it)
+            }
+            .onNetworkFailure {
+                postSideEffect(it.toSideEffect())
             }
             .onFailure {
                 Timber.e(it)

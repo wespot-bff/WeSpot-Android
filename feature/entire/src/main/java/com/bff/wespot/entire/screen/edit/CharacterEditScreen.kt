@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -16,6 +17,8 @@ import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.ui.CharacterScreen
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -34,6 +37,9 @@ fun CharacterEditScreen(
 ) {
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    viewModel.sideEffect.handleSideEffect()
+
     viewModel.collectSideEffect {
         when (it) {
             EntireEditSideEffect.NavigateToEntire -> {

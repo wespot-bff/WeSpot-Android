@@ -3,10 +3,12 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.vote.response.VoteResults
 import com.bff.wespot.vote.state.result.ResultAction
@@ -54,6 +56,9 @@ class VoteResultViewModel @Inject constructor(
                     .onSuccess {
                         reduce { state.copy(voteResults = it, isLoading = false) }
                     }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
                     .onFailure {
                         reduce { state.copy(isLoading = false, voteResults = previous) }
                         Timber.e(it)
@@ -90,6 +95,9 @@ class VoteResultViewModel @Inject constructor(
             commonRepository.getKakaoContent(KakaoSharingType.TELL.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
                     Timber.e(it)

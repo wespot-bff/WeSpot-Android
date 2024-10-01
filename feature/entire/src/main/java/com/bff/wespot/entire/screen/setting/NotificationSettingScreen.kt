@@ -33,6 +33,8 @@ import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEf
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.util.OnLifecycleEvent
+import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -60,6 +62,8 @@ fun NotificationSettingScreen(
         LoadingAnimation()
         return
     }
+
+    viewModel.sideEffect.handleSideEffect()
 
     viewModel.collectSideEffect {
         when (it) {

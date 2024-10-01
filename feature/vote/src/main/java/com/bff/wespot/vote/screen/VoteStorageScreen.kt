@@ -56,6 +56,8 @@ import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.util.collectSideEffect
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
@@ -88,6 +90,8 @@ fun VoteStorageScreen(
     var selectedTab by remember {
         mutableStateOf(RECEIVED_SCREEN)
     }
+
+    viewModel.sideEffect.handleSideEffect()
 
     viewModel.collectSideEffect {
         when (it) {
