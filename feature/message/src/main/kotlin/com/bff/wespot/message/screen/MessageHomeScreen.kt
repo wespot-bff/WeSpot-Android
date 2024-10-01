@@ -19,6 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,9 +53,10 @@ import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.ui.SideEffectHandler
-import com.bff.wespot.util.collectSideEffectAsState
+import com.bff.wespot.util.collectSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -66,7 +70,8 @@ fun MessageHomeScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    val sideEffectState by viewModel.collectSideEffectAsState()
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (state.timePeriod) {
@@ -141,7 +146,10 @@ fun MessageHomeScreen(
         }
     }
 
-    SideEffectHandler(effect = sideEffectState)
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     LifecycleStartEffect(Unit) {
         action(MessageAction.StartTimeTracking)
