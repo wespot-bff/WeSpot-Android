@@ -7,15 +7,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.viewmodel.EntireEditViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.ui.CharacterScreen
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.SideEffectHandler
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -34,6 +40,9 @@ fun CharacterEditScreen(
 ) {
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+
     viewModel.collectSideEffect {
         when (it) {
             EntireEditSideEffect.NavigateToEntire -> {
@@ -82,6 +91,11 @@ fun CharacterEditScreen(
             }
         }
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     if (state.isLoading) {
         LoadingAnimation()

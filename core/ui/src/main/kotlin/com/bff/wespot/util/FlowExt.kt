@@ -18,12 +18,13 @@ fun Flow<SideEffect>.collectSideEffect(
     sideEffect: (suspend (sideEffect: SideEffect) -> Unit),
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-
     val callback by rememberUpdatedState(newValue = sideEffect)
 
     LaunchedEffect(this, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(lifecycleState) {
-            this@collectSideEffect.collect { callback(it) }
+            this@collectSideEffect.collect {
+                callback(it)
+            }
         }
     }
 }

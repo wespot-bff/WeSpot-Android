@@ -48,12 +48,15 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReportBottomSheet
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
@@ -114,6 +117,9 @@ fun VotingScreen(
     }
 
     val showGuideScreen = state.voteItems.isEmpty()
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     viewModel.collectSideEffect {
         when (it) {
@@ -229,6 +235,11 @@ fun VotingScreen(
             showReportDialog = false
         }
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     NetworkDialog(context = context, networkState = networkState)
 

@@ -22,7 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,9 +44,12 @@ import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.ui.DotIndicators
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.KakaoLoginManager
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.launch
@@ -59,6 +65,9 @@ fun AuthScreen(
     val kakaoLogin = KakaoLoginManager()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     Column(
         modifier = Modifier
@@ -144,6 +153,11 @@ fun AuthScreen(
             )
         }
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 }
 
 private enum class AuthCarouselItem(

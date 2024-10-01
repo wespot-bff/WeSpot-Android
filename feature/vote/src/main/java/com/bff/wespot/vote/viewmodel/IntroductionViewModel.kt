@@ -1,12 +1,14 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.util.DataStoreKey
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.vote.state.profile.ProfileAction
 import com.bff.wespot.vote.state.profile.ProfileSideEffect
 import com.bff.wespot.vote.state.profile.ProfileUiState
@@ -31,7 +33,7 @@ class IntroductionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val dataStoreRepository: DataStoreRepository,
-) : ViewModel(), ContainerHost<ProfileUiState, ProfileSideEffect> {
+) : BaseViewModel(), ContainerHost<ProfileUiState, ProfileSideEffect> {
     override val container: Container<ProfileUiState, ProfileSideEffect> =
         container(
             ProfileUiState(
@@ -104,6 +106,8 @@ class IntroductionViewModel @Inject constructor(
                 iconUrl = state.iconUrl,
             ).onSuccess {
                 postSideEffect(ProfileSideEffect.NavigateToVoteHome)
+            }.onNetworkFailure {
+                postSideEffect(it.toSideEffect())
             }
         }
     }

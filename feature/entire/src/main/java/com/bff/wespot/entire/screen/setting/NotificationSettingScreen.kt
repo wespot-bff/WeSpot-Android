@@ -31,8 +31,11 @@ import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.util.OnLifecycleEvent
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -60,6 +63,9 @@ fun NotificationSettingScreen(
         LoadingAnimation()
         return
     }
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     viewModel.collectSideEffect {
         when (it) {
@@ -154,6 +160,11 @@ fun NotificationSettingScreen(
             dialogType = WSDialogType.OneButton,
         )
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     OnLifecycleEvent { _, event ->
         when (event) {

@@ -50,10 +50,13 @@ import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.NetworkDialog
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.WSListItem
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -88,6 +91,8 @@ fun ReceiverSelectionScreen(
     val action = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     Scaffold(
         topBar = {
@@ -260,6 +265,11 @@ fun ReceiverSelectionScreen(
             cancelButtonClick = { dialogState = false },
         )
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     NetworkDialog(context = context, networkState = networkState)
 

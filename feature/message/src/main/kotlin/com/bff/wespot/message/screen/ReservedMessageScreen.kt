@@ -33,10 +33,13 @@ import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReservedMessageItem
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -65,6 +68,8 @@ fun ReservedMessageScreen(
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     Scaffold(
         topBar = {
@@ -125,6 +130,11 @@ fun ReservedMessageScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     LaunchedEffect(Unit) {
         action(MessageAction.OnReservedMessageScreenEntered)

@@ -17,17 +17,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
+import com.bff.wespot.model.SideEffect
+import com.bff.wespot.model.ToastState
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.ReservedMessageItem
+import com.bff.wespot.ui.SideEffectHandler
+import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.collectSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -42,10 +49,15 @@ fun BlockListScreen(
     navigator: BlockListNavigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
+    var toast by remember { mutableStateOf(ToastState()) }
     var showDialog by remember { mutableStateOf(false) }
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
+
     val pagingData = state.blockedMessageList.collectAsLazyPagingItems()
 
     Scaffold(
@@ -67,27 +79,43 @@ fun BlockListScreen(
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(
-                    pagingData.itemCount,
-                    key = pagingData.itemKey { it.id },
-                ) { index ->
-                    val item = pagingData[index]
+            when (pagingData.loadState.refresh) {
+                is LoadState.Error -> {
+                    toast = ToastState(
+                        show = true,
+                        message = R.string.blocked_message_load_error_message,
+                        type = WSToastType.Error,
+                    )
+                }
 
-                    item?.let {
-                        ReservedMessageItem(
-                            title = stringResource(com.bff.wespot.designsystem.R.string.letter_sender),
-                            subTitle = item.senderName,
-                            backgroundColor = item.senderProfile.backgroundColor,
-                            iconUrl = item.senderProfile.iconUrl,
-                            chipText = stringResource(R.string.unblock),
-                            chipEnabled = item.id !in state.unBlockList,
-                            chipDisabledText = stringResource(R.string.unblock_done),
-                            onClick = {
-                                action(EntireAction.OnUnBlockButtonClicked(item.id))
-                                showDialog = true
-                            },
-                        )
+                is LoadState.Loading -> {
+                    LoadingAnimation()
+                }
+
+                else -> {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(
+                            pagingData.itemCount,
+                            key = pagingData.itemKey { it.id },
+                        ) { index ->
+                            val item = pagingData[index]
+
+                            item?.let {
+                                ReservedMessageItem(
+                                    title = stringResource(com.bff.wespot.designsystem.R.string.letter_sender),
+                                    subTitle = item.senderName,
+                                    backgroundColor = item.senderProfile.backgroundColor,
+                                    iconUrl = item.senderProfile.iconUrl,
+                                    chipText = stringResource(R.string.unblock),
+                                    chipEnabled = item.id !in state.unBlockList,
+                                    chipDisabledText = stringResource(R.string.unblock_done),
+                                    onClick = {
+                                        action(EntireAction.OnUnBlockButtonClicked(item.id))
+                                        showDialog = true
+                                    },
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -107,6 +135,19 @@ fun BlockListScreen(
                 onDismissRequest = { },
             )
         }
+    }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
+
+    TopToast(
+        message = stringResource(toast.message),
+        toastType = toast.type,
+        showToast = toast.show,
+    ) {
+        toast = toast.copy(show = false)
     }
 
     if (state.isLoading) {

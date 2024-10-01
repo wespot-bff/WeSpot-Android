@@ -18,8 +18,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.ui.CharacterScreen
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.SideEffectHandler
+import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.viewmodel.CharacterSettingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -42,6 +45,9 @@ fun CharacterSettingScreen(
     var showDialog by remember {
         mutableStateOf(false)
     }
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     if (color.isEmpty() || character.isEmpty()) {
         LoadingAnimation()
@@ -80,6 +86,11 @@ fun CharacterSettingScreen(
             }
         }
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     if (showDialog) {
         WSDialog(

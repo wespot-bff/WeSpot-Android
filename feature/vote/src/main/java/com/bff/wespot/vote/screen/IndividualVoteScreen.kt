@@ -37,14 +37,17 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.model.SideEffect
 import com.bff.wespot.model.vote.response.IndividualReceived
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.NetworkDialog
+import com.bff.wespot.ui.SideEffectHandler
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.saveBitmap
+import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.IndividualViewModel
@@ -87,6 +90,9 @@ fun IndividualVoteScreen(
                 val intent = it.data
             }
         }
+
+    var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
+    viewModel.sideEffect.collectSideEffect { sideEffectState = it }
 
     Scaffold(
         topBar = {
@@ -193,6 +199,11 @@ fun IndividualVoteScreen(
             }
         }
     }
+
+    SideEffectHandler(
+        effect = sideEffectState,
+        onDismiss = { sideEffectState = SideEffect.Consumed },
+    )
 
     TopToast(
         message = stringResource(R.string.next_update),
