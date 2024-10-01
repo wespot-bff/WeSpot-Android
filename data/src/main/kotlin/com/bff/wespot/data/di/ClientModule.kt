@@ -6,7 +6,7 @@ import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
 import com.bff.wespot.data.remote.model.common.TokenDto
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.navigation.Navigator
@@ -17,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
@@ -56,7 +56,7 @@ object ClientModule {
         navigator: Navigator,
         repository: DataStoreRepository,
         config: RemoteConfigRepository,
-    ): HttpClient = HttpClient(CIO) {
+    ): HttpClient = HttpClient(OkHttp) {
         defaultRequest {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             url(config.fetchFromRemoteConfig(RemoteConfigKey.BASE_URL))

@@ -5,11 +5,10 @@ import androidx.paging.cachedIn
 import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
-import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
@@ -111,7 +110,7 @@ class EntireViewModel @Inject constructor(
 
     private fun clearCachedData() {
         viewModelScope.launch {
-            launch { dataStoreRepository.clear(DataStoreKey.PUSH_TOKEN) }
+            launch { dataStoreRepository.clear() }
             launch { profileRepository.clearProfile() }
         }
     }

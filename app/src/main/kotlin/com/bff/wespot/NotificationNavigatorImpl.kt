@@ -42,12 +42,16 @@ class NotificationNavigatorImpl(private val navController: NavController): Notif
         navController.navigate(VotingScreenDestination within AppNavGraphs.vote)
     }
 
-    override fun navigateToVoteResultScreen(isNavigateFromNotification: Boolean) {
+    override fun navigateToVoteResultScreen(
+        isNavigateFromNotification: Boolean,
+        isTodayVoteResult: Boolean,
+    ) {
         navController.navigate(
             VoteResultScreenDestination(
                 VoteResultScreenArgs(
                     isVoting = false,
                     isNavigateFromNotification = isNavigateFromNotification,
+                    isTodayVoteResult = isTodayVoteResult,
                 )
             ) within AppNavGraphs.vote
         )

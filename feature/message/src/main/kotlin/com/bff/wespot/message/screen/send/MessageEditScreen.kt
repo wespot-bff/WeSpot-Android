@@ -60,7 +60,7 @@ interface MessageEditNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun navigateMessageScreen(args: MessageScreenArgs)
-    fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
+    fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs)
 }
 
 data class EditMessageScreenArgs(
@@ -104,7 +104,7 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToReservedMessage -> {
-                navigator.navigateToReservedMessageScreen(
+                navigator.navigateToReservedMessageScreenFromEdit(
                     args = ReservedMessageScreenArgs(true),
                 )
             }

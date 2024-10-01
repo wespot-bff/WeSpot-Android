@@ -92,6 +92,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor-client" }
 ktor-client-engine-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-client" }
+ktor-client-engine-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor-client" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor-client"}
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor-client" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor-client" }
@@ -151,7 +152,7 @@ androidx-compose = [
 
 ktor-client = [
     "ktor-client-core",
-    "ktor-client-engine-cio",
+    "ktor-client-engine-okhttp",
     "ktor-client-content-negotiation",
     "ktor-client-auth",
     "ktor-client-json",

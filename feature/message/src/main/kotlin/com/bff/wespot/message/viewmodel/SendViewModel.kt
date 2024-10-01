@@ -33,6 +33,7 @@ import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -293,7 +294,7 @@ class SendViewModel @Inject constructor(
     private suspend fun trackMessageSendEvent() {
         val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
         val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-        val sendTime = LocalDateTime.now().format(formatter)
+        val sendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter)
 
         analyticsHelper.logEvent(
             event = AnalyticsEvent(

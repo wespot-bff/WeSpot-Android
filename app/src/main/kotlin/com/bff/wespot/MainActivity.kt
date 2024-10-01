@@ -68,7 +68,6 @@ import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
-import com.bff.wespot.model.notification.convertNotificationType
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
@@ -76,6 +75,8 @@ import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
+import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
+import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.util.clickableSingle
@@ -87,6 +88,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import timber.log.Timber
+import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -148,16 +150,19 @@ class MainActivity : ComponentActivity() {
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
         val targetId = getStringExtra(EXTRA_TARGET_ID)?.toIntOrNull() ?: -1
         val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
-        val type = convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
+        val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
+        val date = getStringExtra(EXTRA_DATE).orEmpty()
 
         removeExtra(EXTRA_TARGET_ID)
         removeExtra(EXTRA_USER_ID)
         removeExtra(EXTRA_TYPE)
+        removeExtra(EXTRA_DATE)
 
         MainScreenNavArgs(
             targetId = targetId,
             userId = userId,
-            type = type
+            type = type,
+            date = date,
         )
     }
 }
@@ -166,6 +171,7 @@ data class MainScreenNavArgs(
     val type: NotificationType,
     val userId: String,
     val targetId: Int,
+    val date: String,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -178,7 +184,6 @@ private fun MainScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
-    val uiState by viewModel.collectAsState()
 
     val navController = rememberNavController()
     var toast by remember { mutableStateOf(ToastState()) }
@@ -445,7 +450,12 @@ private fun navigateScreenFromNavArgs(
         }
 
         NotificationType.VOTE_RESULT -> {
-            navigator.navigateToVoteResultScreen(isNavigateFromNotification = false)
+            val voteResultDate = navArgs.date.toLocalDateFromDashPattern()
+            val isTodayVoteResult = LocalDate.now().equals(voteResultDate)
+            navigator.navigateToVoteResultScreen(
+                isNavigateFromNotification = false,
+                isTodayVoteResult = isTodayVoteResult
+            )
         }
 
         NotificationType.VOTE_RECEIVED -> {

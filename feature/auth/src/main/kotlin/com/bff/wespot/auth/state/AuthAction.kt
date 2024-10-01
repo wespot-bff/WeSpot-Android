@@ -1,5 +1,6 @@
 package com.bff.wespot.auth.state
 
+import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.response.School
 
 sealed class AuthAction {
@@ -17,7 +18,7 @@ sealed class AuthAction {
 
     data class OnNameChanged(val name: String) : AuthAction()
 
-    data object LoginWithKakao : AuthAction()
+    data class LoginWithKakao(val token: KakaoAuthToken) : AuthAction()
 
     data object Signup : AuthAction()
 

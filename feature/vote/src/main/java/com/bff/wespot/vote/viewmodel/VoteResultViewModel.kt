@@ -32,6 +32,7 @@ class VoteResultViewModel @Inject constructor(
         ResultUiState(
             isVoting = savedStateHandle["isVoting"] ?: false,
             isNavigateFromNotification = savedStateHandle["isNavigateFromNotification"] ?: false,
+            isTodayVoteResult = savedStateHandle["isTodayVoteResult"] ?: true,
         ),
     )
 
