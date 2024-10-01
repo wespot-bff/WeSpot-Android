@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.message.R
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 enum class TimePeriod {
@@ -44,7 +45,7 @@ internal fun getCurrentTimePeriod(
     messageStartTime: String,
     messageReceiveTime: String,
 ): TimePeriod {
-    val currentTime = LocalTime.now()
+    val currentTime = LocalTime.now(ZoneId.of("Asia/Seoul"))
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
     val dawnStartTime = LocalTime.of(0, 0)
