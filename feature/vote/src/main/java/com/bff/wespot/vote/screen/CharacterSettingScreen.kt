@@ -20,6 +20,7 @@ import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.ui.CharacterScreen
 import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.viewmodel.CharacterSettingViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -42,6 +43,8 @@ fun CharacterSettingScreen(
     var showDialog by remember {
         mutableStateOf(false)
     }
+
+    handleSideEffect(viewModel.sideEffect)
 
     if (color.isEmpty() || character.isEmpty()) {
         LoadingAnimation()

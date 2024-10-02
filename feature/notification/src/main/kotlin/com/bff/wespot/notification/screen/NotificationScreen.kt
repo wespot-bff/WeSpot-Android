@@ -42,8 +42,10 @@ import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
+import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.RedDot
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalTime
@@ -73,6 +75,8 @@ fun NotificationScreen(
     val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
+    handleSideEffect(viewModel.sideEffect)
+
     Scaffold(
         topBar = {
             WSTopBar(
@@ -84,7 +88,15 @@ fun NotificationScreen(
     ) {
         when (pagingData.loadState.refresh) {
             is LoadState.Error -> {
-                // TODO: Handle error
+                toast = ToastState(
+                    show = true,
+                    message = R.string.notification_load_error_message,
+                    type = WSToastType.Error,
+                )
+            }
+
+            is LoadState.Loading -> {
+                LoadingAnimation()
             }
 
             else -> {
@@ -112,7 +124,7 @@ fun NotificationScreen(
                                             if (state.isSendAllowed) {
                                                 navigator.navigateToReceiverSelectionScreen()
                                             } else {
-                                                ToastState(
+                                                toast = ToastState(
                                                     show = true,
                                                     message = R.string.already_message_reserved,
                                                     type = WSToastType.Error,

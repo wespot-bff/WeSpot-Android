@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +58,7 @@ import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.OnLifecycleEvent
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -87,6 +89,8 @@ internal fun VoteHomeScreen(
     val state by viewModel.collectAsState()
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val action = viewModel::onAction
+
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

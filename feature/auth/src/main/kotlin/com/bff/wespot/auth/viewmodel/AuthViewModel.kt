@@ -8,6 +8,7 @@ import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
@@ -15,6 +16,8 @@ import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.model.SideEffect.Companion.toToastEffect
 import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
@@ -93,6 +96,9 @@ class AuthViewModel @Inject constructor(
                             postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
                         }
                     }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
                     .onFailure {
                         Timber.e(it)
                     }
@@ -138,6 +144,8 @@ class AuthViewModel @Inject constructor(
 
             if (result) {
                 postSideEffect(AuthSideEffect.NavigateToMainActivity)
+            } else {
+                postSideEffect(toToastEffect())
             }
         }
     }

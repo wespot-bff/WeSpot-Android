@@ -3,7 +3,9 @@ package com.bff.wespot.vote.viewmodel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.vote.response.ReceivedVoteData
 import com.bff.wespot.model.vote.response.SentVoteData
@@ -52,6 +54,8 @@ class VoteStorageViewModel @Inject constructor(
                         isLoading = false,
                     )
                 }
+            }.onNetworkFailure {
+                postSideEffect(it.toSideEffect())
             }.onFailure {
                 reduce {
                     state.copy(isLoading = false)
@@ -73,6 +77,8 @@ class VoteStorageViewModel @Inject constructor(
                         isLoading = false,
                     )
                 }
+            }.onNetworkFailure {
+                postSideEffect(it.toSideEffect())
             }.onFailure {
                 reduce {
                     state.copy(isLoading = false)

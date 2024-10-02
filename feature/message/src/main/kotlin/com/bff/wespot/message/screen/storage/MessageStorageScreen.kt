@@ -45,6 +45,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.list.WSMessageItem
 import com.bff.wespot.designsystem.component.list.WSMessageItemType
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -71,6 +72,7 @@ import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSBottomSheet
 import com.bff.wespot.ui.WSHomeChipGroup
+import com.bff.wespot.util.handleSideEffect
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -98,6 +100,9 @@ fun MessageStorageScreen(
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    handleSideEffect(viewModel.sideEffect)
+
     viewModel.collectSideEffect {
         when (it) {
             is StorageSideEffect.ShowToast -> {
@@ -126,6 +131,7 @@ fun MessageStorageScreen(
                     val receivedMessageList = state.receivedMessageList.collectAsLazyPagingItems()
                     ReceivedMessageStorageScreen(
                         data = receivedMessageList,
+                        showToast = showToast,
                         itemClick = { item ->
                             action(StorageAction.OnReceivedMessageClicked(message = item))
                             showMessageDialog = true
@@ -149,6 +155,7 @@ fun MessageStorageScreen(
                         messageStatus = state.messageStatus,
                         isBannerVisible = state.messageStatus.hasReservedMessages() &&
                             state.isTimePeriodEveningToNight,
+                        showToast = showToast,
                         itemClick = { item ->
                             action(StorageAction.OnSentMessageClicked(message = item))
                             showMessageDialog = true
@@ -307,9 +314,17 @@ private fun ReceivedMessageStorageScreen(
     data: LazyPagingItems<ReceivedMessage>,
     itemClick: (ReceivedMessage) -> Unit,
     optionButtonClick: (Int) -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     when (data.loadState.refresh) {
         is LoadState.Error -> {
+            showToast(
+                ToastState(
+                    show = true,
+                    message = R.string.load_message_error_message,
+                    type = WSToastType.Error,
+                ),
+            )
         }
 
         is LoadState.Loading -> {
@@ -361,9 +376,17 @@ private fun SentMessageStorageScreen(
     itemClick: (Message) -> Unit,
     optionButtonClick: (Int) -> Unit,
     bannerClick: () -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     when (data.loadState.refresh) {
         is LoadState.Error -> {
+            showToast(
+                ToastState(
+                    show = true,
+                    message = R.string.load_message_error_message,
+                    type = WSToastType.Error,
+                ),
+            )
         }
 
         is LoadState.Loading -> {

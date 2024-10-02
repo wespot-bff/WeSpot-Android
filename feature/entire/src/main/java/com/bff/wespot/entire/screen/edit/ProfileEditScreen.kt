@@ -61,6 +61,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
@@ -95,6 +96,9 @@ fun ProfileEditScreen(
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    handleSideEffect(viewModel.sideEffect)
+
     viewModel.collectSideEffect {
         when (it) {
             is EntireEditSideEffect.ShowToast -> {

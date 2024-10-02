@@ -3,6 +3,7 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
@@ -17,6 +18,7 @@ import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.state.storage.StorageUiState
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.common.ReportType
@@ -177,6 +179,9 @@ class StorageViewModel @Inject constructor(
                     reduce { state.copy(isLoading = false) }
                     postSideEffect(StorageSideEffect.ShowMessageDialog)
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
                 .onFailure {
                     reduce { state.copy(isLoading = false) }
                 }
@@ -188,7 +193,7 @@ class StorageViewModel @Inject constructor(
             state.copy(clickedMessage = message)
         }
 
-        if (type == MessageType.RECEIVED) {
+        if (type == MessageType.RECEIVED && message.isRead.not()) {
             updateMessageReadStatus(messageId = message.id)
         }
     }
@@ -236,6 +241,9 @@ class StorageViewModel @Inject constructor(
                         ),
                     )
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
         }
     }
 
@@ -254,6 +262,9 @@ class StorageViewModel @Inject constructor(
                     )
                     getReceivedMessageList()
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
         }
     }
 
@@ -271,6 +282,9 @@ class StorageViewModel @Inject constructor(
                         ),
                     )
                     getReceivedMessageList()
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
         }
     }

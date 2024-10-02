@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class NetworkException(
+    val viewType: NetworkExceptionViewType = NetworkExceptionViewType.TOAST,
     val type: String = "",
     val title: String = "UnKnown Error",
     val status: Int = -1,
@@ -15,6 +16,7 @@ data class NetworkException(
     val instance: String = "",
 ) : Exception() {
     fun toUnresolvedAddressException(): NetworkException = NetworkException(
+        viewType = NetworkExceptionViewType.TOAST,
         type = type,
         title = "No Internet",
         status = 1000,
@@ -23,6 +25,7 @@ data class NetworkException(
     )
 
     fun toSerializationException(): NetworkException = NetworkException(
+        viewType = NetworkExceptionViewType.TOAST,
         type = type,
         title = "Serialization Error",
         status = 2000,

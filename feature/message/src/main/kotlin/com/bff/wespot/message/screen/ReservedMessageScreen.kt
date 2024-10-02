@@ -37,6 +37,7 @@ import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.ReservedMessageItem
 import com.bff.wespot.ui.TopToast
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -65,6 +66,8 @@ fun ReservedMessageScreen(
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class DebugAnalyticsHelper @Inject constructor(
     private var userId: String = "",
-) :AnalyticsHelper {
+) : AnalyticsHelper {
     override fun logEvent(event: AnalyticsEvent) {
         Timber.i("Event: $userId, $event")
     }

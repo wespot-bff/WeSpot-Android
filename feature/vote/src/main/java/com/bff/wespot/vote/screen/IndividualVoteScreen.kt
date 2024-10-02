@@ -45,6 +45,7 @@ import com.bff.wespot.ui.CaptureBitmap
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
 import com.bff.wespot.ui.saveBitmap
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.IndividualViewModel
@@ -87,6 +88,8 @@ fun IndividualVoteScreen(
                 val intent = it.data
             }
         }
+
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

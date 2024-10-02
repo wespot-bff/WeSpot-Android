@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +45,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.ui.DotIndicators
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.util.KakaoLoginManager
+import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.launch
@@ -59,6 +61,8 @@ fun AuthScreen(
     val kakaoLogin = KakaoLoginManager()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    handleSideEffect(viewModel.sideEffect)
 
     Column(
         modifier = Modifier

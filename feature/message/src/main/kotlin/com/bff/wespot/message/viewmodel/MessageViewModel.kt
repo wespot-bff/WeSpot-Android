@@ -2,6 +2,7 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -11,6 +12,7 @@ import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -87,6 +89,8 @@ class MessageViewModel @Inject constructor(
                     reduce {
                         state.copy(messageStatus = messageStatus)
                     }
+                }.onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
         }
     }
@@ -112,6 +116,9 @@ class MessageViewModel @Inject constructor(
                             isLoading = false,
                         )
                     }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
                     reduce { state.copy(isLoading = false) }

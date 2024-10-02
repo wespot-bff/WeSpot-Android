@@ -3,6 +3,7 @@ package com.bff.wespot.entire.viewmodel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
@@ -13,6 +14,7 @@ import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.response.BlockedMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -95,6 +97,9 @@ class EntireViewModel @Inject constructor(
                     .onSuccess {
                         clearCachedData()
                         postSideEffect(EntireSideEffect.NavigateToAuth)
+                    }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
                     }
                     .onFailure {
                         Timber.e(it)

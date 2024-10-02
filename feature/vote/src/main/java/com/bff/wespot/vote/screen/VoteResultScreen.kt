@@ -81,6 +81,7 @@ import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.WSCarousel
 import com.bff.wespot.ui.WSHomeChipGroup
 import com.bff.wespot.ui.saveBitmap
+import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
@@ -131,6 +132,8 @@ fun VoteResultScreen(
     var showLottie by remember {
         mutableStateOf(true)
     }
+
+    handleSideEffect(viewModel.sideEffect)
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {

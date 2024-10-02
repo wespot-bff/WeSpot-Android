@@ -190,7 +190,7 @@ class AuthActivity : ComponentActivity() {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
                     if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+                        val targetId = intent.getIntExtra(EXTRA_TARGET_ID, -1)
                         val userId = intent.getStringExtra(EXTRA_USER_ID) ?: ""
                         val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
                         val date = intent.getStringExtra(EXTRA_DATE) ?: ""

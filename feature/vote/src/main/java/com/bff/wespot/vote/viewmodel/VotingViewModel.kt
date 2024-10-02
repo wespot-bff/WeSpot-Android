@@ -8,6 +8,7 @@ import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
+import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.vote.request.VoteResultUpload
@@ -89,6 +90,9 @@ class VotingViewModel @Inject constructor(
                             )
                         }
                     }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
                     .onFailure {
                         Timber.e(it)
                         reduce {
@@ -168,7 +172,7 @@ class VotingViewModel @Inject constructor(
                     postSideEffect(VotingSideEffect.ShowToast("제보 접수 완료"))
                 }
                 .onNetworkFailure {
-                    Timber.e(it)
+                    postSideEffect(it.toSideEffect())
                 }
         }
     }
