@@ -2,7 +2,7 @@ package com.bff.wespot.di
 
 import android.content.Context
 import com.bff.wespot.R
-import com.bff.wespot.network.NetworkStateChecker
+import com.bff.wespot.ui.network.NetworkStateChecker
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase

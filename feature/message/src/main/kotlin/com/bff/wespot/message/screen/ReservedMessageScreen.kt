@@ -33,11 +33,11 @@ import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.ReservedMessageItem
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.ReservedMessageItem
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

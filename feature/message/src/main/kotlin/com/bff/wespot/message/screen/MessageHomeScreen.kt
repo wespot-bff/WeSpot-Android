@@ -51,7 +51,7 @@ import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable

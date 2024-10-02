@@ -65,7 +65,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.navigation.Navigator
@@ -77,9 +76,10 @@ import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
 import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.navigation.util.EXTRA_DATE
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.ui.WSBottomSheet
-import com.bff.wespot.util.clickableSingle
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.WSBottomSheet
+import com.bff.wespot.ui.model.ToastState
+import com.bff.wespot.ui.util.clickableSingle
 import com.bff.wespot.viewmodel.MainViewModel
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate

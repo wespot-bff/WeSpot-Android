@@ -16,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.profile.ProfileAction
 import com.bff.wespot.vote.state.profile.ProfileSideEffect
@@ -75,7 +75,7 @@ fun IntroductionScreen(
         },
     ) {
         Box(modifier = Modifier.padding(it)) {
-            com.bff.wespot.ui.IntroductionScreen(
+            com.bff.wespot.ui.component.IntroductionScreen(
                 name = stringResource(R.string.write_introduction_for_friends, state.name),
                 introduction = state.introduction,
                 onTextChange = {

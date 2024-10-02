@@ -33,8 +33,8 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

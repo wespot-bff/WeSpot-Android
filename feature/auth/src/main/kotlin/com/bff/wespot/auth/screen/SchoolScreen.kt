@@ -46,9 +46,9 @@ import com.bff.wespot.designsystem.component.input.WsTextFieldType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.ListBottomGradient
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.WSListItem
+import com.bff.wespot.ui.component.ListBottomGradient
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.WSListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState

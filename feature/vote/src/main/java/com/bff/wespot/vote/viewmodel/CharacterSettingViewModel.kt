@@ -1,14 +1,14 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.util.DataStoreKey
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

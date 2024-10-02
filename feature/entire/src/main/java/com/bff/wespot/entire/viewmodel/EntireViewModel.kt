@@ -2,7 +2,6 @@ package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -14,9 +13,10 @@ import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.response.BlockedMessage
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged

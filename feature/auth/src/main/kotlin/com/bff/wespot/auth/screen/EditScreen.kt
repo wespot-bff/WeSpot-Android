@@ -44,8 +44,8 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.WSBottomSheet
-import com.bff.wespot.util.clickableSingle
+import com.bff.wespot.ui.component.WSBottomSheet
+import com.bff.wespot.ui.util.clickableSingle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

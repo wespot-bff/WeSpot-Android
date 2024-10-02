@@ -1,7 +1,6 @@
 package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
@@ -17,9 +16,10 @@ import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.state.edit.EntireEditUiState
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.user.response.ProfileCharacter
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.ui.model.ToastState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
