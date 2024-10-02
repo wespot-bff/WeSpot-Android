@@ -2,7 +2,7 @@
 compileSdk = "34"
 minSdk = "26"
 targetSdk = "34"
-versionName = "1.1.0"
+versionName = "1.2.0"
 versionCode = "3"
 
 gradle-plugin = "8.5.1"
