@@ -30,11 +30,13 @@ class SplashActivity : ComponentActivity() {
     lateinit var navigator: Navigator
 
     private val viewModel: SplashViewModel by viewModels()
+    private val isNavigateFromPushNotification by lazy { intent.getStringExtra(KEY_TYPE) != null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        // Push Notification으로 접근 시, setOnExitAnimationListener이 호출되지 않는다.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !isNavigateFromPushNotification) {
             installSplashScreen().apply {
                 setKeepOnScreenCondition {
                     return@setKeepOnScreenCondition viewModel.start.value.not()
@@ -51,7 +53,6 @@ class SplashActivity : ComponentActivity() {
                 repeatOnLifecycle(Lifecycle.State.CREATED) {
                     viewModel.start.collect {
                         if (it) {
-                            delay(500)
                             navigateToAuth()
                         }
                     }
