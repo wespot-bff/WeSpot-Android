@@ -2,7 +2,6 @@ package com.bff.wespot.notification.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
@@ -11,6 +10,7 @@ import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.state.NotificationSideEffect
 import com.bff.wespot.notification.state.NotificationUiState
+import com.bff.wespot.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost

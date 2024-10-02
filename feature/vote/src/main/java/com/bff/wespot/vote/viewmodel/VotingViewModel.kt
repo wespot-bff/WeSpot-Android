@@ -1,19 +1,19 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.request.VoteResultsUpload
 import com.bff.wespot.model.vote.response.VoteItem
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
 import com.bff.wespot.vote.state.voting.VotingUiState

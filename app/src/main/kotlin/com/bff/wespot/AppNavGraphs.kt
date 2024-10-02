@@ -30,10 +30,10 @@ import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
 import com.bff.wespot.vote.screen.destinations.IntroductionScreenDestination

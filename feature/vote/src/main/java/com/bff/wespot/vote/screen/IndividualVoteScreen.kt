@@ -41,11 +41,11 @@ import com.bff.wespot.model.vote.response.IndividualReceived
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.CaptureBitmap
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.ui.saveBitmap
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.component.CaptureBitmap
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.saveBitmap
+import com.bff.wespot.ui.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.ui.VoteCard
 import com.bff.wespot.vote.viewmodel.IndividualViewModel

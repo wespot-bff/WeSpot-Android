@@ -22,9 +22,9 @@ import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.screen.storage.MessageStorageScreen
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.ui.model.ToastState
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 

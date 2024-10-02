@@ -40,8 +40,8 @@ import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.TopToast
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.TopToast
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate

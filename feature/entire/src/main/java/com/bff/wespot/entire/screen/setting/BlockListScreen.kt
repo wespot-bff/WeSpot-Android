@@ -28,11 +28,11 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
-import com.bff.wespot.model.ToastState
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.ReservedMessageItem
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.ReservedMessageItem
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.model.ToastState
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

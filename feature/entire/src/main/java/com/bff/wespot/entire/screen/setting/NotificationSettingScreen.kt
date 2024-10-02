@@ -31,9 +31,9 @@ import com.bff.wespot.entire.R
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.util.OnLifecycleEvent
-import com.bff.wespot.util.handleSideEffect
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.util.OnLifecycleEvent
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect

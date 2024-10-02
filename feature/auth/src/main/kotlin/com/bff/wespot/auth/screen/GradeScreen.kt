@@ -35,8 +35,8 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.ui.WSBottomSheet
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.WSBottomSheet
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 

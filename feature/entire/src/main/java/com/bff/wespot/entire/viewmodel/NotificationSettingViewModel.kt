@@ -1,14 +1,14 @@
 package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingUiState
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.model.user.response.NotificationSetting
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost

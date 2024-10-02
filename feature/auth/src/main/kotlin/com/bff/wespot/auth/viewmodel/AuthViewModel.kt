@@ -7,7 +7,6 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
@@ -16,14 +15,15 @@ import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey
-import com.bff.wespot.model.SideEffect.Companion.toSideEffect
-import com.bff.wespot.model.SideEffect.Companion.toToastEffect
 import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.constants.LoginState
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.ui.model.SideEffect.Companion.toToastEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
