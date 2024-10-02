@@ -90,7 +90,7 @@ fun ReceiverSelectionScreen(
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

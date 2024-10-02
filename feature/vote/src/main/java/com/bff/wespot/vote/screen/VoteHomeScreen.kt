@@ -90,7 +90,7 @@ internal fun VoteHomeScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val action = viewModel::onAction
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

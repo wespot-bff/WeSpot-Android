@@ -44,7 +44,7 @@ fun CharacterSettingScreen(
         mutableStateOf(false)
     }
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     if (color.isEmpty() || character.isEmpty()) {
         LoadingAnimation()

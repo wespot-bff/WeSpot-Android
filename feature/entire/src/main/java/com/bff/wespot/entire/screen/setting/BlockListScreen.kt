@@ -53,7 +53,7 @@ fun BlockListScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     val pagingData = state.blockedMessageList.collectAsLazyPagingItems()
 

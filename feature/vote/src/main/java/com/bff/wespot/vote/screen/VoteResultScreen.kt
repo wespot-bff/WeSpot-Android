@@ -133,7 +133,7 @@ fun VoteResultScreen(
         mutableStateOf(true)
     }
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {

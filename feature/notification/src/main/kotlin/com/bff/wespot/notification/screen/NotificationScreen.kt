@@ -75,7 +75,7 @@ fun NotificationScreen(
     val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

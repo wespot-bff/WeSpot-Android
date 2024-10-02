@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSTextButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.profile.ProfileAction
@@ -52,7 +51,7 @@ fun IntroductionScreen(
         mutableStateOf(false)
     }
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {

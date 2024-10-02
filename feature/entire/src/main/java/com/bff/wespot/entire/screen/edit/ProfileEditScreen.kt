@@ -61,7 +61,6 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.util.handleSideEffect
 import com.bff.wespot.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -98,7 +97,7 @@ fun ProfileEditScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
