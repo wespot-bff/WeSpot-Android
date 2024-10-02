@@ -2,7 +2,12 @@ package com.bff.wespot.di
 
 import android.content.Context
 import com.bff.wespot.R
-import com.bff.wespot.network.NetworkStateChecker
+import com.bff.wespot.ui.network.NetworkStateChecker
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Module
@@ -36,4 +41,12 @@ object ConfigModule {
     ): NetworkStateChecker {
         return NetworkStateChecker(context)
     }
+
+    @Provides
+    @Singleton
+    fun providesCrashlytics(): FirebaseCrashlytics = Firebase.crashlytics
+
+    @Provides
+    @Singleton
+    fun provideFirebaseMessaging(): FirebaseMessaging = Firebase.messaging
 }

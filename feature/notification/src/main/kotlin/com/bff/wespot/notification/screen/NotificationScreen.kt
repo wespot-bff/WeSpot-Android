@@ -36,14 +36,16 @@ import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
-import com.bff.wespot.ui.RedDot
-import com.bff.wespot.ui.TopToast
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.RedDot
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.model.ToastState
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import java.time.LocalTime
@@ -53,7 +55,10 @@ interface NotificationNavigator {
     fun navigateToReceiverSelectionScreen()
     fun navigateToMessageScreen(messageId: Int, type: NotificationType)
     fun navigateToVotingScreen()
-    fun navigateToVoteResultScreen(isNavigateFromNotification: Boolean)
+    fun navigateToVoteResultScreen(
+        isNavigateFromNotification: Boolean,
+        isTodayVoteResult: Boolean,
+    )
     fun navigateToVoteStorageScreen()
 }
 
@@ -70,6 +75,8 @@ fun NotificationScreen(
     val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
+    handleSideEffect(viewModel.sideEffect)
+
     Scaffold(
         topBar = {
             WSTopBar(
@@ -81,7 +88,15 @@ fun NotificationScreen(
     ) {
         when (pagingData.loadState.refresh) {
             is LoadState.Error -> {
-                // TODO: Handle error
+                toast = ToastState(
+                    show = true,
+                    message = R.string.notification_load_error_message,
+                    type = WSToastType.Error,
+                )
+            }
+
+            is LoadState.Loading -> {
+                LoadingAnimation()
             }
 
             else -> {
@@ -109,7 +124,7 @@ fun NotificationScreen(
                                             if (state.isSendAllowed) {
                                                 navigator.navigateToReceiverSelectionScreen()
                                             } else {
-                                                ToastState(
+                                                toast = ToastState(
                                                     show = true,
                                                     message = R.string.already_message_reserved,
                                                     type = WSToastType.Error,
@@ -130,7 +145,10 @@ fun NotificationScreen(
                                     }
 
                                     NotificationType.VOTE_RESULT -> {
-                                        navigator.navigateToVoteResultScreen(true)
+                                        navigator.navigateToVoteResultScreen(
+                                            isNavigateFromNotification = true,
+                                            isTodayVoteResult = item.isTodayVoteResult(),
+                                        )
                                     }
 
                                     NotificationType.VOTE_RECEIVED -> {

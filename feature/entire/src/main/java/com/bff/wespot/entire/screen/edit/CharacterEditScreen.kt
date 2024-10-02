@@ -14,8 +14,9 @@ import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.model.user.response.ProfileCharacter
-import com.bff.wespot.ui.CharacterScreen
-import com.bff.wespot.ui.LoadingAnimation
+import com.bff.wespot.ui.component.CharacterScreen
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -34,6 +35,9 @@ fun CharacterEditScreen(
 ) {
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    handleSideEffect(viewModel.sideEffect)
+
     viewModel.collectSideEffect {
         when (it) {
             EntireEditSideEffect.NavigateToEntire -> {

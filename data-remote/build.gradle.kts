@@ -18,4 +18,5 @@ dependencies {
     implementation(libs.kotlin.serialization.json)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.config)
+    implementation(libs.firebase.messaging)
 }

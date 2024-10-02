@@ -74,14 +74,15 @@ import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.vote.response.VoteResult
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.CaptureBitmap
-import com.bff.wespot.ui.DotIndicators
-import com.bff.wespot.ui.MultiLineText
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.WSCarousel
-import com.bff.wespot.ui.WSHomeChipGroup
-import com.bff.wespot.ui.saveBitmap
-import com.bff.wespot.util.hexToColor
+import com.bff.wespot.ui.component.CaptureBitmap
+import com.bff.wespot.ui.component.DotIndicators
+import com.bff.wespot.ui.component.MultiLineText
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.WSCarousel
+import com.bff.wespot.ui.component.WSHomeChipGroup
+import com.bff.wespot.ui.component.saveBitmap
+import com.bff.wespot.ui.util.handleSideEffect
+import com.bff.wespot.ui.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.result.ResultAction
 import com.bff.wespot.vote.ui.EmptyResultScreen
@@ -102,6 +103,7 @@ interface VoteResultNavigator {
 data class VoteResultScreenArgs(
     val isVoting: Boolean,
     val isNavigateFromNotification: Boolean = false,
+    val isTodayVoteResult: Boolean = false,
 )
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -122,12 +124,16 @@ fun VoteResultScreen(
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
     var voteType by remember {
-        mutableStateOf(TODAY)
+        mutableStateOf(
+            if (state.isTodayVoteResult) TODAY else YESTERDAY,
+        )
     }
 
     var showLottie by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
+
+    handleSideEffect(viewModel.sideEffect)
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -359,10 +365,6 @@ fun VoteResultScreen(
         ) {
             DotIndicators(pagerState = pagerState)
         }
-    }
-
-    if (state.isLoading) {
-        showLottie = true
     }
 
     NetworkDialog(context = context, networkState = networkState)

@@ -1,5 +1,6 @@
 package com.bff.wespot.vote.state.voting
 
+import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.vote.request.VoteResultUpload
 import com.bff.wespot.model.vote.response.VoteItem
 
@@ -11,6 +12,7 @@ data class VotingUiState(
     val selectedVote: List<VoteResultUpload> = emptyList(),
     val start: Boolean = true,
     val loading: Boolean = false,
+    val profile: Profile = Profile(),
     val playStoreLink: String,
     val addQuestionLink: String,
 )

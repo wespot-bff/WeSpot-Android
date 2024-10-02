@@ -34,8 +34,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
         targetId: Pair<String, Int>,
         userId: Pair<String, String>,
         type: Pair<String, String>,
+        date: Pair<String, String>,
     ): Intent {
-        val intent = context.buildIntent<MainActivity>(targetId, userId, type)
+        val intent = context.buildIntent<MainActivity>(targetId, userId, type, date)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return intent
     }
@@ -50,9 +51,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         context: Context,
         targetId: Pair<String, Int>,
         userId: Pair<String, String>,
-        type: Pair<String, String>
+        type: Pair<String, String>,
+        date: Pair<String, String>,
     ): Intent {
-        val intent = context.buildIntent<AuthActivity>(targetId, userId, type)
+        val intent = context.buildIntent<AuthActivity>(targetId, userId, type, date)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return intent
     }

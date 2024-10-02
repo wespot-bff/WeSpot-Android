@@ -45,10 +45,11 @@ import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.ui.LetterCountIndicator
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.TopToast
+import com.bff.wespot.ui.component.LetterCountIndicator
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -58,7 +59,7 @@ interface MessageEditNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun navigateMessageScreen(args: MessageScreenArgs)
-    fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
+    fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs)
 }
 
 data class EditMessageScreenArgs(
@@ -86,6 +87,8 @@ fun MessageEditScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    handleSideEffect(viewModel.sideEffect)
+
     viewModel.collectSideEffect {
         when (it) {
             SendSideEffect.CloseReserveDialog -> {
@@ -101,7 +104,7 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToReservedMessage -> {
-                navigator.navigateToReservedMessageScreen(
+                navigator.navigateToReservedMessageScreenFromEdit(
                     args = ReservedMessageScreenArgs(true),
                 )
             }
@@ -202,7 +205,8 @@ fun MessageEditScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(68.dp))
+            // 버튼과 버튼 외부 패딩만큼 높이를 추가한다.
+            Spacer(modifier = Modifier.height(82.dp))
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
@@ -286,6 +290,8 @@ private fun EditField(
     isMessageContent: Boolean = false,
     onClicked: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Column {
         Text(
             text = title,
@@ -299,10 +305,17 @@ private fun EditField(
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(18.dp),
+                    .padding(18.dp)
+                    .let {
+                        if (isMessageContent) {
+                            it.verticalScroll(scrollState)
+                        } else {
+                            it
+                        }
+                    },
             ) {
                 Text(
                     text = value,

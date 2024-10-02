@@ -2,9 +2,9 @@ package com.bff.wespot.data.di
 
 import com.bff.wespot.data.repository.CommonRepositoryImpl
 import com.bff.wespot.data.repository.DataStoreRepositoryImpl
-import com.bff.wespot.data.repository.RemoteConfigRepositoryImpl
+import com.bff.wespot.data.repository.firebase.config.RemoteConfigRepositoryImpl
 import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
-import com.bff.wespot.data.repository.auth.KakaoLoginManagerImpl
+import com.bff.wespot.data.repository.firebase.messaging.MessagingRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageStorageRepositoryImpl
 import com.bff.wespot.data.repository.notification.NotificationRepositoryImpl
@@ -13,9 +13,9 @@ import com.bff.wespot.data.repository.user.UserRepositoryImpl
 import com.bff.wespot.data.repository.vote.VoteRepositoryImpl
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
-import com.bff.wespot.domain.repository.auth.KakaoLoginManager
+import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
@@ -36,12 +36,6 @@ abstract class DataModule {
     abstract fun bindsMessageRepository(
         messageRepository: MessageRepositoryImpl
     ): MessageRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindsKakaoLoginManager(
-        kakaoLoginManagerImpl: KakaoLoginManagerImpl
-    ): KakaoLoginManager
 
     @Binds
     @Singleton
@@ -96,4 +90,10 @@ abstract class DataModule {
     abstract fun bindsRemoteConfigRepository(
         remoteConfigRepositoryImpl: RemoteConfigRepositoryImpl
     ): RemoteConfigRepository
+
+    @Binds
+    @Singleton
+    abstract fun messagingRepository(
+        messagingRepositoryImpl: MessagingRepositoryImpl
+    ): MessagingRepository
 }

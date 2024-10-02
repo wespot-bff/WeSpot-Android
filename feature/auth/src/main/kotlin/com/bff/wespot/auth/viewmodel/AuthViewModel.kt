@@ -7,19 +7,23 @@ import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
-import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey
+import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.constants.LoginState
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.ui.model.SideEffect.Companion.toToastEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -72,7 +76,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnGenderChanged -> handleGenderChanged(action.gender)
             is AuthAction.OnNameChanged -> handleNameChanged(action.name)
             is AuthAction.Navigation -> handleNavigation(action.navigate)
-            is AuthAction.LoginWithKakao -> loginWithKakao()
+            is AuthAction.LoginWithKakao -> loginWithKakao(action.token)
             is AuthAction.Signup -> signUp()
             is AuthAction.AutoLogin -> autoLogin(action.versionCode)
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
@@ -81,16 +85,19 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun loginWithKakao() = intent {
+    private fun loginWithKakao(kakaoAuthToken: KakaoAuthToken) = intent {
         viewModelScope.launch {
             try {
-                kakaoLoginUseCase()
+                kakaoLoginUseCase(kakaoAuthToken)
                     .onSuccess {
                         if (it == LoginState.LOGIN_SUCCESS) {
                             postSideEffect(AuthSideEffect.NavigateToMainActivity)
                         } else {
                             postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
                         }
+                    }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
                     }
                     .onFailure {
                         Timber.e(it)
@@ -137,6 +144,8 @@ class AuthViewModel @Inject constructor(
 
             if (result) {
                 postSideEffect(AuthSideEffect.NavigateToMainActivity)
+            } else {
+                postSideEffect(toToastEffect())
             }
         }
     }

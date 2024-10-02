@@ -1,10 +1,10 @@
 package com.bff.wespot.entire.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.UpdateProfileCharacterUseCase
@@ -16,8 +16,10 @@ import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
 import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.state.edit.EntireEditUiState
-import com.bff.wespot.model.ToastState
 import com.bff.wespot.model.user.response.ProfileCharacter
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.ui.model.ToastState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -40,7 +42,7 @@ class EntireEditViewModel @Inject constructor(
     private val updateProfileIntroductionUseCase: UpdateProfileIntroductionUseCase,
     private val updateProfileCharacterUseCase: UpdateProfileCharacterUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
-) : ViewModel(), ContainerHost<EntireEditUiState, EntireEditSideEffect> {
+) : BaseViewModel(), ContainerHost<EntireEditUiState, EntireEditSideEffect> {
     override val container = container<EntireEditUiState, EntireEditSideEffect>(EntireEditUiState())
 
     private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
@@ -76,7 +78,9 @@ class EntireEditViewModel @Inject constructor(
                     .onSuccess { backgroundColorList ->
                         reduce { state.copy(backgroundColorList = backgroundColorList) }
                     }
-                    .onFailure { Timber.e(it) }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
             }
 
             launch {
@@ -84,7 +88,9 @@ class EntireEditViewModel @Inject constructor(
                     .onSuccess { characterList ->
                         reduce { state.copy(characterList = characterList) }
                     }
-                    .onFailure { Timber.e(it) }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
             }
         }
     }
@@ -176,6 +182,9 @@ class EntireEditViewModel @Inject constructor(
                     postEditDoneSideToast()
                     reduce { state.copy(isLoading = false) }
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
                 .onFailure {
                     Timber.e(it)
                     reduce { state.copy(isLoading = false) }
@@ -190,6 +199,9 @@ class EntireEditViewModel @Inject constructor(
                 .onSuccess {
                     postSideEffect(EntireEditSideEffect.NavigateToEntire)
                     reduce { state.copy(isLoading = false) }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
                     Timber.e(it)

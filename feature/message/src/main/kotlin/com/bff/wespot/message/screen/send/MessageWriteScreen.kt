@@ -38,8 +38,9 @@ import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
-import com.bff.wespot.ui.LetterCountIndicator
-import com.bff.wespot.ui.NetworkDialog
+import com.bff.wespot.ui.component.LetterCountIndicator
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
@@ -70,6 +71,8 @@ fun MessageWriteScreen(
     val action = viewModel::onAction
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

@@ -46,8 +46,8 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
-import com.bff.wespot.ui.MultiLineText
-import com.bff.wespot.util.carouselTransition
+import com.bff.wespot.ui.component.MultiLineText
+import com.bff.wespot.ui.util.carouselTransition
 import com.bff.wespot.vote.R
 
 @OptIn(ExperimentalFoundationApi::class)

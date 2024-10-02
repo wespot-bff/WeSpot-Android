@@ -33,7 +33,8 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.NetworkDialog
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -59,6 +60,8 @@ fun CompleteScreen(
     val analyticsHelper = LocalAnalyticsHelper.current
 
     val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
+
+    handleSideEffect(viewModel.sideEffect)
 
     Box(
         modifier = Modifier

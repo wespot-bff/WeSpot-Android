@@ -51,12 +51,13 @@ import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.ReceivedVoteResult
 import com.bff.wespot.model.vote.response.SentVoteResult
 import com.bff.wespot.model.vote.response.StorageVoteResult
-import com.bff.wespot.ui.ListBottomGradient
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.RedDot
-import com.bff.wespot.ui.WSHomeChipGroup
-import com.bff.wespot.util.hexToColor
+import com.bff.wespot.ui.component.ListBottomGradient
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.RedDot
+import com.bff.wespot.ui.component.WSHomeChipGroup
+import com.bff.wespot.ui.util.handleSideEffect
+import com.bff.wespot.ui.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.storage.StorageAction
 import com.bff.wespot.vote.state.storage.StorageSideEffect
@@ -88,6 +89,8 @@ fun VoteStorageScreen(
     var selectedTab by remember {
         mutableStateOf(RECEIVED_SCREEN)
     }
+
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {

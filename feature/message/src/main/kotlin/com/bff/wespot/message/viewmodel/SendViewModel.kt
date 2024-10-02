@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.base.BaseViewModel
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.BasePagingRepository
@@ -20,6 +19,8 @@ import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.user.response.User
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -32,6 +33,7 @@ import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -59,7 +61,6 @@ class SendViewModel @Inject constructor(
             is SendAction.OnMessageEditScreenEntered -> {
                 handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
             }
-
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
@@ -146,6 +147,7 @@ class SendViewModel @Inject constructor(
     }
 
     private fun getReservedMessage(messageId: Int) = intent {
+        reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
@@ -154,15 +156,24 @@ class SendViewModel @Inject constructor(
                             selectedUser = message.receiver,
                             messageInput = message.content,
                             isRandomName = message.isAnonymous,
-                            sender = message.senderName,
+                            isLoading = false,
                         )
                     }
-                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러온다.
+                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러와 상태에 대입한다.
                     if (message.isAnonymous) {
+                        reduce { state.copy(randomName = message.senderName) }
                         getProfile()
+                    } else {
+                        reduce { state.copy(sender = message.senderName) }
                     }
 
                     messageInput.value = message.content
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }
@@ -203,9 +214,11 @@ class SendViewModel @Inject constructor(
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) { // TODO 나중에 추가 필드로 구분 예정
+                if (exception.status == 400) {
                     reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                } else {
+                    postSideEffect(exception.toSideEffect())
                 }
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
@@ -250,8 +263,13 @@ class SendViewModel @Inject constructor(
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) {
+                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
                     postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                } else {
+                    postSideEffect(exception.toSideEffect())
                 }
+            }.onFailure {
+                reduce { state.copy(isLoading = false) }
             }
         }
     }
@@ -261,6 +279,9 @@ class SendViewModel @Inject constructor(
             commonRepository.getKakaoContent(KakaoSharingType.FIND.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
                     Timber.e(it)
@@ -279,7 +300,7 @@ class SendViewModel @Inject constructor(
     private suspend fun trackMessageSendEvent() {
         val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
         val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-        val sendTime = LocalDateTime.now().format(formatter)
+        val sendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter)
 
         analyticsHelper.logEvent(
             event = AnalyticsEvent(

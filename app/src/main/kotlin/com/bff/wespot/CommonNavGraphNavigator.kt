@@ -35,7 +35,6 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
-import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.vote.screen.CharacterSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
@@ -97,7 +96,9 @@ class CommonNavGraphNavigator(
     }
 
     override fun navigateMessageScreen(args: MessageScreenArgs) {
-        navController.navigate(MessageScreenDestination(args) within navGraph)
+        navController.navigate(MessageScreenDestination(args) within navGraph) {
+            popUpTo((MessageScreenDestination(args) within navGraph).route) { inclusive = true }
+        }
     }
 
     override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
@@ -106,6 +107,12 @@ class CommonNavGraphNavigator(
 
     override fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs) {
         navController.navigate(ReservedMessageScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs) {
+        navController.navigate(ReservedMessageScreenDestination(args) within navGraph) {
+            popUpTo((ReservedMessageScreenDestination(args) within navGraph).route) { inclusive = true }
+        }
     }
 
     override fun navigateToVoteHome() {

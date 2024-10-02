@@ -1,6 +1,5 @@
 package com.bff.wespot.notification.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.domain.repository.BasePagingRepository
@@ -11,6 +10,7 @@ import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.state.NotificationSideEffect
 import com.bff.wespot.notification.state.NotificationUiState
+import com.bff.wespot.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -25,7 +25,7 @@ class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val notificationListRepository: BasePagingRepository<Notification, Paging<Notification>>,
     private val messageRepository: MessageRepository,
-) : ViewModel(), ContainerHost<NotificationUiState, NotificationSideEffect> {
+) : BaseViewModel(), ContainerHost<NotificationUiState, NotificationSideEffect> {
     override val container =
         container<NotificationUiState, NotificationSideEffect>(NotificationUiState())
 

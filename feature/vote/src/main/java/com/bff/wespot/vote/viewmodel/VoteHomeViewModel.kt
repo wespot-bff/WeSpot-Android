@@ -1,15 +1,17 @@
 package com.bff.wespot.vote.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.common.util.toDateTimeString
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.vote.VoteRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.common.KakaoSharingType
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteSideEffect
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -90,6 +92,9 @@ class VoteHomeViewModel @Inject constructor(
                 voteRepository.getFirstVoteResults(date)
                     .onSuccess {
                         reduce { state.copy(voteResults = it.voteResults, isLoading = false) }
+                    }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
                     }
                     .onFailure {
                         reduce { state.copy(isLoading = false) }

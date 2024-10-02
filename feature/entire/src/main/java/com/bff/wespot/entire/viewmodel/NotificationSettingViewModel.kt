@@ -1,12 +1,14 @@
 package com.bff.wespot.entire.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.screen.state.notification.NotificationSettingUiState
 import com.bff.wespot.model.user.response.NotificationSetting
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -20,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationSettingViewModel @Inject constructor(
     private val userRepository: UserRepository,
-) : ViewModel(), ContainerHost<NotificationSettingUiState, NotificationSettingSideEffect> {
+) : BaseViewModel(), ContainerHost<NotificationSettingUiState, NotificationSettingSideEffect> {
     override val container = container<NotificationSettingUiState, NotificationSettingSideEffect>(
         NotificationSettingUiState(),
     )
@@ -69,9 +71,11 @@ class NotificationSettingViewModel @Inject constructor(
                         )
                     }
                 }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
                 .onFailure {
                     reduce { state.copy(isLoading = false) }
-                    Timber.e(it)
                 }
         }
     }

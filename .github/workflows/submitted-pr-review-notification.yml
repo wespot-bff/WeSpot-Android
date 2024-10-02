@@ -38,13 +38,6 @@ jobs:
                 ]
               }
             ]
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: add label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: 🌟머지 해주세요🌟
             
   changes_requested:
     if: github.event.review.state == 'changes_requested'
@@ -59,7 +52,7 @@ jobs:
           DISCORD_EMBEDS: |
             [
               {
-                "title": "PR 수정 요청, 미쿠짱 똥 가져와 똥 💩💩 \n${{ github.event.pull_request.title }}",
+                "title": "PR 수정 요청, 매튜짱 엉덩이 가져와 \n${{ github.event.pull_request.title }}",
                 "color": 13458524,
                 "description": "${{ github.event.review.html_url }}",
                 "fields": [
@@ -81,14 +74,6 @@ jobs:
                 ]
               }
             ]
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: add label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: ✏️수정 요청✏️
-
 
   commented:
       if: github.event.review.state == 'commented'

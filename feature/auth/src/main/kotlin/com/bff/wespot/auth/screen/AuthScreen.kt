@@ -22,10 +22,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,10 +41,13 @@ import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.ui.DotIndicators
-import com.bff.wespot.ui.WSCarousel
+import com.bff.wespot.ui.component.DotIndicators
+import com.bff.wespot.ui.component.WSCarousel
+import com.bff.wespot.ui.util.KakaoLoginManager
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -52,6 +57,12 @@ fun AuthScreen(
     viewModel: AuthViewModel,
 ) {
     val pagerState = rememberPagerState { 3 }
+    val kakaoLogin = KakaoLoginManager()
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    handleSideEffect(viewModel.sideEffect)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,7 +116,10 @@ fun AuthScreen(
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Button(
             onClick = {
-                viewModel.onAction(AuthAction.LoginWithKakao)
+                coroutineScope.launch {
+                    val token = kakaoLogin.loginWithKakao(context)
+                    viewModel.onAction(AuthAction.LoginWithKakao(token))
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

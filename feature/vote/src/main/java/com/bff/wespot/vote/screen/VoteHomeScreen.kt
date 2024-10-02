@@ -46,16 +46,18 @@ import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.user.response.ProfileCharacter
 import com.bff.wespot.model.vote.response.Result
 import com.bff.wespot.model.vote.response.VoteUser
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.network.NetworkState
-import com.bff.wespot.ui.DotIndicators
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.WSCarousel
-import com.bff.wespot.util.OnLifecycleEvent
+import com.bff.wespot.ui.component.DotIndicators
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.WSCarousel
+import com.bff.wespot.ui.network.NetworkState
+import com.bff.wespot.ui.util.OnLifecycleEvent
+import com.bff.wespot.ui.util.handleSideEffect
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.home.VoteAction
 import com.bff.wespot.vote.state.home.VoteUiState
@@ -81,10 +83,13 @@ internal fun VoteHomeScreen(
     viewModel: VoteHomeViewModel = hiltViewModel(),
     voteNavigator: VoteNavigator,
     navigator: Navigator,
+    restricted: RestrictionArg,
 ) {
     val state by viewModel.collectAsState()
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val action = viewModel::onAction
+
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {
@@ -101,6 +106,7 @@ internal fun VoteHomeScreen(
                         viewModel = viewModel,
                         voteNavigator = voteNavigator,
                         navigator = navigator,
+                        restricted = restricted,
                     )
 
                     RESULT_SCREEN -> CardResultContent(
@@ -189,6 +195,7 @@ private fun VoteHomeContent(
     viewModel: VoteHomeViewModel,
     voteNavigator: VoteNavigator,
     navigator: Navigator,
+    restricted: RestrictionArg,
 ) {
     val state by viewModel.collectAsState()
     val context = LocalContext.current
@@ -278,6 +285,7 @@ private fun VoteHomeContent(
                             voteNavigator.navigateToVotingScreen()
                         },
                         text = stringResource(id = R.string.voting),
+                        enabled = !restricted.restricted,
                     ) {
                         it.invoke()
                     }

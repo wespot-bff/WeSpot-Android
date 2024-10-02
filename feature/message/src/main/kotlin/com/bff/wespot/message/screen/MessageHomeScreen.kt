@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -50,17 +50,22 @@ import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.model.common.RestrictionArg
+import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MessageHomeScreen(
-    viewModel: MessageViewModel,
+    viewModel: MessageViewModel = hiltViewModel(),
     navigateToReservedMessageScreen: () -> Unit,
     navigateToReceiverSelectionScreen: (Boolean) -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
+    restricted: RestrictionArg,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    handleSideEffect(viewModel.sideEffect)
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (state.timePeriod) {
@@ -72,6 +77,7 @@ fun MessageHomeScreen(
                     buttonText = stringResource(R.string.message_card_button_text_dawn),
                     imageRes = state.timePeriod.imageRes,
                     onButtonClick = { },
+                    restricted = restricted,
                 )
             }
 
@@ -99,6 +105,7 @@ fun MessageHomeScreen(
                     onButtonClick = {
                         navigateToReceiverSelectionScreen(false)
                     },
+                    restricted = restricted,
                 )
 
                 MessageHomeDescription(
@@ -121,6 +128,7 @@ fun MessageHomeScreen(
                     buttonText = stringResource(R.string.message_card_button_text_night),
                     imageRes = state.timePeriod.imageRes,
                     isBannerVisible = state.messageStatus.hasUnReadMessages(),
+                    restricted = restricted,
                     onButtonClick = {
                     },
                 )
@@ -132,8 +140,11 @@ fun MessageHomeScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnHomeScreenEntered)
+    LifecycleStartEffect(Unit) {
+        action(MessageAction.StartTimeTracking)
+        onStopOrDispose {
+            action(MessageAction.CancelTimeTracking)
+        }
     }
 }
 
@@ -144,6 +155,7 @@ private fun MessageCard(
     buttonText: String,
     imageRes: Int,
     timePeriod: TimePeriod,
+    restricted: RestrictionArg,
     isBannerVisible: Boolean = false,
     isButtonEnable: Boolean = false,
     onButtonClick: () -> Unit,
@@ -185,7 +197,7 @@ private fun MessageCard(
                 text = buttonText,
                 paddingValues = PaddingValues(vertical = 0.dp, horizontal = 20.dp),
                 buttonType = WSButtonType.Primary,
-                enabled = isButtonEnable,
+                enabled = isButtonEnable && !restricted.restricted,
                 onClick = { onButtonClick() },
             ) {
                 it()

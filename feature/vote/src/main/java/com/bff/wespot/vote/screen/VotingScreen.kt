@@ -48,12 +48,14 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.NetworkDialog
-import com.bff.wespot.ui.ReportBottomSheet
-import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.hexToColor
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.ReportBottomSheet
+import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.util.handleSideEffect
+import com.bff.wespot.ui.util.hexToColor
 import com.bff.wespot.vote.R
 import com.bff.wespot.vote.state.voting.VotingAction
 import com.bff.wespot.vote.state.voting.VotingSideEffect
@@ -76,6 +78,7 @@ interface VotingNavigator {
 fun VotingScreen(
     votingNavigator: VotingNavigator,
     viewModel: VotingViewModel,
+    restricted: RestrictionArg,
     navigator: Navigator,
 ) {
     val state by viewModel.collectAsState()
@@ -112,6 +115,8 @@ fun VotingScreen(
     }
 
     val showGuideScreen = state.voteItems.isEmpty()
+
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
@@ -160,7 +165,7 @@ fun VotingScreen(
             }
         },
     ) {
-        if (state.loading && showGuideScreen) {
+        if (state.loading && showGuideScreen && !restricted.restricted) {
             return@Scaffold
         } else if (showGuideScreen) {
             VotingGuideScreen(it, navigator, state, analyticsHelper)
@@ -353,14 +358,17 @@ private fun VotingGuideScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = stringResource(R.string.guide_title),
+            text = stringResource(
+                R.string.guide_title,
+                state.profile.grade,
+                state.profile.classNumber,
+            ),
             style = StaticTypeScale.Default.header1,
-            modifier = Modifier.padding(horizontal = 24.dp),
+            modifier = Modifier.padding(paddingValues).padding(horizontal = 24.dp),
         )
         Image(
             painter = painterResource(id = R.drawable.no_friends),

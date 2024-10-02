@@ -35,12 +35,13 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
-import com.bff.wespot.ui.LoadingAnimation
-import com.bff.wespot.ui.TopToast
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.TopToast
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
@@ -116,12 +117,7 @@ class AuthActivity : ComponentActivity() {
                     }
 
                     AuthSideEffect.NavigateToMainActivity -> {
-                        val intent = navigator.navigateToMain(
-                            this,
-                            Pair("", 0),
-                            Pair("", ""),
-                            Pair("", ""),
-                        )
+                        val intent = navigator.navigateToMain(context = this)
                         startActivity(intent)
                     }
                 }
@@ -194,15 +190,17 @@ class AuthActivity : ComponentActivity() {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
                     if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val targetId = intent.getStringExtra(EXTRA_TARGET_ID)?.toInt() ?: -1
+                        val targetId = intent.getIntExtra(EXTRA_TARGET_ID, -1)
                         val userId = intent.getStringExtra(EXTRA_USER_ID) ?: ""
                         val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
+                        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
 
                         val intent = navigator.navigateToMain(
                             this@AuthActivity,
                             targetId = Pair(EXTRA_TARGET_ID, targetId),
                             userId = Pair(EXTRA_USER_ID, userId),
                             type = Pair(EXTRA_TYPE, type),
+                            date = Pair(EXTRA_DATE, date),
                         )
                         startActivity(intent)
                     } else if (loginState == LoginState.FORCE_UPDATE) {

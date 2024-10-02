@@ -2,20 +2,21 @@ package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.bff.wespot.base.BaseViewModel
+import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
-import com.bff.wespot.domain.repository.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
-import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.response.BlockedMessage
+import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -97,6 +98,9 @@ class EntireViewModel @Inject constructor(
                         clearCachedData()
                         postSideEffect(EntireSideEffect.NavigateToAuth)
                     }
+                    .onNetworkFailure {
+                        postSideEffect(it.toSideEffect())
+                    }
                     .onFailure {
                         Timber.e(it)
                     }
@@ -111,7 +115,7 @@ class EntireViewModel @Inject constructor(
 
     private fun clearCachedData() {
         viewModelScope.launch {
-            launch { dataStoreRepository.clear(DataStoreKey.PUSH_TOKEN) }
+            launch { dataStoreRepository.clear() }
             launch { profileRepository.clearProfile() }
         }
     }

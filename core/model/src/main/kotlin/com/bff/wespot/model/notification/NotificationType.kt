@@ -15,15 +15,17 @@ enum class NotificationType {
         VOTE, VOTE_RESULT, VOTE_RECEIVED -> "투표 알림"
         IDLE -> ""
     }
-}
 
-fun convertNotificationType(type: String): NotificationType =
-    when (type) {
-        NotificationType.MESSAGE.name -> NotificationType.MESSAGE
-        NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE_SENT
-        NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE_RECEIVED
-        NotificationType.VOTE.name -> NotificationType.VOTE
-        NotificationType.VOTE_RESULT.name -> NotificationType.VOTE_RESULT
-        NotificationType.VOTE_RECEIVED.name -> NotificationType.VOTE_RECEIVED
-        else -> NotificationType.IDLE
+    companion object {
+        fun convertNotificationType(type: String): NotificationType =
+            when (type) {
+                MESSAGE.name -> MESSAGE
+                MESSAGE_SENT.name -> MESSAGE_SENT
+                MESSAGE_RECEIVED.name -> MESSAGE_RECEIVED
+                VOTE.name -> VOTE
+                VOTE_RESULT.name -> VOTE_RESULT
+                VOTE_RECEIVED.name -> VOTE_RECEIVED
+                else -> IDLE
+            }
     }
+}

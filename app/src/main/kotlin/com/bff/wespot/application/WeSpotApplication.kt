@@ -3,7 +3,7 @@ package com.bff.wespot.application
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
+import android.util.Log
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.common.CHANNEL_DESCRIPTION
 import com.bff.wespot.common.CHANNEL_ID
@@ -12,9 +12,14 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
 class WeSpotApplication : Application() {
+
+    @Inject
+    lateinit var crashlytics: FirebaseCrashlytics
+
     override fun onCreate() {
         super.onCreate()
         initialTimber()
@@ -25,15 +30,13 @@ class WeSpotApplication : Application() {
     }
 
     private fun initNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
-                description = CHANNEL_DESCRIPTION
-            }
-
-            notificationManager.createNotificationChannel(channel)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
+            description = CHANNEL_DESCRIPTION
         }
+
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun initKakaoSdk() {
@@ -54,20 +57,18 @@ class WeSpotApplication : Application() {
     }
 
     private fun plantReleaseTimberTree() {
-        Timber.plant(
-            object : Timber.Tree() {
-                override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-                    /* TODO Release App Log Crashlytics 연동
-                    if (t != null) {
-                        if(priority == Log.ERROR){
-                            Crashlytics.logError(priority, tag, message)
+        val releaseTree = object : Timber.Tree() {
+            override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+                if (t != null) {
+                    when (priority) {
+                        Log.ERROR -> {
+                            crashlytics.recordException(t)
                         }
-                        else if(priority == Log.WARN){
-                            Crashlytics.logWarning(priority, tag, message)
-                        }
-                    }*/
+                    }
                 }
-            },
-        )
+            }
+        }
+
+        Timber.plant(releaseTree)
     }
 }
