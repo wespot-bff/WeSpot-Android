@@ -53,7 +53,6 @@ class SplashActivity : ComponentActivity() {
                 repeatOnLifecycle(Lifecycle.State.CREATED) {
                     viewModel.start.collect {
                         if (it) {
-                            delay(500)
                             navigateToAuth()
                         }
                     }
