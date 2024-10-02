@@ -89,7 +89,7 @@ fun IndividualVoteScreen(
             }
         }
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

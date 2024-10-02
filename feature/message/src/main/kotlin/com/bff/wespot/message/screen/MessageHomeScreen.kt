@@ -65,7 +65,7 @@ fun MessageHomeScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (state.timePeriod) {

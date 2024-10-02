@@ -49,7 +49,6 @@ import com.bff.wespot.ui.LetterCountIndicator
 import com.bff.wespot.ui.LoadingAnimation
 import com.bff.wespot.ui.NetworkDialog
 import com.bff.wespot.ui.TopToast
-import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -88,7 +87,7 @@ fun MessageEditScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {

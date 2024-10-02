@@ -72,7 +72,7 @@ fun MessageWriteScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Scaffold(
         topBar = {

@@ -41,7 +41,6 @@ import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.ui.WSBottomSheet
-import com.bff.wespot.util.collectSideEffect
 import com.bff.wespot.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
@@ -67,7 +66,7 @@ fun RevokeConfirmScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {

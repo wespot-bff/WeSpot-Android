@@ -101,7 +101,7 @@ fun MessageStorageScreen(
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {

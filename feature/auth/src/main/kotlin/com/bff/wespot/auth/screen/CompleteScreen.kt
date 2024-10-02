@@ -61,7 +61,7 @@ fun CompleteScreen(
 
     val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Box(
         modifier = Modifier

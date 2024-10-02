@@ -62,7 +62,7 @@ fun AuthScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    viewModel.sideEffect.handleSideEffect()
+    handleSideEffect(viewModel.sideEffect)
 
     Column(
         modifier = Modifier

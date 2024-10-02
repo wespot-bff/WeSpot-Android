@@ -16,16 +16,17 @@ import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun Flow<SideEffect>.handleSideEffect(
+fun handleSideEffect(
+    sideEffectFlow: Flow<SideEffect>,
     lifecycleState: Lifecycle.State = androidx.lifecycle.Lifecycle.State.STARTED,
     onNavigate: () -> Unit = { },
 ) {
     var sideEffectState by remember { mutableStateOf<SideEffect>(SideEffect.Consumed) }
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(this, lifecycleOwner) {
+    LaunchedEffect(sideEffectFlow, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(lifecycleState) {
-            this@handleSideEffect.collect { sideEffect ->
+            sideEffectFlow.collect { sideEffect ->
                 sideEffectState = sideEffect
             }
         }
