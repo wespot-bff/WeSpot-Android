@@ -51,6 +51,6 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
 
 </br></br>
 
-## ⭐Dependency Graph ⭐
+## ⭐ Dependency Graph ⭐
 
 <p align="center"><img src="module_graph.svg"></p>
