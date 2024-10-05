@@ -42,7 +42,11 @@ class MessageViewModel @Inject constructor(
             messageReceiveTime = remoteConfigRepository.fetchFromRemoteConfig(
                 RemoteConfigKey.MESSAGE_RECEIVE_TIME,
             ),
-        ),
+        ).let { state ->
+            state.copy(
+                timePeriod = getCurrentTimePeriod(state.messageStartTime, state.messageReceiveTime),
+            )
+        },
     )
 
     private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
