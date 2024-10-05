@@ -1,10 +1,3 @@
-<p align="left">
-  <a href="https://play.google.com/store/apps/details?id=com.bff.wespot.real">
-    <img src="https://github.com/user-attachments/assets/574be462-a5fb-4a42-8840-143c57969514" height=110>
-  </a>
-</p>
-
-
 # ✨ WeSpot - 우리가 연결되는 공간 ✨
 
 <p align="center"><img src="https://github.com/user-attachments/assets/4e890aef-4fca-4bf3-91e2-b30d26fcc873"></p>
