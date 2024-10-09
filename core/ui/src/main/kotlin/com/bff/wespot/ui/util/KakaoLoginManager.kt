@@ -47,7 +47,6 @@ class KakaoLoginManager {
     private suspend fun UserApiClient.Companion.loginWithKakaoTalk(context: Context): OAuthToken {
         return suspendCancellableCoroutine { continuation ->
             instance.loginWithKakaoTalk(context) { token, error ->
-                Timber.d("loginWithKakaoTalk token: $token, error: $error")
                 continuation.resumeTokenOrException(token, error)
             }
         }
@@ -82,9 +81,21 @@ class KakaoLoginManager {
             resumeWithException(RuntimeException("Failed to get kakao access token, reason is not clear."))
         }
     }
+
+    companion object {
+        fun logout() = UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Timber.d("로그아웃 실패. SDK에서 토큰 삭제됨")
+            } else {
+                Timber.d("로그아웃 성공. SDK에서 토큰 삭제됨")
+            }
+        }
+
+    }
 }
 
 enum class KaKaoLoginState {
     KAKAO_TALK_LOGIN,
     KAKAO_ACCOUNT_LOGIN,
 }
+
