@@ -90,7 +90,6 @@ class KakaoLoginManager {
                 Timber.d("로그아웃 성공. SDK에서 토큰 삭제됨")
             }
         }
-
     }
 }
 
@@ -98,4 +97,3 @@ enum class KaKaoLoginState {
     KAKAO_TALK_LOGIN,
     KAKAO_ACCOUNT_LOGIN,
 }
-
