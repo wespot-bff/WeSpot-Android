@@ -42,7 +42,11 @@ class MessageViewModel @Inject constructor(
             messageReceiveTime = remoteConfigRepository.fetchFromRemoteConfig(
                 RemoteConfigKey.MESSAGE_RECEIVE_TIME,
             ),
-        ),
+        ).let { state ->
+            state.copy(
+                timePeriod = getCurrentTimePeriod(state.messageStartTime, state.messageReceiveTime),
+            )
+        },
     )
 
     private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
@@ -97,6 +101,7 @@ class MessageViewModel @Inject constructor(
 
     private fun startTimer() = intent {
         if (!timerJob.isActive) {
+            setTimer()
             timerJob.start()
         }
     }
@@ -126,22 +131,20 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    /**
-     * TimePeriod Default 값은 DAWN_TO_EVENING으로
-     * DAWN_TO_EVENING 상태에서 다른 행동을 수행하지 않기 때문에, TimePeriod가 변경되었을 때만 행동을 수행한다.
-     */
     private fun updateTimePeriod(currentTimePeriod: TimePeriod) = intent {
         if (state.timePeriod != currentTimePeriod) {
-            getMessageStatus()
-
-            // 메세지 전송 가능한 시간이 경우, 타이머 시각을 설정한다.
-            if (currentTimePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                _remainingTimeMillis.value = getRemainingTimeMillis()
-            }
-
             reduce {
                 state.copy(timePeriod = currentTimePeriod)
             }
+            setTimer()
+        }
+    }
+
+    private fun setTimer() = intent {
+        getMessageStatus()
+
+        if (state.timePeriod == TimePeriod.EVENING_TO_NIGHT) {
+            _remainingTimeMillis.value = getRemainingTimeMillis()
         }
     }
 

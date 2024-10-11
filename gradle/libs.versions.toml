@@ -2,8 +2,8 @@
 compileSdk = "34"
 minSdk = "26"
 targetSdk = "34"
-versionName = "1.2.0"
-versionCode = "4"
+versionName = "1.2.1"
+versionCode = "5"
 
 gradle-plugin = "8.5.1"
 kotlin = "2.0.0"
@@ -50,6 +50,8 @@ kakao_sdk = "2.12.1"
 paging3 = "3.3.2"
 
 splash-screen = "1.0.1"
+
+module-graph = "2.7.1"
 
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
@@ -187,3 +189,4 @@ wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified
 wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified" }
 wespot-android-ktlint = { id = "com.bff.wespot.ktlint", version = "unspecified" }
 wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified" }
+module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module-graph" }

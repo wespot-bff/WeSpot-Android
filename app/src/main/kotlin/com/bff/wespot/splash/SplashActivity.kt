@@ -19,7 +19,6 @@ import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
