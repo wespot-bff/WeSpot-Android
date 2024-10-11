@@ -2,8 +2,8 @@
 compileSdk = "34"
 minSdk = "26"
 targetSdk = "34"
-versionName = "1.2.0"
-versionCode = "4"
+versionName = "1.2.1"
+versionCode = "5"
 
 gradle-plugin = "8.5.1"
 kotlin = "2.0.0"
