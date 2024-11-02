@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -26,6 +27,7 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WSHomeTabRow(
     selectedTabIndex: Int,
@@ -37,6 +39,11 @@ fun WSHomeTabRow(
         1 -> Modifier.padding(end = 20.dp)
         else -> Modifier
     }
+
+    val rippleConfiguration = RippleConfiguration(
+        color = Color.Unspecified,
+        rippleAlpha = RippleAlpha(0.0f, 0.0f, 0.0f, 0.0f),
+    )
 
     TabRow(
         selectedTabIndex = selectedTabIndex,
@@ -56,7 +63,7 @@ fun WSHomeTabRow(
     ) {
         tabList.forEachIndexed { index, tab ->
             val selected = selectedTabIndex == index
-            CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+            CompositionLocalProvider(LocalRippleConfiguration provides rippleConfiguration) {
                 Tab(
                     selected = selected,
                     onClick = { onTabSelected(index) },
@@ -83,14 +90,6 @@ fun WSHomeTabRow(
             }
         }
     }
-}
-
-private object NoRippleTheme : RippleTheme {
-    @Composable
-    override fun defaultColor() = Color.Unspecified
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f, 0.0f, 0.0f, 0.0f)
 }
 
 @OrientationPreviews
