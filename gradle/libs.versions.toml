@@ -5,7 +5,7 @@ targetSdk = "34"
 versionName = "1.2.1"
 versionCode = "5"
 
-gradle-plugin = "8.5.1"
+gradle-plugin = "8.5.2"
 kotlin = "2.0.0"
 kotlinx-serialization-json = "1.7.0"
 kotlinx-collections-immutable = "0.3.7"
@@ -27,7 +27,6 @@ hilt-navigation-compose = "1.2.0"
 coil = "2.6.0"
 ktor-client = "2.3.11"
 orbit = "8.0.0"
-material = "1.12.0"
 google-services = "4.4.2"
 crashlytics = "3.0.2"
 performace = "1.4.2"
@@ -122,7 +121,6 @@ firebase-performance = { module = "com.google.firebase:firebase-perf" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
