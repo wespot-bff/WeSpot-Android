@@ -213,7 +213,12 @@ fun ProfileEditScreen(
             Spacer(modifier = Modifier.height(72.dp))
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
             if (state.isIntroductionEditing) {
                 val isEdited = state.profile.introduction != state.introductionInput
                 WSButton(
