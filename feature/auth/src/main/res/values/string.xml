@@ -16,7 +16,6 @@
     <string name="more_than_14_to_register">만 14세 미만 학생은 가입이 어려워요</string>
     <string name="check_icon">체크 아이콘</string>
     <string name="get_class">반</string>
-    <string name="cannot_change_class_after_register">회원가입 이후에는 반을 변경할 수 없어요</string>
     <string name="enter_number">숫자로 입력해 주세요</string>
     <string name="class_number_error">정확한 반을 입력해주세요</string>
     <string name="gender">성별</string>
