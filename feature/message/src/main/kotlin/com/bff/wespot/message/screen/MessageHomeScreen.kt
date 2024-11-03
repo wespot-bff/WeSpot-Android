@@ -42,6 +42,7 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.theme.Gray200
+import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.textDp
@@ -172,7 +173,7 @@ private fun MessageCard(
             .animateContentSize()
             .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 16.dp else 20.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(WeSpotThemeManager.colors.modalColor),
+            .background(Gray600),
     ) {
         MessageLottieAnimation(imageRes, timePeriod)
 

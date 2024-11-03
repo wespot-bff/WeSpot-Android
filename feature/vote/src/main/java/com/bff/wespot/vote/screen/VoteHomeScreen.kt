@@ -43,6 +43,7 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
+import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.common.KakaoContent
@@ -260,7 +261,7 @@ private fun VoteHomeContent(
                     .clip(WeSpotThemeManager.shapes.medium)
                     .zIndex(0f),
                 colors = CardDefaults.cardColors(
-                    containerColor = WeSpotThemeManager.colors.cardBackgroundColor,
+                    containerColor = Gray600,
                     contentColor = Gray100,
                 ),
             ) {
