@@ -24,12 +24,12 @@ enum class TimePeriod {
             NIGHT_TO_DAWN -> 352.dp
         }
 
-    val title
-        @Composable
-        @ReadOnlyComposable
-        get() = when (this) {
-            DAWN_TO_EVENING -> stringResource(R.string.message_card_title)
-            EVENING_TO_NIGHT -> stringResource(R.string.message_card_title)
+    @Composable
+    @ReadOnlyComposable
+    fun homeTitle(name: String = ""): String =
+        when (this) {
+            DAWN_TO_EVENING -> stringResource(R.string.message_card_title, name)
+            EVENING_TO_NIGHT -> stringResource(R.string.message_card_title, name)
             NIGHT_TO_DAWN -> stringResource(R.string.message_title_night)
         }
 

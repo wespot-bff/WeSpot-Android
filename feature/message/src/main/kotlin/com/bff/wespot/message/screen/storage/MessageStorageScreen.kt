@@ -347,7 +347,8 @@ private fun ReceivedMessageStorageScreen(
                     val item = data[index]
                     item?.let {
                         WSMessageItem(
-                            userInfo = item.senderName,
+                            userInfo = item.receiver.toUserInfoWithoutSchoolName(),
+                            schoolName = item.receiver.toShortSchoolName(),
                             date = item.receivedAt?.toStringWithDotSeparator() ?: "",
                             wsMessageItemType = if (item.isRead) {
                                 WSMessageItemType.ReadReceivedMessage

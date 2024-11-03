@@ -56,6 +56,7 @@ class SendViewModel @Inject constructor(
         when (action) {
             is SendAction.OnReceiverScreenEntered -> {
                 getKakaoContent()
+                getProfile()
                 observeNameInput()
             }
             is SendAction.OnMessageEditScreenEntered -> {
@@ -183,7 +184,12 @@ class SendViewModel @Inject constructor(
             runCatching {
                 profileRepository.getProfile()
             }.onSuccess { profile ->
-                reduce { state.copy(sender = profile.toDescription()) }
+                reduce {
+                    state.copy(
+                        sender = profile.toDescription(),
+                        profile = profile,
+                    )
+                }
             }
         }
     }

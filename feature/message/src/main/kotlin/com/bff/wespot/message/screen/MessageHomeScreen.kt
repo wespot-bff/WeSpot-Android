@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +74,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(state.profile.name),
                     buttonText = stringResource(R.string.message_card_button_text_dawn),
                     imageRes = state.timePeriod.imageRes,
                     onButtonClick = { },
@@ -93,7 +94,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(state.profile.name),
                     buttonText = if (state.messageStatus.isSendAllowed) {
                         stringResource(R.string.message_card_button_text_evening)
                     } else {
@@ -124,7 +125,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(),
                     buttonText = stringResource(R.string.message_card_button_text_night),
                     imageRes = state.timePeriod.imageRes,
                     isBannerVisible = state.messageStatus.hasUnReadMessages(),
@@ -138,6 +139,10 @@ fun MessageHomeScreen(
                 )
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(MessageAction.OnMessageHomeScreenEntered)
     }
 
     LifecycleStartEffect(Unit) {

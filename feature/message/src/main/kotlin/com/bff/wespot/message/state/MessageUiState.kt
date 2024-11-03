@@ -5,6 +5,7 @@ import com.bff.wespot.message.common.DEFAULT_MESSAGE_START_TIME
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.MessageStatus
+import com.bff.wespot.model.user.response.Profile
 
 data class MessageUiState(
     val timePeriod: TimePeriod = TimePeriod.DAWN_TO_EVENING,
@@ -12,5 +13,6 @@ data class MessageUiState(
     val messageStartTime: String = DEFAULT_MESSAGE_START_TIME,
     val messageReceiveTime: String = DEFAULT_MESSAGE_RECEIVE_TIME,
     val reservedMessageList: List<Message> = listOf(),
+    val profile: Profile = Profile(),
     val isLoading: Boolean = false,
 )

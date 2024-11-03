@@ -5,6 +5,7 @@ import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
+import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.model.getCurrentTimePeriod
@@ -19,6 +20,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,12 +29,14 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MessageViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
+    private val profileRepository: ProfileRepository,
     remoteConfigRepository: RemoteConfigRepository,
 ) : BaseViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(
@@ -80,6 +85,7 @@ class MessageViewModel @Inject constructor(
 
     fun onAction(action: MessageAction) {
         when (action) {
+            MessageAction.OnMessageHomeScreenEntered -> observeProfileFlow()
             MessageAction.StartTimeTracking -> startTimer()
             MessageAction.CancelTimeTracking -> cancelTimer()
             MessageAction.OnReservedMessageScreenEntered -> handleReservedMessageScreenEntered()
@@ -153,6 +159,19 @@ class MessageViewModel @Inject constructor(
         val elapsedMillis = currentTimeMillis % MILLIS_PER_DAY
 
         return if (elapsedMillis <= MILLIS_TO_TEN_PM) MILLIS_TO_TEN_PM - elapsedMillis else 0L
+    }
+
+    private fun observeProfileFlow() = intent {
+        viewModelScope.launch {
+            profileRepository.profileDataFlow
+                .distinctUntilChanged()
+                .catch { exception ->
+                    Timber.e(exception)
+                }
+                .collect {
+                    reduce { state.copy(profile = it) }
+                }
+        }
     }
 
     companion object {
