@@ -95,7 +95,7 @@ fun ClassScreen(
 
                     action(AuthAction.OnClassNumberChanged(classNumber.toInt()))
                 },
-                placeholder = stringResource(id = R.string.enter_number),
+                placeholder = stringResource(id = R.string.select_class),
                 focusRequester = focusRequester,
                 keyBoardOption = KeyboardOptions(keyboardType = KeyboardType.Number),
             )

@@ -43,6 +43,7 @@ import com.bff.wespot.designsystem.component.button.WSTextButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
+import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
@@ -96,8 +97,8 @@ fun SchoolScreen(
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
                 stringResource(id = R.string.search_base_on_your_school),
-                style = StaticTypeScale.Default.body8,
-                color = Color(0xFF7A7A7A),
+                style = StaticTypeScale.Default.body6,
+                color = Gray400,
             )
             Spacer(modifier = Modifier.padding(12.dp))
 
