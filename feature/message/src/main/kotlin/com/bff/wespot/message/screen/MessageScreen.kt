@@ -30,6 +30,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 interface MessageNavigator {
     fun navigateUp()
+    fun navigateMessageReportScreen()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
 }
@@ -100,6 +101,7 @@ internal fun MessageScreen(
                                     args = ReservedMessageScreenArgs(false),
                                 )
                             },
+                            navigateToMessageReportScreen = messageNavigator::navigateMessageReportScreen,
                             showToast = showToast,
                         )
                     }
