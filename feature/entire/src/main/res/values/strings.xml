@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="vote_question_banner_title">선택지 추가하기</string>
-    <string name="vote_question_banner_subtitle">다양한 선택지로 더 재밌게 투표해보세요</string>
+    <string name="vote_question_banner_title">더 다양한 선택지를 원한다면?</string>
+    <string name="vote_question_banner_subtitle">위스팟에게 알려주세요</string>
     <string name="contact_channel">문의 채널 바로가기</string>
     <string name="official_sns">공식 SNS 바로가기</string>
     <string name="leave_store_review">스토어 리뷰 남기기</string>
@@ -16,9 +16,10 @@
     <string name="block_list">차단 목록</string>
     <string name="account_setting">계정 관리</string>
     <string name="vote">투표</string>
-    <string name="vote_notification_title">우리반 투표 및 결과 알림</string>
+    <string name="vote_notification_title">비밀 투표</string>
+    <string name="vote_notification_subTitle">우리 반 투표 관련 알림</string>
     <string name="message">쪽지</string>
-    <string name="message_notification_title">오늘의 쪽지 보내기 및 받은 쪽지 관련 알림</string>
+    <string name="message_notification_title">익명 쪽지 관련 알림</string>
     <string name="event_benefit">이벤트 혜택</string>
     <string name="event_benefit_notification_title">광고성 정보 수신 동의에 의한 이벤트 혜택 알림</string>
     <string name="sign_out">로그아웃</string>
@@ -39,7 +40,7 @@
     <string name="lacking_friends">함께 할 친구가 부족해요</string>
     <string name="choices_variety_lacking">선택지가 다양하지 않아요</string>
     <string name="difficult_to_use">사용하는 방법이 어려워요</string>
-    <string name="other">기타</string>
+    <string name="other">직접 입력</string>
     <string name="select_done">선택 완료</string>
     <string name="check_icon">check Icon</string>
     <string name="revoke_bottom_sheet_title">꼭 확인해 주세요</string>

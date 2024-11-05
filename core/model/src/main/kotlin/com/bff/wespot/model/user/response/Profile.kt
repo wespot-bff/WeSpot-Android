@@ -18,8 +18,8 @@ data class Profile(
     }
 
     fun toGenderKorean(): String = when (this.gender) {
-        "FEMALE" -> "여학생"
-        "MALE" -> "남학생"
+        "FEMALE" -> "여"
+        "MALE" -> "남"
         else -> ""
     }
 

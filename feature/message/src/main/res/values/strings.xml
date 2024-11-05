@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="message_card_title">당신을 설레게 한 친구에게\n익명 쪽지로 마음을 표현해보세요</string>
-    <string name="message_card_button_text_dawn">매일 저녁 5시에 쪽지를 보낼 수 있어요</string>
-    <string name="message_card_button_text_evening">익명 쪽지로 마음 표현하기</string>
+    <string name="message_card_button_text_dawn">저녁 5시에 쪽지를 보낼 수 있어요</string>
+    <string name="message_card_button_text_evening">익명 쪽지 보내기</string>
     <string name="message_card_button_text_evening_disabled">하루에 3개까지 작성할 수 있어요</string>
     <string name="message_card_description_evening">서로의 쪽지는 밤 10시에 전달해 드릴게요</string>
     <string name="message_title_night">모두의 소중한 마음이\n상대에게 무사히 전달되었어요</string>
-    <string name="message_card_button_text_night">매일 저녁 5시에 쪽지를 보낼 수 있어요</string>
+    <string name="message_card_button_text_night">익명 쪽지 보내기</string>
     <string name="message_card_description_night">내일 저녁 5시에 새로운 쪽지를 보낼 수 있어요</string>
     <string name="message_card_image">Message Card Image</string>
     <string name="received_message_banner_title">익명의 쪽지가 도착했어요</string>
-    <string name="received_message_banner_subtitle">지금 쪽지함을 열어 확인해보세요</string>
+    <string name="received_message_banner_subtitle">지금 바로 열어보세요</string>
     <string name="reserved_message_banner_title">예약 중인 쪽지 %1$s개</string>
     <string name="reserved_message_banner_subtitle">%1$s개의 쪽지를 더 보낼 수 있어요</string>
     <string name="reserved_message_banner_title_disabled">예약 중인 쪽지 %1$s개</string>
@@ -20,7 +19,6 @@
     <string name="wespot_logo">WeSpot Logo</string>
     <string name="message">쪽지</string>
     <string name="close">닫기</string>
-    <string name="receiver_screen_title">오늘 당신의 마음을 설레게 한\n친구는 누구인가요?</string>
     <string name="receiver_search_text_field_placeholder">이름으로 검색해 보세요</string>
     <string name="invite_friend_text">찾는 친구가 없다면</string>
     <string name="next">다음</string>
@@ -30,19 +28,19 @@
     <string name="send_exit_dialog_subtitle">작성 중인 내용은 저장되지 않아요</string>
     <string name="send_exit_dialog_ok_button">네 그만할래요</string>
     <string name="receiver">받는 사람</string>
-    <string name="message_write_title">쪽지 내용을 작성해주세요\n상대에게 익명으로 전달해 드릴게요</string>
+    <string name="message_write_title">쪽지를 작성해 주세요\n익명으로 전달해 드릴게요</string>
     <string name="message_write_text_holder">나랑 등교 같이할래?</string>
     <string name="message_length_limit">200자 이내로 입력해 주세요</string>
     <string name="write_done">작성 완료</string>
     <string name="toast_error_name_edit">닉네임은 직접 수정이 어려워요</string>
-    <string name="message_send_dialog_title">쪽지를 예약하시나요?</string>
-    <string name="message_send_dialog_subtitle">오늘 밤 10시에 상대에게 쪽지를 전달해 드릴게요\n예약 이후 전송 취소는 어려워요</string>
+    <string name="message_send_dialog_title">쪽지를 예약할까요?</string>
+    <string name="message_send_dialog_subtitle">오늘 밤 10시에 전달해 드릴게요\n예약 중인 쪽지 내역에서 수정할 수 있어요</string>
     <string name="message_send_dialog_button_text">네 예약할래요</string>
     <string name="cancel">취소</string>
-    <string name="random_nickname_title">랜덤 닉네임으로 보내기</string>
-    <string name="random_nickname_subtitle">이 기능을 끄면 실명으로 전송돼요</string>
+    <string name="random_nickname_title">익명으로 보내기</string>
+    <string name="random_nickname_subtitle">이 기능을 끄면 실명으로 전송되어요</string>
     <string name="sender">보내는 사람</string>
-    <string name="message_sent_content">전달할 내용</string>
+    <string name="message_sent_content">쪽지 내용</string>
     <string name="message_send">쪽지 보내기</string>
     <string name="timeout_dialog_title">쪽지를 예약할 수 없어요</string>
     <string name="timeout_dialog_subtitle">이미 10시가 지나서 쪽지를 예약할 수 없어요\n아쉽지만 내일 다시 작성해보는 건 어떨까요?</string>
@@ -71,4 +69,7 @@
     <string name="message_edit">수정하기</string>
     <string name="reserving_message">예약 중인 쪽지</string>
     <string name="load_message_error_message">쪽지를 불러오는데 실패했어요</string>
+    <string name="reserved_message_item_title">To. %1$s</string>
+    <string name="receiver_screen_title">오늘 %1$s의 마음을 설레게 한\n친구는 누구인가요?</string>
+    <string name="message_card_title">%1$s을 설레게 한 친구에게\n익명 쪽지로 마음을 표현해보세요</string>
 </resources>

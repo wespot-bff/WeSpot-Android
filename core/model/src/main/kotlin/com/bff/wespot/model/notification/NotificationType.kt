@@ -16,6 +16,8 @@ enum class NotificationType {
         IDLE -> ""
     }
 
+    fun isVoteNotificationType(): Boolean = this in listOf(VOTE, VOTE_RESULT, VOTE_RECEIVED)
+
     companion object {
         fun convertNotificationType(type: String): NotificationType =
             when (type) {

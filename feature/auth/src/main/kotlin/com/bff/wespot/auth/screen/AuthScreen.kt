@@ -66,7 +66,7 @@ fun AuthScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp),
+            .padding(top = 90.dp),
     ) {
         WSCarousel(
             pagerState = pagerState,

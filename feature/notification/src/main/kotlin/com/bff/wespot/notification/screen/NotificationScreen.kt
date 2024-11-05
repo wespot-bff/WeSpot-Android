@@ -207,7 +207,14 @@ fun NotificationListItem(
         ) {
             Box {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_notification),
+                    modifier = Modifier.padding(5.dp),
+                    painter = painterResource(
+                        id = if (notification.type.isVoteNotificationType()) {
+                            R.drawable.ic_vote_notification
+                        } else {
+                            R.drawable.ic_message_notification
+                        },
+                    ),
                     contentDescription = stringResource(
                         com.bff.wespot.designsystem.R.string.notification_icon,
                     ),

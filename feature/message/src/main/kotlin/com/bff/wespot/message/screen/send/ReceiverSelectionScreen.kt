@@ -123,7 +123,7 @@ fun ReceiverSelectionScreen(
             Text(
                 modifier = Modifier
                     .padding(horizontal = 4.dp),
-                text = stringResource(R.string.receiver_screen_title),
+                text = stringResource(R.string.receiver_screen_title, state.profile.name),
                 style = StaticTypeScale.Default.header1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )

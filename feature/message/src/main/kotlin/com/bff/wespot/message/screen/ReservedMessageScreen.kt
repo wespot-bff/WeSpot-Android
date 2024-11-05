@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bff.wespot.designsystem.R.string
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -99,8 +98,11 @@ fun ReservedMessageScreen(
             ) {
                 items(state.reservedMessageList, key = { message -> message.id }) { item ->
                     ReservedMessageItem(
-                        title = stringResource(string.letter_receiver),
-                        subTitle = item.receiver.toDescription(),
+                        title = stringResource(
+                            R.string.reserved_message_item_title,
+                            item.receiver.schoolName,
+                        ),
+                        subTitle = item.receiver.toUserInfoWithoutSchoolName(),
                         backgroundColor = item.receiver.profileCharacter.backgroundColor,
                         iconUrl = item.receiver.profileCharacter.iconUrl,
                         chipText = stringResource(R.string.message_edit),

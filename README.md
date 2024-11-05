@@ -2,19 +2,17 @@
 
 <p align="center"><img src="https://github.com/user-attachments/assets/4e890aef-4fca-4bf3-91e2-b30d26fcc873"></p>
 
+```
+누군가 너를 좋아하고 있어!, 우리가 연결되는 공간 WeSpot
+
+WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 활성화를 위한 SNS 앱입니다.
+```
 
 <p align="middle">
   <a href='https://play.google.com/store/apps/details?id=com.bff.wespot.real'>
     <img width="200px;"; alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>
   </a>
 </p>
-
-
-```
-누군가 너를 좋아하고 있어!, 우리가 연결되는 공간 WeSpot
-
-WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 활성화를 위한 SNS 앱입니다.
-```
 
 </br></br>
 
@@ -34,62 +32,25 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
 
 </br></br>
 
-## Structure
+## 🌠 Project Structure
 
 ### Clean Architecture Structure
 
 <img src="https://github.com/user-attachments/assets/28c5fbd6-744c-4571-9597-700e7c147b1b" width="900" alter="image"/>
 
-- Data Layer: Data Module에 해당되는 부분으로 데이터를 가져오고 저장 및 검색을 로직을 담당.
-- Domain Layer: Domain Module에 해당되는 부분으로 앱의 비즈니스 로직을 담당.
-- Presentation Layer: feature, common-ui에 해당되는 부분으로 MVVM 패턴을 활용해 UI 관련 로직을 담당합니다.
+- Data Layer: data, data-remote, data-local에 해당되는 부분으로 데이터를 가져오고 저장 및 검색을 로직을 담당.
+- Domain Layer: domain, mode에 해당되는 부분으로 앱의 비즈니스 로직을 담당.
+- Presentation Layer: feature, design-system, common-ui에 해당되는 부분으로 MVI 패턴을 활용해 UI 관련 로직을 담당합니다.
+
+</br></br>
 
 ## ⭐ Dependency Graph ⭐
 
 <p align="center"><img src="module_graph.svg"></p>
 
-
 <img src="https://github.com/user-attachments/assets/1fa10ea8-b679-437d-a614-1d71937f3760" width="900" alter="image"/>
 
-- App Module
-    - Application
-    - MainActivity
-    - Navigation
-
-- Data Module
-    - Data-Local, Data-Remote로 나눠짐
-    - 데이터를 검색, 저장, 가져오는 모듈
-    - RepositoryImpl
-    - Datasource, Database, RemoteConfig Datasource
-    - DTO
-
-- Domain Module
-    - 순수 Java/Kotlin 모듈로 비즈니스 로직을 포함하고 있는 모듈
-    - Repository Interface
-    - Model
-
-- Common-ui
-    - feature모듈에서 중복으로 쓸 수 있는 UI 관련 로직이 있는 모듈
-    - Reusable Component
-    - Theme
- 
-- Common
-    - Extension
-    - Util
-
-- analytics
-    - Firebase Analytics
-
-- Network
-    - Ktor Request
-
-- feature
-    - Screen
-    - ViewModel,
-    - State
-
 </br></br>
-
 
 ## 💫 Contributors 💫
 <table>

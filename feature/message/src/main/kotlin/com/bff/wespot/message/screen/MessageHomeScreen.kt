@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.theme.Gray200
+import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.textDp
@@ -73,7 +75,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(state.profile.name),
                     buttonText = stringResource(R.string.message_card_button_text_dawn),
                     imageRes = state.timePeriod.imageRes,
                     onButtonClick = { },
@@ -93,7 +95,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(state.profile.name),
                     buttonText = if (state.messageStatus.isSendAllowed) {
                         stringResource(R.string.message_card_button_text_evening)
                     } else {
@@ -124,7 +126,7 @@ fun MessageHomeScreen(
                 MessageCard(
                     height = state.timePeriod.height,
                     timePeriod = state.timePeriod,
-                    title = state.timePeriod.title,
+                    title = state.timePeriod.homeTitle(),
                     buttonText = stringResource(R.string.message_card_button_text_night),
                     imageRes = state.timePeriod.imageRes,
                     isBannerVisible = state.messageStatus.hasUnReadMessages(),
@@ -138,6 +140,10 @@ fun MessageHomeScreen(
                 )
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(MessageAction.OnMessageHomeScreenEntered)
     }
 
     LifecycleStartEffect(Unit) {
@@ -167,7 +173,7 @@ private fun MessageCard(
             .animateContentSize()
             .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 16.dp else 20.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(WeSpotThemeManager.colors.modalColor),
+            .background(Gray600),
     ) {
         MessageLottieAnimation(imageRes, timePeriod)
 
