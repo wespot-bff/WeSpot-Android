@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -88,12 +89,13 @@ fun WSBanner(
     title: String,
     icon: Painter? = null,
     subTitle: String? = null,
+    paddingValues: PaddingValues = PaddingValues(20.dp),
     onBannerClick: () -> Unit = {},
     bannerType: WSBannerType = WSBannerType.Primary,
 ) {
     Box(
         modifier = Modifier
-            .padding(20.dp)
+            .padding(paddingValues)
             .height(80.dp)
             .fillMaxWidth()
             .clickable { onBannerClick.invoke() }

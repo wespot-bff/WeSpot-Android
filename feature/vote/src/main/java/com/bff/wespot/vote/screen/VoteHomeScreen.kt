@@ -213,6 +213,7 @@ private fun VoteHomeContent(
             icon = painterResource(id = com.bff.wespot.ui.R.drawable.send),
             title = stringResource(id = R.string.invite_friend),
             subTitle = stringResource(id = R.string.invite_friend_description),
+            paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp),
             bannerType = WSBannerType.Primary,
             onBannerClick = {
                 navigator.navigateToSharing(context, message + state.playStoreLink)
