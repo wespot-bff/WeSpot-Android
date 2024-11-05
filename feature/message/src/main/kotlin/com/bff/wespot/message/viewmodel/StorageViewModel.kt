@@ -5,7 +5,6 @@ import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
-import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -18,7 +17,6 @@ import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.state.storage.StorageUiState
 import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.BaseMessage
 import com.bff.wespot.model.message.response.Message
@@ -46,7 +44,6 @@ class StorageViewModel @Inject constructor(
     remoteConfigRepository: RemoteConfigRepository,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
-    private val commonRepository: CommonRepository,
     private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
     private val messageSentRepository: BasePagingRepository<Message, Paging<Message>>,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
@@ -76,9 +73,6 @@ class StorageViewModel @Inject constructor(
             StorageAction.CancelTimeTracking -> cancelTimePeriodChecker()
             StorageAction.OnMessageDeleteButtonClicked -> {
                 handleDeleteMessageButtonClicked()
-            }
-            StorageAction.OnMessageReportButtonClicked -> {
-                handleReportMessageButtonClicked()
             }
             StorageAction.OnMessageBlockButtonClicked -> {
                 handleBlockMessageButtonClicked()
@@ -240,27 +234,6 @@ class StorageViewModel @Inject constructor(
                             ),
                         ),
                     )
-                }
-                .onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
-        }
-    }
-
-    private fun handleReportMessageButtonClicked() = intent {
-        viewModelScope.launch {
-            commonRepository.sendReport(ReportType.MESSAGE, state.optionButtonClickedMessageId)
-                .onSuccess {
-                    postSideEffect(
-                        StorageSideEffect.ShowToast(
-                            ToastState(
-                                show = true,
-                                message = R.string.report_done,
-                                type = WSToastType.Success,
-                            ),
-                        ),
-                    )
-                    getReceivedMessageList()
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())

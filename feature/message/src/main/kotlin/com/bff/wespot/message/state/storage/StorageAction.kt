@@ -9,7 +9,6 @@ sealed class StorageAction {
     data object StartTimeTracking : StorageAction()
     data object CancelTimeTracking : StorageAction()
     data object OnMessageBlockButtonClicked : StorageAction()
-    data object OnMessageReportButtonClicked : StorageAction()
     data object OnMessageDeleteButtonClicked : StorageAction()
     data class OnStorageChipSelected(val messageType: MessageType) : StorageAction()
     data class OnReceivedMessageClicked(val message: ReceivedMessage) : StorageAction()
