@@ -6,6 +6,7 @@
     <string name="vote_description">투표 사진</string>
     <string name="voting">비밀 투표하기</string>
     <string name="vote">투표</string>
+    <string name="secret_vote">비밀 투표</string>
     <string name="report">제보하기</string>
     <string name="vote_result_screen">투표 결과</string>
     <string name="vote_home_screen">투표 홈</string>
