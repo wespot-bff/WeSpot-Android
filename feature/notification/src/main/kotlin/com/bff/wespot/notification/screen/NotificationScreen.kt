@@ -207,6 +207,7 @@ fun NotificationListItem(
         ) {
             Box {
                 Icon(
+                    modifier = Modifier.padding(5.dp),
                     painter = painterResource(
                         id = if (notification.type.isVoteNotificationType()) {
                             R.drawable.ic_vote_notification
