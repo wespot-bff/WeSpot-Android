@@ -56,6 +56,7 @@ class EntireViewModel @Inject constructor(
             EntireAction.UnBlockMessage -> unblockMessage()
             is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
+            is EntireAction.OnRevokeReasonChanged -> handleRevokeReasonChanged(action.reason)
         }
     }
 
@@ -92,9 +93,15 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun revokeUser() = intent {
+        val revokeReason = if (state.isInputReportReasonSelected) {
+            state.revokeReasonList + state.inputReportReason
+        } else {
+            state.revokeReasonList
+        }
+
         viewModelScope.launch {
             launch {
-                authRepository.revoke(state.revokeReasonList)
+                authRepository.revoke(revokeReason)
                     .onSuccess {
                         clearCachedData()
                         postSideEffect(EntireSideEffect.NavigateToAuth)
@@ -159,14 +166,31 @@ class EntireViewModel @Inject constructor(
 
     private fun handleRevokeReasonSelected(reason: String) = intent {
         reduce {
-            val updatedList = state.revokeReasonList.toMutableList().apply {
-                if (contains(reason)) {
-                    remove(reason)
-                } else {
-                    add(reason)
+            /**
+             * 아이템이 선택되었는지 판단하는 기준
+             * 유저 입력 아이템인 경우, 따로 Boolean Flag를 통해 관리한다.
+             * 그외 아이템의 경우, 동적 리스트를 통해 관리한다.
+             */
+            if (reason == "직접 입력") {
+                state.copy(isInputReportReasonSelected = state.isInputReportReasonSelected.not())
+            } else {
+                val updatedList = state.revokeReasonList.toMutableList().apply {
+                    if (contains(reason)) {
+                        remove(reason)
+                    } else {
+                        add(reason)
+                    }
                 }
+                state.copy(revokeReasonList = updatedList)
             }
-            state.copy(revokeReasonList = updatedList)
+        }
+    }
+
+    private fun handleRevokeReasonChanged(reason: String) = intent {
+        if (reason.length <= 100) {
+            reduce {
+                state.copy(inputReportReason = reason)
+            }
         }
     }
 
