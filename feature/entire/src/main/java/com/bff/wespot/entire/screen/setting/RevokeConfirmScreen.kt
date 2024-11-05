@@ -2,11 +2,16 @@ package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -22,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -35,6 +41,7 @@ import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
+import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.component.WSSelectionItem
 import com.bff.wespot.ui.util.handleSideEffect
@@ -56,6 +63,7 @@ fun RevokeConfirmScreen(
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -84,7 +92,9 @@ fun RevokeConfirmScreen(
         },
     ) {
         Column(
-            modifier = Modifier.padding(it),
+            modifier = Modifier
+                .padding(it)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -94,43 +104,54 @@ fun RevokeConfirmScreen(
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
 
+            /**
+             * 아이템이 선택되었는지 판단하는 기준
+             * 유저 입력 아이템인 경우, 따로 Boolean State를 통해 관리한다.
+             * 그외 아이템의 경우, 동적 리스트를 통해 관리한다.
+             */
             persistentListOf(
                 stringResource(R.string.feature_variety_lacking),
                 stringResource(R.string.lacking_friends),
                 stringResource(R.string.choices_variety_lacking),
                 stringResource(R.string.difficult_to_use),
-                stringResource(R.string.other),
-            ).forEachIndexed { index, reason ->
-                val isUserInputItem = stringResource(R.string.other) == reason
-                val selected = if (isUserInputItem) {
-                    state.isInputReportReasonSelected
-                } else {
-                    reason in state.revokeReasonList
-                }
-
+            ).forEach { reason ->
                 WSSelectionItem(
-                    title = if (isUserInputItem) state.inputReportReason else reason,
-                    selected = selected,
-                    isEditable = isUserInputItem,
-                    onTitleChanged = { title ->
-                        action(EntireAction.OnRevokeReasonChanged(title))
-                    },
+                    title = reason,
+                    selected = reason in state.revokeReasonList,
                     onClick = {
                         action(EntireAction.OnRevokeReasonSelected(reason))
                     },
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            WSButton(
-                text = stringResource(R.string.select_done),
-                buttonType = WSButtonType.Primary,
-                enabled = state.revokeReasonList.isNotEmpty(),
-                content = { it() },
-                onClick = { showBottomSheet = true },
+            WSSelectionItem(
+                title = state.inputRevokeReason,
+                selected = state.isInputRevokeReasonSelected,
+                isEditable = true,
+                onTitleChanged = { title ->
+                    action(EntireAction.OnRevokeReasonChanged(title))
+                },
+                onClick = {
+                    action(EntireAction.OnInputRevokeReasonSelected)
+                },
             )
+
+            Spacer(modifier = Modifier.height(72.dp))
         }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize().zIndex(1f),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        ListBottomGradient(height = 120)
+
+        WSButton(
+            text = stringResource(R.string.select_done),
+            buttonType = WSButtonType.Primary,
+            enabled = state.revokeReasonList.isNotEmpty(),
+            content = { it() },
+            onClick = { showBottomSheet = true },
+        )
     }
 
     if (showBottomSheet) {
