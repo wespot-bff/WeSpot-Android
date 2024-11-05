@@ -16,8 +16,8 @@
     <string name="ballot">표</string>
     <string name="tell_friend">친구에게 알려주기</string>
     <string name="empty_vote">empty_vote</string>
-    <string name="analyzing_result">결과를 분석하는 중이에요</string>
-    <string name="more_friend_the_faster">우리 반 친구들이 많을수록 분석이 빨라져요</string>
+    <string name="analyzing_result">아직 받은 투표가 없어요</string>
+    <string name="more_friend_the_faster">친구들이 초대하면\n 투표를 확률이 올라가요</string>
     <string name="first_icon">일등 아이콘</string>
     <string name="user_icon">사용자 아이콘</string>
     <string name="check_overall_result">자세히 보기</string>
