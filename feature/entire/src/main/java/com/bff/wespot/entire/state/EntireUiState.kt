@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.flow
 data class EntireUiState(
     val profile: Profile = Profile(),
     val revokeReasonList: List<String> = listOf(),
-    val inputReportReason: String = "",
-    val isInputReportReasonSelected: Boolean = false,
+    val inputRevokeReason: String = "",
+    val isInputRevokeReasonSelected: Boolean = false,
     val revokeConfirmed: Boolean = false,
     val blockedMessageList: Flow<PagingData<BlockedMessage>> = flow { },
     val unBlockList: List<Int> = listOf(),
