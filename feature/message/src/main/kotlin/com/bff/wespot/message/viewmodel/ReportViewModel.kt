@@ -48,7 +48,6 @@ class ReportViewModel @Inject constructor(
                 } else {
                     reportReason
                 },
-                inputReportReason = "",
             )
         }
     }
@@ -67,7 +66,7 @@ class ReportViewModel @Inject constructor(
             commonRepository.sendReport(
                 report = ReportType.MESSAGE,
                 targetId = state.messageId,
-                reason = reason,
+                content = reason,
             ).onSuccess {
                 postSideEffect(ReportSideEffect.NavigateToMessage)
             }.onNetworkFailure {

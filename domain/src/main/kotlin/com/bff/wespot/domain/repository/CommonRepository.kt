@@ -8,7 +8,7 @@ import com.bff.wespot.model.common.Restriction
 
 interface CommonRepository {
     suspend fun checkProfanity(content: String): Result<Unit>
-    suspend fun sendReport(report: ReportType, targetId: Int): Result<Unit>
+    suspend fun sendReport(report: ReportType, targetId: Int, content: String? = null): Result<Unit>
     suspend fun getCharacters(): Result<List<Character>>
     suspend fun getBackgroundColors(): Result<List<BackgroundColor>>
     suspend fun EditProfile(
