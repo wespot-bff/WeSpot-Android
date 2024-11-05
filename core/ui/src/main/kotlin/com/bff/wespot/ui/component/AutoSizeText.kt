@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.InternalFoundationTextApi
-import androidx.compose.foundation.text.TextDelegate
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -135,7 +135,10 @@ private fun BoxWithConstraintsScope.shouldShrink(
     textStyle: TextStyle,
     maxLines: Int,
 ): Boolean {
-    val textDelegate = TextDelegate(
+    val textMeasurer = rememberTextMeasurer()
+
+    // Measure the text with given constraints, style, and max lines
+    val textLayoutResult = textMeasurer.measure(
         text = text,
         style = textStyle,
         maxLines = maxLines,
@@ -143,11 +146,8 @@ private fun BoxWithConstraintsScope.shouldShrink(
         overflow = TextOverflow.Clip,
         density = LocalDensity.current,
         fontFamilyResolver = LocalFontFamilyResolver.current,
-    )
-
-    val textLayoutResult = textDelegate.layout(
-        constraints,
-        LocalLayoutDirection.current,
+        constraints = constraints,
+        layoutDirection = LocalLayoutDirection.current,
     )
 
     return textLayoutResult.hasVisualOverflow

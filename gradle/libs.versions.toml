@@ -5,9 +5,9 @@ targetSdk = "34"
 versionName = "1.2.1"
 versionCode = "5"
 
-gradle-plugin = "8.5.1"
+gradle-plugin = "8.5.2"
 kotlin = "2.0.0"
-kotlinx-serialization-json = "1.7.0"
+kotlinx-serialization-json = "1.7.1"
 kotlinx-collections-immutable = "0.3.7"
 core-ktx = "1.13.1"
 ksp = "2.0.0-1.0.22"
@@ -16,22 +16,21 @@ detekt = "1.23.6"
 kotlinx-coroutines = "1.8.1"
 java-inject = "1"
 
-lifecycle-runtime-ktx = "2.8.3"
-activity-compose = "1.9.0"
-compose-bom = "2024.06.00"
-lifecycle = "2.8.3"
+lifecycle-runtime-ktx = "2.8.7"
+activity-compose = "1.9.3"
+compose-bom = "2024.10.01"
+lifecycle = "2.8.7"
 navigation = "2.7.7"
 hilt = "2.51.1"
 hilt-navigation-compose = "1.2.0"
 
 coil = "2.6.0"
-ktor-client = "2.3.11"
+ktor-client = "2.3.12"
 orbit = "8.0.0"
-material = "1.12.0"
 google-services = "4.4.2"
 crashlytics = "3.0.2"
 performace = "1.4.2"
-firebase = "33.1.2"
+firebase = "33.5.1"
 
 junit = "4.13.2"
 junit-version = "1.2.1"
@@ -122,7 +121,6 @@ firebase-performance = { module = "com.google.firebase:firebase-perf" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
