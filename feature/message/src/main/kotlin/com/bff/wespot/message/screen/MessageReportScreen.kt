@@ -1,14 +1,12 @@
 package com.bff.wespot.message.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,11 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -36,6 +33,8 @@ import com.bff.wespot.message.model.ReportReason
 import com.bff.wespot.message.state.report.ReportAction
 import com.bff.wespot.message.state.report.ReportSideEffect
 import com.bff.wespot.message.viewmodel.ReportViewModel
+import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.WSSelectionItem
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
@@ -45,6 +44,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageReportNavigator {
     fun navigateUp()
+    fun navigateMessageScreen(args: MessageScreenArgs)
 }
 
 data class MessageReportScreenArgs(
@@ -67,7 +67,14 @@ fun MessageReportScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            is ReportSideEffect.NavigateToMessage -> navigator.navigateUp()
+            is ReportSideEffect.NavigateToMessage -> {
+                navigator.navigateMessageScreen(
+                    args = MessageScreenArgs(
+                        toastMessage = R.string.report_message_success,
+                        type = NotificationType.MESSAGE_RECEIVED,
+                    ),
+                )
+            }
         }
     }
 
@@ -155,32 +162,21 @@ fun MessageReportScreen(
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(124.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                WeSpotThemeManager.colors.backgroundColor,
-                            ),
-                        ),
-                    ),
-                contentAlignment = Alignment.BottomCenter,
-            ) {
-                WSButton(
-                    text = stringResource(R.string.choice_done),
-                    onClick = {
-                        if (state.reportReason.index != -1) {
-                            action(ReportAction.OnMessageReportButtonClicked)
-                        }
-                    },
-                ) {
-                    it()
-                }
-            }
+        Box(
+            modifier = Modifier.fillMaxSize().zIndex(1f),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            ListBottomGradient(height = 120)
+
+            WSButton(
+                text = stringResource(R.string.choice_done),
+                content = { it() },
+                onClick = {
+                    if (state.reportReason.index != -1) {
+                        action(ReportAction.OnMessageReportButtonClicked)
+                    }
+                },
+            )
         }
     }
 }
