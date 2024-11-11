@@ -15,4 +15,5 @@
     <string name="enable_wifi">데이터에 접근하려면, 셀룰러 데이터를 켜거나 Wi-Fi를 사용해 주세요</string>
     <string name="ok">확인</string>
     <string name="setting">설정</string>
+    <string name="introduction">한 줄 소개</string>
 </resources>

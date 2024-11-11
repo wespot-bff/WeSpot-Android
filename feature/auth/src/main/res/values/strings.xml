@@ -8,4 +8,7 @@
     <string name="new_version">세로운 버전 출시</string>
     <string name="update_to_new_version">업데이트를 하고 새로운 기능을 만나보세요.</string>
     <string name="update">업데이트</string>
+    <string name="set_image">%1$s을 잘 나타 수 있는\n프로필을 선택 해 주세요</string>
+    <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
+    <string name="line_limit_20">%1$s / 20</string>
 </resources>
