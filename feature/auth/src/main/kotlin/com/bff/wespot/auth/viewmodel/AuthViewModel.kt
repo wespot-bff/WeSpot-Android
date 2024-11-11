@@ -65,6 +65,7 @@ class AuthViewModel @Inject constructor(
 
     private val userInput = MutableStateFlow("")
     private val nameInput = MutableStateFlow("")
+    private val introductionInput = MutableStateFlow("")
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -84,6 +85,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
             is AuthAction.ChangeImage -> handleImageChange(action.path)
             is AuthAction.ChangeIntroduction -> handleIntroduction(action.introduction)
+            is AuthAction.OnStartImageScreen -> monitorIntroductionInput()
         }
     }
 
@@ -92,7 +94,7 @@ class AuthViewModel @Inject constructor(
             try {
                 kakaoLoginUseCase(kakaoAuthToken)
                     .onSuccess {
-                        if (it == LoginState.LOGIN_SUCCESS) {
+                        if (it != LoginState.LOGIN_SUCCESS) {
                             postSideEffect(AuthSideEffect.NavigateToMainActivity)
                         } else {
                             postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
@@ -190,6 +192,24 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun monitorIntroductionInput() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            introductionInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect {
+                    runCatching {
+                        val result = checkProfanityUseCase(it)
+                        reduce {
+                            state.copy(
+                                hasProfanity = result,
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
     private fun fetchSchoolList(search: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
             runCatching {
@@ -269,6 +289,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun handleIntroduction(introduction: String) = intent {
+        introductionInput.value = introduction
         reduce {
             state.copy(
                 introduction = introduction,

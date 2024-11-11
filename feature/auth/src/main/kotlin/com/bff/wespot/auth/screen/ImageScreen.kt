@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -143,18 +144,29 @@ internal fun ImageScreen(
                 singleLine = true,
             )
 
-            Text(
-                text = stringResource(R.string.line_limit_20, uiState.introduction.length),
-                style = StaticTypeScale.Default.body7,
-                color = if (error) {
-                    WeSpotThemeManager.colors.dangerColor
-                } else {
-                    WeSpotThemeManager.colors.disableIcnColor
-                },
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 4.dp, end = 10.dp),
-            )
+            if (uiState.hasProfanity) {
+                Text(
+                    text = stringResource(id = com.bff.wespot.designsystem.R.string.has_profanity),
+                    color = WeSpotThemeManager.colors.dangerColor,
+                    style = StaticTypeScale.Default.body6,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 4.dp, end = 10.dp),
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.line_limit_20, uiState.introduction.length),
+                    style = StaticTypeScale.Default.body7,
+                    color = if (error) {
+                        WeSpotThemeManager.colors.dangerColor
+                    } else {
+                        WeSpotThemeManager.colors.disableIcnColor
+                    },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 4.dp, end = 10.dp),
+                )
+            }
         }
     }
 
@@ -165,7 +177,7 @@ internal fun ImageScreen(
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
-            enabled = uiState.introduction.length > 1 && error.not(),
+            enabled = uiState.introduction.length > 1 && error.not() && uiState.hasProfanity.not(),
             onClick = {
                 action(AuthAction.Navigation(NavigationAction.NavigateToEditScreen))
             },
@@ -173,5 +185,9 @@ internal fun ImageScreen(
         ) {
             it.invoke()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        action(AuthAction.OnStartImageScreen)
     }
 }

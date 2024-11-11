@@ -28,6 +28,8 @@ sealed class AuthAction {
 
     data object OnStartNameScreen : AuthAction()
 
+    data object OnStartImageScreen : AuthAction()
+
     data class OnConsentChanged(val checks: List<Boolean>) : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()

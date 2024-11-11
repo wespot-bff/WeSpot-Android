@@ -194,7 +194,7 @@ class AuthActivity : ComponentActivity() {
         content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
-                    if (loginState == LoginState.LOGIN_SUCCESS) {
+                    if (loginState != LoginState.LOGIN_SUCCESS) {
                         val targetId = intent.getIntExtra(EXTRA_TARGET_ID, -1)
                         val userId = intent.getStringExtra(EXTRA_USER_ID) ?: ""
                         val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
