@@ -251,7 +251,7 @@ private fun ConfirmBottomSheetContent(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
             Column {
                 Text(
