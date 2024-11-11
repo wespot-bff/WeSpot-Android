@@ -24,4 +24,6 @@ data class AuthUiState(
     val schoolForm: String,
     val marketingLink: String,
     val uuid: String = UUID.randomUUID().toString(),
+    val imagePath: String? = null,
+    val introduction: String = "",
 )

@@ -82,6 +82,8 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
             is AuthAction.OnStartNameScreen -> monitorNameInput()
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
+            is AuthAction.ChangeImage -> handleImageChange(action.path)
+            is AuthAction.ChangeIntroduction -> handleIntroduction(action.introduction)
         }
     }
 
@@ -258,6 +260,22 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun handleImageChange(path: String) = intent {
+        reduce {
+            state.copy(
+                imagePath = path,
+            )
+        }
+    }
+
+    private fun handleIntroduction(introduction: String) = intent {
+        reduce {
+            state.copy(
+                introduction = introduction,
+            )
+        }
+    }
+
     private fun handleNavigation(navigate: NavigationAction) = intent {
         val sideEffect = when (navigate) {
             NavigationAction.PopBackStack -> AuthSideEffect.PopBackStack
@@ -283,6 +301,7 @@ class AuthViewModel @Inject constructor(
 
             NavigationAction.NavigateToEditScreen -> AuthSideEffect.NavigateToEditScreen
             NavigationAction.NavigateToCompleteScreen -> AuthSideEffect.NavigateToCompleteScreen
+            NavigationAction.NavigateToImageScreen -> AuthSideEffect.NavigateToImageScreen
         }
         postSideEffect(sideEffect)
     }
