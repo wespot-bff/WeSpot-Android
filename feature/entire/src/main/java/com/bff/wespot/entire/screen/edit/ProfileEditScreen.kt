@@ -331,7 +331,7 @@ fun ProfileIntroductionItem(
         WsTextField(
             value = content,
             onValueChange = onValueChange,
-            placeholder = "",
+            placeholder = stringResource(R.string.introduction_placeholder),
             onFocusChanged = onFocusChanged,
             textFieldType = WsTextFieldType.Normal,
         )
