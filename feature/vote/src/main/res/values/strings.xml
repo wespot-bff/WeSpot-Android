@@ -54,4 +54,6 @@
     <string name="write_introduction_for_friends">친구들에게 %1$s님을 소개하는\n한 줄을 작성해 주세요</string>
     <string name="vote_for">%1$s에게 투표했어요</string>
     <string name="guide_title">투표할 수 있는\n%1$s학년 %2$s반 친구들이 부족해요</string>
+    <string name="no_vote">아직 받은 투표가 없어요</string>
+    <string name="more_friend">친구들을 초대하면\n투표를 받을 확률이 높아져요</string>
 </resources>
