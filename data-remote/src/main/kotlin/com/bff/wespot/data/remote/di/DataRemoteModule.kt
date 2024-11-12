@@ -1,11 +1,13 @@
 package com.bff.wespot.data.remote.di
 
-import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSource
-import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.data.remote.source.CommonDataSourceImpl
+import com.bff.wespot.data.remote.source.ImageDecoderDataSource
+import com.bff.wespot.data.remote.source.ImageDecoderDataSourceImpl
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
+import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSource
+import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSource
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
@@ -80,4 +82,10 @@ abstract class DataRemoteModule {
     abstract fun bindsMessagingDataSource(
         messagingDataSourceImpl: MessagingDataSourceImpl
     ): MessagingDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsImageDecoderDataSource(
+        imageDecoderDataSourceImpl: ImageDecoderDataSourceImpl
+    ): ImageDecoderDataSource
 }
