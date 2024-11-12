@@ -37,6 +37,8 @@ sealed class AuthAction {
     data class ChangeImage(val path: String) : AuthAction()
 
     data class ChangeIntroduction(val introduction: String) : AuthAction()
+
+    data object UploadImage : AuthAction()
 }
 
 sealed interface NavigationAction {

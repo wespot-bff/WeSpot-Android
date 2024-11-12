@@ -26,4 +26,5 @@ data class AuthUiState(
     val uuid: String = UUID.randomUUID().toString(),
     val imagePath: String? = null,
     val introduction: String = "",
+    val imageUrl: String? = null,
 )

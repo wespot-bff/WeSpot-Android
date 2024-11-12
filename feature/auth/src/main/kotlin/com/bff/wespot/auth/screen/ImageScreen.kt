@@ -179,7 +179,7 @@ internal fun ImageScreen(
         WSButton(
             enabled = uiState.introduction.length > 1 && error.not() && uiState.hasProfanity.not(),
             onClick = {
-                action(AuthAction.Navigation(NavigationAction.NavigateToEditScreen))
+                action(AuthAction.UploadImage)
             },
             text = stringResource(id = R.string.next),
         ) {
