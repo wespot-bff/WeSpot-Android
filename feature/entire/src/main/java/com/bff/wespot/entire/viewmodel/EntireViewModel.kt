@@ -54,8 +54,10 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnRevokeButtonClicked -> revokeUser()
             EntireAction.OnSignOutButtonClicked -> signOut()
             EntireAction.UnBlockMessage -> unblockMessage()
+            EntireAction.OnInputRevokeReasonSelected -> handleInputRevokeReasonSelected()
             is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
+            is EntireAction.OnRevokeReasonChanged -> handleRevokeReasonChanged(action.reason)
         }
     }
 
@@ -92,9 +94,15 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun revokeUser() = intent {
+        val revokeReason = if (state.isInputRevokeReasonSelected) {
+            state.revokeReasonList + state.inputRevokeReason
+        } else {
+            state.revokeReasonList
+        }
+
         viewModelScope.launch {
             launch {
-                authRepository.revoke(state.revokeReasonList)
+                authRepository.revoke(revokeReason)
                     .onSuccess {
                         clearCachedData()
                         postSideEffect(EntireSideEffect.NavigateToAuth)
@@ -167,6 +175,20 @@ class EntireViewModel @Inject constructor(
                 }
             }
             state.copy(revokeReasonList = updatedList)
+        }
+    }
+
+    private fun handleInputRevokeReasonSelected() = intent {
+        reduce {
+            state.copy(isInputRevokeReasonSelected = state.isInputRevokeReasonSelected.not())
+        }
+    }
+
+    private fun handleRevokeReasonChanged(reason: String) = intent {
+        if (reason.length <= 100) {
+            reduce {
+                state.copy(inputRevokeReason = reason)
+            }
         }
     }
 

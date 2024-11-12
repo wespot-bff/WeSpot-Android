@@ -85,7 +85,12 @@ fun MessageHomeScreen(
 
             TimePeriod.EVENING_TO_NIGHT -> {
                 ReservedMessageBanner(
-                    paddingValues = PaddingValues(top = 20.dp, start = 20.dp, end = 20.dp),
+                    paddingValues = PaddingValues(
+                        top = 20.dp,
+                        bottom = 16.dp,
+                        start = 20.dp,
+                        end = 20.dp,
+                    ),
                     messageStatus = state.messageStatus,
                     onBannerClick = {
                         navigateToReservedMessageScreen()
@@ -171,7 +176,7 @@ private fun MessageCard(
             .height(height)
             .fillMaxWidth()
             .animateContentSize()
-            .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 16.dp else 20.dp)
+            .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 0.dp else 20.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Gray600),
     ) {
@@ -215,17 +220,18 @@ private fun MessageCard(
 @Composable
 private fun ReceivedMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
     AnimatedVisibility(
-        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
         visible = visible,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
-        WSBanner(
-            title = stringResource(R.string.received_message_banner_title),
-            subTitle = stringResource(R.string.received_message_banner_subtitle),
-            image = painterResource(id = R.drawable.received_message),
-            onBannerClick = { onBannerClick() },
-            bannerType = WSBannerType.Primary,
-        )
+        Box(modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)) {
+            WSBanner(
+                title = stringResource(R.string.received_message_banner_title),
+                subTitle = stringResource(R.string.received_message_banner_subtitle),
+                image = painterResource(id = R.drawable.received_message),
+                onBannerClick = { onBannerClick() },
+                bannerType = WSBannerType.Primary,
+            )
+        }
     }
 }
 

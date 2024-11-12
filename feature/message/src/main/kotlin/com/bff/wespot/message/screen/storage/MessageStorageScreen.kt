@@ -58,6 +58,7 @@ import com.bff.wespot.message.common.SENT_MESSAGE_INDEX
 import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.MessageOptionType
+import com.bff.wespot.message.screen.MessageReportScreenArgs
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
@@ -81,8 +82,9 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun MessageStorageScreen(
     type: NotificationType,
-    messageId: Int,
+    messageId: Int? = null,
     navigateToReservedMessageScreen: () -> Unit,
+    navigateToMessageReportScreen: (MessageReportScreenArgs) -> Unit,
     showToast: (ToastState) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
 ) {
@@ -243,11 +245,9 @@ fun MessageStorageScreen(
                             StorageAction.OnMessageBlockButtonClicked,
                         )
                     }
-                    MessageOptionType.REPORT -> {
-                        action(
-                            StorageAction.OnMessageReportButtonClicked,
-                        )
-                    }
+                    MessageOptionType.REPORT -> navigateToMessageReportScreen(
+                        MessageReportScreenArgs(state.optionButtonClickedMessageId),
+                    )
                 }
                 showMessageOptionDialog = false
                 showBottomSheet = false
@@ -274,22 +274,26 @@ fun MessageStorageScreen(
         when (type) {
             NotificationType.MESSAGE_RECEIVED -> {
                 selectedChipIndex = RECEIVED_MESSAGE_INDEX
-                action(
-                    StorageAction.OnMessageStorageScreenOpened(
-                        messageId = messageId,
-                        type = MessageType.RECEIVED,
-                    ),
-                )
+                messageId?.let {
+                    action(
+                        StorageAction.OnMessageStorageScreenOpened(
+                            messageId = messageId,
+                            type = MessageType.RECEIVED,
+                        ),
+                    )
+                }
             }
 
             NotificationType.MESSAGE_SENT -> {
                 selectedChipIndex = SENT_MESSAGE_INDEX
-                action(
-                    StorageAction.OnMessageStorageScreenOpened(
-                        messageId = messageId,
-                        type = MessageType.SENT,
-                    ),
-                )
+                messageId?.let {
+                    action(
+                        StorageAction.OnMessageStorageScreenOpened(
+                            messageId = messageId,
+                            type = MessageType.SENT,
+                        ),
+                    )
+                }
             }
 
             else -> { }

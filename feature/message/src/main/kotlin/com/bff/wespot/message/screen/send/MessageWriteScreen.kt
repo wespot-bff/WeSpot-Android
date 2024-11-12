@@ -175,7 +175,7 @@ fun MessageWriteScreen(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
                 dialogState = false
-                navigator.navigateMessageScreen(args = MessageScreenArgs(isMessageSent = false))
+                navigator.navigateMessageScreen(args = MessageScreenArgs())
             },
             cancelButtonClick = { dialogState = false },
         )

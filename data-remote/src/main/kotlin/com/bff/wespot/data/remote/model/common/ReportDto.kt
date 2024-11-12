@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
 data class ReportDto(
     val targetId: Int,
     val reportType: ReportType,
+    val content: String?,
 )

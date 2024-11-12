@@ -72,4 +72,19 @@
     <string name="reserved_message_item_title">To. %1$s</string>
     <string name="receiver_screen_title">오늘 %1$s의 마음을 설레게 한\n친구는 누구인가요?</string>
     <string name="message_card_title">%1$s을 설레게 한 친구에게\n익명 쪽지로 마음을 표현해보세요</string>
+    <string name="message_report_title">해당 쪽지를 신고하려는 이유가 궁금해요</string>
+    <string name="choice_done">선택 완료</string>
+    <string name="report_message_success">신고 접수 완료</string>
+
+    <!-- Notices -->
+    <string name="notice_warning">유의 사항</string>
+    <string name="notice_restriction_warning">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
+    <string name="notice_message_block">* 쪽지는 신고 즉시 차단됩니다.</string>
+
+    <!-- Report Categories -->
+    <string name="report_category_leakage">유출/사칭/사기</string>
+    <string name="report_category_obscenity">음란물/불건전한 만남 및 대화</string>
+    <string name="report_category_abuse">욕설/비하</string>
+    <string name="report_category_advertisement">상업적 광고 및 판매</string>
+    <string name="report_category_custom">직접 입력</string>
 </resources>

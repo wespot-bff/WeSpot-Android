@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,14 +31,15 @@ import kotlinx.collections.immutable.persistentListOf
 
 interface MessageNavigator {
     fun navigateUp()
+    fun navigateMessageReportScreen(args: MessageReportScreenArgs)
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
 }
 
 data class MessageScreenArgs(
-    val isMessageSent: Boolean = false,
+    @StringRes val toastMessage: Int? = null,
     val type: NotificationType = NotificationType.IDLE,
-    val messageId: Int = -1,
+    val messageId: Int? = null,
 )
 
 @Destination(navArgsDelegate = MessageScreenArgs::class)
@@ -100,6 +102,9 @@ internal fun MessageScreen(
                                     args = ReservedMessageScreenArgs(false),
                                 )
                             },
+                            navigateToMessageReportScreen = { args ->
+                                messageNavigator.navigateMessageReportScreen(args)
+                            },
                             showToast = showToast,
                         )
                     }
@@ -109,10 +114,10 @@ internal fun MessageScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (navArgs.isMessageSent) {
+        if (navArgs.toastMessage != null) {
             showToast(
                 ToastState(
-                    message = R.string.message_reserve_success,
+                    message = navArgs.toastMessage,
                     show = true,
                     type = WSToastType.Success,
                 ),
