@@ -18,4 +18,5 @@ interface CommonRepository {
     ): Result<Unit>
     suspend fun getKakaoContent(type: String): Result<KakaoContent>
     suspend fun getRestriction(): Result<Restriction>
+    suspend fun uploadImage(imagePath: String): Result<String>
 }

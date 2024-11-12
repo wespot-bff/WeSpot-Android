@@ -1,10 +1,12 @@
 package com.bff.wespot.data.repository
 
+import com.bff.wespot.data.remote.model.ImageUploadFailedException
 import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
 import com.bff.wespot.data.remote.model.common.UpdateProfileDto
 import com.bff.wespot.data.remote.source.CommonDataSource
+import com.bff.wespot.data.remote.source.ImageDecoderDataSource
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
@@ -14,7 +16,8 @@ import com.bff.wespot.model.common.Restriction
 import javax.inject.Inject
 
 class CommonRepositoryImpl @Inject constructor(
-    private val commonDataSource: CommonDataSource
+    private val commonDataSource: CommonDataSource,
+    private val decoder: ImageDecoderDataSource
 ) : CommonRepository {
     override suspend fun checkProfanity(content: String): Result<Unit> =
         commonDataSource.checkProfanity(ProfanityDto(content))
@@ -52,4 +55,19 @@ class CommonRepositoryImpl @Inject constructor(
     override suspend fun getRestriction(): Result<Restriction> =
         commonDataSource.checkRestriction()
             .mapCatching { it.toRestriction() }
+
+    override suspend fun uploadImage(imagePath: String): Result<String> {
+        val decodeImage = decoder.decodeImage(imagePath)
+        val url = commonDataSource.getPresignedUrl("webp").getOrNull()
+            ?: throw ImageUploadFailedException.UploadFailedException("Failed to get presigned url")
+        val result = commonDataSource.uploadImage(url.url, decodeImage)
+
+        return if (result) {
+            Result.success(url.imageUrl)
+        } else {
+            Result.failure(
+                ImageUploadFailedException.UploadFailedException("Failed to upload image")
+            )
+        }
+    }
 }
