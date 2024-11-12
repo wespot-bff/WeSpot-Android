@@ -9,6 +9,7 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
@@ -44,19 +45,20 @@ class AuthViewModel @Inject constructor(
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
+    private val commonRepository: CommonRepository,
     remoteConfigRepository: RemoteConfigRepository,
 ) : BaseViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
             termsOfServiceLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.TERMS_OF_SERVICE_URL),
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.TERMS_OF_SERVICE_URL),
             privacyPolicyLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PRIVACY_POLICY_URL),
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PRIVACY_POLICY_URL),
             schoolForm = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.SCHOOL_FORM),
             marketingLink =
-                remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MARKETING_SERVICE_TERM),
+            remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MARKETING_SERVICE_TERM),
         ),
     )
 
@@ -86,6 +88,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.ChangeImage -> handleImageChange(action.path)
             is AuthAction.ChangeIntroduction -> handleIntroduction(action.introduction)
             is AuthAction.OnStartImageScreen -> monitorIntroductionInput()
+            is AuthAction.UploadImage -> uploadImage()
         }
     }
 
@@ -94,7 +97,7 @@ class AuthViewModel @Inject constructor(
             try {
                 kakaoLoginUseCase(kakaoAuthToken)
                     .onSuccess {
-                        if (it != LoginState.LOGIN_SUCCESS) {
+                        if (it == LoginState.LOGIN_SUCCESS) {
                             postSideEffect(AuthSideEffect.NavigateToMainActivity)
                         } else {
                             postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
@@ -137,6 +140,7 @@ class AuthViewModel @Inject constructor(
                     consents = Consents(
                         marketing = state.consents[3],
                     ),
+                    profileUrl = state.imageUrl
                 ),
             )
 
@@ -325,6 +329,37 @@ class AuthViewModel @Inject constructor(
             NavigationAction.NavigateToImageScreen -> AuthSideEffect.NavigateToImageScreen
         }
         postSideEffect(sideEffect)
+    }
+
+    private fun uploadImage() = intent {
+        if (state.imagePath == null) {
+            postSideEffect(AuthSideEffect.NavigateToEditScreen)
+            return@intent
+        }
+        runCatching {
+            reduce {
+                state.copy(
+                    loading = true,
+                )
+            }
+            state.imagePath?.let {
+                commonRepository.uploadImage(it)
+            }
+        }.onNetworkFailure {
+            postSideEffect(it.toSideEffect())
+        }.onSuccess {
+            if (it != null && it.isSuccess) {
+                reduce {
+                    state.copy(
+                        imageUrl = it.getOrNull(),
+                        loading = false
+                    )
+                }
+                postSideEffect(AuthSideEffect.NavigateToEditScreen)
+            }
+        }.onFailure {
+            Timber.e(it)
+        }
     }
 
     companion object {
