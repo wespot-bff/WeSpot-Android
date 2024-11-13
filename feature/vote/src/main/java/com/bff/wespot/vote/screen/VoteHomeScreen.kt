@@ -369,18 +369,16 @@ private fun CardResultContent(
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        DotIndicators(pagerState = pagerState)
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        Column {
-            DotIndicators(pagerState = pagerState)
-            Spacer(modifier = Modifier.height(10.dp))
-
-            WSButton(onClick = {
-                voteNavigator.navigateToVoteStorageScreen()
-            }, text = stringResource(R.string.check_my_vote)) {
-                it.invoke()
-            }
+        WSButton(onClick = {
+            voteNavigator.navigateToVoteStorageScreen()
+        }, text = stringResource(R.string.check_my_vote)) {
+            it.invoke()
         }
     }
 

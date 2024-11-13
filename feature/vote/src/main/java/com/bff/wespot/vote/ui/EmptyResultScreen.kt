@@ -15,8 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.theme.StaticTypeScale
+import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.vote.R
 
 @Composable
@@ -40,13 +43,22 @@ fun EmptyResultScreen() {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = stringResource(R.string.analyzing_result),
+                text = stringResource(R.string.no_vote),
                 style = StaticTypeScale.Default.body1,
             )
             Text(
-                text = stringResource(R.string.more_friend_the_faster),
+                text = stringResource(R.string.more_friend),
                 style = StaticTypeScale.Default.body3,
+                textAlign = TextAlign.Center,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun EmptyResultScreenPreview() {
+    WeSpotTheme {
+        EmptyResultScreen()
     }
 }
