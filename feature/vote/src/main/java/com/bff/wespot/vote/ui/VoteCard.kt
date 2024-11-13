@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -150,7 +151,7 @@ internal fun VoteCard(
                             .allowHardware(false)
                             .build(),
                         contentDescription = stringResource(R.string.user_icon),
-                        modifier = Modifier.size(100.dp * ratio),
+                        modifier = Modifier.size(100.dp * ratio).clip(CircleShape),
                     )
                 }
 

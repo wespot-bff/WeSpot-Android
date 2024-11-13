@@ -10,4 +10,5 @@ sealed class AuthSideEffect {
     data object NavigateToMainActivity : AuthSideEffect()
     data object NavigateToEditScreen : AuthSideEffect()
     data object NavigateToCompleteScreen : AuthSideEffect()
+    data object NavigateToImageScreen : AuthSideEffect()
 }

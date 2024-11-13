@@ -201,7 +201,7 @@ fun ProfileEditScreen(
             )
 
             ProfileIntroductionItem(
-                title = stringResource(R.string.introduction),
+                title = stringResource(com.bff.wespot.ui.R.string.introduction),
                 content = state.introductionInput,
                 hasProfanity = state.hasProfanity,
                 onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
@@ -336,7 +336,7 @@ fun ProfileIntroductionItem(
         WsTextField(
             value = content,
             onValueChange = onValueChange,
-            placeholder = "",
+            placeholder = stringResource(R.string.introduction_placeholder),
             onFocusChanged = onFocusChanged,
             textFieldType = WsTextFieldType.Normal,
         )

@@ -25,6 +25,7 @@ import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
 import com.bff.wespot.auth.screen.destinations.EditScreenDestination
 import com.bff.wespot.auth.screen.destinations.GenderScreenDestination
 import com.bff.wespot.auth.screen.destinations.GradeScreenDestination
+import com.bff.wespot.auth.screen.destinations.ImageScreenDestination
 import com.bff.wespot.auth.screen.destinations.NameScreenDestination
 import com.bff.wespot.auth.screen.destinations.SchoolScreenDestination
 import com.bff.wespot.auth.state.AuthAction
@@ -119,6 +120,10 @@ class AuthActivity : ComponentActivity() {
                     AuthSideEffect.NavigateToMainActivity -> {
                         val intent = navigator.navigateToMain(context = this)
                         startActivity(intent)
+                    }
+
+                    AuthSideEffect.NavigateToImageScreen -> {
+                        navController.navigate(ImageScreenDestination)
                     }
                 }
             }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,11 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bff.wespot.analytic.TrackScreenViewEvent
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
@@ -141,6 +144,7 @@ fun EditScreen(
                 closeSheet = {
                     firstEnter = false
                 },
+                imagePath = state.imagePath,
                 moveSheet = {
                     register = true
                     firstEnter = false
@@ -205,7 +209,10 @@ private fun ConfirmBottomSheetContent(
     school: String,
     closeSheet: () -> Unit,
     moveSheet: () -> Unit,
+    imagePath: String?,
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -234,11 +241,17 @@ private fun ConfirmBottomSheetContent(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.profile),
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(imagePath)
+                    .error(R.drawable.default_character)
+                    .placeholder(R.drawable.default_character)
+                    .build(),
                 contentDescription = "Icon",
-                modifier = Modifier.size(56.dp),
-                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
             )
             Column {
                 Text(

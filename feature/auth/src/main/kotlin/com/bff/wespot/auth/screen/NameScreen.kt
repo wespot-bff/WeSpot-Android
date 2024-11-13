@@ -145,7 +145,7 @@ fun NameScreen(
                     action(AuthAction.Navigation(NavigationAction.PopBackStack))
                     return@WSButton
                 }
-                action(AuthAction.Navigation(NavigationAction.NavigateToEditScreen))
+                action(AuthAction.Navigation(NavigationAction.NavigateToImageScreen))
             },
             text = stringResource(
                 id = if (edit) {

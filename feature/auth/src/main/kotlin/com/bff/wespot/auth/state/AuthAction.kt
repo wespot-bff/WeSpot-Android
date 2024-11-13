@@ -31,6 +31,10 @@ sealed class AuthAction {
     data class OnConsentChanged(val checks: List<Boolean>) : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()
+
+    data class ChangeImage(val path: String) : AuthAction()
+
+    data class ChangeIntroduction(val introduction: String) : AuthAction()
 }
 
 sealed interface NavigationAction {
@@ -40,6 +44,7 @@ sealed interface NavigationAction {
     data class NavigateToClassScreen(val edit: Boolean) : NavigationAction
     data class NavigateToGenderScreen(val edit: Boolean) : NavigationAction
     data class NavigateToNameScreen(val edit: Boolean) : NavigationAction
+    data object NavigateToImageScreen : NavigationAction
     data object NavigateToEditScreen : NavigationAction
     data object NavigateToCompleteScreen : NavigationAction
 }

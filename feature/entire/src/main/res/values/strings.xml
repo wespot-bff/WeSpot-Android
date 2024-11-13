@@ -56,7 +56,6 @@
     <string name="request_change_profile">개인정보 변경 신청</string>
     <string name="request_profile_edit_text">하단의 버튼을 눌러 변경 신청해 주세요</string>
     <string name="introduction_limit">20자 이내로 입력이 가능해요</string>
-    <string name="introduction">한 줄 소개</string>
     <string name="unblock">차단 해제</string>
     <string name="unblock_done">해제 완료</string>
     <string name="unblock_dialog_title">차단 해제하시나요?</string>
@@ -64,4 +63,5 @@
     <string name="marketing_notification_agree">수신 동의 처리 완료</string>
     <string name="marketing_notification_disagree">수신 거부 처리 완료</string>
     <string name="blocked_message_load_error_message">차단된 메세지를 불러오는데 실패했어요.</string>
+    <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
 </resources>
