@@ -11,4 +11,5 @@
     <string name="set_image">%1$s을 잘 나타 수 있는\n프로필을 선택 해 주세요</string>
     <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
     <string name="line_limit_20">%1$s / 20</string>
+    <string name="profile_image">프로필 이미지</string>
 </resources>

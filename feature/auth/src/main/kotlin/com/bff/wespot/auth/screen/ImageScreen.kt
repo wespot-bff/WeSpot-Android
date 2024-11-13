@@ -42,7 +42,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.util.clickableSingle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -94,7 +93,7 @@ internal fun ImageScreen(
                         .error(R.drawable.default_character)
                         .placeholder(R.drawable.default_character)
                         .build(),
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.profile_image),
                     modifier = Modifier
                         .clickableSingle {
                             pickImage.launch(
@@ -129,7 +128,6 @@ internal fun ImageScreen(
                 value = uiState.introduction,
                 onValueChange = { introduction ->
                     if (introduction.length > 20) {
-                        Timber.d("Introduction length is over 20")
                         error = true
                         return@WsTextField
                     }
