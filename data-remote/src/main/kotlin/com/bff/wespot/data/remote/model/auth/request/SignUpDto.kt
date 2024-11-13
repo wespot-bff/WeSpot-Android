@@ -11,5 +11,6 @@ data class SignUpDto(
     val gender: String,
     val signUpToken: String,
     val consents: ConsentsDto,
-    val profileUrl: String?
+    val introduction: String?,
+    val profileUrl: String?,
 )

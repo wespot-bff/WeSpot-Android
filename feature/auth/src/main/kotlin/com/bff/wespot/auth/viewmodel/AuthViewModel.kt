@@ -141,6 +141,7 @@ class AuthViewModel @Inject constructor(
                         marketing = state.consents[3],
                     ),
                     profileUrl = state.imageUrl,
+                    introduction = state.introduction,
                 ),
             )
 

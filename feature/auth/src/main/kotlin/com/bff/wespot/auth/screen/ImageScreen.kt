@@ -43,7 +43,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.ui.util.clickableSingle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -130,7 +129,6 @@ internal fun ImageScreen(
                 value = uiState.introduction,
                 onValueChange = { introduction ->
                     if (introduction.length > 20) {
-                        Timber.d("Introduction length is over 20")
                         error = true
                         return@WsTextField
                     }
@@ -177,7 +175,7 @@ internal fun ImageScreen(
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(
-            enabled = uiState.introduction.length > 1 && error.not() && uiState.hasProfanity.not(),
+            enabled = error.not() && uiState.hasProfanity.not(),
             onClick = {
                 action(AuthAction.UploadImage)
             },
