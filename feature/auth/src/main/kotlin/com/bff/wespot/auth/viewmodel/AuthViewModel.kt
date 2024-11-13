@@ -9,6 +9,7 @@ import com.bff.wespot.auth.state.AuthUiState
 import com.bff.wespot.auth.state.NavigationAction
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.BasePagingRepository
+import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.usecase.AutoLoginUseCase
@@ -44,6 +45,7 @@ class AuthViewModel @Inject constructor(
     private val autoLoginUseCase: AutoLoginUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
+    private val commonRepository: CommonRepository,
     remoteConfigRepository: RemoteConfigRepository,
 ) : BaseViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(
@@ -65,6 +67,7 @@ class AuthViewModel @Inject constructor(
 
     private val userInput = MutableStateFlow("")
     private val nameInput = MutableStateFlow("")
+    private val introductionInput = MutableStateFlow("")
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -84,6 +87,8 @@ class AuthViewModel @Inject constructor(
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
             is AuthAction.ChangeImage -> handleImageChange(action.path)
             is AuthAction.ChangeIntroduction -> handleIntroduction(action.introduction)
+            is AuthAction.OnStartImageScreen -> monitorIntroductionInput()
+            is AuthAction.UploadImage -> uploadImage()
         }
     }
 
@@ -135,6 +140,8 @@ class AuthViewModel @Inject constructor(
                     consents = Consents(
                         marketing = state.consents[3],
                     ),
+                    profileUrl = state.imageUrl,
+                    introduction = state.introduction,
                 ),
             )
 
@@ -175,6 +182,24 @@ class AuthViewModel @Inject constructor(
     private fun monitorNameInput() = intent {
         viewModelScope.launch(coroutineDispatcher) {
             nameInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect {
+                    runCatching {
+                        val result = checkProfanityUseCase(it)
+                        reduce {
+                            state.copy(
+                                hasProfanity = result,
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun monitorIntroductionInput() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            introductionInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect {
@@ -269,6 +294,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun handleIntroduction(introduction: String) = intent {
+        introductionInput.value = introduction
         reduce {
             state.copy(
                 introduction = introduction,
@@ -304,6 +330,37 @@ class AuthViewModel @Inject constructor(
             NavigationAction.NavigateToImageScreen -> AuthSideEffect.NavigateToImageScreen
         }
         postSideEffect(sideEffect)
+    }
+
+    private fun uploadImage() = intent {
+        if (state.imagePath == null) {
+            postSideEffect(AuthSideEffect.NavigateToEditScreen)
+            return@intent
+        }
+        runCatching {
+            reduce {
+                state.copy(
+                    loading = true,
+                )
+            }
+            state.imagePath?.let {
+                commonRepository.uploadImage(it)
+            }
+        }.onNetworkFailure {
+            postSideEffect(it.toSideEffect())
+        }.onSuccess {
+            if (it != null && it.isSuccess) {
+                reduce {
+                    state.copy(
+                        imageUrl = it.getOrNull(),
+                        loading = false,
+                    )
+                }
+                postSideEffect(AuthSideEffect.NavigateToEditScreen)
+            }
+        }.onFailure {
+            Timber.e(it)
+        }
     }
 
     companion object {

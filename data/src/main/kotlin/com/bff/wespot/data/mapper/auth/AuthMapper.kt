@@ -27,5 +27,7 @@ internal fun SignUp.toDto(token: String) =
         classNumber = classNumber,
         gender = gender,
         signUpToken = token,
-        consents = consents.toDto()
+        consents = consents.toDto(),
+        profileUrl = profileUrl,
+        introduction = introduction,
     )

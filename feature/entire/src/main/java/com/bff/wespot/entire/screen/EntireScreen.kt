@@ -1,6 +1,5 @@
 package com.bff.wespot.entire.screen
 
-import android.graphics.Color.parseColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -189,25 +189,17 @@ fun ProfileContent(
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(profile.profileCharacter.iconUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = stringResource(com.bff.wespot.ui.R.string.user_character_image),
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .size(48.dp)
                 .clip(CircleShape)
-                .background(
-                    runCatching {
-                        Color(parseColor(profile.profileCharacter.backgroundColor))
-                    }.getOrDefault(WeSpotThemeManager.colors.cardBackgroundColor),
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(profile.profileCharacter.iconUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = stringResource(com.bff.wespot.ui.R.string.user_character_image),
-            )
-        }
+                .size(48.dp),
+        )
 
         Column(
             modifier = Modifier

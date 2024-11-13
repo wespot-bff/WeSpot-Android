@@ -28,6 +28,8 @@ sealed class AuthAction {
 
     data object OnStartNameScreen : AuthAction()
 
+    data object OnStartImageScreen : AuthAction()
+
     data class OnConsentChanged(val checks: List<Boolean>) : AuthAction()
 
     data class Navigation(val navigate: NavigationAction) : AuthAction()
@@ -35,6 +37,8 @@ sealed class AuthAction {
     data class ChangeImage(val path: String) : AuthAction()
 
     data class ChangeIntroduction(val introduction: String) : AuthAction()
+
+    data object UploadImage : AuthAction()
 }
 
 sealed interface NavigationAction {

@@ -3,6 +3,7 @@ package com.bff.wespot.data.remote.source
 import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
 import com.bff.wespot.data.remote.model.common.CharacterListDto
 import com.bff.wespot.data.remote.model.common.EditProfileDto
+import com.bff.wespot.data.remote.model.common.ImageUrlDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
@@ -20,4 +21,8 @@ interface CommonDataSource {
     suspend fun getKakaoContent(type: String): Result<KakaoContentDto>
 
     suspend fun checkRestriction(): Result<RestrictionDto>
+
+    suspend fun getPresignedUrl(mimeType: String): Result<ImageUrlDto>
+
+    suspend fun uploadImage(url: String, imagePath: String): Boolean
 }
