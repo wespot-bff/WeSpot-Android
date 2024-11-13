@@ -3,7 +3,7 @@ package com.bff.wespot.data.remote.source
 import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
 import com.bff.wespot.data.remote.model.common.CharacterListDto
 import com.bff.wespot.data.remote.model.common.EditProfileDto
-import com.bff.wespot.data.remote.model.common.ImageDto
+import com.bff.wespot.data.remote.model.common.ImageUrlDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
@@ -82,7 +82,7 @@ class CommonDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getPresignedUrl(mimeType: String): Result<ImageDto> =
+    override suspend fun getPresignedUrl(mimeType: String): Result<ImageUrlDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get

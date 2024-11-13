@@ -6,18 +6,20 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import com.bff.wespot.data.remote.model.ImageUploadFailedException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
 
 class ImageDecoderDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ImageDecoderDataSource {
-    override suspend fun decodeImage(imagePath: String): String {
+    override suspend fun decodeImage(imagePath: String): String = withContext(ioDispatcher) {
         val uri = Uri.parse(imagePath)
-
-        return resizeAndConvertToWebp(context, uri)
+        resizeAndConvertToWebp(context, uri)
     }
 
     private fun resizeAndConvertToWebp(
