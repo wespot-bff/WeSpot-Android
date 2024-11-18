@@ -16,4 +16,6 @@ interface ProfileRepository {
     suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter)
 
     suspend fun clearProfile()
+
+    suspend fun updateProfileImage(url: String): Boolean
 }
