@@ -216,19 +216,19 @@ fun ProfileEditScreen(
                 .padding(top = 10.dp),
             contentAlignment = Alignment.BottomCenter,
         ) {
-                val isEdited = state.profile.introduction != state.introductionInput ||
-                        state.profilePath != state.profile.profileCharacter.iconUrl
-                WSButton(
-                    onClick = {
-                        action(EntireEditAction.OnProfileEditDoneButtonClicked)
-                    },
-                    enabled =
+            val isEdited = state.profile.introduction != state.introductionInput ||
+                state.profilePath != state.profile.profileCharacter.iconUrl
+            WSButton(
+                onClick = {
+                    action(EntireEditAction.OnProfileEditDoneButtonClicked)
+                },
+                enabled =
                     isEdited &&
-                            state.hasProfanity.not() &&
-                            state.introductionInput.length in 1..20,
-                    text = stringResource(id = R.string.edit_done),
-                    content = { it() },
-                )
+                        state.hasProfanity.not() &&
+                        state.introductionInput.length in 1..20,
+                text = stringResource(id = R.string.edit_done),
+                content = { it() },
+            )
         }
     }
 
@@ -265,7 +265,6 @@ fun ProfileEditScreen(
         }
     }
 
-
     if (state.requestDialog) {
         WSDialog(
             title = stringResource(R.string.request_change_profile),
@@ -280,7 +279,7 @@ fun ProfileEditScreen(
             cancelButtonClick = {
                 action(EntireEditAction.OnRequestDialogDismissed)
             },
-            dialogType = WSDialogType.TwoButton
+            dialogType = WSDialogType.TwoButton,
         ) {
             action(EntireEditAction.OnRequestDialogDismissed)
         }
