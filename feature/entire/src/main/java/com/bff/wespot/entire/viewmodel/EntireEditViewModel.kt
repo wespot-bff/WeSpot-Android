@@ -235,6 +235,13 @@ class EntireEditViewModel @Inject constructor(
                 profileRepository.updateProfileImage(url)
             }.onSuccess { success ->
                 if (success) {
+                    profileRepository.setProfile(
+                        state.profile.copy(
+                            profileCharacter = state.profile.profileCharacter.copy(
+                                iconUrl = state.profilePath ?: "",
+                            ),
+                        ),
+                    )
                     postEditDoneSideToast()
                     reduce { state.copy(loading = false) }
                 }
