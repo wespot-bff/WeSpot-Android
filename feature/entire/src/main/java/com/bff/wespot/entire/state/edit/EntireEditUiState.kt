@@ -13,4 +13,7 @@ data class EntireEditUiState(
     val characterList: List<Character> = listOf(),
     val isLoading: Boolean = false,
     val profileChangeGoogleFormUrl: String = "",
+    val requestDialog: Boolean = false,
+    val profilePath: String? = null,
+    val loading: Boolean = false,
 )
