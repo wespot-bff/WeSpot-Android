@@ -69,7 +69,6 @@ class SendViewModel @Inject constructor(
             is SendAction.OnSendButtonClicked -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
             is SendAction.OnEditButtonClicked -> handleEditButtonClicked(action.messageId)
-            SendAction.OnInviteFriendTextClicked -> {}
             SendAction.OnReservedMessageScreenEntered, SendAction.OnMessageScreenEntered -> {
                 clearSendUiState()
             }
