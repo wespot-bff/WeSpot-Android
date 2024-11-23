@@ -1,8 +1,10 @@
 package com.bff.wespot.entire.screen.edit
 
 import android.view.ViewTreeObserver
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,9 +48,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
+import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.designsystem.component.modal.WSDialogType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
@@ -61,8 +64,8 @@ import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.model.ToastState
+import com.bff.wespot.ui.util.clickableSingle
 import com.bff.wespot.ui.util.handleSideEffect
-import com.bff.wespot.ui.util.hexToColor
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
@@ -70,7 +73,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ProfileEditNavigator {
     fun navigateToEntireScreen()
-    fun navigateToCharacterEditScreen()
 }
 
 data class ProfileEditNavArgs(
@@ -96,6 +98,11 @@ fun ProfileEditScreen(
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    val pickImage =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
+            action(EntireEditAction.OnProfileImagePicked(it.toString()))
+        }
 
     handleSideEffect(viewModel.sideEffect)
 
@@ -130,26 +137,28 @@ fun ProfileEditScreen(
             Box(
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .clickable { navigator.navigateToCharacterEditScreen() },
+                    .clickableSingle {
+                        pickImage.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                                    "image/*",
+                                ),
+                            ),
+                        )
+                    },
             ) {
-                Box(
+                AsyncImage(
                     modifier = Modifier
                         .size(90.dp)
-                        .clip(CircleShape)
-                        .background(hexToColor(state.profile.profileCharacter.backgroundColor)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    AsyncImage(
-                        modifier = Modifier.size(90.dp),
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(state.profile.profileCharacter.iconUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = stringResource(
-                            com.bff.wespot.ui.R.string.user_character_image,
-                        ),
-                    )
-                }
+                        .clip(CircleShape),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(state.profilePath)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = stringResource(
+                        com.bff.wespot.ui.R.string.user_character_image,
+                    ),
+                )
 
                 Image(
                     modifier = Modifier
@@ -166,11 +175,7 @@ fun ProfileEditScreen(
                 content = state.profile.name,
                 onClick = {
                     focusManager.clearFocus()
-                    toast = ToastState(
-                        show = true,
-                        message = R.string.request_profile_edit_text,
-                        type = WSToastType.Error,
-                    )
+                    action(EntireEditAction.OnRequestDialogShown)
                 },
             )
 
@@ -179,11 +184,7 @@ fun ProfileEditScreen(
                 content = state.profile.toGenderKorean(),
                 onClick = {
                     focusManager.clearFocus()
-                    toast = ToastState(
-                        show = true,
-                        message = R.string.request_profile_edit_text,
-                        type = WSToastType.Error,
-                    )
+                    action(EntireEditAction.OnRequestDialogShown)
                 },
             )
 
@@ -192,11 +193,7 @@ fun ProfileEditScreen(
                 content = state.profile.toSchoolInfo(),
                 onClick = {
                     focusManager.clearFocus()
-                    toast = ToastState(
-                        show = true,
-                        message = R.string.request_profile_edit_text,
-                        type = WSToastType.Error,
-                    )
+                    action(EntireEditAction.OnRequestDialogShown)
                 },
             )
 
@@ -219,31 +216,19 @@ fun ProfileEditScreen(
                 .padding(top = 10.dp),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            if (state.isIntroductionEditing) {
-                val isEdited = state.profile.introduction != state.introductionInput
-                WSButton(
-                    onClick = {
-                        action(EntireEditAction.OnIntroductionEditDoneButtonClicked)
-                    },
-                    enabled =
-                        isEdited &&
-                            state.hasProfanity.not() &&
-                            state.introductionInput.length in 1..20,
-                    text = stringResource(id = R.string.edit_done),
-                    content = { it() },
-                )
-            } else {
-                WSButton(
-                    onClick = {
-                        activityNavigator.navigateToWebLink(
-                            context = context,
-                            webLink = state.profileChangeGoogleFormUrl,
-                        )
-                    },
-                    text = stringResource(R.string.request_change_profile),
-                    content = { it() },
-                )
-            }
+            val isEdited = state.profile.introduction != state.introductionInput ||
+                state.profilePath != state.profile.profileCharacter.iconUrl
+            WSButton(
+                onClick = {
+                    action(EntireEditAction.OnProfileEditDoneButtonClicked)
+                },
+                enabled =
+                    isEdited &&
+                        state.hasProfanity.not() &&
+                        state.introductionInput.length in 1..20,
+                text = stringResource(id = R.string.edit_done),
+                content = { it() },
+            )
         }
     }
 
@@ -277,6 +262,26 @@ fun ProfileEditScreen(
 
         onDispose {
             viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+
+    if (state.requestDialog) {
+        WSDialog(
+            title = stringResource(R.string.request_change_profile),
+            okButtonText = stringResource(R.string.request),
+            cancelButtonText = stringResource(com.bff.wespot.designsystem.R.string.cancel),
+            okButtonClick = {
+                activityNavigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.profileChangeGoogleFormUrl,
+                )
+            },
+            cancelButtonClick = {
+                action(EntireEditAction.OnRequestDialogDismissed)
+            },
+            dialogType = WSDialogType.TwoButton,
+        ) {
+            action(EntireEditAction.OnRequestDialogDismissed)
         }
     }
 

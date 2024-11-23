@@ -1,7 +1,6 @@
 package com.bff.wespot.vote.screen
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -297,7 +296,6 @@ private fun VoteHomeContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CardResultContent(
     state: VoteUiState,
