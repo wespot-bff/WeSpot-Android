@@ -8,11 +8,13 @@ enum class NotificationType {
     VOTE,
     VOTE_RESULT,
     VOTE_RECEIVED,
+    PROFILE_UPDATE,
     ;
 
     fun toDescription(): String = when (this) {
         MESSAGE, MESSAGE_SENT, MESSAGE_RECEIVED -> "쪽지 알림"
         VOTE, VOTE_RESULT, VOTE_RECEIVED -> "투표 알림"
+        PROFILE_UPDATE -> "프로필 알림"
         IDLE -> ""
     }
 
@@ -27,6 +29,7 @@ enum class NotificationType {
                 VOTE.name -> VOTE
                 VOTE_RESULT.name -> VOTE_RESULT
                 VOTE_RECEIVED.name -> VOTE_RECEIVED
+                PROFILE_UPDATE.name -> PROFILE_UPDATE
                 else -> IDLE
             }
     }
