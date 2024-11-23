@@ -8,6 +8,7 @@ data class SignUp(
     val grade: Int,
     val classNumber: Int,
     val gender: String,
+    val versionName: String,
     val consents: Consents,
     val profileUrl: String?,
     val introduction: String?,
