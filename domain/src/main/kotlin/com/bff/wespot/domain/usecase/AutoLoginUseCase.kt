@@ -14,10 +14,10 @@ class AutoLoginUseCase @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
-    suspend operator fun invoke(versionCode: String): LoginState {
+    suspend operator fun invoke(versionName: String): LoginState {
         val minVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MIN_VERSION)
 
-        if (versionCompare(minVersion, versionCode)) {
+        if (versionCompare(minVersion, versionName)) {
             return LoginState.FORCE_UPDATE
         }
 
