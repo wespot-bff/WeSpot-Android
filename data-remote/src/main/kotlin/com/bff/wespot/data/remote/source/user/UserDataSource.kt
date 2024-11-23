@@ -23,4 +23,6 @@ interface UserDataSource {
     suspend fun updateIntroduction(introduction: IntroductionDto): Result<Unit>
 
     suspend fun updateCharacter(character: ProfileCharacterDto): Result<Unit>
+
+    suspend fun updateProfileImage(url: String): Result<Unit>
 }

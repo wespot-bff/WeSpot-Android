@@ -4,14 +4,12 @@ import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
-import com.bff.wespot.entire.screen.destinations.CharacterEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
-import com.bff.wespot.entire.screen.edit.CharacterEditNavigator
 import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
 import com.bff.wespot.entire.screen.edit.ProfileEditNavigator
 import com.bff.wespot.entire.screen.setting.AccountSettingNavigator
@@ -21,6 +19,8 @@ import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
+import com.bff.wespot.message.screen.MessageReportNavigator
+import com.bff.wespot.message.screen.MessageReportScreenArgs
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
 import com.bff.wespot.message.screen.ReservedMessageScreenArgs
@@ -36,8 +36,6 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
-import com.bff.wespot.message.screen.MessageReportNavigator
-import com.bff.wespot.message.screen.MessageReportScreenArgs
 import com.bff.wespot.vote.screen.CharacterSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
@@ -79,7 +77,6 @@ class CommonNavGraphNavigator(
     ReservedMessageNavigator,
     IndividualVoteNavigator,
     ProfileEditNavigator,
-    CharacterEditNavigator,
     CharacterSettingNavigator,
     IntroductionNavigator,
     MessageReportNavigator {
@@ -165,10 +162,6 @@ class CommonNavGraphNavigator(
 
     override fun navigateToIntroduction(args: IntroductionArgs) {
         navController.navigate(IntroductionScreenDestination(args) within navGraph)
-    }
-
-    override fun navigateToCharacterEditScreen() {
-        navController.navigate(CharacterEditScreenDestination within navGraph)
     }
 
     override fun navigateToProfileEditScreen(args: ProfileEditNavArgs) {

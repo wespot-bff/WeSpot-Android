@@ -82,4 +82,13 @@ class UserDataSourceImpl @Inject constructor(
             }
             setBody(character)
         }
+
+    override suspend fun updateProfileImage(url: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("api/v1/image/update-profile")
+                parameter("url", url)
+            }
+        }
 }

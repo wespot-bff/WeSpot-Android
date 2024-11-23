@@ -27,7 +27,7 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 
 @Composable
 fun WSDialog(
-    dialogType: WSDialogType = WSDialogType.TowButton,
+    dialogType: WSDialogType = WSDialogType.TwoButton,
     title: String,
     okButtonText: String = "",
     cancelButtonText: String = "",
@@ -46,7 +46,7 @@ fun WSDialog(
             WSDialogContent(title = title, subTitle = subTitle)
 
             when (dialogType) {
-                is WSDialogType.TowButton -> {
+                is WSDialogType.TwoButton -> {
                     WSDialogTwoButton(
                         okButtonText = okButtonText,
                         cancelButtonText = cancelButtonText,
@@ -133,7 +133,7 @@ private fun WSDialogTwoButton(
 }
 
 sealed interface WSDialogType {
-    data object TowButton : WSDialogType
+    data object TwoButton : WSDialogType
     data object OneButton : WSDialogType
 }
 
