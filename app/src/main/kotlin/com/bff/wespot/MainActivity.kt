@@ -462,6 +462,10 @@ private fun navigateScreenFromNavArgs(
             navigator.navigateToVoteStorageScreen()
         }
 
+        NotificationType.PROFILE_UPDATE -> {
+            navigator.navigateToProfileEditScreen()
+        }
+
         NotificationType.IDLE -> {
         }
     }

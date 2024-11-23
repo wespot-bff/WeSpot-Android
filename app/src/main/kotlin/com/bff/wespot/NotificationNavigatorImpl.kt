@@ -1,6 +1,8 @@
 package com.bff.wespot
 
 import androidx.navigation.NavController
+import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
+import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
 import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
@@ -59,5 +61,9 @@ class NotificationNavigatorImpl(private val navController: NavController): Notif
 
     override fun navigateToVoteStorageScreen() {
         navController.navigate(VoteStorageScreenDestination within AppNavGraphs.vote)
+    }
+
+    override fun navigateToProfileEditScreen() {
+        navController.navigate(ProfileEditScreenDestination(ProfileEditNavArgs(false)) within AppNavGraphs.entire)
     }
 }
