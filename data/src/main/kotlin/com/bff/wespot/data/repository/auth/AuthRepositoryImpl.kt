@@ -7,8 +7,8 @@ import com.bff.wespot.data.remote.model.auth.response.SignUpTokenDto
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.util.DataStoreKey
-import com.bff.wespot.model.auth.request.KakaoAuthToken
 import com.bff.wespot.model.auth.request.RevokeReasonListDto
+import com.bff.wespot.model.auth.request.SignIn
 import com.bff.wespot.model.auth.request.SignUp
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -17,9 +17,11 @@ class AuthRepositoryImpl @Inject constructor(
     private val authDataSource: AuthDataSource,
     private val dataStore: WeSpotDataStore
 ) : AuthRepository {
-    override suspend fun sendKakaoToken(token: KakaoAuthToken): Result<Any> =
-        authDataSource
-            .sendKakaoToken(token.toDto(dataStore.getString(DataStoreKey.PUSH_TOKEN).first()))
+    override suspend fun signIn(signIn: SignIn): Result<Any> {
+        val fcmToken = dataStore.getString(DataStoreKey.PUSH_TOKEN).first()
+        val signInDto = signIn.toDto(fcmToken)
+        return authDataSource
+            .signIn(signInDto)
             .mapCatching {
                 when (it) {
                     is AuthTokenDto -> {
@@ -33,6 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
                     else -> throw IllegalArgumentException("Unknown token type")
                 }
             }
+    }
 
     override suspend fun signUp(signUp: SignUp): Boolean {
         val response =  authDataSource
