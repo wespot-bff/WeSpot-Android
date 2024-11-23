@@ -17,6 +17,7 @@ import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.domain.usecase.KakaoLoginUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.auth.request.KakaoAuthToken
+import com.bff.wespot.model.auth.request.SignIn
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 import com.bff.wespot.model.auth.response.School
@@ -71,6 +72,7 @@ class AuthViewModel @Inject constructor(
 
     fun onAction(action: AuthAction) {
         when (action) {
+            is AuthAction.OnActivityCreated -> handleOnActivityCreated(action.versionName)
             is AuthAction.OnSchoolSearchChanged -> handleSchoolSearchChanged(action.text)
             is AuthAction.OnSchoolSelected -> handleSchoolSelected(action.school)
             is AuthAction.OnGradeBottomSheetChanged -> handleGradeBottomSheetChanged(action.isOpen)
@@ -81,7 +83,7 @@ class AuthViewModel @Inject constructor(
             is AuthAction.Navigation -> handleNavigation(action.navigate)
             is AuthAction.LoginWithKakao -> loginWithKakao(action.token)
             is AuthAction.Signup -> signUp()
-            is AuthAction.AutoLogin -> autoLogin(action.versionCode)
+            is AuthAction.AutoLogin -> autoLogin()
             is AuthAction.OnStartSchoolScreen -> monitorUserInput()
             is AuthAction.OnStartNameScreen -> monitorNameInput()
             is AuthAction.OnConsentChanged -> handleConsentChanged(action.checks)
@@ -92,32 +94,41 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun handleOnActivityCreated(versionName: String) = intent {
+        reduce {
+            state.copy(versionName = versionName)
+        }
+    }
+
     private fun loginWithKakao(kakaoAuthToken: KakaoAuthToken) = intent {
         viewModelScope.launch {
             try {
-                kakaoLoginUseCase(kakaoAuthToken)
-                    .onSuccess {
-                        if (it == LoginState.LOGIN_SUCCESS) {
-                            postSideEffect(AuthSideEffect.NavigateToMainActivity)
-                        } else {
-                            postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
-                        }
+                kakaoLoginUseCase(
+                    SignIn(
+                        accessToken = kakaoAuthToken.accessToken,
+                        socialType = kakaoAuthToken.socialType,
+                        versionName = state.versionName,
+                    ),
+                ).onSuccess {
+                    if (it == LoginState.LOGIN_SUCCESS) {
+                        postSideEffect(AuthSideEffect.NavigateToMainActivity)
+                    } else {
+                        postSideEffect(AuthSideEffect.NavigateToSchoolScreen(false))
                     }
-                    .onNetworkFailure {
-                        postSideEffect(it.toSideEffect())
-                    }
-                    .onFailure {
-                        Timber.e(it)
-                    }
+                }.onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }.onFailure {
+                    Timber.e(it)
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
         }
     }
 
-    private fun autoLogin(versionCode: String) {
+    private fun autoLogin() = intent {
         viewModelScope.launch {
-            autoLoginUseCase(versionCode).let {
+            autoLoginUseCase(state.versionName).let {
                 loginStateP.postValue(it)
             }
         }
@@ -142,6 +153,7 @@ class AuthViewModel @Inject constructor(
                     ),
                     profileUrl = state.imageUrl,
                     introduction = state.introduction,
+                    versionName = state.versionName,
                 ),
             )
 

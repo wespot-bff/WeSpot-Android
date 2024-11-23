@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 import java.util.UUID
 
 data class AuthUiState(
+    val versionName: String = "",
     val schoolName: String = "",
     val schoolList: Flow<PagingData<School>> = flow { },
     val selectedSchool: School? = null,
