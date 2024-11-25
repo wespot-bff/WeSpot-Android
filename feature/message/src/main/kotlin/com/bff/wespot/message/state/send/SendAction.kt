@@ -10,7 +10,6 @@ sealed class SendAction {
     data class OnMessageEditScreenEntered(val isReservedMessage: Boolean, val messageId: Int) : SendAction()
     data class OnEditButtonClicked(val messageId: Int) : SendAction()
     data object OnSendButtonClicked : SendAction()
-    data object OnInviteFriendTextClicked : SendAction()
     data object OnReceiverScreenEntered : SendAction()
     data object OnWriteScreenEntered : SendAction()
     data object OnReservedMessageScreenEntered : SendAction()

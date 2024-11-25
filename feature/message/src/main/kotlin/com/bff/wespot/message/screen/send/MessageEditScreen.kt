@@ -117,7 +117,8 @@ fun MessageEditScreen(
         topBar = {
             WSTopBar(
                 title = "",
-                canNavigateBack = true,
+                // 예약된 쪽지인 경우, action 버튼과 중복되는 동작을 수행하여, 뒤로가기 버튼은 숨김 처리한다.
+                canNavigateBack = state.isReservedMessage.not(),
                 navigateUp = {
                     navigator.navigateUp()
                 },
