@@ -1,7 +1,5 @@
 package com.bff.wespot.data.remote.source
 
-import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
-import com.bff.wespot.data.remote.model.common.CharacterListDto
 import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ImageUrlDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
@@ -40,23 +38,7 @@ class CommonDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getCharacters(): Result<CharacterListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/users/characters")
-            }
-        }
-
-    override suspend fun getBackgroundColors(): Result<BackgroundColorListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/users/backgrounds")
-            }
-        }
-
-    override suspend fun EditProfile(profile: EditProfileDto): Result<Unit> =
+    override suspend fun editProfile(profile: EditProfileDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put

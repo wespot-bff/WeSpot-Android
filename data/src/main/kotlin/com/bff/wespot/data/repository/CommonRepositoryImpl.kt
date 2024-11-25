@@ -8,8 +8,6 @@ import com.bff.wespot.data.remote.model.common.UpdateProfileDto
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.data.remote.source.ImageDecoderDataSource
 import com.bff.wespot.domain.repository.CommonRepository
-import com.bff.wespot.model.common.BackgroundColor
-import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.common.ReportType
 import com.bff.wespot.model.common.Restriction
@@ -28,20 +26,12 @@ class CommonRepositoryImpl @Inject constructor(
         content: String?,
     ): Result<Unit> = commonDataSource.sendReport(ReportDto(targetId, report, content))
 
-    override suspend fun getCharacters(): Result<List<Character>> =
-        commonDataSource.getCharacters()
-            .mapCatching { it.toCharacterList().characters }
-
-    override suspend fun getBackgroundColors(): Result<List<BackgroundColor>> =
-        commonDataSource.getBackgroundColors()
-            .mapCatching { it.toBackgroundColorList().backgrounds }
-
-    override suspend fun EditProfile(
+    override suspend fun editProfile(
         introduction: String,
         backgroundColor: String,
         iconUrl: String
     ): Result<Unit> =
-        commonDataSource.EditProfile(
+        commonDataSource.editProfile(
             EditProfileDto(
                 introduction,
                 UpdateProfileDto(

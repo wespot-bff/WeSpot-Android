@@ -46,11 +46,6 @@ class EntireEditViewModel @Inject constructor(
 
     fun onAction(action: EntireEditAction) = intent {
         when (action) {
-            EntireEditAction.OnCharacterEditScreenEntered -> {
-                handleCharacterEditScreenEntered()
-                observeProfileFlow()
-            }
-
             EntireEditAction.OnProfileEditDoneButtonClicked -> {
                 updateIntroduction()
                 uploadProfileImage()
@@ -85,30 +80,6 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun handleCharacterEditScreenEntered() = intent {
-        viewModelScope.launch {
-            launch {
-                commonRepository.getBackgroundColors()
-                    .onSuccess { backgroundColorList ->
-                        reduce { state.copy(backgroundColorList = backgroundColorList) }
-                    }
-                    .onNetworkFailure {
-                        postSideEffect(it.toSideEffect())
-                    }
-            }
-
-            launch {
-                commonRepository.getCharacters()
-                    .onSuccess { characterList ->
-                        reduce { state.copy(characterList = characterList) }
-                    }
-                    .onNetworkFailure {
-                        postSideEffect(it.toSideEffect())
-                    }
-            }
-        }
-    }
-
     private fun handleProfileEditScreenEntered() {
         viewModelScope.launch {
             runCatching {
@@ -127,7 +98,6 @@ class EntireEditViewModel @Inject constructor(
                     Timber.e(exception)
                 }
                 .collect {
-                    Timber.d("Profile change: $it")
                     reduce { state.copy(profile = it, profilePath = it.profileCharacter.iconUrl) }
                 }
         }
