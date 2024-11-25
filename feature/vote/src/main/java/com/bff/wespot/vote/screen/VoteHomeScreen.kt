@@ -72,7 +72,6 @@ interface VoteNavigator {
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(args: VoteResultScreenArgs)
     fun navigateToVoteStorageScreen()
-    fun navigateToCharacterScreen()
 }
 
 @Destination

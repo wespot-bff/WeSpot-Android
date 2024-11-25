@@ -34,9 +34,7 @@ import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.ui.model.ToastState
-import com.bff.wespot.vote.screen.destinations.CharacterSettingScreenDestination
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
-import com.bff.wespot.vote.screen.destinations.IntroductionScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
@@ -63,8 +61,6 @@ object AppNavGraphs {
             VoteResultScreenDestination,
             VoteStorageScreenDestination,
             IndividualVoteScreenDestination,
-            CharacterSettingScreenDestination,
-            IntroductionScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
