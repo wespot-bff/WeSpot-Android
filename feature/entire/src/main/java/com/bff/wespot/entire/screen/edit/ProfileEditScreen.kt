@@ -99,9 +99,15 @@ fun ProfileEditScreen(
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
+    var showBottomSheet by remember {
+        mutableStateOf(false)
+    }
+
     val pickImage =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            action(EntireEditAction.OnProfileImagePicked(it.toString()))
+            it?.let {
+                action(EntireEditAction.OnProfileImagePicked(it.toString()))
+            }
         }
 
     handleSideEffect(viewModel.sideEffect)
@@ -217,15 +223,15 @@ fun ProfileEditScreen(
             contentAlignment = Alignment.BottomCenter,
         ) {
             val isEdited = state.profile.introduction != state.introductionInput ||
-                state.profilePath != state.profile.profileCharacter.iconUrl
+                    state.profilePath != state.profile.profileCharacter.iconUrl
             WSButton(
                 onClick = {
                     action(EntireEditAction.OnProfileEditDoneButtonClicked)
                 },
                 enabled =
-                    isEdited &&
+                isEdited &&
                         state.hasProfanity.not() &&
-                        state.introductionInput.length in 1..20,
+                        state.introductionInput.length in 0..20,
                 text = stringResource(id = R.string.edit_done),
                 content = { it() },
             )
