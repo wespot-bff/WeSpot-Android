@@ -16,4 +16,5 @@ data class EntireEditUiState(
     val requestDialog: Boolean = false,
     val profilePath: String? = null,
     val loading: Boolean = false,
+    val changeBottomSheet: Boolean = false,
 )

@@ -65,4 +65,6 @@
     <string name="blocked_message_load_error_message">차단된 메세지를 불러오는데 실패했어요.</string>
     <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
     <string name="request">신청</string>
+    <string name="change_image">이미지 변경</string>
+    <string name="remove_image">이미지 지우기</string>
 </resources>

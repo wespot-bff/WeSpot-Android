@@ -8,5 +8,6 @@ sealed class EntireEditAction {
     data class OnIntroductionChanged(val introduction: String) : EntireEditAction()
     data object OnRequestDialogDismissed : EntireEditAction()
     data object OnRequestDialogShown : EntireEditAction()
-    data class OnProfileImagePicked(val profilePath: String) : EntireEditAction()
+    data class OnProfileImagePicked(val profilePath: String?) : EntireEditAction()
+    data class ChangeBottomSheetState(val isBottomSheetOpen: Boolean) : EntireEditAction()
 }

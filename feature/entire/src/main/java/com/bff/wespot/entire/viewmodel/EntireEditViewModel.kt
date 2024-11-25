@@ -82,6 +82,10 @@ class EntireEditViewModel @Inject constructor(
             is EntireEditAction.OnProfileImagePicked -> {
                 reduce { state.copy(profilePath = action.profilePath) }
             }
+
+            is EntireEditAction.ChangeBottomSheetState -> {
+                reduce { state.copy(changeBottomSheet = action.isBottomSheetOpen) }
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
@@ -63,6 +65,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.clickableSingle
 import com.bff.wespot.ui.util.handleSideEffect
@@ -98,10 +101,6 @@ fun ProfileEditScreen(
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
-
-    var showBottomSheet by remember {
-        mutableStateOf(false)
-    }
 
     val pickImage =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
@@ -144,13 +143,7 @@ fun ProfileEditScreen(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickableSingle {
-                        pickImage.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                                    "image/*",
-                                ),
-                            ),
-                        )
+                        action(EntireEditAction.ChangeBottomSheetState(true))
                     },
             ) {
                 AsyncImage(
@@ -288,6 +281,49 @@ fun ProfileEditScreen(
             dialogType = WSDialogType.TwoButton,
         ) {
             action(EntireEditAction.OnRequestDialogDismissed)
+        }
+    }
+
+    if (state.changeBottomSheet) {
+        WSBottomSheet(
+            closeSheet = {
+                action(EntireEditAction.ChangeBottomSheetState(false))
+            }
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 28.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.change_image),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickableSingle {
+                            pickImage.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                                        "image/*",
+                                    ),
+                                ),
+                            )
+                            action(EntireEditAction.ChangeBottomSheetState(false))
+                        }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF4F5157),
+                )
+                Text(
+                    text = stringResource(R.string.remove_image),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickableSingle {
+                            action(EntireEditAction.OnProfileImagePicked(null))
+                            action(EntireEditAction.ChangeBottomSheetState(false))
+                        }
+                )
+            }
         }
     }
 
