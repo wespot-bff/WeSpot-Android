@@ -6,7 +6,6 @@ object DataStoreKey {
     const val REFRESH_TOKEN_EXPIRED_AT = "refresh_token_expired_date"
     const val SIGN_UP_TOKEN = "signup_token"
     const val PUSH_TOKEN = "push_token"
-    const val SETTING_DIALOG = "setting_dialog"
     const val VOTE_ONBOARDING = "vote_onboarding"
     const val IS_NOTIFICATION_SET_UP = "is_notification_set_up"
     const val NAME = "name"
