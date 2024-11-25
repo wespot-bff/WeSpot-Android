@@ -62,6 +62,7 @@ class AuthViewModel @Inject constructor(
                 remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MARKETING_SERVICE_TERM),
         ),
     )
+    private var appVersionName: String = ""
 
     private val loginStateP: MutableLiveData<LoginState> = MutableLiveData()
     val loginState: LiveData<LoginState> = loginStateP
@@ -94,10 +95,8 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun handleOnActivityCreated(versionName: String) = intent {
-        reduce {
-            state.copy(versionName = versionName)
-        }
+    private fun handleOnActivityCreated(versionName: String) {
+        appVersionName = versionName
     }
 
     private fun loginWithKakao(kakaoAuthToken: KakaoAuthToken) = intent {
@@ -107,7 +106,7 @@ class AuthViewModel @Inject constructor(
                     SignIn(
                         accessToken = kakaoAuthToken.accessToken,
                         socialType = kakaoAuthToken.socialType,
-                        versionName = state.versionName,
+                        versionName = appVersionName,
                     ),
                 ).onSuccess {
                     if (it == LoginState.LOGIN_SUCCESS) {
@@ -126,9 +125,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun autoLogin() = intent {
+    private fun autoLogin() {
         viewModelScope.launch {
-            autoLoginUseCase(state.versionName).let {
+            autoLoginUseCase(appVersionName).let {
                 loginStateP.postValue(it)
             }
         }
@@ -153,7 +152,7 @@ class AuthViewModel @Inject constructor(
                     ),
                     profileUrl = state.imageUrl,
                     introduction = state.introduction,
-                    versionName = state.versionName,
+                    versionName = appVersionName,
                 ),
             )
 
