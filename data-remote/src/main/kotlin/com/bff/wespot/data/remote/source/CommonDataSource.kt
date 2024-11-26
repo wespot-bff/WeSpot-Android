@@ -1,7 +1,5 @@
 package com.bff.wespot.data.remote.source
 
-import com.bff.wespot.data.remote.model.common.BackgroundColorListDto
-import com.bff.wespot.data.remote.model.common.CharacterListDto
 import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ImageUrlDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
@@ -12,9 +10,7 @@ import com.bff.wespot.data.remote.model.common.RestrictionDto
 interface CommonDataSource {
     suspend fun checkProfanity(content: ProfanityDto): Result<Unit>
     suspend fun sendReport(report: ReportDto): Result<Unit>
-    suspend fun getCharacters(): Result<CharacterListDto>
-    suspend fun getBackgroundColors(): Result<BackgroundColorListDto>
-    suspend fun EditProfile(
+    suspend fun editProfile(
         profile: EditProfileDto
     ): Result<Unit>
 
