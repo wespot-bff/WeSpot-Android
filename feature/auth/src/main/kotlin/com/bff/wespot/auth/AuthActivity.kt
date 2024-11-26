@@ -1,5 +1,6 @@
 package com.bff.wespot.auth
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -66,9 +67,10 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val toastMessage = intent.getStringExtra(EXTRA_TOAST_MESSAGE)
+        viewModel.onAction(AuthAction.OnActivityCreated(getAppVersionName(this)))
 
         setContent {
-            var showDialog by remember {
+            var showVersionUpdateDialog by remember {
                 mutableStateOf(false)
             }
             val context = LocalContext.current
@@ -78,11 +80,8 @@ class AuthActivity : ComponentActivity() {
             var showToast by remember { mutableStateOf(true) }
 
             val state by viewModel.collectAsState()
-            val action = viewModel::onAction
 
-            login {
-                showDialog = true
-            }
+            login(showVersionUpdateDialog = { showVersionUpdateDialog = true })
 
             viewModel.collectSideEffect {
                 when (it) {
@@ -160,7 +159,7 @@ class AuthActivity : ComponentActivity() {
                     LoadingAnimation()
                 }
 
-                if (showDialog) {
+                if (showVersionUpdateDialog) {
                     WSDialog(
                         title = stringResource(R.string.new_version),
                         subTitle = stringResource(R.string.update_to_new_version),
@@ -180,12 +179,9 @@ class AuthActivity : ComponentActivity() {
     }
 
     private fun login(
-        showUpdateDialog: () -> Unit,
+        showVersionUpdateDialog: () -> Unit,
     ) {
-        val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        val versionCode = packageInfo.versionName
-
-        viewModel.onAction(AuthAction.AutoLogin(versionCode))
+        viewModel.onAction(AuthAction.AutoLogin)
         viewModel.loginState.observe(this) {
             loginState = it
         }
@@ -209,7 +205,7 @@ class AuthActivity : ComponentActivity() {
                         )
                         startActivity(intent)
                     } else if (loginState == LoginState.FORCE_UPDATE) {
-                        showUpdateDialog()
+                        showVersionUpdateDialog()
                     }
 
                     content.viewTreeObserver.removeOnPreDrawListener(this)
@@ -221,3 +217,6 @@ class AuthActivity : ComponentActivity() {
         })
     }
 }
+
+private fun getAppVersionName(context: Context): String =
+    context.packageManager.getPackageInfo(context.packageName, 0).versionName

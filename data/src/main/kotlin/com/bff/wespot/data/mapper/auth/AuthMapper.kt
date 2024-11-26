@@ -1,16 +1,17 @@
 package com.bff.wespot.data.mapper.auth
 
 import com.bff.wespot.data.remote.model.auth.request.ConsentsDto
-import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
+import com.bff.wespot.data.remote.model.auth.request.SignInDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
-import com.bff.wespot.model.auth.request.KakaoAuthToken
+import com.bff.wespot.model.auth.request.SignIn
 import com.bff.wespot.model.auth.request.SignUp
 import com.bff.wespot.model.auth.response.Consents
 
-internal fun KakaoAuthToken.toDto(fcmToken: String) =
-    KakaoAuthTokenDto(
+internal fun SignIn.toDto(fcmToken: String) =
+    SignInDto(
         socialType = socialType,
         identityToken = accessToken,
+        versionName = versionName,
         fcmToken = fcmToken,
     )
 
@@ -27,6 +28,7 @@ internal fun SignUp.toDto(token: String) =
         classNumber = classNumber,
         gender = gender,
         signUpToken = token,
+        versionName = versionName,
         consents = consents.toDto(),
         profileUrl = profileUrl,
         introduction = introduction,

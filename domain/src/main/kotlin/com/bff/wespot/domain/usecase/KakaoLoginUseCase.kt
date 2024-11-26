@@ -4,7 +4,7 @@ import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.util.DataStoreKey
-import com.bff.wespot.model.auth.request.KakaoAuthToken
+import com.bff.wespot.model.auth.request.SignIn
 import com.bff.wespot.model.auth.response.AuthToken
 import com.bff.wespot.model.auth.response.SignUpToken
 import com.bff.wespot.model.constants.LoginState
@@ -15,11 +15,11 @@ class KakaoLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) {
-    suspend operator fun invoke(result: KakaoAuthToken): Result<LoginState> {
+    suspend operator fun invoke(signIn: SignIn): Result<LoginState> {
         val token = messagingRepository.getFcmToken()
         dataStoreRepository.saveString(DataStoreKey.PUSH_TOKEN, token)
 
-        return authRepository.sendKakaoToken(result)
+        return authRepository.signIn(signIn)
             .map {
                 when (it) {
                     is AuthToken -> {

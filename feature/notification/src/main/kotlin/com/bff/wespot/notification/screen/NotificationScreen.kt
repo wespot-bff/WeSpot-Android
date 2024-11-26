@@ -60,6 +60,7 @@ interface NotificationNavigator {
         isTodayVoteResult: Boolean,
     )
     fun navigateToVoteStorageScreen()
+    fun navigateToProfileEditScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,6 +154,10 @@ fun NotificationScreen(
 
                                     NotificationType.VOTE_RECEIVED -> {
                                         navigator.navigateToVoteStorageScreen()
+                                    }
+
+                                    NotificationType.PROFILE_UPDATE -> {
+                                        navigator.navigateToProfileEditScreen()
                                     }
                                 }
                             }

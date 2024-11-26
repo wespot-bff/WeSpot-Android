@@ -1,7 +1,7 @@
 package com.bff.wespot.data.remote.source.auth
 
 import com.bff.wespot.data.remote.extensions.invalidateBearerTokens
-import com.bff.wespot.data.remote.model.auth.request.KakaoAuthTokenDto
+import com.bff.wespot.data.remote.model.auth.request.SignInDto
 import com.bff.wespot.data.remote.model.auth.request.SignUpDto
 import com.bff.wespot.data.remote.model.auth.response.AuthTokenDto
 import com.bff.wespot.data.remote.model.auth.response.SchoolListDto
@@ -27,13 +27,13 @@ class AuthDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun sendKakaoToken(token: KakaoAuthTokenDto): Result<Any> {
+    override suspend fun signIn(signIn: SignInDto): Result<Any> {
         val client = httpClient.safeRequest<Any> {
             url {
                 method = HttpMethod.Post
                 path("api/v1/auth/login")
             }
-            setBody(token)
+            setBody(signIn)
         }
         httpClient.invalidateBearerTokens()
         return client
