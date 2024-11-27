@@ -1,6 +1,6 @@
 # ✨ WeSpot - 우리가 연결되는 공간 ✨
 
-<p align="center"><img src="https://github.com/user-attachments/assets/4e890aef-4fca-4bf3-91e2-b30d26fcc873"></p>
+<p align="center"><img src="https://github.com/user-attachments/assets/32db7a1c-1f05-472f-94f7-15fc02e55d94"></p>
 
 ```
 누군가 너를 좋아하고 있어!, 우리가 연결되는 공간 WeSpot
