@@ -10,4 +10,5 @@ sealed class EntireEditAction {
     data object OnRequestDialogShown : EntireEditAction()
     data class OnProfileImagePicked(val profilePath: String?) : EntireEditAction()
     data class ChangeBottomSheetState(val isBottomSheetOpen: Boolean) : EntireEditAction()
+    data object OpenPicker : EntireEditAction()
 }

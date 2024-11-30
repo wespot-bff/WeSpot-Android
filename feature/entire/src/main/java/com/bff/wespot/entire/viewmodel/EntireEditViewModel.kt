@@ -86,6 +86,10 @@ class EntireEditViewModel @Inject constructor(
             is EntireEditAction.ChangeBottomSheetState -> {
                 reduce { state.copy(changeBottomSheet = action.isBottomSheetOpen) }
             }
+
+            is EntireEditAction.OpenPicker -> {
+                postSideEffect(EntireEditSideEffect.OpenPicker)
+            }
         }
     }
 
@@ -194,6 +198,7 @@ class EntireEditViewModel @Inject constructor(
     }
 
     private fun updateIntroduction() = intent {
+        if (state.profile.introduction == state.introductionInput) return@intent
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
             updateProfileIntroductionUseCase(state.introductionInput)

@@ -119,7 +119,15 @@ fun ProfileEditScreen(
                 focusManager.clearFocus()
             }
 
-            else -> {}
+            is EntireEditSideEffect.OpenPicker -> {
+                pickImage.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                            "image/*",
+                        ),
+                    ),
+                )
+            }
         }
     }
 
@@ -144,7 +152,11 @@ fun ProfileEditScreen(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickableSingle {
-                        action(EntireEditAction.ChangeBottomSheetState(true))
+                        if (state.profilePath.isNullOrEmpty()) {
+                            action(EntireEditAction.OpenPicker)
+                        } else {
+                            action(EntireEditAction.ChangeBottomSheetState(true))
+                        }
                     },
             ) {
                 AsyncImage(
@@ -305,13 +317,7 @@ fun ProfileEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickableSingle {
-                            pickImage.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                                        "image/*",
-                                    ),
-                                ),
-                            )
+                            action(EntireEditAction.OpenPicker)
                             action(EntireEditAction.ChangeBottomSheetState(false))
                         },
                     textAlign = TextAlign.Center,
