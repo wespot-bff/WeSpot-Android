@@ -128,7 +128,7 @@ internal fun ImageScreen(
                     top = 22.dp,
                     bottom = 12.dp,
                     start = 10.dp,
-                    end = 10.dp
+                    end = 10.dp,
                 ),
             )
 

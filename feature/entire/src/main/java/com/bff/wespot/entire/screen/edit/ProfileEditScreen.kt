@@ -220,13 +220,13 @@ fun ProfileEditScreen(
             contentAlignment = Alignment.BottomCenter,
         ) {
             val isEdited = state.profile.introduction != state.introductionInput ||
-                    state.profilePath != state.profile.profileCharacter.iconUrl
+                state.profilePath != state.profile.profileCharacter.iconUrl
             WSButton(
                 onClick = {
                     action(EntireEditAction.OnProfileEditDoneButtonClicked)
                 },
                 enabled =
-                isEdited &&
+                    isEdited &&
                         state.hasProfanity.not() &&
                         state.introductionInput.length in 0..20,
                 text = stringResource(id = R.string.edit_done),
@@ -292,13 +292,13 @@ fun ProfileEditScreen(
         WSBottomSheet(
             closeSheet = {
                 action(EntireEditAction.ChangeBottomSheetState(false))
-            }
+            },
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 28.dp)
+                    .padding(horizontal = 20.dp, vertical = 28.dp),
             ) {
                 Text(
                     text = stringResource(R.string.change_image),
