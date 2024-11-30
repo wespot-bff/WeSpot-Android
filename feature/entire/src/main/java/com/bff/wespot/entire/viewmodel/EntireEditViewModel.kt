@@ -212,6 +212,11 @@ class EntireEditViewModel @Inject constructor(
     }
 
     private fun uploadProfileImage() = intent {
+        if (state.profilePath == null) {
+            updateProfile(null)
+            return@intent
+        }
+
         runCatching {
             reduce {
                 state.copy(
@@ -225,7 +230,7 @@ class EntireEditViewModel @Inject constructor(
             postSideEffect(it.toSideEffect())
         }.onSuccess {
             if (it != null && it.isSuccess) {
-                val url = it.getOrNull() ?: return@onSuccess
+                val url = it.getOrNull()
                 updateProfile(url)
             }
         }.onFailure {
@@ -233,7 +238,7 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun updateProfile(url: String) = intent {
+    private fun updateProfile(url: String?) = intent {
         viewModelScope.launch {
             runCatching {
                 profileRepository.updateProfileImage(url)
