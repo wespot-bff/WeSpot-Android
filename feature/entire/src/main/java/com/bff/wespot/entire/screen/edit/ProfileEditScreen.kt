@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.view.ViewCompat
@@ -152,6 +153,9 @@ fun ProfileEditScreen(
                         .clip(CircleShape),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(state.profilePath)
+                        .error(com.bff.wespot.designsystem.R.drawable.default_image)
+                        .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
+                        .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
                         .crossfade(true)
                         .build(),
                     contentDescription = stringResource(
@@ -309,7 +313,9 @@ fun ProfileEditScreen(
                                 ),
                             )
                             action(EntireEditAction.ChangeBottomSheetState(false))
-                        }
+                        },
+                    textAlign = TextAlign.Center,
+                    style = StaticTypeScale.Default.body3,
                 )
                 HorizontalDivider(
                     color = Color(0xFF4F5157),
@@ -321,7 +327,9 @@ fun ProfileEditScreen(
                         .clickableSingle {
                             action(EntireEditAction.OnProfileImagePicked(null))
                             action(EntireEditAction.ChangeBottomSheetState(false))
-                        }
+                        },
+                    textAlign = TextAlign.Center,
+                    style = StaticTypeScale.Default.body3,
                 )
             }
         }
