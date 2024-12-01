@@ -5,8 +5,8 @@
     <string name="onboarding3">매일 저녁, 딱 세 통만 보낼 수 있는\n비밀 쪽지로 마음을 표현해 보세요!</string>
     <string name="onboarding_background">온보딩 배경</string>
     <string name="register_done">회원가입 완료</string>
-    <string name="new_version">세로운 버전 출시</string>
-    <string name="update_to_new_version">업데이트를 하고 새로운 기능을 만나보세요.</string>
+    <string name="new_version">세로운 버전이 업데이트 되었어요!</string>
+    <string name="update_to_new_version">위스팟을 계속 이용하시려면 최신 버전 업데이트가 필요해요 지금 바로 업데이트 하고 새로운 위스팟을 만나러 가볼까요?</string>
     <string name="update">업데이트</string>
     <string name="set_image">%1$s을 잘 나타 수 있는\n프로필을 선택 해 주세요</string>
     <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
