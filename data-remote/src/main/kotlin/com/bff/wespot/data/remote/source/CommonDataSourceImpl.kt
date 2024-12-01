@@ -1,6 +1,5 @@
 package com.bff.wespot.data.remote.source
 
-import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ImageUrlDto
 import com.bff.wespot.data.remote.model.common.KakaoContentDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
@@ -35,15 +34,6 @@ class CommonDataSourceImpl @Inject constructor(
                 method = HttpMethod.Post
                 path("api/v1/reports")
                 setBody(report)
-            }
-        }
-
-    override suspend fun editProfile(profile: EditProfileDto): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Put
-                path("api/v1/users/me")
-                setBody(profile)
             }
         }
 

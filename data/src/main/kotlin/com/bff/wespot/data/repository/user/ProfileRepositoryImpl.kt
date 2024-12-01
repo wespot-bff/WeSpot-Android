@@ -4,7 +4,6 @@ import com.bff.wespot.data.local.source.ProfileDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.model.user.response.Profile
-import com.bff.wespot.model.user.response.ProfileCharacter
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -21,9 +20,6 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateIntroduction(introduction: String) =
         profileDataSource.updateIntroduction(introduction)
-
-    override suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter) =
-        profileDataSource.updateProfileCharacter(profileCharacter)
 
     override suspend fun clearProfile() = profileDataSource.clearProfile()
 
