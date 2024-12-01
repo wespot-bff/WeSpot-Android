@@ -7,7 +7,9 @@ object DataStoreKey {
     const val SIGN_UP_TOKEN = "signup_token"
     const val PUSH_TOKEN = "push_token"
     const val VOTE_ONBOARDING = "vote_onboarding"
-    const val IS_NOTIFICATION_SET_UP = "is_notification_set_up"
+
+    /** 마지막으로 버전 검사를 한 버전*/
+    const val VERSION_LAST_CHECKED = "version_last_checked"
     const val NAME = "name"
     const val ID = "id"
 }
