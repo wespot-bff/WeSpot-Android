@@ -8,6 +8,7 @@ dependencies {
 
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
 
     implementation(libs.paging3.domain)
     implementation(libs.java.inject)
