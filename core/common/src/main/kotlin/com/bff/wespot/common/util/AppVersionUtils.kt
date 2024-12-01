@@ -8,7 +8,8 @@ object AppVersionUtils {
         val maxLength = maxOf(compareVersionSplit.size, appVersionSplit.size)
 
         // 패치 버전이 빠지는 경우를 대비하여, 빈 버전은 0으로 채운다.
-        val extendedCompareVersion = compareVersionSplit + List(maxLength - compareVersionSplit.size) { 0 }
+        val extendedCompareVersion =
+            compareVersionSplit + List(maxLength - compareVersionSplit.size) { 0 }
         val extendedAppVersion = appVersionSplit + List(maxLength - appVersionSplit.size) { 0 }
 
         for (i in 0 until maxLength) {
