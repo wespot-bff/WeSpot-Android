@@ -20,7 +20,7 @@ import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -81,9 +81,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             cacheProfileUseCase()
 
-            if (isAppVersionMatchCachedVersion(appVersion).not()) {
-                checkAppVersionWithLatestVersion(appVersion)
-            }
+            checkAppVersionWithLatestVersion(appVersion)
 
             commonRepository.getRestriction()
                 .onSuccess {
@@ -94,37 +92,51 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    /** 마지막으로 버전 검사를 진행한 버전 정보를 불러와 현재 앱 버전과 대조한다. */
-    private suspend fun isAppVersionMatchCachedVersion(appVersion: String): Boolean {
-        val versionLastChecked = dataStoreRepository
-            .getString(DataStoreKey.VERSION_LAST_CHECKED)
-            .first()
-
-        return appVersion == versionLastChecked
-    }
-
-    /** 최신 버전을 불러와 현재 버전과 비교하며, 현재 앱 정보를 마지막 버전 검사 버전으로 저장한다. */
+    /** RemoteConfig에서 최신 버전을 가져와 현재 앱 버전과 비교하고 적절한 업데이트 다이얼로그를 노출한다.*/
     private suspend fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
         val latestVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.LATEST_VERSION)
 
         val result = versionCompare(appVersion = appVersion, compareVersion = latestVersion)
         when (result) {
             VersionCompareResult.MAJOR_VERSION_UPDATE -> {
-                postSideEffect(MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED))
+                if (isVersionMatchCachedVersion(latestVersion).not()) {
+                    postSideEffect(
+                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED)
+                    )
+                }
             }
 
             VersionCompareResult.MINOR_VERSION_UPDATE -> {
-                val versionUpdateTypeString = remoteConfigRepository
-                    .fetchFromRemoteConfig(RemoteConfigKey.VERSION_UPDATE_TYPE)
-                val versionUpdateType = VersionUpdateType.convertVersionUpdateType(versionUpdateTypeString)
-                postSideEffect(MainSideEffect.ShowVersionUpdateDialog(versionUpdateType))
+                if (isVersionMatchCachedVersion(latestVersion).not()) {
+                    /** 마이너 버전 업데이트의 경우 업데이트 타입에 따라 다이얼로그를 구분한다. */
+                    val versionUpdateTypeString = remoteConfigRepository
+                        .fetchFromRemoteConfig(RemoteConfigKey.VERSION_UPDATE_TYPE)
+                    val versionUpdateType = VersionUpdateType.convertVersionUpdateType(versionUpdateTypeString)
+
+                    postSideEffect(MainSideEffect.ShowVersionUpdateDialog(versionUpdateType))
+                }
             }
 
             VersionCompareResult.LATEST_VERSION, VersionCompareResult.PATCH_VERSION_UPDATE -> {
             }
         }
+    }
 
-        dataStoreRepository.saveString(DataStoreKey.VERSION_LAST_CHECKED, appVersion)
+    /**
+     * 캐시된 버전 정보를 확인하여 이전에 비교한 경험이 있는지 확인한다.
+     * 만약 새로운 최신 버전이라면 캐시에 저장하고 false를 반환한다.
+     */
+    private suspend fun isVersionMatchCachedVersion(version: String): Boolean {
+        val versionLastChecked = dataStoreRepository
+            .getString(DataStoreKey.VERSION_LAST_CHECKED)
+            .firstOrNull()
+
+        if (version != versionLastChecked) {
+            dataStoreRepository.saveString(DataStoreKey.VERSION_LAST_CHECKED, version)
+            return false
+        } else {
+            return true
+        }
     }
 
     private fun handleNotificationSet(isEnableNotification: Boolean) = intent {
