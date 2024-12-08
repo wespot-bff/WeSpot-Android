@@ -5,7 +5,6 @@ import com.bff.wespot.data.local.ProfilePreference
 import com.bff.wespot.data.local.common.mapper.toProfile
 import com.bff.wespot.data.local.copy
 import com.bff.wespot.model.user.response.Profile
-import com.bff.wespot.model.user.response.ProfileCharacter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -55,17 +54,6 @@ class ProfileDataSourceImpl @Inject constructor(
         preference.updateData {
             it.copy {
                 this.introduction = introduction
-            }
-        }
-    }
-
-    override suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter) {
-        preference.updateData {
-            it.copy {
-                this.profileCharacter = it.profileCharacter.toBuilder()
-                    .setIconUrl(profileCharacter.iconUrl)
-                    .setBackgroundColor(profileCharacter.backgroundColor)
-                    .build()
             }
         }
     }

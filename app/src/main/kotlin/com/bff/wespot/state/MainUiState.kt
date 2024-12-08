@@ -7,4 +7,5 @@ data class MainUiState (
     val userId: String = "",
     val restriction: Restriction = Restriction.Empty,
     val kakaoChannel: String,
+    val playStoreLink: String,
 )

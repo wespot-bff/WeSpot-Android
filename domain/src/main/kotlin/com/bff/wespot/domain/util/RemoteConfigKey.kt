@@ -2,6 +2,8 @@ package com.bff.wespot.domain.util
 
 object RemoteConfigKey {
     const val MIN_VERSION = "MIN_VERSION"
+    const val LATEST_VERSION = "ANDROID_LATEST_VERSION"
+    const val VERSION_UPDATE_TYPE = "ANDROID_VERSION_UPDATE_TYPE"
     const val BASE_URL = "BASE_URL"
     const val MOCK_BASE_URL = "MOCK_BASE_URL"
     const val VOTE_QUESTION_GOOGLE_FORM_URL = "VOTE_QUESTION_GOOGLE_FORM_URL"

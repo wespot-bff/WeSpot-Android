@@ -26,21 +26,6 @@ class CommonRepositoryImpl @Inject constructor(
         content: String?,
     ): Result<Unit> = commonDataSource.sendReport(ReportDto(targetId, report, content))
 
-    override suspend fun editProfile(
-        introduction: String,
-        backgroundColor: String,
-        iconUrl: String
-    ): Result<Unit> =
-        commonDataSource.editProfile(
-            EditProfileDto(
-                introduction,
-                UpdateProfileDto(
-                    backgroundColor,
-                    iconUrl
-                )
-            )
-        )
-
     override suspend fun getKakaoContent(type: String): Result<KakaoContent> =
         commonDataSource.getKakaoContent(type)
             .mapCatching { it.toKakaoContent() }

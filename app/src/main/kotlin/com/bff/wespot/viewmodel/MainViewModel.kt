@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.bff.wespot.MainScreenNavArgs
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
+import com.bff.wespot.common.util.AppVersionUtils.versionCompare
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
@@ -12,14 +14,17 @@ import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
+import com.bff.wespot.model.VersionUpdateType
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -35,9 +40,16 @@ class MainViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
-    override val container = container<MainUiState, MainSideEffect>(MainUiState(
-        kakaoChannel = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL)
-    ))
+    override val container = container<MainUiState, MainSideEffect>(
+        MainUiState(
+            kakaoChannel = remoteConfigRepository.fetchFromRemoteConfig(
+                RemoteConfigKey.WESPOT_KAKAO_CHANNEL_URL,
+            ),
+            playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(
+                RemoteConfigKey.PLAY_STORE_URL,
+            ),
+        )
+    )
 
     init {
         viewModelScope.launch {
@@ -55,8 +67,8 @@ class MainViewModel @Inject constructor(
 
     fun onAction(action: MainAction) {
         when (action) {
-            MainAction.OnMainScreenEntered -> handleMainScreenEntered()
             MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
+            is MainAction.OnMainScreenEntered -> handleMainScreenEntered(action.appVersionName)
             is MainAction.OnEnteredByPushNotification -> {
                 handleEnteredByPushNotification()
                 trackPushNotificationClicked(action.data)
@@ -65,15 +77,65 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleMainScreenEntered() = intent {
+    private fun handleMainScreenEntered(appVersion: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
             cacheProfileUseCase()
+
+            checkAppVersionWithLatestVersion(appVersion)
+
             commonRepository.getRestriction()
                 .onSuccess {
                     reduce {
                         state.copy(restriction = it)
                     }
                 }
+        }
+    }
+
+    /** RemoteConfig에서 최신 버전을 가져와 현재 앱 버전과 비교하고 적절한 업데이트 다이얼로그를 노출한다.*/
+    private suspend fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
+        val latestVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.LATEST_VERSION)
+
+        val result = versionCompare(appVersion = appVersion, compareVersion = latestVersion)
+        when (result) {
+            VersionCompareResult.MAJOR_VERSION_UPDATE -> {
+                if (isVersionMatchCachedVersion(latestVersion).not()) {
+                    postSideEffect(
+                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED)
+                    )
+                }
+            }
+
+            VersionCompareResult.MINOR_VERSION_UPDATE -> {
+                if (isVersionMatchCachedVersion(latestVersion).not()) {
+                    /** 마이너 버전 업데이트의 경우 업데이트 타입에 따라 다이얼로그를 구분한다. */
+                    val versionUpdateTypeString = remoteConfigRepository
+                        .fetchFromRemoteConfig(RemoteConfigKey.VERSION_UPDATE_TYPE)
+                    val versionUpdateType = VersionUpdateType.convertVersionUpdateType(versionUpdateTypeString)
+
+                    postSideEffect(MainSideEffect.ShowVersionUpdateDialog(versionUpdateType))
+                }
+            }
+
+            VersionCompareResult.LATEST_VERSION, VersionCompareResult.PATCH_VERSION_UPDATE -> {
+            }
+        }
+    }
+
+    /**
+     * 캐시된 버전 정보를 확인하여 이전에 비교한 경험이 있는지 확인한다.
+     * 만약 새로운 최신 버전이라면 캐시에 저장하고 false를 반환한다.
+     */
+    private suspend fun isVersionMatchCachedVersion(version: String): Boolean {
+        val versionLastChecked = dataStoreRepository
+            .getString(DataStoreKey.VERSION_LAST_CHECKED)
+            .firstOrNull()
+
+        if (version != versionLastChecked) {
+            dataStoreRepository.saveString(DataStoreKey.VERSION_LAST_CHECKED, version)
+            return false
+        } else {
+            return true
         }
     }
 

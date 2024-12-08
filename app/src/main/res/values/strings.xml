@@ -12,4 +12,10 @@
     <string name="restriction_type3_body2">[이용 제한 기한]\n학교·학년·반 정보 오기입</string>
     <string name="restriction_type3_body3">이용 제한은 \'1:1 문의하기\'를 통한 개인 정보 수정 이후 해제됩니다</string>
     <string name="one_on_one">1:1 문의하기</string>
+    <string name="update">업데이트</string>
+    <string name="next_time_update">다음에 할래요</string>
+    <string name="update_title_usability_improvement">새로운 버전이 업데이트 되었어요!</string>
+    <string name="update_title_new_feature_added">새로운 버전이 업데이트 되었어요!</string>
+    <string name="update_subtitle_usability_improvement">유저의 의견을 반영해서 사용성을 개선했어요\n지금 업데이트하고 더 나은 위스팟을 만나보세요</string>
+    <string name="update_subtitle_new_feature_added">유저의 의견을 반영하여 신규 기능을 출시했어요\n지금 업데이트하고 새로운 위스팟을 만나보세요</string>
 </resources>

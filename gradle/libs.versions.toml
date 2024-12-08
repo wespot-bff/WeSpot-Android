@@ -34,6 +34,7 @@ firebase = "33.5.1"
 
 junit = "4.13.2"
 junit-version = "1.2.1"
+junit-jupitor = "5.11.3"
 espresso-core = "3.6.1"
 appcompat = "1.7.0"
 
@@ -119,6 +120,7 @@ firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
 firebase-performance = { module = "com.google.firebase:firebase-perf" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupitor = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupitor"}
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit-version" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}

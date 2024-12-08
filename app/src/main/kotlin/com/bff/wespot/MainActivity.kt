@@ -1,6 +1,7 @@
 package com.bff.wespot
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -75,7 +76,10 @@ import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
 import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
+import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.model.VersionUpdateDialogState
 import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
@@ -87,6 +91,7 @@ import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import timber.log.Timber
 import java.time.LocalDate
 import javax.inject.Inject
@@ -186,10 +191,23 @@ private fun MainScreen(
     val action = viewModel::onAction
 
     val navController = rememberNavController()
+    val context = LocalContext.current
     var toast by remember { mutableStateOf(ToastState()) }
+    var showVersionUpdateDialog by remember { mutableStateOf(VersionUpdateDialogState()) }
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is MainSideEffect.ShowVersionUpdateDialog -> {
+                showVersionUpdateDialog = VersionUpdateDialogState(
+                    show = true,
+                    versionUpdateType = it.versionUpdateType,
+                )
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -303,6 +321,22 @@ private fun MainScreen(
         toast = toast.copy(show = false)
     }
 
+    if (showVersionUpdateDialog.show) {
+        WSDialog(
+            title = showVersionUpdateDialog.versionUpdateType.title,
+            subTitle = showVersionUpdateDialog.versionUpdateType.subTitle,
+            okButtonText = stringResource(string.update),
+            cancelButtonText = stringResource(string.next_time_update),
+            okButtonClick = {
+                navigator.navigateToWebLink(context, state.playStoreLink)
+            },
+            cancelButtonClick = {
+                showVersionUpdateDialog = showVersionUpdateDialog.copy(show = false)
+            },
+            onDismissRequest = {},
+        )
+    }
+
     if (state.restriction.restrictionType != RestrictionType.NONE) {
         RestrictionBottomSheet(
             content = when (state.restriction.restrictionType) {
@@ -317,7 +351,7 @@ private fun MainScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(MainAction.OnMainScreenEntered)
+        action(MainAction.OnMainScreenEntered(context.getAppVersionName()))
     }
 }
 
@@ -630,3 +664,6 @@ private enum class RestrictionContent(
         2,
     );
 }
+
+private fun Context.getAppVersionName(): String =
+    this.packageManager.getPackageInfo(this.packageName, 0).versionName

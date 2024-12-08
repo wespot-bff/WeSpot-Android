@@ -1,7 +1,6 @@
 package com.bff.wespot.domain.repository.user
 
 import com.bff.wespot.model.user.response.Profile
-import com.bff.wespot.model.user.response.ProfileCharacter
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
@@ -12,8 +11,6 @@ interface ProfileRepository {
     suspend fun setProfile(profile: Profile)
 
     suspend fun updateIntroduction(introduction: String)
-
-    suspend fun updateProfileCharacter(profileCharacter: ProfileCharacter)
 
     suspend fun clearProfile()
 

@@ -34,6 +34,7 @@ import com.bff.wespot.auth.state.AuthSideEffect
 import com.bff.wespot.auth.viewmodel.AuthViewModel
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.designsystem.component.modal.WSDialogType
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
@@ -164,14 +165,11 @@ class AuthActivity : ComponentActivity() {
                         title = stringResource(R.string.new_version),
                         subTitle = stringResource(R.string.update_to_new_version),
                         okButtonText = stringResource(R.string.update),
-                        cancelButtonText = stringResource(R.string.cancel),
                         okButtonClick = {
                             navigator.navigateToWebLink(context, state.playStoreLink)
                         },
-                        cancelButtonClick = {
-                            finish()
-                        },
                         onDismissRequest = {},
+                        dialogType = WSDialogType.OneButton,
                     )
                 }
             }

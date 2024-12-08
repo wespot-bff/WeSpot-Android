@@ -1,5 +1,7 @@
 package com.bff.wespot.domain.usecase
 
+import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
+import com.bff.wespot.common.util.AppVersionUtils.versionCompare
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.util.DataStoreKey
@@ -17,7 +19,7 @@ class AutoLoginUseCase @Inject constructor(
     suspend operator fun invoke(versionName: String): LoginState {
         val minVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.MIN_VERSION)
 
-        if (versionCompare(minVersion, versionName)) {
+        if (versionCompare(versionName, minVersion) != VersionCompareResult.LATEST_VERSION) {
             return LoginState.FORCE_UPDATE
         }
 
@@ -34,22 +36,5 @@ class AutoLoginUseCase @Inject constructor(
                 LoginState.LOGIN_SUCCESS
             }
         }
-    }
-
-    private fun versionCompare(minVersion: String, appVersion: String): Boolean {
-        val minVersionSplit = minVersion.split(".").map { it.toInt() }
-        val appVersionSplit = appVersion.split(".").map { it.toInt() }
-
-        for (i in 0 until minOf(minVersionSplit.size, appVersionSplit.size)) {
-            if (minVersionSplit[i] > appVersionSplit[i]) {
-                return true
-            } else if (minVersionSplit[i] == appVersionSplit[i]) {
-                continue
-            } else {
-                return false
-            }
-        }
-
-        return minVersionSplit.size > appVersionSplit.size
     }
 }
