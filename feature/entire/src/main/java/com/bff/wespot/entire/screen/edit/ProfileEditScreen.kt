@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -307,19 +308,19 @@ fun ProfileEditScreen(
             },
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 28.dp),
+                    .fillMaxWidth(),
             ) {
                 Text(
                     text = stringResource(R.string.change_image),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .clickableSingle {
                             action(EntireEditAction.OpenPicker)
                             action(EntireEditAction.ChangeBottomSheetState(false))
-                        },
+                        }
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 28.dp)
+                        .clip(RoundedCornerShape(8.dp)),
                     textAlign = TextAlign.Center,
                     style = StaticTypeScale.Default.body3,
                 )
@@ -329,11 +330,13 @@ fun ProfileEditScreen(
                 Text(
                     text = stringResource(R.string.remove_image),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .clickableSingle {
                             action(EntireEditAction.OnProfileImagePicked(null))
                             action(EntireEditAction.ChangeBottomSheetState(false))
-                        },
+                        }
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 28.dp)
+                        .clip(RoundedCornerShape(8.dp)),
                     textAlign = TextAlign.Center,
                     style = StaticTypeScale.Default.body3,
                 )
