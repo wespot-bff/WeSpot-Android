@@ -59,7 +59,9 @@ internal fun ImageScreen(
 
     val pickImage =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            action(AuthAction.ChangeImage(it.toString()))
+            it?.let {
+                action(AuthAction.ChangeImage(it.toString()))
+            }
         }
 
     Scaffold(
@@ -122,7 +124,12 @@ internal fun ImageScreen(
             Text(
                 text = stringResource(id = com.bff.wespot.ui.R.string.introduction),
                 style = StaticTypeScale.Default.body4,
-                modifier = Modifier.padding(top = 22.dp, bottom = 12.dp, start = 10.dp, end = 10.dp),
+                modifier = Modifier.padding(
+                    top = 22.dp,
+                    bottom = 12.dp,
+                    start = 10.dp,
+                    end = 10.dp,
+                ),
             )
 
             WsTextField(

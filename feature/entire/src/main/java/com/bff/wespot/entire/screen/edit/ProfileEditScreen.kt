@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,11 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.view.ViewCompat
@@ -63,6 +67,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.clickableSingle
 import com.bff.wespot.ui.util.handleSideEffect
@@ -101,7 +106,9 @@ fun ProfileEditScreen(
 
     val pickImage =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            action(EntireEditAction.OnProfileImagePicked(it.toString()))
+            it?.let {
+                action(EntireEditAction.OnProfileImagePicked(it.toString()))
+            }
         }
 
     handleSideEffect(viewModel.sideEffect)
@@ -113,7 +120,15 @@ fun ProfileEditScreen(
                 focusManager.clearFocus()
             }
 
-            else -> {}
+            is EntireEditSideEffect.OpenPicker -> {
+                pickImage.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                            "image/*",
+                        ),
+                    ),
+                )
+            }
         }
     }
 
@@ -138,13 +153,11 @@ fun ProfileEditScreen(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickableSingle {
-                        pickImage.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                                    "image/*",
-                                ),
-                            ),
-                        )
+                        if (state.profilePath.isNullOrEmpty()) {
+                            action(EntireEditAction.OpenPicker)
+                        } else {
+                            action(EntireEditAction.ChangeBottomSheetState(true))
+                        }
                     },
             ) {
                 AsyncImage(
@@ -153,6 +166,9 @@ fun ProfileEditScreen(
                         .clip(CircleShape),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(state.profilePath)
+                        .error(com.bff.wespot.designsystem.R.drawable.default_image)
+                        .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
+                        .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
                         .crossfade(true)
                         .build(),
                     contentDescription = stringResource(
@@ -225,7 +241,7 @@ fun ProfileEditScreen(
                 enabled =
                     isEdited &&
                         state.hasProfanity.not() &&
-                        state.introductionInput.length in 1..20,
+                        state.introductionInput.length in 0..20,
                 text = stringResource(id = R.string.edit_done),
                 content = { it() },
             )
@@ -282,6 +298,49 @@ fun ProfileEditScreen(
             dialogType = WSDialogType.TwoButton,
         ) {
             action(EntireEditAction.OnRequestDialogDismissed)
+        }
+    }
+
+    if (state.changeBottomSheet) {
+        WSBottomSheet(
+            closeSheet = {
+                action(EntireEditAction.ChangeBottomSheetState(false))
+            },
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    text = stringResource(R.string.change_image),
+                    modifier = Modifier
+                        .clickableSingle {
+                            action(EntireEditAction.OpenPicker)
+                            action(EntireEditAction.ChangeBottomSheetState(false))
+                        }
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 28.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    textAlign = TextAlign.Center,
+                    style = StaticTypeScale.Default.body3,
+                )
+                HorizontalDivider(
+                    color = Color(0xFF4F5157),
+                )
+                Text(
+                    text = stringResource(R.string.remove_image),
+                    modifier = Modifier
+                        .clickableSingle {
+                            action(EntireEditAction.OnProfileImagePicked(null))
+                            action(EntireEditAction.ChangeBottomSheetState(false))
+                        }
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp, horizontal = 28.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    textAlign = TextAlign.Center,
+                    style = StaticTypeScale.Default.body3,
+                )
+            }
         }
     }
 

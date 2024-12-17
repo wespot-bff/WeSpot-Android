@@ -23,7 +23,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun clearProfile() = profileDataSource.clearProfile()
 
-    override suspend fun updateProfileImage(url: String): Boolean {
+    override suspend fun updateProfileImage(url: String?): Boolean {
         val response = userDataSource.updateProfileImage(url)
         return response.isSuccess
     }
