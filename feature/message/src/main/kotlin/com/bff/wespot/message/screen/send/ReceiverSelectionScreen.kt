@@ -1,6 +1,5 @@
 package com.bff.wespot.message.screen.send
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -26,12 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -51,6 +49,7 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSListItem
 import com.bff.wespot.ui.util.handleSideEffect
@@ -178,7 +177,7 @@ fun ReceiverSelectionScreen(
             }
 
             LazyColumn(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp, bottom = 74.dp),
             ) {
                 items(
                     pagingData.itemCount,
@@ -215,41 +214,25 @@ fun ReceiverSelectionScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding(),
+        modifier = Modifier.fillMaxSize().imePadding().zIndex(1f),
         contentAlignment = Alignment.BottomCenter,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(124.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            WeSpotThemeManager.colors.backgroundColor,
-                        ),
-                    ),
-                ),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
-            WSButton(
-                onClick = {
-                    if (navArgs.isEditing) {
-                        navigator.navigateUp()
-                        return@WSButton
-                    }
-                    navigator.navigateMessageWriteScreen(
-                        args = MessageWriteScreenArgs(isEditing = false),
-                    )
-                },
-                enabled = state.selectedUser.name.isNotBlank(),
-                text = if (navArgs.isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
-            ) {
-                it()
-            }
-        }
+        ListBottomGradient(height = 124)
+
+        WSButton(
+            onClick = {
+                if (navArgs.isEditing) {
+                    navigator.navigateUp()
+                    return@WSButton
+                }
+                navigator.navigateMessageWriteScreen(
+                    args = MessageWriteScreenArgs(isEditing = false),
+                )
+            },
+            enabled = state.selectedUser.name.isNotBlank(),
+            text = if (navArgs.isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
+            content = { it() },
+        )
     }
 
     if (dialogState) {
