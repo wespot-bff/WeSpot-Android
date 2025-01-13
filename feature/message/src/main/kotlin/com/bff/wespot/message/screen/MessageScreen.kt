@@ -33,7 +33,7 @@ interface MessageNavigator {
     fun navigateUp()
     fun navigateMessageReportScreen(args: MessageReportScreenArgs)
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
-    fun navigateToReservedMessageScreen(args: ReservedMessageScreenArgs)
+    fun navigateToReservedMessageScreen()
 }
 
 data class MessageScreenArgs(
@@ -77,9 +77,7 @@ internal fun MessageScreen(
                     HOME_SCREEN_INDEX -> {
                         MessageHomeScreen(
                             navigateToReservedMessageScreen = {
-                                messageNavigator.navigateToReservedMessageScreen(
-                                    args = ReservedMessageScreenArgs(false),
-                                )
+                                messageNavigator.navigateToReservedMessageScreen()
                             },
                             navigateToMessageStorageScreen = {
                                 selectedTabIndex = STORAGE_SCREEN_INDEX
@@ -98,9 +96,7 @@ internal fun MessageScreen(
                             type = navArgs.type,
                             messageId = navArgs.messageId,
                             navigateToReservedMessageScreen = {
-                                messageNavigator.navigateToReservedMessageScreen(
-                                    args = ReservedMessageScreenArgs(false),
-                                )
+                                messageNavigator.navigateToReservedMessageScreen()
                             },
                             navigateToMessageReportScreen = { args ->
                                 messageNavigator.navigateMessageReportScreen(args)

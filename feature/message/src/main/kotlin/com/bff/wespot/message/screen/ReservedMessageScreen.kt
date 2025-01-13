@@ -13,9 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -35,7 +31,6 @@ import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.ReservedMessageItem
-import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -45,21 +40,14 @@ interface ReservedMessageNavigator {
     fun navigateMessageEditScreen(args: EditMessageScreenArgs)
 }
 
-data class ReservedMessageScreenArgs(
-    val isMessageEdit: Boolean,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination(navArgsDelegate = ReservedMessageScreenArgs::class)
+@Destination
 @Composable
 fun ReservedMessageScreen(
     navigator: ReservedMessageNavigator,
-    navArgs: ReservedMessageScreenArgs,
     sendViewModel: SendViewModel,
     viewModel: MessageViewModel = hiltViewModel(),
 ) {
-    var showToast by remember { mutableStateOf(false) }
-
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -121,19 +109,10 @@ fun ReservedMessageScreen(
         }
     }
 
-    TopToast(
-        message = stringResource(id = R.string.edit_done),
-        toastType = WSToastType.Success,
-        showToast = showToast,
-    ) {
-        showToast = false
-    }
-
     NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
         action(MessageAction.OnReservedMessageScreenEntered)
         sendViewModel.onAction(SendAction.OnReservedMessageScreenEntered)
-        showToast = navArgs.isMessageEdit
     }
 }
