@@ -213,7 +213,10 @@ fun ReceiverSelectionScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().imePadding().zIndex(1f),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .zIndex(1f),
         contentAlignment = Alignment.BottomCenter,
     ) {
         ListBottomGradient(height = 124)
