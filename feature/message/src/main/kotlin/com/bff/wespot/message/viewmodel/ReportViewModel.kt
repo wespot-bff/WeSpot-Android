@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
+import com.bff.wespot.message.R
 import com.bff.wespot.message.model.ReportReason
 import com.bff.wespot.message.state.report.ReportAction
 import com.bff.wespot.message.state.report.ReportSideEffect
@@ -68,6 +69,7 @@ class ReportViewModel @Inject constructor(
                 targetId = state.messageId,
                 content = reason,
             ).onSuccess {
+                postSideEffect(ReportSideEffect.ShowToast(R.string.report_message_success))
                 postSideEffect(ReportSideEffect.NavigateToMessage)
             }.onNetworkFailure {
                 postSideEffect(it.toSideEffect())
