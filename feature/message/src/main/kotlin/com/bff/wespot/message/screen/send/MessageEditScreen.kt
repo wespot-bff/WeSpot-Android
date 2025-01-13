@@ -41,7 +41,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.screen.MessageScreenArgs
-import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -49,6 +48,7 @@ import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -59,7 +59,7 @@ interface MessageEditNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun navigateMessageScreen(args: MessageScreenArgs)
-    fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs)
+    fun popUpToReservedMessageScreen()
 }
 
 data class EditMessageScreenArgs(
@@ -73,6 +73,7 @@ data class EditMessageScreenArgs(
 fun MessageEditScreen(
     navigator: MessageEditNavigator,
     navArgs: EditMessageScreenArgs,
+    showToast: (ToastState) -> Unit,
     viewModel: SendViewModel,
 ) {
     var exitDialog by remember { mutableStateOf(false) }
@@ -106,9 +107,14 @@ fun MessageEditScreen(
             }
 
             is SendSideEffect.NavigateToReservedMessage -> {
-                navigator.navigateToReservedMessageScreenFromEdit(
-                    args = ReservedMessageScreenArgs(true),
+                showToast(
+                    ToastState(
+                        message = R.string.edit_done,
+                        show = true,
+                        type = WSToastType.Success,
+                    ),
                 )
+                navigator.popUpToReservedMessageScreen()
             }
         }
     }
