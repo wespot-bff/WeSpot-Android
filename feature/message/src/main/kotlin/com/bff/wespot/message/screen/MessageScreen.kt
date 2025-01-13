@@ -1,6 +1,5 @@
 package com.bff.wespot.message.screen
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
-import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
@@ -37,7 +35,6 @@ interface MessageNavigator {
 }
 
 data class MessageScreenArgs(
-    @StringRes val toastMessage: Int? = null,
     val type: NotificationType = NotificationType.IDLE,
     val messageId: Int? = null,
 )
@@ -110,16 +107,6 @@ internal fun MessageScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (navArgs.toastMessage != null) {
-            showToast(
-                ToastState(
-                    message = navArgs.toastMessage,
-                    show = true,
-                    type = WSToastType.Success,
-                ),
-            )
-        }
-
         when (navArgs.type) {
             NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
                 selectedTabIndex = STORAGE_SCREEN_INDEX

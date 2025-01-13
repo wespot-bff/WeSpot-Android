@@ -88,12 +88,6 @@ class CommonNavGraphNavigator(
         navController.navigate(MessageWriteScreenDestination(args) within navGraph)
     }
 
-    override fun navigateMessageScreen(args: MessageScreenArgs) {
-        navController.navigate(MessageScreenDestination(args) within navGraph) {
-            popUpTo((MessageScreenDestination(args) within navGraph).route) { inclusive = true }
-        }
-    }
-
     override fun popUpToMessageScreen() {
         navController.popBackStack(
             route = (MessageScreenDestination() within navGraph).route,
