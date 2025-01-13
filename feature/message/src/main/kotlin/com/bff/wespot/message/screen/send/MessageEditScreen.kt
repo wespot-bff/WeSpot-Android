@@ -40,8 +40,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.screen.MessageScreenArgs
-import com.bff.wespot.message.screen.ReservedMessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -49,6 +47,7 @@ import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -58,8 +57,8 @@ interface MessageEditNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
-    fun navigateMessageScreen(args: MessageScreenArgs)
-    fun navigateToReservedMessageScreenFromEdit(args: ReservedMessageScreenArgs)
+    fun popUpToMessageScreen()
+    fun popUpToReservedMessageScreen()
 }
 
 data class EditMessageScreenArgs(
@@ -73,6 +72,7 @@ data class EditMessageScreenArgs(
 fun MessageEditScreen(
     navigator: MessageEditNavigator,
     navArgs: EditMessageScreenArgs,
+    showToast: (ToastState) -> Unit,
     viewModel: SendViewModel,
 ) {
     var exitDialog by remember { mutableStateOf(false) }
@@ -95,19 +95,25 @@ fun MessageEditScreen(
                 reserveDialog = false
             }
 
-            is SendSideEffect.ShowTimeoutDialog -> {
+            SendSideEffect.ShowTimeoutDialog -> {
                 timeoutDialog = true
             }
 
-            is SendSideEffect.NavigateToMessage -> {
-                navigator.navigateMessageScreen(
-                    args = MessageScreenArgs(toastMessage = R.string.message_reserve_success),
-                )
+            SendSideEffect.NavigateToMessage -> {
+                navigator.popUpToMessageScreen()
             }
 
-            is SendSideEffect.NavigateToReservedMessage -> {
-                navigator.navigateToReservedMessageScreenFromEdit(
-                    args = ReservedMessageScreenArgs(true),
+            SendSideEffect.NavigateToReservedMessage -> {
+                navigator.popUpToReservedMessageScreen()
+            }
+
+            is SendSideEffect.ShowToast -> {
+                showToast(
+                    ToastState(
+                        message = it.message,
+                        show = true,
+                        type = WSToastType.Success,
+                    ),
                 )
             }
         }
@@ -234,7 +240,7 @@ fun MessageEditScreen(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
                     exitDialog = false
-                    navigator.navigateMessageScreen(args = MessageScreenArgs())
+                    navigator.popUpToMessageScreen()
                 },
                 cancelButtonClick = { exitDialog = false },
             )
@@ -258,9 +264,7 @@ fun MessageEditScreen(
                 subTitle = state.messageSendFailedDialogContent,
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
-                okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs())
-                },
+                okButtonClick = navigator::popUpToMessageScreen,
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },
             )

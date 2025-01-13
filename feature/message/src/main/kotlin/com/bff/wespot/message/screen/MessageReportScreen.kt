@@ -26,6 +26,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -33,9 +34,9 @@ import com.bff.wespot.message.model.ReportReason
 import com.bff.wespot.message.state.report.ReportAction
 import com.bff.wespot.message.state.report.ReportSideEffect
 import com.bff.wespot.message.viewmodel.ReportViewModel
-import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.WSSelectionItem
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
@@ -44,7 +45,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageReportNavigator {
     fun navigateUp()
-    fun navigateMessageScreen(args: MessageScreenArgs)
+    fun popUpToMessageScreen()
 }
 
 data class MessageReportScreenArgs(
@@ -56,6 +57,7 @@ data class MessageReportScreenArgs(
 @Composable
 fun MessageReportScreen(
     viewModel: ReportViewModel = hiltViewModel(),
+    showToast: (ToastState) -> Unit,
     navigator: MessageReportNavigator,
 ) {
     val scrollState = rememberScrollState()
@@ -67,11 +69,16 @@ fun MessageReportScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            is ReportSideEffect.NavigateToMessage -> {
-                navigator.navigateMessageScreen(
-                    args = MessageScreenArgs(
-                        toastMessage = R.string.report_message_success,
-                        type = NotificationType.MESSAGE_RECEIVED,
+            ReportSideEffect.NavigateToMessage -> {
+                navigator.popUpToMessageScreen()
+            }
+
+            is ReportSideEffect.ShowToast -> {
+                showToast(
+                    ToastState(
+                        message = it.message,
+                        show = true,
+                        type = WSToastType.Success,
                     ),
                 )
             }

@@ -35,7 +35,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -47,7 +46,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 interface MessageWriteNavigator {
     fun navigateUp()
-    fun navigateMessageScreen(args: MessageScreenArgs)
+    fun popUpToMessageScreen()
     fun navigateMessageEditScreen(args: EditMessageScreenArgs)
 }
 
@@ -175,7 +174,7 @@ fun MessageWriteScreen(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
                 dialogState = false
-                navigator.navigateMessageScreen(args = MessageScreenArgs())
+                navigator.popUpToMessageScreen()
             },
             cancelButtonClick = { dialogState = false },
         )

@@ -128,13 +128,13 @@ object AppNavGraphs {
 
 private val bottomBarScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen?toastMessage={toastMessage}&type={type}&messageId={messageId}",
+    "message/message_screen?type={type}&messageId={messageId}",
     "entire/entire_screen",
 )
 
 private val topBarScreenNames = listOf(
     "vote/vote_home_screen",
-    "message/message_screen?toastMessage={toastMessage}&type={type}&messageId={messageId}",
+    "message/message_screen&type={type}&messageId={messageId}",
     "entire/entire_screen",
 )
 
@@ -164,7 +164,7 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
                 when (destination.route) {
                     "entire/entire_screen" -> return BarType.ENTIRE
                     "vote/vote_home_screen" -> return BarType.DEFAULT
-                    "message/message_screen?toastMessage={toastMessage}&type={type}&messageId={messageId}" -> return BarType.DEFAULT
+                    "message/message_screen?type={type}&messageId={messageId}" -> return BarType.DEFAULT
                 }
             }
             BarType.NONE
