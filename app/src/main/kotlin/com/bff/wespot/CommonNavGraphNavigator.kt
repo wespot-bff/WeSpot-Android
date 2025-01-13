@@ -94,6 +94,10 @@ class CommonNavGraphNavigator(
         }
     }
 
+    override fun popUpToMessageScreen() {
+        navController.popBackStack(navGraph.startRoute.route, inclusive = false)
+    }
+
     override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
         navController.navigate(MessageEditScreenDestination(args) within navGraph)
     }
