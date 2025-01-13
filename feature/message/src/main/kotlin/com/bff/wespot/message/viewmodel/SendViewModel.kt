@@ -11,6 +11,7 @@ import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
+import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
@@ -217,6 +218,7 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 trackMessageSendEvent()
                 reduce { state.copy(isLoading = false) }
+                postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) {
@@ -265,6 +267,7 @@ class SendViewModel @Inject constructor(
                     isAnonymous = state.isRandomName,
                 ),
             ).onSuccess {
+                postSideEffect(SendSideEffect.ShowToast(R.string.edit_done))
                 postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) {

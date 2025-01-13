@@ -40,7 +40,6 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -58,7 +57,7 @@ interface MessageEditNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
-    fun navigateMessageScreen(args: MessageScreenArgs)
+    fun popUpToMessageScreen()
     fun popUpToReservedMessageScreen()
 }
 
@@ -96,25 +95,26 @@ fun MessageEditScreen(
                 reserveDialog = false
             }
 
-            is SendSideEffect.ShowTimeoutDialog -> {
+            SendSideEffect.ShowTimeoutDialog -> {
                 timeoutDialog = true
             }
 
-            is SendSideEffect.NavigateToMessage -> {
-                navigator.navigateMessageScreen(
-                    args = MessageScreenArgs(toastMessage = R.string.message_reserve_success),
-                )
+            SendSideEffect.NavigateToMessage -> {
+                navigator.popUpToMessageScreen()
             }
 
-            is SendSideEffect.NavigateToReservedMessage -> {
+            SendSideEffect.NavigateToReservedMessage -> {
+                navigator.popUpToReservedMessageScreen()
+            }
+
+            is SendSideEffect.ShowToast -> {
                 showToast(
                     ToastState(
-                        message = R.string.edit_done,
+                        message = it.message,
                         show = true,
                         type = WSToastType.Success,
                     ),
                 )
-                navigator.popUpToReservedMessageScreen()
             }
         }
     }
@@ -240,7 +240,7 @@ fun MessageEditScreen(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
                     exitDialog = false
-                    navigator.navigateMessageScreen(args = MessageScreenArgs())
+                    navigator.popUpToMessageScreen()
                 },
                 cancelButtonClick = { exitDialog = false },
             )
@@ -264,9 +264,7 @@ fun MessageEditScreen(
                 subTitle = state.messageSendFailedDialogContent,
                 okButtonText = stringResource(R.string.positive_answer),
                 cancelButtonText = stringResource(R.string.close),
-                okButtonClick = {
-                    navigator.navigateMessageScreen(args = MessageScreenArgs())
-                },
+                okButtonClick = navigator::popUpToMessageScreen,
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },
             )
