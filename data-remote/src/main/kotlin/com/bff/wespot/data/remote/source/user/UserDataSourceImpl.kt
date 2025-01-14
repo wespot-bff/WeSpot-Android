@@ -1,7 +1,7 @@
 package com.bff.wespot.data.remote.source.user
 
 import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
-import com.bff.wespot.data.remote.model.user.request.IntroductionDto
+import com.bff.wespot.data.remote.model.user.request.ProfileUpdateDto
 import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
 import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.data.remote.model.user.response.ProfileDto
@@ -65,13 +65,13 @@ class UserDataSourceImpl @Inject constructor(
             setBody(notificationSetting)
         }
 
-    override suspend fun updateIntroduction(introduction: IntroductionDto): Result<Unit> =
+    override suspend fun updateProfile(profileUpdateDto: ProfileUpdateDto): Result<Unit> =
         httpClient.safeRequest {
             url {
-                method = HttpMethod.Put
-                path("api/v1/users/me")
+                method = HttpMethod.Post
+                path("api/v1/image/update-profile")
             }
-            setBody(introduction)
+            setBody(profileUpdateDto)
         }
 
     override suspend fun updateCharacter(character: ProfileCharacterDto): Result<Unit> =
@@ -81,14 +81,5 @@ class UserDataSourceImpl @Inject constructor(
                 path("api/v1/users/me")
             }
             setBody(character)
-        }
-
-    override suspend fun updateProfileImage(url: String?): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Post
-                path("api/v1/image/update-profile")
-                parameter("url", url)
-            }
         }
 }
