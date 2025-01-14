@@ -28,8 +28,8 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.screen.state.notification.NotificationSettingAction
-import com.bff.wespot.entire.screen.state.notification.NotificationSettingSideEffect
+import com.bff.wespot.entire.state.notification.NotificationSettingAction
+import com.bff.wespot.entire.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.OnLifecycleEvent
