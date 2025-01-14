@@ -4,7 +4,7 @@ import com.bff.wespot.model.common.BackgroundColor
 import com.bff.wespot.model.common.Character
 import com.bff.wespot.model.user.response.Profile
 
-data class EntireEditUiState(
+data class ProfileEditUiState(
     val profile: Profile = Profile(),
     val introductionInput: String = "",
     val hasProfanity: Boolean = false,
