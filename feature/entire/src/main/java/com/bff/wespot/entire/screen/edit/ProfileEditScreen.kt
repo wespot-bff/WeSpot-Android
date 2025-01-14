@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,6 +66,7 @@ import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
 import com.bff.wespot.entire.viewmodel.ProfileEditViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.LetterCountIndicator
+import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.component.WSBottomSheet
@@ -171,14 +173,22 @@ fun ProfileEditScreen(
                     ),
                 )
 
-                Image(
+                Box(
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.BottomEnd)
+                        .clip(WeSpotThemeManager.shapes.small)
+                        .background(WeSpotThemeManager.colors.secondaryBtnColor)
                         .zIndex(1f),
-                    painter = painterResource(id = R.drawable.edit),
-                    contentDescription = stringResource(R.string.edit_icon),
-                )
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(14.dp),
+                        painter = painterResource(id = R.drawable.album),
+                        contentDescription = stringResource(R.string.edit_icon),
+                    )
+                }
             }
 
             ProfileEditLockedItem(
@@ -227,8 +237,9 @@ fun ProfileEditScreen(
                 .padding(top = 10.dp),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            val isEdited = state.profile.introduction != state.introductionInput ||
-                state.profilePath != state.profile.profileCharacter.iconUrl
+            ListBottomGradient(height = 124)
+
+            val isEdited = state.isEditedState()
             WSButton(
                 onClick = {
                     action(ProfileEditAction.OnProfileEditDoneButtonClicked)

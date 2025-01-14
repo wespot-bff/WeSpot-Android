@@ -16,4 +16,6 @@ data class ProfileEditUiState(
     val requestDialog: Boolean = false,
     val profilePath: String? = null,
     val changeBottomSheet: Boolean = false,
-)
+) {
+    fun isEditedState() = profile.introduction != introductionInput || profilePath != profile.profileCharacter.iconUrl
+}
