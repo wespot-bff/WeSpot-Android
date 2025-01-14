@@ -15,6 +15,5 @@ data class ProfileEditUiState(
     val profileChangeGoogleFormUrl: String = "",
     val requestDialog: Boolean = false,
     val profilePath: String? = null,
-    val loading: Boolean = false,
     val changeBottomSheet: Boolean = false,
 )
