@@ -21,7 +21,6 @@ import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.MessageReportNavigator
 import com.bff.wespot.message.screen.MessageReportScreenArgs
-import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageReportScreenDestination
