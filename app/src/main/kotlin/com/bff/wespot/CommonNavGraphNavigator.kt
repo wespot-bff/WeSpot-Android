@@ -10,7 +10,6 @@ import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
-import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
 import com.bff.wespot.entire.screen.edit.ProfileEditNavigator
 import com.bff.wespot.entire.screen.setting.AccountSettingNavigator
 import com.bff.wespot.entire.screen.setting.BlockListNavigator
@@ -149,8 +148,8 @@ class CommonNavGraphNavigator(
         navController.navigate(BlockListScreenDestination within navGraph)
     }
 
-    override fun navigateToProfileEditScreen(args: ProfileEditNavArgs) {
-        navController.navigate(ProfileEditScreenDestination(args) within navGraph)
+    override fun navigateToProfileEditScreen() {
+        navController.navigate(ProfileEditScreenDestination within navGraph)
     }
 
     override fun navigateToEntireScreen() {
