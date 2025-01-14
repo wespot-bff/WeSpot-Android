@@ -12,9 +12,9 @@ import com.bff.wespot.domain.util.RemoteConfigKey.PROFILE_CHANGE_GOOGLE_FORM_URL
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.state.edit.EntireEditAction
-import com.bff.wespot.entire.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.state.edit.EntireEditUiState
+import com.bff.wespot.entire.state.edit.ProfileEditAction
+import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
+import com.bff.wespot.entire.state.edit.ProfileEditUiState
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.ui.model.ToastState
@@ -33,66 +33,65 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class EntireEditViewModel @Inject constructor(
+class ProfileEditViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val commonRepository: CommonRepository,
-    private val remoteConfigRepository: RemoteConfigRepository,
     private val updateProfileIntroductionUseCase: UpdateProfileIntroductionUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
-) : BaseViewModel(), ContainerHost<EntireEditUiState, EntireEditSideEffect> {
-    override val container = container<EntireEditUiState, EntireEditSideEffect>(EntireEditUiState())
+    remoteConfigRepository: RemoteConfigRepository,
+) : BaseViewModel(), ContainerHost<ProfileEditUiState, ProfileEditSideEffect> {
+    override val container = container<ProfileEditUiState, ProfileEditSideEffect>(
+        ProfileEditUiState(
+            profileChangeGoogleFormUrl =
+                remoteConfigRepository.fetchFromRemoteConfig(PROFILE_CHANGE_GOOGLE_FORM_URL),
+        ),
+    )
 
     private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
 
-    fun onAction(action: EntireEditAction) = intent {
+    fun onAction(action: ProfileEditAction) = intent {
         when (action) {
-            EntireEditAction.OnProfileEditDoneButtonClicked -> {
+            ProfileEditAction.OnProfileEditDoneButtonClicked -> {
                 updateIntroduction()
                 uploadProfileImage()
             }
 
-            is EntireEditAction.OnProfileEditScreenEntered -> {
-                fetchWebLinkFromRemoteConfig()
-                handleProfileEditScreenEntered()
+            is ProfileEditAction.OnProfileEditScreenEntered -> {
+                cacheUserProfile()
                 observeProfileFlow()
                 observeIntroductionInput()
-
-                if (action.isCompleteEdit) {
-                    postEditDoneSideToast()
-                }
             }
 
-            is EntireEditAction.OnProfileEditTextFieldFocused ->
+            is ProfileEditAction.OnProfileEditTextFieldFocused ->
                 handleProfileEditButtonText(action.focused)
 
-            is EntireEditAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
-            is EntireEditAction.OnRequestDialogDismissed -> {
+            is ProfileEditAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
+            is ProfileEditAction.OnRequestDialogDismissed -> {
                 reduce { state.copy(requestDialog = false) }
             }
 
-            is EntireEditAction.OnRequestDialogShown -> {
+            is ProfileEditAction.OnRequestDialogShown -> {
                 reduce { state.copy(requestDialog = true) }
             }
 
-            is EntireEditAction.OnProfileImagePicked -> {
+            is ProfileEditAction.OnProfileImagePicked -> {
                 reduce { state.copy(profilePath = action.profilePath) }
             }
 
-            is EntireEditAction.ChangeBottomSheetState -> {
+            is ProfileEditAction.ChangeBottomSheetState -> {
                 reduce { state.copy(changeBottomSheet = action.isBottomSheetOpen) }
             }
 
-            is EntireEditAction.OpenPicker -> {
-                postSideEffect(EntireEditSideEffect.OpenPicker)
+            is ProfileEditAction.OpenPicker -> {
+                postSideEffect(ProfileEditSideEffect.OpenPicker)
             }
         }
     }
 
-    private fun handleProfileEditScreenEntered() {
+    private fun cacheUserProfile() {
         viewModelScope.launch {
             runCatching {
-                profileRepository.getProfile()
-            }.onSuccess { profile ->
+                val profile = profileRepository.getProfile()
                 handleIntroductionChanged(profile.introduction)
             }
         }
@@ -109,11 +108,6 @@ class EntireEditViewModel @Inject constructor(
                     reduce { state.copy(profile = it, profilePath = it.profileCharacter.iconUrl) }
                 }
         }
-    }
-
-    private fun fetchWebLinkFromRemoteConfig() = intent {
-        val webLink = remoteConfigRepository.fetchFromRemoteConfig(PROFILE_CHANGE_GOOGLE_FORM_URL)
-        reduce { state.copy(profileChangeGoogleFormUrl = webLink) }
     }
 
     private fun handleIntroductionChanged(introduction: String) = intent {
@@ -146,7 +140,7 @@ class EntireEditViewModel @Inject constructor(
 
     private fun postEditDoneSideToast() = intent {
         postSideEffect(
-            EntireEditSideEffect.ShowToast(
+            ProfileEditSideEffect.ShowToast(
                 ToastState(
                     show = true,
                     message = R.string.edit_done,
