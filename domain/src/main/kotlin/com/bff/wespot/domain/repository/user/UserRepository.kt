@@ -13,7 +13,5 @@ interface UserRepository {
 
     suspend fun updateNotificationSetting(notificationSetting: NotificationSetting): Result<Unit>
 
-    suspend fun updateIntroduction(introduction: String): Result<Unit>
-
     suspend fun updateCharacter(character: ProfileCharacter): Result<Unit>
 }
