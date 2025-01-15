@@ -185,7 +185,6 @@ class ProfileEditViewModel @Inject constructor(
                 profileImageUrl = url,
             )
         }.onSuccess {
-            // TODO: Set profileImageURL once imageUrl is added to the Profile model.
             profileRepository.setProfile(
                 state.profile.copy(
                     profileCharacter = state.profile.profileCharacter.copy(
