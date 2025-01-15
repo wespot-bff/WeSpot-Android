@@ -1,7 +1,6 @@
 package com.bff.wespot.data.repository.user
 
 import com.bff.wespot.data.mapper.user.toNotificationSettingDto
-import com.bff.wespot.data.mapper.user.toProfileCharacterDto
 import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.domain.repository.DataStoreRepository
@@ -9,7 +8,6 @@ import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.model.user.response.NotificationSetting
 import com.bff.wespot.model.user.response.Profile
-import com.bff.wespot.model.user.response.ProfileCharacter
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -43,7 +41,4 @@ class UserRepositoryImpl @Inject constructor(
         notificationSetting: NotificationSetting,
     ): Result<Unit> =
         userDataSource.updateNotificationSetting(notificationSetting.toNotificationSettingDto())
-
-    override suspend fun updateCharacter(character: ProfileCharacter): Result<Unit> =
-        userDataSource.updateCharacter(character.toProfileCharacterDto())
 }

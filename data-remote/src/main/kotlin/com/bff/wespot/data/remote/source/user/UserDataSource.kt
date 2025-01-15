@@ -3,7 +3,6 @@ package com.bff.wespot.data.remote.source.user
 import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
 import com.bff.wespot.data.remote.model.user.request.ProfileUpdateDto
 import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
-import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.data.remote.model.user.response.ProfileDto
 import com.bff.wespot.data.remote.model.user.response.UserListDto
 
@@ -19,8 +18,6 @@ interface UserDataSource {
     ): Result<Unit>
 
     suspend fun updateNotificationSetting(notificationSetting: NotificationSettingDto): Result<Unit>
-
-    suspend fun updateCharacter(character: ProfileCharacterDto): Result<Unit>
 
     suspend fun updateProfile(profileUpdateDto: ProfileUpdateDto): Result<Unit>
 }
