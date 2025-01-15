@@ -45,6 +45,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageReportNavigator {
     fun navigateUp()
+    fun popUpToMessageScreen()
 }
 
 data class MessageReportScreenArgs(
@@ -69,7 +70,7 @@ fun MessageReportScreen(
     viewModel.collectSideEffect {
         when (it) {
             ReportSideEffect.NavigateToMessage -> {
-                navigator.navigateUp()
+                navigator.popUpToMessageScreen()
             }
 
             is ReportSideEffect.ShowToast -> {
