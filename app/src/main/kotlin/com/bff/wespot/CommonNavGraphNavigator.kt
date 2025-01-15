@@ -19,12 +19,8 @@ import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
-import com.bff.wespot.message.screen.MessageReportNavigator
-import com.bff.wespot.message.screen.MessageReportScreenArgs
-import com.bff.wespot.message.screen.MessageScreenArgs
 import com.bff.wespot.message.screen.ReservedMessageNavigator
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
-import com.bff.wespot.message.screen.destinations.MessageReportScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
@@ -70,8 +66,7 @@ class CommonNavGraphNavigator(
     VoteStorageNavigator,
     ReservedMessageNavigator,
     IndividualVoteNavigator,
-    ProfileEditNavigator,
-    MessageReportNavigator {
+    ProfileEditNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -156,9 +151,5 @@ class CommonNavGraphNavigator(
 
     override fun navigateToEntireScreen() {
         navController.navigate(EntireScreenDestination within navGraph)
-    }
-
-    override fun navigateMessageReportScreen(args: MessageReportScreenArgs) {
-        navController.navigate(MessageReportScreenDestination(args) within navGraph)
     }
 }
