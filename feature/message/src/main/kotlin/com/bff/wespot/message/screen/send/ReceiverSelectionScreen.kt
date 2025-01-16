@@ -4,11 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,12 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
@@ -45,8 +46,10 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
+import com.bff.wespot.message.state.send.SendUiState
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.model.user.response.User
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.NetworkDialog
@@ -175,9 +178,76 @@ fun ReceiverSelectionScreen(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.padding(top = 16.dp, bottom = 74.dp),
-            ) {
+            ReceiverSelectionLayout(
+                navigator = navigator,
+                isEditing = navArgs.isEditing,
+                keyboard = keyboard,
+                pagingData = pagingData,
+                state = state,
+                action = action,
+            )
+        }
+    }
+
+    if (dialogState) {
+        SendExitDialog(
+            isReservedMessage = state.isReservedMessage,
+            okButtonClick = {
+                dialogState = false
+                navigator.popUpToMessageScreen()
+            },
+            cancelButtonClick = { dialogState = false },
+        )
+    }
+
+    NetworkDialog(context = context, networkState = networkState)
+
+    LaunchedEffect(focusRequester) {
+        focusRequester.requestFocus()
+        delay(10)
+        keyboard?.show()
+    }
+
+    LaunchedEffect(Unit) {
+        action(SendAction.OnReceiverScreenEntered)
+    }
+}
+
+@Composable
+private fun ReceiverSelectionLayout(
+    navigator: ReceiverSelectionNavigator,
+    isEditing: Boolean,
+    keyboard: SoftwareKeyboardController?,
+    pagingData: LazyPagingItems<User>,
+    state: SendUiState,
+    action: (SendAction) -> Unit,
+) {
+    SubcomposeLayout { constraints ->
+        val listGradientPlaceable = subcompose("listGradient") {
+            ListBottomGradient(height = 124)
+        }.first().measure(constraints)
+
+        val selectButtonPlaceable = subcompose("selectButton") {
+            WSButton(
+                onClick = {
+                    if (isEditing) {
+                        navigator.navigateUp()
+                        return@WSButton
+                    }
+                    navigator.navigateMessageWriteScreen(
+                        args = MessageWriteScreenArgs(isEditing = false),
+                    )
+                },
+                paddingValues = PaddingValues(0.dp),
+                enabled = state.selectedUser.name.isNotBlank(),
+                text = if (isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
+                content = { it() },
+            )
+        }.first().measure(constraints)
+
+        val receiverListMaxHeight = constraints.maxHeight - selectButtonPlaceable.height
+        val receiverListPlaceable = subcompose("receiverList") {
+            LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
                 items(
                     pagingData.itemCount,
                     key = pagingData.itemKey { it.id },
@@ -209,54 +279,19 @@ fun ReceiverSelectionScreen(
                     }
                 }
             }
+        }.first().measure(constraints.copy(maxHeight = receiverListMaxHeight))
+
+        var yPosition = 0
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            receiverListPlaceable.placeRelative(0, yPosition)
+            yPosition += receiverListMaxHeight
+
+            listGradientPlaceable.placeRelative(
+                x = 0,
+                y = constraints.maxHeight - listGradientPlaceable.height,
+            )
+
+            selectButtonPlaceable.placeRelative(0, yPosition)
         }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .zIndex(1f),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        ListBottomGradient(height = 124)
-
-        WSButton(
-            onClick = {
-                if (navArgs.isEditing) {
-                    navigator.navigateUp()
-                    return@WSButton
-                }
-                navigator.navigateMessageWriteScreen(
-                    args = MessageWriteScreenArgs(isEditing = false),
-                )
-            },
-            enabled = state.selectedUser.name.isNotBlank(),
-            text = if (navArgs.isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
-            content = { it() },
-        )
-    }
-
-    if (dialogState) {
-        SendExitDialog(
-            isReservedMessage = state.isReservedMessage,
-            okButtonClick = {
-                dialogState = false
-                navigator.popUpToMessageScreen()
-            },
-            cancelButtonClick = { dialogState = false },
-        )
-    }
-
-    NetworkDialog(context = context, networkState = networkState)
-
-    LaunchedEffect(focusRequester) {
-        focusRequester.requestFocus()
-        delay(10)
-        keyboard?.show()
-    }
-
-    LaunchedEffect(Unit) {
-        action(SendAction.OnReceiverScreenEntered)
     }
 }
