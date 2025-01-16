@@ -238,7 +238,7 @@ private fun ReceiverSelectionLayout(
                         args = MessageWriteScreenArgs(isEditing = false),
                     )
                 },
-                paddingValues = PaddingValues(0.dp),
+                paddingValues = PaddingValues(vertical = 12.dp),
                 enabled = state.selectedUser.name.isNotBlank(),
                 text = if (isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
                 content = { it() },
