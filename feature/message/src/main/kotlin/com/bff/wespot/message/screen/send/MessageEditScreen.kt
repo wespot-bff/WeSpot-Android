@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -143,95 +144,99 @@ fun MessageEditScreen(
             )
         },
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .verticalScroll(scrollState),
-        ) {
-            EditField(
-                title = stringResource(R.string.receiver),
-                value = state.selectedUser.toDescription(),
-            ) {
-                navigator.navigateReceiverSelectionScreen(
-                    args = ReceiverSelectionScreenArgs(isEditing = true),
+        SubcomposeLayout(
+            modifier = Modifier.padding(it),
+        ) { constraints ->
+            val buttonPlaceable = subcompose("button") {
+                WSButton(
+                    onClick = {
+                        if (state.isReservedMessage) {
+                            action(SendAction.OnEditButtonClicked(navArgs.messageId))
+                        } else {
+                            reserveDialog = true
+                        }
+                    },
+                    text = stringResource(
+                        if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
+                    ),
+                    content = { it() },
                 )
-            }
+            }.first().measure(constraints)
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            EditField(
-                title = stringResource(R.string.message_sent_content),
-                value = state.messageInput,
-                isMessageContent = true,
-            ) {
-                navigator.navigateMessageWriteScreen(
-                    args = MessageWriteScreenArgs(isEditing = true),
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
-            }
-
-            EditField(
-                title = stringResource(R.string.sender),
-                value = if (state.isRandomName) state.randomName else state.sender,
-                onClicked = { toast = true },
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, start = 30.dp, end = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.random_nickname_title),
-                        style = StaticTypeScale.Default.body1,
-                        color = WeSpotThemeManager.colors.txtTitleColor,
-                    )
-
-                    Text(
-                        text = stringResource(R.string.random_nickname_subtitle),
-                        style = StaticTypeScale.Default.body8,
-                        color = Gray400,
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                WSSwitch(checked = state.isRandomName) {
-                    action(SendAction.OnRandomNameToggled(it))
-                }
-            }
-
-            // 버튼과 버튼 외부 패딩만큼 높이를 추가한다.
-            Spacer(modifier = Modifier.height(82.dp))
-        }
-
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            WSButton(
-                onClick = {
-                    if (state.isReservedMessage) {
-                        action(SendAction.OnEditButtonClicked(navArgs.messageId))
-                    } else {
-                        reserveDialog = true
+            val contentMaxHeight = constraints.maxHeight - buttonPlaceable.height
+            val contentPlaceable = subcompose("content") {
+                Column(modifier = Modifier.verticalScroll(scrollState)) {
+                    EditField(
+                        title = stringResource(R.string.receiver),
+                        value = state.selectedUser.toDescription(),
+                    ) {
+                        navigator.navigateReceiverSelectionScreen(
+                            args = ReceiverSelectionScreenArgs(isEditing = true),
+                        )
                     }
-                },
-                text = stringResource(
-                    if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
-                ),
-            ) {
-                it()
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    EditField(
+                        title = stringResource(R.string.message_sent_content),
+                        value = state.messageInput,
+                        isMessageContent = true,
+                    ) {
+                        navigator.navigateMessageWriteScreen(
+                            args = MessageWriteScreenArgs(isEditing = true),
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
+                    }
+
+                    EditField(
+                        title = stringResource(R.string.sender),
+                        value = if (state.isRandomName) state.randomName else state.sender,
+                        onClicked = { toast = true },
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, start = 30.dp, end = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.random_nickname_title),
+                                style = StaticTypeScale.Default.body1,
+                                color = WeSpotThemeManager.colors.txtTitleColor,
+                            )
+
+                            Text(
+                                text = stringResource(R.string.random_nickname_subtitle),
+                                style = StaticTypeScale.Default.body8,
+                                color = Gray400,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        WSSwitch(checked = state.isRandomName) {
+                            action(SendAction.OnRandomNameToggled(it))
+                        }
+                    }
+                }
+            }.first().measure(constraints.copy(maxHeight = contentMaxHeight))
+
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                contentPlaceable.placeRelative(0, 0)
+
+                buttonPlaceable.placeRelative(0, contentMaxHeight)
             }
         }
 
