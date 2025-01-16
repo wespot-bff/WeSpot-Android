@@ -2,11 +2,9 @@ package com.bff.wespot.message.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,12 +15,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -94,96 +91,103 @@ fun MessageReportScreen(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Text(
-                modifier = Modifier.padding(bottom = 16.dp, start = 30.dp, end = 30.dp),
-                text = stringResource(R.string.message_report_title),
-                style = StaticTypeScale.Default.header1,
-                color = WeSpotThemeManager.colors.txtTitleColor,
-            )
+        SubcomposeLayout(modifier = Modifier.padding(innerPadding)) { constraints ->
+            val listGradientPlaceable = subcompose("listGradient") {
+                ListBottomGradient(height = 120)
+            }.first().measure(constraints)
 
-            Column(modifier = Modifier.padding(horizontal = 30.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Image(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(id = R.drawable.error),
-                        contentDescription = "error_icon",
-                    )
+            val buttonPlaceable = subcompose("button") {
+                WSButton(
+                    text = stringResource(R.string.choice_done),
+                    content = { it() },
+                    onClick = {
+                        if (state.reportReason.index != -1) {
+                            action(ReportAction.OnMessageReportButtonClicked)
+                        }
+                    },
+                )
+            }.first().measure(constraints)
 
+            val contentMaxHeight = constraints.maxHeight - buttonPlaceable.height
+            val contentPlaceable = subcompose("content") {
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
                     Text(
-                        text = stringResource(id = R.string.notice_warning),
-                        style = StaticTypeScale.Default.body3,
+                        modifier = Modifier.padding(bottom = 16.dp, start = 30.dp, end = 30.dp),
+                        text = stringResource(R.string.message_report_title),
+                        style = StaticTypeScale.Default.header1,
                         color = WeSpotThemeManager.colors.txtTitleColor,
                     )
-                }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Column(modifier = Modifier.padding(horizontal = 30.dp)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = painterResource(id = R.drawable.error),
+                                contentDescription = "error_icon",
+                            )
 
-                Text(
-                    text = stringResource(id = R.string.notice_restriction_warning),
-                    style = StaticTypeScale.Default.body6,
-                    color = WeSpotThemeManager.colors.txtTitleColor,
-                )
-            }
+                            Text(
+                                text = stringResource(id = R.string.notice_warning),
+                                style = StaticTypeScale.Default.body3,
+                                color = WeSpotThemeManager.colors.txtTitleColor,
+                            )
+                        }
 
-            Text(
-                modifier = Modifier.padding(horizontal = 30.dp),
-                text = stringResource(id = R.string.notice_message_block),
-                style = StaticTypeScale.Default.body8,
-                color = WeSpotThemeManager.colors.txtSubColor,
-            )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                persistentListOf(
-                    stringResource(id = R.string.report_category_leakage),
-                    stringResource(id = R.string.report_category_obscenity),
-                    stringResource(id = R.string.report_category_abuse),
-                    stringResource(id = R.string.report_category_advertisement),
-                    stringResource(id = R.string.report_category_custom),
-                ).forEachIndexed { index, reason ->
-                    val isUserInputItem = stringResource(R.string.report_category_custom) == reason
-                    val selected = index == state.reportReason.index
-
-                    WSSelectionItem(
-                        title = if (isUserInputItem && selected) state.inputReportReason else reason,
-                        selected = selected,
-                        isEditable = isUserInputItem,
-                        onTitleChanged = {
-                            action(ReportAction.OnReportReasonChanged(it))
-                        },
-                        onClick = {
-                            action(ReportAction.OnReportReasonSelected(ReportReason(index, reason)))
-                        },
-                    )
-                }
-
-                /** 버튼에 가려진 영역 만큼 하단 여백 추가 */
-                Spacer(modifier = Modifier.height(72.dp))
-            }
-        }
-
-        Box(
-            modifier = Modifier.fillMaxSize().zIndex(1f),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
-            ListBottomGradient(height = 120)
-
-            WSButton(
-                text = stringResource(R.string.choice_done),
-                content = { it() },
-                onClick = {
-                    if (state.reportReason.index != -1) {
-                        action(ReportAction.OnMessageReportButtonClicked)
+                        Text(
+                            text = stringResource(id = R.string.notice_restriction_warning),
+                            style = StaticTypeScale.Default.body6,
+                            color = WeSpotThemeManager.colors.txtTitleColor,
+                        )
                     }
-                },
-            )
+
+                    Text(
+                        modifier = Modifier.padding(horizontal = 30.dp),
+                        text = stringResource(id = R.string.notice_message_block),
+                        style = StaticTypeScale.Default.body8,
+                        color = WeSpotThemeManager.colors.txtSubColor,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        persistentListOf(
+                            stringResource(id = R.string.report_category_leakage),
+                            stringResource(id = R.string.report_category_obscenity),
+                            stringResource(id = R.string.report_category_abuse),
+                            stringResource(id = R.string.report_category_advertisement),
+                            stringResource(id = R.string.report_category_custom),
+                        ).forEachIndexed { index, reason ->
+                            val isUserInputItem = stringResource(R.string.report_category_custom) == reason
+                            val selected = index == state.reportReason.index
+
+                            WSSelectionItem(
+                                title = if (isUserInputItem && selected) state.inputReportReason else reason,
+                                selected = selected,
+                                isEditable = isUserInputItem,
+                                onTitleChanged = {
+                                    action(ReportAction.OnReportReasonChanged(it))
+                                },
+                                onClick = {
+                                    action(ReportAction.OnReportReasonSelected(ReportReason(index, reason)))
+                                },
+                            )
+                        }
+                    }
+                }
+            }.first().measure(constraints.copy(maxHeight = contentMaxHeight))
+
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                contentPlaceable.placeRelative(0, 0)
+
+                listGradientPlaceable.placeRelative(0, constraints.maxHeight - listGradientPlaceable.height)
+
+                buttonPlaceable.placeRelative(0, contentMaxHeight)
+            }
         }
     }
 }
