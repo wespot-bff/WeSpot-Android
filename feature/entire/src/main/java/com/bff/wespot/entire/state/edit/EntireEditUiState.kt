@@ -17,4 +17,10 @@ data class EntireEditUiState(
     val profilePath: String? = null,
     val loading: Boolean = false,
     val changeBottomSheet: Boolean = false,
-)
+) {
+    fun isValidIntroduceInputChanged(): Boolean =
+        profile.introduction != introductionInput && introductionInput.length in 0..20
+
+    fun isProfileImageChange(): Boolean =
+        profilePath != profile.profileCharacter.iconUrl
+}
