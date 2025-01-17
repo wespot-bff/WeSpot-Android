@@ -92,6 +92,7 @@ fun MessageReportScreen(
     ) { innerPadding ->
         BottomButtonLayout(
             modifier = Modifier.padding(innerPadding),
+            showGradient = true,
             button = {
                 WSButton(
                     text = stringResource(R.string.choice_done),
