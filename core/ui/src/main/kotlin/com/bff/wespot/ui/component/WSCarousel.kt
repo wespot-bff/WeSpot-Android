@@ -1,6 +1,5 @@
 package com.bff.wespot.ui.component
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +21,6 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.util.OrientationPreviews
 import com.bff.wespot.ui.util.carouselTransition
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WSCarousel(
     pageCount: Int = 10,
@@ -47,7 +45,6 @@ fun WSCarousel(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @OrientationPreviews
 @Composable
 private fun PreviewWSCarousel() {

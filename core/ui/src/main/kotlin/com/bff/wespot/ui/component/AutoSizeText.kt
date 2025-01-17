@@ -3,7 +3,6 @@ package com.bff.wespot.ui.component
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.foundation.text.InternalFoundationTextApi
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -128,7 +127,6 @@ fun AutoSizeText(
     }
 }
 
-@OptIn(InternalFoundationTextApi::class)
 @Composable
 private fun BoxWithConstraintsScope.shouldShrink(
     text: AnnotatedString,

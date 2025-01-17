@@ -1,6 +1,5 @@
 package com.bff.wespot.vote.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +50,6 @@ import com.bff.wespot.ui.component.MultiLineText
 import com.bff.wespot.ui.util.carouselTransition
 import com.bff.wespot.vote.R
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun VoteCard(
     result: Result,
@@ -219,7 +217,6 @@ internal fun VoteCard(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @OrientationPreviews
 @Composable
 private fun PreviewVoteCard() {

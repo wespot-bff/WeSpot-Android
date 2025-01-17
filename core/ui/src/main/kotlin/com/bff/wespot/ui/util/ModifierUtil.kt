@@ -1,6 +1,5 @@
 package com.bff.wespot.ui.util
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,7 +13,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.util.lerp
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.carouselTransition(pagerState: PagerState, page: Int) =
     graphicsLayer {
         val pageOffset =
