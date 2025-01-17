@@ -7,7 +7,7 @@ import androidx.compose.ui.layout.SubcomposeLayout
 @Composable
 fun BottomButtonLayout(
     modifier: Modifier = Modifier,
-    showGradient: Boolean,
+    showGradient: Boolean = false,
     button: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
