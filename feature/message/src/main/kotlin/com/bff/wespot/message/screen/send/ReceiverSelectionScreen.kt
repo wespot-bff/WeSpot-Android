@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,14 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
@@ -46,12 +42,10 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendUiState
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
-import com.bff.wespot.model.user.response.User
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.ui.component.ListBottomGradient
+import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSListItem
 import com.bff.wespot.ui.util.handleSideEffect
@@ -111,81 +105,129 @@ fun ReceiverSelectionScreen(
             )
         },
     ) {
-        Column(
+        BottomButtonLayout(
             modifier = Modifier
                 .clickable(
                     indication = null,
                     interactionSource = interactionSource,
                     onClick = { keyboard?.hide() },
                 )
-                .padding(it)
-                .padding(horizontal = 20.dp),
+                .padding(it),
+            showGradient = true,
+            button = {
+                WSButton(
+                    onClick = {
+                        if (navArgs.isEditing) {
+                            navigator.navigateUp()
+                            return@WSButton
+                        }
+                        navigator.navigateMessageWriteScreen(
+                            args = MessageWriteScreenArgs(isEditing = false),
+                        )
+                    },
+                    enabled = state.selectedUser.name.isNotBlank(),
+                    text = if (navArgs.isEditing) {
+                        stringResource(R.string.edit_done)
+                    } else {
+                        stringResource(R.string.next)
+                    },
+                    content = { it() },
+                )
+            },
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp),
-                text = stringResource(R.string.receiver_screen_title, state.profile.name),
-                style = StaticTypeScale.Default.header1,
-                color = WeSpotThemeManager.colors.txtTitleColor,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            WsTextField(
-                value = state.nameInput,
-                onValueChange = {
-                    action(SendAction.OnSearchContentChanged(it))
-                },
-                placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
-                textFieldType = WsTextFieldType.Search,
-                focusRequester = focusRequester,
-                singleLine = true,
-            )
-
-            if (pagingData.itemCount == 0) {
-                Box(
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
+                        .padding(horizontal = 4.dp),
+                    text = stringResource(R.string.receiver_screen_title, state.profile.name),
+                    style = StaticTypeScale.Default.header1,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                WsTextField(
+                    value = state.nameInput,
+                    onValueChange = {
+                        action(SendAction.OnSearchContentChanged(it))
+                    },
+                    placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
+                    textFieldType = WsTextFieldType.Search,
+                    focusRequester = focusRequester,
+                    singleLine = true,
+                )
+
+                if (pagingData.itemCount == 0) {
+                    Box(
                         modifier = Modifier
-                            .drawBehind {
-                                drawLine(
-                                    strokeWidth = 1f * density,
-                                    color = Gray300,
-                                    start = Offset(0f, size.height),
-                                    end = Offset(size.width, size.height),
-                                )
-                            }
-                            .clickable {
-                                if (state.kakaoContent != KakaoContent.EMPTY) {
-                                    activityNavigator.navigateToKakao(
-                                        context = context,
-                                        title = state.kakaoContent.title,
-                                        description = state.kakaoContent.description,
-                                        imageUrl = state.kakaoContent.imageUrl,
-                                        buttonText = state.kakaoContent.buttonText,
-                                        url = state.kakaoContent.url,
+                            .fillMaxWidth()
+                            .padding(top = 24.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .drawBehind {
+                                    drawLine(
+                                        strokeWidth = 1f * density,
+                                        color = Gray300,
+                                        start = Offset(0f, size.height),
+                                        end = Offset(size.width, size.height),
                                     )
                                 }
-                            },
-                        text = stringResource(R.string.invite_friend_text),
-                        style = StaticTypeScale.Default.body5,
-                        color = WeSpotThemeManager.colors.txtSubColor,
-                    )
+                                .clickable {
+                                    if (state.kakaoContent != KakaoContent.EMPTY) {
+                                        activityNavigator.navigateToKakao(
+                                            context = context,
+                                            title = state.kakaoContent.title,
+                                            description = state.kakaoContent.description,
+                                            imageUrl = state.kakaoContent.imageUrl,
+                                            buttonText = state.kakaoContent.buttonText,
+                                            url = state.kakaoContent.url,
+                                        )
+                                    }
+                                },
+                            text = stringResource(R.string.invite_friend_text),
+                            style = StaticTypeScale.Default.body5,
+                            color = WeSpotThemeManager.colors.txtSubColor,
+                        )
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier.padding(top = 16.dp),
+                ) {
+                    items(
+                        pagingData.itemCount,
+                        key = pagingData.itemKey { key -> key.id },
+                    ) { index ->
+                        val item = pagingData[index]
+
+                        item?.let {
+                            WSListItem(
+                                title = item.name,
+                                subTitle = item.toSchoolInfo(),
+                                selected = state.selectedUser.id == item.id,
+                                backgroundColor = item.profileCharacter.backgroundColor,
+                                onClick = {
+                                    keyboard?.hide()
+                                    action(SendAction.OnUserSelected(item))
+                                },
+                                imageContent = {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(item.profileCharacter.iconUrl)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = stringResource(
+                                            com.bff.wespot.ui.R.string.user_character_image,
+                                        ),
+                                    )
+                                },
+                            )
+                        }
+                    }
                 }
             }
-
-            ReceiverSelectionLayout(
-                navigator = navigator,
-                isEditing = navArgs.isEditing,
-                keyboard = keyboard,
-                pagingData = pagingData,
-                state = state,
-                action = action,
-            )
         }
     }
 
@@ -210,88 +252,5 @@ fun ReceiverSelectionScreen(
 
     LaunchedEffect(Unit) {
         action(SendAction.OnReceiverScreenEntered)
-    }
-}
-
-@Composable
-private fun ReceiverSelectionLayout(
-    navigator: ReceiverSelectionNavigator,
-    isEditing: Boolean,
-    keyboard: SoftwareKeyboardController?,
-    pagingData: LazyPagingItems<User>,
-    state: SendUiState,
-    action: (SendAction) -> Unit,
-) {
-    SubcomposeLayout { constraints ->
-        val listGradientPlaceable = subcompose("listGradient") {
-            ListBottomGradient(height = 124)
-        }.first().measure(constraints)
-
-        val selectButtonPlaceable = subcompose("selectButton") {
-            WSButton(
-                onClick = {
-                    if (isEditing) {
-                        navigator.navigateUp()
-                        return@WSButton
-                    }
-                    navigator.navigateMessageWriteScreen(
-                        args = MessageWriteScreenArgs(isEditing = false),
-                    )
-                },
-                paddingValues = PaddingValues(vertical = 12.dp),
-                enabled = state.selectedUser.name.isNotBlank(),
-                text = if (isEditing) stringResource(R.string.edit_done) else stringResource(R.string.next),
-                content = { it() },
-            )
-        }.first().measure(constraints)
-
-        val receiverListMaxHeight = constraints.maxHeight - selectButtonPlaceable.height
-        val receiverListPlaceable = subcompose("receiverList") {
-            LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-                items(
-                    pagingData.itemCount,
-                    key = pagingData.itemKey { it.id },
-                ) { index ->
-                    val item = pagingData[index]
-
-                    item?.let {
-                        WSListItem(
-                            title = item.name,
-                            subTitle = item.toSchoolInfo(),
-                            selected = state.selectedUser.id == item.id,
-                            backgroundColor = item.profileCharacter.backgroundColor,
-                            onClick = {
-                                keyboard?.hide()
-                                action(SendAction.OnUserSelected(item))
-                            },
-                            imageContent = {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(item.profileCharacter.iconUrl)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = stringResource(
-                                        com.bff.wespot.ui.R.string.user_character_image,
-                                    ),
-                                )
-                            },
-                        )
-                    }
-                }
-            }
-        }.first().measure(constraints.copy(maxHeight = receiverListMaxHeight))
-
-        var yPosition = 0
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            receiverListPlaceable.placeRelative(0, yPosition)
-            yPosition += receiverListMaxHeight
-
-            listGradientPlaceable.placeRelative(
-                x = 0,
-                y = constraints.maxHeight - listGradientPlaceable.height,
-            )
-
-            selectButtonPlaceable.placeRelative(0, yPosition)
-        }
     }
 }
