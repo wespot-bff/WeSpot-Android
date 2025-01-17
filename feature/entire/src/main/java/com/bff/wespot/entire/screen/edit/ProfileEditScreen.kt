@@ -144,12 +144,16 @@ fun ProfileEditScreen(
         BottomButtonLayout(
             modifier = Modifier.padding(it),
             button = {
-                val isEdited = state.isProfileImageChange() || state.isValidIntroduceInputChanged()
+                val isEdited = state.profile.introduction != state.introductionInput ||
+                    state.profilePath != state.profile.profileCharacter.iconUrl
                 WSButton(
                     onClick = {
                         action(EntireEditAction.OnProfileEditDoneButtonClicked)
                     },
-                    enabled = isEdited && state.hasProfanity.not(),
+                    enabled =
+                        isEdited &&
+                            state.hasProfanity.not() &&
+                            state.introductionInput.length in 0..20,
                     text = stringResource(id = R.string.edit_done),
                     content = { it() },
                 )
