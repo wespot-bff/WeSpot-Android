@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,6 +43,7 @@ import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
@@ -144,10 +144,9 @@ fun MessageEditScreen(
             )
         },
     ) {
-        SubcomposeLayout(
+        BottomButtonLayout(
             modifier = Modifier.padding(it),
-        ) { constraints ->
-            val buttonPlaceable = subcompose("button") {
+            button = {
                 WSButton(
                     onClick = {
                         if (state.isReservedMessage) {
@@ -161,82 +160,73 @@ fun MessageEditScreen(
                     ),
                     content = { it() },
                 )
-            }.first().measure(constraints)
-
-            val contentMaxHeight = constraints.maxHeight - buttonPlaceable.height
-            val contentPlaceable = subcompose("content") {
-                Column(modifier = Modifier.verticalScroll(scrollState)) {
-                    EditField(
-                        title = stringResource(R.string.receiver),
-                        value = state.selectedUser.toDescription(),
-                    ) {
-                        navigator.navigateReceiverSelectionScreen(
-                            args = ReceiverSelectionScreenArgs(isEditing = true),
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    EditField(
-                        title = stringResource(R.string.message_sent_content),
-                        value = state.messageInput,
-                        isMessageContent = true,
-                    ) {
-                        navigator.navigateMessageWriteScreen(
-                            args = MessageWriteScreenArgs(isEditing = true),
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
-                        contentAlignment = Alignment.CenterEnd,
-                    ) {
-                        LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
-                    }
-
-                    EditField(
-                        title = stringResource(R.string.sender),
-                        value = if (state.isRandomName) state.randomName else state.sender,
-                        onClicked = { toast = true },
+            },
+        ) {
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                EditField(
+                    title = stringResource(R.string.receiver),
+                    value = state.selectedUser.toDescription(),
+                ) {
+                    navigator.navigateReceiverSelectionScreen(
+                        args = ReceiverSelectionScreenArgs(isEditing = true),
                     )
+                }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp, start = 30.dp, end = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                Spacer(modifier = Modifier.height(16.dp))
+
+                EditField(
+                    title = stringResource(R.string.message_sent_content),
+                    value = state.messageInput,
+                    isMessageContent = true,
+                ) {
+                    navigator.navigateMessageWriteScreen(
+                        args = MessageWriteScreenArgs(isEditing = true),
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
+                }
+
+                EditField(
+                    title = stringResource(R.string.sender),
+                    value = if (state.isRandomName) state.randomName else state.sender,
+                    onClicked = { toast = true },
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, start = 30.dp, end = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.random_nickname_title),
-                                style = StaticTypeScale.Default.body1,
-                                color = WeSpotThemeManager.colors.txtTitleColor,
-                            )
+                        Text(
+                            text = stringResource(R.string.random_nickname_title),
+                            style = StaticTypeScale.Default.body1,
+                            color = WeSpotThemeManager.colors.txtTitleColor,
+                        )
 
-                            Text(
-                                text = stringResource(R.string.random_nickname_subtitle),
-                                style = StaticTypeScale.Default.body8,
-                                color = Gray400,
-                            )
-                        }
+                        Text(
+                            text = stringResource(R.string.random_nickname_subtitle),
+                            style = StaticTypeScale.Default.body8,
+                            color = Gray400,
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                        WSSwitch(checked = state.isRandomName) {
-                            action(SendAction.OnRandomNameToggled(it))
-                        }
+                    WSSwitch(checked = state.isRandomName) {
+                        action(SendAction.OnRandomNameToggled(it))
                     }
                 }
-            }.first().measure(constraints.copy(maxHeight = contentMaxHeight))
-
-            layout(constraints.maxWidth, constraints.maxHeight) {
-                contentPlaceable.placeRelative(0, 0)
-
-                buttonPlaceable.placeRelative(0, contentMaxHeight)
             }
         }
 
