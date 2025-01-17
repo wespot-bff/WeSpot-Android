@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
@@ -64,6 +63,7 @@ import com.bff.wespot.entire.state.edit.EntireEditAction
 import com.bff.wespot.entire.state.edit.EntireEditSideEffect
 import com.bff.wespot.entire.viewmodel.EntireEditViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
@@ -141,111 +141,99 @@ fun ProfileEditScreen(
             )
         },
     ) {
-        SubcomposeLayout(modifier = Modifier.padding(it)) { constraints ->
-            val buttonPlaceable = subcompose("button") {
-                val isEdited = state.profile.introduction != state.introductionInput ||
-                    state.profilePath != state.profile.profileCharacter.iconUrl
+        BottomButtonLayout(
+            modifier = Modifier.padding(it),
+            button = {
+                val isEdited = state.isProfileImageChange() || state.isValidIntroduceInputChanged()
                 WSButton(
                     onClick = {
                         action(EntireEditAction.OnProfileEditDoneButtonClicked)
                     },
-                    enabled =
-                        isEdited &&
-                            state.hasProfanity.not() &&
-                            state.introductionInput.length in 0..20,
+                    enabled = isEdited && state.hasProfanity.not(),
                     text = stringResource(id = R.string.edit_done),
                     content = { it() },
                 )
-            }.first().measure(constraints)
-
-            val contentMaxHeight = constraints.maxHeight - buttonPlaceable.height
-            val contentPlaceable = subcompose("content") {
-                Column(
+            },
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
                     modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .verticalScroll(scrollState),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .padding(top = 16.dp)
+                        .clickableSingle {
+                            if (state.profilePath.isNullOrEmpty()) {
+                                action(EntireEditAction.OpenPicker)
+                            } else {
+                                action(EntireEditAction.ChangeBottomSheetState(true))
+                            }
+                        },
                 ) {
-                    Box(
+                    AsyncImage(
                         modifier = Modifier
-                            .padding(top = 16.dp)
-                            .clickableSingle {
-                                if (state.profilePath.isNullOrEmpty()) {
-                                    action(EntireEditAction.OpenPicker)
-                                } else {
-                                    action(EntireEditAction.ChangeBottomSheetState(true))
-                                }
-                            },
-                    ) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(90.dp)
-                                .clip(CircleShape),
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(state.profilePath)
-                                .error(com.bff.wespot.designsystem.R.drawable.default_image)
-                                .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
-                                .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = stringResource(
-                                com.bff.wespot.ui.R.string.user_character_image,
-                            ),
-                        )
-
-                        Image(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .align(Alignment.BottomEnd)
-                                .zIndex(1f),
-                            painter = painterResource(id = R.drawable.edit),
-                            contentDescription = stringResource(R.string.edit_icon),
-                        )
-                    }
-
-                    ProfileEditLockedItem(
-                        title = stringResource(R.string.name),
-                        content = state.profile.name,
-                        onClick = {
-                            focusManager.clearFocus()
-                            action(EntireEditAction.OnRequestDialogShown)
-                        },
+                            .size(90.dp)
+                            .clip(CircleShape),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(state.profilePath)
+                            .error(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = stringResource(
+                            com.bff.wespot.ui.R.string.user_character_image,
+                        ),
                     )
 
-                    ProfileEditLockedItem(
-                        title = stringResource(R.string.gender),
-                        content = state.profile.toGenderKorean(),
-                        onClick = {
-                            focusManager.clearFocus()
-                            action(EntireEditAction.OnRequestDialogShown)
-                        },
-                    )
-
-                    ProfileEditLockedItem(
-                        title = stringResource(R.string.school_info),
-                        content = state.profile.toSchoolInfo(),
-                        onClick = {
-                            focusManager.clearFocus()
-                            action(EntireEditAction.OnRequestDialogShown)
-                        },
-                    )
-
-                    ProfileIntroductionItem(
-                        title = stringResource(com.bff.wespot.ui.R.string.introduction),
-                        content = state.introductionInput,
-                        hasProfanity = state.hasProfanity,
-                        onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
-                        onFocusChanged = { focusState ->
-                            action(EntireEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
-                        },
+                    Image(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.BottomEnd)
+                            .zIndex(1f),
+                        painter = painterResource(id = R.drawable.edit),
+                        contentDescription = stringResource(R.string.edit_icon),
                     )
                 }
-            }.first().measure(constraints.copy(maxHeight = contentMaxHeight))
 
-            layout(constraints.maxWidth, constraints.maxHeight) {
-                contentPlaceable.placeRelative(0, 0)
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.name),
+                    content = state.profile.name,
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(EntireEditAction.OnRequestDialogShown)
+                    },
+                )
 
-                buttonPlaceable.placeRelative(0, contentMaxHeight)
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.gender),
+                    content = state.profile.toGenderKorean(),
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(EntireEditAction.OnRequestDialogShown)
+                    },
+                )
+
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.school_info),
+                    content = state.profile.toSchoolInfo(),
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(EntireEditAction.OnRequestDialogShown)
+                    },
+                )
+
+                ProfileIntroductionItem(
+                    title = stringResource(com.bff.wespot.ui.R.string.introduction),
+                    content = state.introductionInput,
+                    hasProfanity = state.hasProfanity,
+                    onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
+                    onFocusChanged = { focusState ->
+                        action(EntireEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
+                    },
+                )
             }
         }
     }
