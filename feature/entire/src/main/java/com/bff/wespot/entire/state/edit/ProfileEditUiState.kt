@@ -17,5 +17,7 @@ data class ProfileEditUiState(
     val profilePath: String? = null,
     val changeBottomSheet: Boolean = false,
 ) {
-    fun isEditedState() = profile.introduction != introductionInput || profilePath != profile.profileCharacter.iconUrl
+    fun isEditedProfile() = profile.introduction != introductionInput || profilePath != profile.profileCharacter.iconUrl
+
+    fun isValidIntroduce() = hasProfanity.not() && introductionInput.length in 0..20
 }

@@ -239,15 +239,11 @@ fun ProfileEditScreen(
         ) {
             ListBottomGradient(height = 124)
 
-            val isEdited = state.isEditedState()
             WSButton(
                 onClick = {
                     action(ProfileEditAction.OnProfileEditDoneButtonClicked)
                 },
-                enabled =
-                    isEdited &&
-                        state.hasProfanity.not() &&
-                        state.introductionInput.length in 0..20,
+                enabled = state.isEditedProfile() && state.isValidIntroduce() && state.isLoading.not(),
                 text = stringResource(id = R.string.edit_done),
                 content = { it() },
             )
