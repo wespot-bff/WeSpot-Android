@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,27 +39,17 @@ import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.WSSelectionItem
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
-import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-interface MessageReportNavigator {
-    fun navigateUp()
-    fun popUpToMessageScreen()
-}
-
-data class MessageReportScreenArgs(
-    val messageId: Int,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination(navArgsDelegate = MessageReportScreenArgs::class)
 @Composable
 fun MessageReportScreen(
     viewModel: ReportViewModel = hiltViewModel(),
+    messageId: Int,
     showToast: (ToastState) -> Unit,
-    navigator: MessageReportNavigator,
+    onDismiss: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -69,9 +60,7 @@ fun MessageReportScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            ReportSideEffect.NavigateToMessage -> {
-                navigator.popUpToMessageScreen()
-            }
+            ReportSideEffect.NavigateToMessage -> onDismiss()
 
             is ReportSideEffect.ShowToast -> {
                 showToast(
@@ -90,7 +79,7 @@ fun MessageReportScreen(
             WSTopBar(
                 title = stringResource(id = R.string.report_title),
                 canNavigateBack = true,
-                navigateUp = navigator::navigateUp,
+                navigateUp = onDismiss,
             )
         },
     ) { innerPadding ->
@@ -170,7 +159,9 @@ fun MessageReportScreen(
         }
 
         Box(
-            modifier = Modifier.fillMaxSize().zIndex(1f),
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(1f),
             contentAlignment = Alignment.BottomCenter,
         ) {
             ListBottomGradient(height = 120)
@@ -185,5 +176,9 @@ fun MessageReportScreen(
                 },
             )
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.onAction(ReportAction.OnMessageReportScreenEntered(messageId))
     }
 }
