@@ -63,6 +63,6 @@ class NotificationNavigatorImpl(private val navController: NavController): Notif
     }
 
     override fun navigateToProfileEditScreen() {
-        navController.navigate(ProfileEditScreenDestination() within AppNavGraphs.entire)
+        navController.navigate(ProfileEditScreenDestination within AppNavGraphs.entire)
     }
 }
