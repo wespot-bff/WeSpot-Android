@@ -37,7 +37,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.component.EntireListItem
-import com.bff.wespot.entire.screen.edit.ProfileEditNavArgs
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
@@ -47,7 +46,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 interface EntireNavigator {
     fun navigateToSetting()
-    fun navigateToProfileEditScreen(args: ProfileEditNavArgs)
+    fun navigateToProfileEditScreen()
 }
 
 @Destination
@@ -69,7 +68,7 @@ internal fun EntireScreen(
         ) {
             ProfileContent(
                 profile = state.profile,
-                onClick = { navigator.navigateToProfileEditScreen(ProfileEditNavArgs(false)) },
+                onClick = { navigator.navigateToProfileEditScreen() },
             )
 
             Spacer(modifier = Modifier.height(8.dp))

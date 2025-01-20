@@ -1,6 +1,7 @@
 package com.bff.wespot.data.repository.user
 
 import com.bff.wespot.data.local.source.ProfileDataSource
+import com.bff.wespot.data.remote.model.user.request.ProfileUpdateDto
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.model.user.response.Profile
@@ -23,8 +24,14 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun clearProfile() = profileDataSource.clearProfile()
 
-    override suspend fun updateProfileImage(url: String?): Boolean {
-        val response = userDataSource.updateProfileImage(url)
-        return response.isSuccess
-    }
+    override suspend fun updateProfile(
+        introduction: String,
+        profileImageUrl: String?
+    ): Result<Unit> =
+        userDataSource.updateProfile(
+            ProfileUpdateDto(
+                introduction = introduction,
+                url = profileImageUrl,
+            ),
+        )
 }
