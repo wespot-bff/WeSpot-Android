@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.screen.state.notification
+package com.bff.wespot.entire.state.notification
 
 sealed class NotificationSettingSideEffect {
     data object ShowMarketingDialog : NotificationSettingSideEffect()

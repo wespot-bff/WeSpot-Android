@@ -232,7 +232,7 @@ fun VoteResultScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp)
-                            .padding(end = 12.dp),
+                            .padding(end = 4.dp),
                         contentAlignment = Alignment.CenterEnd,
                     ) {
                         WSTextButton(
