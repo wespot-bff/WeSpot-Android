@@ -2,11 +2,9 @@ package com.bff.wespot.message.screen.send
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +35,7 @@ import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
+import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.util.handleSideEffect
@@ -96,76 +95,74 @@ fun MessageWriteScreen(
             )
         },
     ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .padding(horizontal = 20.dp),
+        BottomButtonLayout(
+            modifier = Modifier.padding(it),
+            button = {
+                WSButton(
+                    onClick = {
+                        if (state.isReservedMessage) {
+                            navigator.navigateUp()
+                        } else {
+                            navigator.navigateMessageEditScreen(EditMessageScreenArgs())
+                        }
+                    },
+                    enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
+                    text = stringResource(
+                        if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
+                    ),
+                    content = { it() },
+                )
+            },
         ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 3.dp),
-                text = stringResource(R.string.message_write_title),
-                style = StaticTypeScale.Default.header1,
-                color = WeSpotThemeManager.colors.txtTitleColor,
-            )
-
-            Spacer(modifier = Modifier.padding(top = 16.dp))
-
-            WsTextField(
-                value = state.messageInput,
-                onValueChange = { text ->
-                    action(SendAction.OnMessageChanged(text))
-                },
-                placeholder = stringResource(R.string.message_write_text_holder),
-                isError = false,
-                focusRequester = focusRequester,
-                textFieldType = WsTextFieldType.Message,
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                val warningMessage = when {
-                    state.messageInput.length > MESSAGE_MAX_LENGTH -> {
-                        stringResource(R.string.message_length_limit)
-                    }
-
-                    state.hasProfanity -> {
-                        stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
-                    }
-                    else -> ""
-                }
-
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 Text(
-                    modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp),
-                    text = warningMessage,
-                    style = StaticTypeScale.Default.body7,
-                    color = WeSpotThemeManager.colors.dangerColor,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 3.dp),
+                    text = stringResource(R.string.message_write_title),
+                    style = StaticTypeScale.Default.header1,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
                 )
 
-                LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
-            }
-        }
-    }
+                Spacer(modifier = Modifier.padding(top = 16.dp))
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        WSButton(
-            onClick = {
-                if (state.isReservedMessage) {
-                    navigator.navigateUp()
-                } else {
-                    navigator.navigateMessageEditScreen(EditMessageScreenArgs())
+                WsTextField(
+                    value = state.messageInput,
+                    onValueChange = { text ->
+                        action(SendAction.OnMessageChanged(text))
+                    },
+                    placeholder = stringResource(R.string.message_write_text_holder),
+                    isError = false,
+                    focusRequester = focusRequester,
+                    textFieldType = WsTextFieldType.Message,
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    val warningMessage = when {
+                        state.messageInput.length > MESSAGE_MAX_LENGTH -> {
+                            stringResource(R.string.message_length_limit)
+                        }
+
+                        state.hasProfanity -> {
+                            stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
+                        }
+                        else -> ""
+                    }
+
+                    Text(
+                        modifier = Modifier.padding(top = 5.dp, start = 10.dp, end = 10.dp),
+                        text = warningMessage,
+                        style = StaticTypeScale.Default.body7,
+                        color = WeSpotThemeManager.colors.dangerColor,
+                    )
+
+                    LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
                 }
-            },
-            enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
-            text = stringResource(
-                if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
-            ),
-        ) {
-            it()
+            }
         }
     }
 

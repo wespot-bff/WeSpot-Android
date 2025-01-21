@@ -3,7 +3,6 @@ package com.bff.wespot.vote.screen
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -63,7 +62,7 @@ interface IndividualVoteNavigator {
     fun navigateUp()
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination(
     navArgsDelegate = IndividualVoteArgs::class,
 )

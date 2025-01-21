@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -65,8 +64,8 @@ import com.bff.wespot.entire.state.edit.ProfileEditAction
 import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
 import com.bff.wespot.entire.viewmodel.ProfileEditViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
-import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.component.WSBottomSheet
@@ -138,115 +137,112 @@ fun ProfileEditScreen(
             )
         },
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .clickableSingle {
-                        if (state.profilePath.isNullOrEmpty()) {
-                            action(ProfileEditAction.OpenPicker)
-                        } else {
-                            action(ProfileEditAction.ChangeBottomSheetState(true))
-                        }
+        BottomButtonLayout(
+            modifier = Modifier.padding(it),
+            button = {
+                val isEdited = state.profile.introduction != state.introductionInput ||
+                    state.profilePath != state.profile.profileCharacter.iconUrl
+                WSButton(
+                    onClick = {
+                        action(ProfileEditAction.OnProfileEditDoneButtonClicked)
                     },
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(90.dp)
-                        .clip(CircleShape),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(state.profilePath)
-                        .error(com.bff.wespot.designsystem.R.drawable.default_image)
-                        .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
-                        .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = stringResource(
-                        com.bff.wespot.ui.R.string.user_character_image,
-                    ),
+                    enabled =
+                        isEdited &&
+                            state.hasProfanity.not() &&
+                            state.introductionInput.length in 0..20,
+                    text = stringResource(id = R.string.edit_done),
+                    content = { it() },
                 )
-
+            },
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Box(
                     modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.BottomEnd)
-                        .clip(WeSpotThemeManager.shapes.small)
-                        .background(WeSpotThemeManager.colors.secondaryBtnColor)
-                        .zIndex(1f),
+                        .padding(top = 16.dp)
+                        .clickableSingle {
+                            if (state.profilePath.isNullOrEmpty()) {
+                                action(ProfileEditAction.OpenPicker)
+                            } else {
+                                action(ProfileEditAction.ChangeBottomSheetState(true))
+                            }
+                        },
                 ) {
-                    Image(
+                    AsyncImage(
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(14.dp),
-                        painter = painterResource(id = R.drawable.album),
-                        contentDescription = stringResource(R.string.edit_icon),
+                            .size(90.dp)
+                            .clip(CircleShape),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(state.profilePath)
+                            .error(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = stringResource(
+                            com.bff.wespot.ui.R.string.user_character_image,
+                        ),
                     )
+
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.BottomEnd)
+                            .clip(WeSpotThemeManager.shapes.small)
+                            .background(WeSpotThemeManager.colors.secondaryBtnColor)
+                            .zIndex(1f),
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(14.dp),
+                            painter = painterResource(id = R.drawable.album),
+                            contentDescription = stringResource(R.string.edit_icon),
+                        )
+                    }
                 }
+
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.name),
+                    content = state.profile.name,
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(ProfileEditAction.OnRequestDialogShown)
+                    },
+                )
+
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.gender),
+                    content = state.profile.toGenderKorean(),
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(ProfileEditAction.OnRequestDialogShown)
+                    },
+                )
+
+                ProfileEditLockedItem(
+                    title = stringResource(R.string.school_info),
+                    content = state.profile.toSchoolInfo(),
+                    onClick = {
+                        focusManager.clearFocus()
+                        action(ProfileEditAction.OnRequestDialogShown)
+                    },
+                )
+
+                ProfileIntroductionItem(
+                    title = stringResource(com.bff.wespot.ui.R.string.introduction),
+                    content = state.introductionInput,
+                    hasProfanity = state.hasProfanity,
+                    onValueChange = { value -> action(ProfileEditAction.OnIntroductionChanged(value)) },
+                    onFocusChanged = { focusState ->
+                        action(ProfileEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
+                    },
+                )
             }
-
-            ProfileEditLockedItem(
-                title = stringResource(R.string.name),
-                content = state.profile.name,
-                onClick = {
-                    focusManager.clearFocus()
-                    action(ProfileEditAction.OnRequestDialogShown)
-                },
-            )
-
-            ProfileEditLockedItem(
-                title = stringResource(R.string.gender),
-                content = state.profile.toGenderKorean(),
-                onClick = {
-                    focusManager.clearFocus()
-                    action(ProfileEditAction.OnRequestDialogShown)
-                },
-            )
-
-            ProfileEditLockedItem(
-                title = stringResource(R.string.school_info),
-                content = state.profile.toSchoolInfo(),
-                onClick = {
-                    focusManager.clearFocus()
-                    action(ProfileEditAction.OnRequestDialogShown)
-                },
-            )
-
-            ProfileIntroductionItem(
-                title = stringResource(com.bff.wespot.ui.R.string.introduction),
-                content = state.introductionInput,
-                hasProfanity = state.hasProfanity,
-                onValueChange = { value -> action(ProfileEditAction.OnIntroductionChanged(value)) },
-                onFocusChanged = { focusState ->
-                    action(ProfileEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
-                },
-            )
-
-            Spacer(modifier = Modifier.height(72.dp))
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 10.dp),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
-            ListBottomGradient(height = 124)
-
-            WSButton(
-                onClick = {
-                    action(ProfileEditAction.OnProfileEditDoneButtonClicked)
-                },
-                enabled = state.isEditedProfile() && state.isValidIntroduce() && state.isLoading.not(),
-                text = stringResource(id = R.string.edit_done),
-                content = { it() },
-            )
         }
     }
 
