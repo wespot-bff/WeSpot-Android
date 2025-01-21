@@ -8,4 +8,8 @@ class MessagingRepositoryImpl @Inject constructor(
     private val messagingDataSource: MessagingDataSource,
 ): MessagingRepository {
     override suspend fun getFcmToken(): String = messagingDataSource.getFcmToken()
+
+    override suspend fun removeFcmToken() = messagingDataSource.removeFcmToken()
+
+    override suspend fun initMessaging() = messagingDataSource.initMessaging()
 }
