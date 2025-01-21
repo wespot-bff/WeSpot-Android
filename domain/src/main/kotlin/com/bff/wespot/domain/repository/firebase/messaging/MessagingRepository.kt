@@ -4,6 +4,4 @@ interface MessagingRepository {
     suspend fun getFcmToken(): String
 
     suspend fun removeFcmToken()
-
-    suspend fun initMessaging()
 }

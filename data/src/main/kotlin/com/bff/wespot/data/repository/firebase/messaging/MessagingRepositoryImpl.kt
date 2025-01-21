@@ -10,6 +10,4 @@ class MessagingRepositoryImpl @Inject constructor(
     override suspend fun getFcmToken(): String = messagingDataSource.getFcmToken()
 
     override suspend fun removeFcmToken() = messagingDataSource.removeFcmToken()
-
-    override suspend fun initMessaging() = messagingDataSource.initMessaging()
 }
