@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,9 +60,9 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.state.edit.EntireEditAction
-import com.bff.wespot.entire.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.viewmodel.EntireEditViewModel
+import com.bff.wespot.entire.state.edit.ProfileEditAction
+import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
+import com.bff.wespot.entire.viewmodel.ProfileEditViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -80,18 +81,13 @@ interface ProfileEditNavigator {
     fun navigateToEntireScreen()
 }
 
-data class ProfileEditNavArgs(
-    val isCompleteProfileEdit: Boolean,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination(navArgsDelegate = ProfileEditNavArgs::class)
+@Destination
 @Composable
 fun ProfileEditScreen(
     navigator: ProfileEditNavigator,
-    navArgs: ProfileEditNavArgs,
     activityNavigator: Navigator,
-    viewModel: EntireEditViewModel = hiltViewModel(),
+    viewModel: ProfileEditViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     var toast by remember { mutableStateOf(ToastState()) }
@@ -107,7 +103,7 @@ fun ProfileEditScreen(
     val pickImage =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
             it?.let {
-                action(EntireEditAction.OnProfileImagePicked(it.toString()))
+                action(ProfileEditAction.OnProfileImagePicked(it.toString()))
             }
         }
 
@@ -115,12 +111,12 @@ fun ProfileEditScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            is EntireEditSideEffect.ShowToast -> {
+            is ProfileEditSideEffect.ShowToast -> {
                 toast = it.toastState
                 focusManager.clearFocus()
             }
 
-            is EntireEditSideEffect.OpenPicker -> {
+            is ProfileEditSideEffect.OpenPicker -> {
                 pickImage.launch(
                     PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.SingleMimeType(
@@ -148,7 +144,7 @@ fun ProfileEditScreen(
                     state.profilePath != state.profile.profileCharacter.iconUrl
                 WSButton(
                     onClick = {
-                        action(EntireEditAction.OnProfileEditDoneButtonClicked)
+                        action(ProfileEditAction.OnProfileEditDoneButtonClicked)
                     },
                     enabled =
                         isEdited &&
@@ -170,9 +166,9 @@ fun ProfileEditScreen(
                         .padding(top = 16.dp)
                         .clickableSingle {
                             if (state.profilePath.isNullOrEmpty()) {
-                                action(EntireEditAction.OpenPicker)
+                                action(ProfileEditAction.OpenPicker)
                             } else {
-                                action(EntireEditAction.ChangeBottomSheetState(true))
+                                action(ProfileEditAction.ChangeBottomSheetState(true))
                             }
                         },
                 ) {
@@ -192,14 +188,22 @@ fun ProfileEditScreen(
                         ),
                     )
 
-                    Image(
+                    Box(
                         modifier = Modifier
                             .size(24.dp)
                             .align(Alignment.BottomEnd)
+                            .clip(WeSpotThemeManager.shapes.small)
+                            .background(WeSpotThemeManager.colors.secondaryBtnColor)
                             .zIndex(1f),
-                        painter = painterResource(id = R.drawable.edit),
-                        contentDescription = stringResource(R.string.edit_icon),
-                    )
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(14.dp),
+                            painter = painterResource(id = R.drawable.album),
+                            contentDescription = stringResource(R.string.edit_icon),
+                        )
+                    }
                 }
 
                 ProfileEditLockedItem(
@@ -207,7 +211,7 @@ fun ProfileEditScreen(
                     content = state.profile.name,
                     onClick = {
                         focusManager.clearFocus()
-                        action(EntireEditAction.OnRequestDialogShown)
+                        action(ProfileEditAction.OnRequestDialogShown)
                     },
                 )
 
@@ -216,7 +220,7 @@ fun ProfileEditScreen(
                     content = state.profile.toGenderKorean(),
                     onClick = {
                         focusManager.clearFocus()
-                        action(EntireEditAction.OnRequestDialogShown)
+                        action(ProfileEditAction.OnRequestDialogShown)
                     },
                 )
 
@@ -225,7 +229,7 @@ fun ProfileEditScreen(
                     content = state.profile.toSchoolInfo(),
                     onClick = {
                         focusManager.clearFocus()
-                        action(EntireEditAction.OnRequestDialogShown)
+                        action(ProfileEditAction.OnRequestDialogShown)
                     },
                 )
 
@@ -233,9 +237,9 @@ fun ProfileEditScreen(
                     title = stringResource(com.bff.wespot.ui.R.string.introduction),
                     content = state.introductionInput,
                     hasProfanity = state.hasProfanity,
-                    onValueChange = { value -> action(EntireEditAction.OnIntroductionChanged(value)) },
+                    onValueChange = { value -> action(ProfileEditAction.OnIntroductionChanged(value)) },
                     onFocusChanged = { focusState ->
-                        action(EntireEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
+                        action(ProfileEditAction.OnProfileEditTextFieldFocused(focusState.isFocused))
                     },
                 )
             }
@@ -287,18 +291,18 @@ fun ProfileEditScreen(
                 )
             },
             cancelButtonClick = {
-                action(EntireEditAction.OnRequestDialogDismissed)
+                action(ProfileEditAction.OnRequestDialogDismissed)
             },
             dialogType = WSDialogType.TwoButton,
         ) {
-            action(EntireEditAction.OnRequestDialogDismissed)
+            action(ProfileEditAction.OnRequestDialogDismissed)
         }
     }
 
     if (state.changeBottomSheet) {
         WSBottomSheet(
             closeSheet = {
-                action(EntireEditAction.ChangeBottomSheetState(false))
+                action(ProfileEditAction.ChangeBottomSheetState(false))
             },
         ) {
             Column(
@@ -309,8 +313,8 @@ fun ProfileEditScreen(
                     text = stringResource(R.string.change_image),
                     modifier = Modifier
                         .clickableSingle {
-                            action(EntireEditAction.OpenPicker)
-                            action(EntireEditAction.ChangeBottomSheetState(false))
+                            action(ProfileEditAction.OpenPicker)
+                            action(ProfileEditAction.ChangeBottomSheetState(false))
                         }
                         .fillMaxWidth()
                         .padding(vertical = 16.dp, horizontal = 28.dp)
@@ -325,8 +329,8 @@ fun ProfileEditScreen(
                     text = stringResource(R.string.remove_image),
                     modifier = Modifier
                         .clickableSingle {
-                            action(EntireEditAction.OnProfileImagePicked(null))
-                            action(EntireEditAction.ChangeBottomSheetState(false))
+                            action(ProfileEditAction.OnProfileImagePicked(null))
+                            action(ProfileEditAction.ChangeBottomSheetState(false))
                         }
                         .fillMaxWidth()
                         .padding(vertical = 16.dp, horizontal = 28.dp)
@@ -339,7 +343,7 @@ fun ProfileEditScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(EntireEditAction.OnProfileEditScreenEntered(navArgs.isCompleteProfileEdit))
+        action(ProfileEditAction.OnProfileEditScreenEntered)
     }
 }
 

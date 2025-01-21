@@ -7,14 +7,14 @@ import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
-import com.bff.wespot.domain.usecase.UpdateProfileIntroductionUseCase
 import com.bff.wespot.domain.util.RemoteConfigKey.PROFILE_CHANGE_GOOGLE_FORM_URL
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.common.INPUT_DEBOUNCE_TIME
 import com.bff.wespot.entire.common.INTRODUCTION_MAX_LENGTH
-import com.bff.wespot.entire.state.edit.EntireEditAction
-import com.bff.wespot.entire.state.edit.EntireEditSideEffect
-import com.bff.wespot.entire.state.edit.EntireEditUiState
+import com.bff.wespot.entire.state.edit.ProfileEditAction
+import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
+import com.bff.wespot.entire.state.edit.ProfileEditUiState
+import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.ui.model.ToastState
@@ -33,66 +33,63 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class EntireEditViewModel @Inject constructor(
+class ProfileEditViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val commonRepository: CommonRepository,
-    private val remoteConfigRepository: RemoteConfigRepository,
-    private val updateProfileIntroductionUseCase: UpdateProfileIntroductionUseCase,
     private val checkProfanityUseCase: CheckProfanityUseCase,
-) : BaseViewModel(), ContainerHost<EntireEditUiState, EntireEditSideEffect> {
-    override val container = container<EntireEditUiState, EntireEditSideEffect>(EntireEditUiState())
+    remoteConfigRepository: RemoteConfigRepository,
+) : BaseViewModel(), ContainerHost<ProfileEditUiState, ProfileEditSideEffect> {
+    override val container = container<ProfileEditUiState, ProfileEditSideEffect>(
+        ProfileEditUiState(
+            profileChangeGoogleFormUrl =
+                remoteConfigRepository.fetchFromRemoteConfig(PROFILE_CHANGE_GOOGLE_FORM_URL),
+        ),
+    )
 
     private val introductionInput: MutableStateFlow<String> = MutableStateFlow("")
 
-    fun onAction(action: EntireEditAction) = intent {
+    fun onAction(action: ProfileEditAction) = intent {
         when (action) {
-            EntireEditAction.OnProfileEditDoneButtonClicked -> {
-                updateIntroduction()
-                uploadProfileImage()
+            ProfileEditAction.OnProfileEditDoneButtonClicked -> {
+                handleProfileUpdate()
             }
 
-            is EntireEditAction.OnProfileEditScreenEntered -> {
-                fetchWebLinkFromRemoteConfig()
-                handleProfileEditScreenEntered()
+            is ProfileEditAction.OnProfileEditScreenEntered -> {
+                cacheUserProfile()
                 observeProfileFlow()
                 observeIntroductionInput()
-
-                if (action.isCompleteEdit) {
-                    postEditDoneSideToast()
-                }
             }
 
-            is EntireEditAction.OnProfileEditTextFieldFocused ->
+            is ProfileEditAction.OnProfileEditTextFieldFocused ->
                 handleProfileEditButtonText(action.focused)
 
-            is EntireEditAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
-            is EntireEditAction.OnRequestDialogDismissed -> {
+            is ProfileEditAction.OnIntroductionChanged -> handleIntroductionChanged(action.introduction)
+            is ProfileEditAction.OnRequestDialogDismissed -> {
                 reduce { state.copy(requestDialog = false) }
             }
 
-            is EntireEditAction.OnRequestDialogShown -> {
+            is ProfileEditAction.OnRequestDialogShown -> {
                 reduce { state.copy(requestDialog = true) }
             }
 
-            is EntireEditAction.OnProfileImagePicked -> {
+            is ProfileEditAction.OnProfileImagePicked -> {
                 reduce { state.copy(profilePath = action.profilePath) }
             }
 
-            is EntireEditAction.ChangeBottomSheetState -> {
+            is ProfileEditAction.ChangeBottomSheetState -> {
                 reduce { state.copy(changeBottomSheet = action.isBottomSheetOpen) }
             }
 
-            is EntireEditAction.OpenPicker -> {
-                postSideEffect(EntireEditSideEffect.OpenPicker)
+            is ProfileEditAction.OpenPicker -> {
+                postSideEffect(ProfileEditSideEffect.OpenPicker)
             }
         }
     }
 
-    private fun handleProfileEditScreenEntered() {
+    private fun cacheUserProfile() {
         viewModelScope.launch {
             runCatching {
-                profileRepository.getProfile()
-            }.onSuccess { profile ->
+                val profile = profileRepository.getProfile()
                 handleIntroductionChanged(profile.introduction)
             }
         }
@@ -109,11 +106,6 @@ class EntireEditViewModel @Inject constructor(
                     reduce { state.copy(profile = it, profilePath = it.profileCharacter.iconUrl) }
                 }
         }
-    }
-
-    private fun fetchWebLinkFromRemoteConfig() = intent {
-        val webLink = remoteConfigRepository.fetchFromRemoteConfig(PROFILE_CHANGE_GOOGLE_FORM_URL)
-        reduce { state.copy(profileChangeGoogleFormUrl = webLink) }
     }
 
     private fun handleIntroductionChanged(introduction: String) = intent {
@@ -144,18 +136,6 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun postEditDoneSideToast() = intent {
-        postSideEffect(
-            EntireEditSideEffect.ShowToast(
-                ToastState(
-                    show = true,
-                    message = R.string.edit_done,
-                    type = WSToastType.Success,
-                ),
-            ),
-        )
-    }
-
     private fun hasProfanity(introduction: String) = intent {
         runCatching {
             val result = checkProfanityUseCase(introduction)
@@ -167,72 +147,65 @@ class EntireEditViewModel @Inject constructor(
         }
     }
 
-    private fun updateIntroduction() = intent {
-        if (state.profile.introduction == state.introductionInput) return@intent
-        reduce { state.copy(isLoading = true) }
+    private fun handleProfileUpdate() = intent {
         viewModelScope.launch {
-            updateProfileIntroductionUseCase(state.introductionInput)
+            reduce { state.copy(isLoading = true) }
+            val profilePath = state.profilePath
+            if (profilePath == null) {
+                updateProfile(null)
+                return@launch
+            }
+
+            uploadProfileImage(profilePath)
                 .onSuccess {
-                    postEditDoneSideToast()
-                    reduce { state.copy(isLoading = false) }
+                    updateProfile(it)
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
                 .onFailure {
-                    Timber.e(it)
                     reduce { state.copy(isLoading = false) }
+                    Timber.e(it)
                 }
         }
     }
 
-    private fun uploadProfileImage() = intent {
-        if (state.profilePath == null) {
-            updateProfile(null)
-            return@intent
+    private suspend fun uploadProfileImage(profilePath: String): Result<String> =
+        runCatching {
+            commonRepository.uploadImage(profilePath)
+        }.mapCatching { uploadResult ->
+            if (!uploadResult.isSuccess) throw NetworkException()
+            uploadResult.getOrThrow()
         }
 
+    private suspend fun updateProfile(url: String?) = intent {
         runCatching {
-            reduce {
-                state.copy(
-                    loading = true,
-                )
-            }
-            state.profilePath?.let {
-                commonRepository.uploadImage(it)
-            }
-        }.onNetworkFailure {
-            postSideEffect(it.toSideEffect())
+            profileRepository.updateProfile(
+                introduction = state.introductionInput,
+                profileImageUrl = url,
+            )
         }.onSuccess {
-            if (it != null && it.isSuccess) {
-                val url = it.getOrNull()
-                updateProfile(url)
-            }
+            profileRepository.setProfile(
+                state.profile.copy(
+                    profileCharacter = state.profile.profileCharacter.copy(
+                        iconUrl = state.profilePath ?: "",
+                    ),
+                    introduction = state.introductionInput,
+                ),
+            )
+            postSideEffect(
+                ProfileEditSideEffect.ShowToast(
+                    ToastState(
+                        show = true,
+                        message = R.string.edit_done,
+                        type = WSToastType.Success,
+                    ),
+                ),
+            )
         }.onFailure {
             Timber.e(it)
-        }
-    }
-
-    private fun updateProfile(url: String?) = intent {
-        viewModelScope.launch {
-            runCatching {
-                profileRepository.updateProfileImage(url)
-            }.onSuccess { success ->
-                if (success) {
-                    profileRepository.setProfile(
-                        state.profile.copy(
-                            profileCharacter = state.profile.profileCharacter.copy(
-                                iconUrl = state.profilePath ?: "",
-                            ),
-                        ),
-                    )
-                    postEditDoneSideToast()
-                    reduce { state.copy(loading = false) }
-                }
-            }.onFailure {
-                Timber.e(it)
-                reduce { state.copy(loading = false) }
-            }
+        }.also {
+            reduce { state.copy(isLoading = false) }
         }
     }
 }

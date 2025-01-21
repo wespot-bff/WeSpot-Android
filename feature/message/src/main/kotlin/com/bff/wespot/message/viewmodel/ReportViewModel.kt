@@ -1,6 +1,5 @@
 package com.bff.wespot.message.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.CommonRepository
@@ -24,19 +23,24 @@ import javax.inject.Inject
 @HiltViewModel
 class ReportViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ContainerHost<ReportUiState, ReportSideEffect> {
-    override val container = container<ReportUiState, ReportSideEffect>(
-        ReportUiState(
-            messageId = savedStateHandle["messageId"] ?: -1,
-        ),
-    )
+    override val container = container<ReportUiState, ReportSideEffect>(ReportUiState())
 
     fun onAction(action: ReportAction) {
         when (action) {
+            is ReportAction.OnMessageReportScreenEntered -> {
+                handleMessageReportScreenEntered(action.messageId)
+            }
             is ReportAction.OnReportReasonSelected -> handleReportReasonSelected(action.reportReason)
             is ReportAction.OnReportReasonChanged -> handleReportReasonChanged(action.reason)
             ReportAction.OnMessageReportButtonClicked -> reportMessage()
+        }
+    }
+
+    private fun handleMessageReportScreenEntered(messageId: Int) = intent {
+        /** MessageReportScreen이 Dialog로, 보이지 않아도 상태가 유지되므로 진입시에 상태를 초기화 한다.*/
+        reduce {
+            ReportUiState(messageId = messageId)
         }
     }
 

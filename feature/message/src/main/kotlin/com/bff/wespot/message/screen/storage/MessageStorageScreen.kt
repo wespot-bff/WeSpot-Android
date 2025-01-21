@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -58,7 +59,7 @@ import com.bff.wespot.message.common.SENT_MESSAGE_INDEX
 import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.MessageOptionType
-import com.bff.wespot.message.screen.MessageReportScreenArgs
+import com.bff.wespot.message.screen.MessageReportScreen
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
@@ -84,7 +85,6 @@ fun MessageStorageScreen(
     type: NotificationType,
     messageId: Int? = null,
     navigateToReservedMessageScreen: () -> Unit,
-    navigateToMessageReportScreen: (MessageReportScreenArgs) -> Unit,
     showToast: (ToastState) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
 ) {
@@ -96,6 +96,7 @@ fun MessageStorageScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showMessageDialog by remember { mutableStateOf(false) }
     var showMessageOptionDialog by remember { mutableStateOf(false) }
+    var showMessageReportScreen by remember { mutableStateOf(false) }
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -113,6 +114,10 @@ fun MessageStorageScreen(
 
             is StorageSideEffect.ShowMessageDialog -> {
                 showMessageDialog = true
+            }
+
+            is StorageSideEffect.ShowReportMessageScreen -> {
+                showMessageReportScreen = true
             }
         }
     }
@@ -236,18 +241,14 @@ fun MessageStorageScreen(
             okButtonClick = {
                 when (state.messageOptionType) {
                     MessageOptionType.DELETE -> {
-                        action(
-                            StorageAction.OnMessageDeleteButtonClicked,
-                        )
+                        action(StorageAction.OnMessageDeleteButtonClicked)
                     }
                     MessageOptionType.BLOCK -> {
-                        action(
-                            StorageAction.OnMessageBlockButtonClicked,
-                        )
+                        action(StorageAction.OnMessageBlockButtonClicked)
                     }
-                    MessageOptionType.REPORT -> navigateToMessageReportScreen(
-                        MessageReportScreenArgs(state.optionButtonClickedMessageId),
-                    )
+                    MessageOptionType.REPORT -> {
+                        action(StorageAction.OnMessageReportButtonClicked)
+                    }
                 }
                 showMessageOptionDialog = false
                 showBottomSheet = false
@@ -255,6 +256,19 @@ fun MessageStorageScreen(
             onDismissRequest = { showMessageOptionDialog = false },
             cancelButtonClick = { showMessageOptionDialog = false },
         )
+    }
+
+    if (showMessageReportScreen) {
+        Dialog(
+            onDismissRequest = { },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            MessageReportScreen(
+                messageId = state.optionButtonClickedMessageId,
+                showToast = showToast,
+                onDismiss = { showMessageReportScreen = false },
+            )
+        }
     }
 
     if (state.isLoading) {

@@ -71,12 +71,9 @@ class StorageViewModel @Inject constructor(
         when (action) {
             StorageAction.StartTimeTracking -> startTimePeriodChecker()
             StorageAction.CancelTimeTracking -> cancelTimePeriodChecker()
-            StorageAction.OnMessageDeleteButtonClicked -> {
-                handleDeleteMessageButtonClicked()
-            }
-            StorageAction.OnMessageBlockButtonClicked -> {
-                handleBlockMessageButtonClicked()
-            }
+            StorageAction.OnMessageDeleteButtonClicked -> handleMessageDeleteButtonClicked()
+            StorageAction.OnMessageBlockButtonClicked -> handleMessageBlockButtonClicked()
+            StorageAction.OnMessageReportButtonClicked -> handleMessageReportButtonClicked()
             is StorageAction.OnStorageChipSelected -> {
                 when (action.messageType) {
                     MessageType.SENT -> {
@@ -216,7 +213,7 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    private fun handleDeleteMessageButtonClicked() = intent {
+    private fun handleMessageDeleteButtonClicked() = intent {
         viewModelScope.launch {
             messageStorageRepository.deleteMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
@@ -241,7 +238,7 @@ class StorageViewModel @Inject constructor(
         }
     }
 
-    private fun handleBlockMessageButtonClicked() = intent {
+    private fun handleMessageBlockButtonClicked() = intent {
         viewModelScope.launch {
             messageStorageRepository.blockMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
@@ -260,5 +257,9 @@ class StorageViewModel @Inject constructor(
                     postSideEffect(it.toSideEffect())
                 }
         }
+    }
+
+    private fun handleMessageReportButtonClicked() = intent {
+        postSideEffect(StorageSideEffect.ShowReportMessageScreen)
     }
 }

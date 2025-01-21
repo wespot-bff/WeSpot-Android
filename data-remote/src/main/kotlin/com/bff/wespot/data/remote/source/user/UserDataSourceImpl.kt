@@ -1,9 +1,8 @@
 package com.bff.wespot.data.remote.source.user
 
 import com.bff.wespot.data.remote.model.user.request.FeatureNotificationSettingDto
-import com.bff.wespot.data.remote.model.user.request.IntroductionDto
+import com.bff.wespot.data.remote.model.user.request.ProfileUpdateDto
 import com.bff.wespot.data.remote.model.user.response.NotificationSettingDto
-import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.data.remote.model.user.response.ProfileDto
 import com.bff.wespot.data.remote.model.user.response.UserListDto
 import com.bff.wespot.network.extensions.safeRequest
@@ -65,30 +64,12 @@ class UserDataSourceImpl @Inject constructor(
             setBody(notificationSetting)
         }
 
-    override suspend fun updateIntroduction(introduction: IntroductionDto): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Put
-                path("api/v1/users/me")
-            }
-            setBody(introduction)
-        }
-
-    override suspend fun updateCharacter(character: ProfileCharacterDto): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Put
-                path("api/v1/users/me")
-            }
-            setBody(character)
-        }
-
-    override suspend fun updateProfileImage(url: String?): Result<Unit> =
+    override suspend fun updateProfile(profileUpdateDto: ProfileUpdateDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/image/update-profile")
-                parameter("url", url)
             }
+            setBody(profileUpdateDto)
         }
 }
