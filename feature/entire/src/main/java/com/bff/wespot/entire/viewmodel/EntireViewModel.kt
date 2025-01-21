@@ -7,6 +7,7 @@ import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
+import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
@@ -22,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -35,6 +37,7 @@ class EntireViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authRepository: AuthRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
+    private val messagingRepository: MessagingRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val dataStoreRepository: DataStoreRepository,
     private val messageBlockedRepository: BasePagingRepository<BlockedMessage, Paging<BlockedMessage>>,
@@ -124,9 +127,12 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun clearCachedData() {
-        viewModelScope.launch {
-            launch { dataStoreRepository.clear() }
-            launch { profileRepository.clearProfile() }
+        viewModelScope.launch(coroutineDispatcher) {
+            supervisorScope {
+                launch { dataStoreRepository.clear() }
+                launch { profileRepository.clearProfile() }
+                launch { messagingRepository.removeFcmToken() }
+            }
         }
     }
 
