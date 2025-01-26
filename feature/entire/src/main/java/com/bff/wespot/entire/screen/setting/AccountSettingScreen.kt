@@ -28,6 +28,7 @@ import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -50,6 +51,8 @@ fun AccountSettingScreen(
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
+
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
