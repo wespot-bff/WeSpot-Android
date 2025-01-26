@@ -94,7 +94,9 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun handleRevoke() = intent {
+        postSideEffect(EntireSideEffect.CloseRevokeDialog)
         reduce { state.copy(isLoading = true) }
+
         val revokeReason = if (state.isInputRevokeReasonSelected) {
             state.revokeReasonList + state.inputRevokeReason
         } else {
@@ -119,7 +121,6 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun handleSignOut() = intent {
-        postSideEffect(EntireSideEffect.CloseSignOutDialog)
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch(coroutineDispatcher) {

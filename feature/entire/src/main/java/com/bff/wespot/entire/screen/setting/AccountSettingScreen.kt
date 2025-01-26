@@ -63,6 +63,7 @@ fun AccountSettingScreen(
             is EntireSideEffect.CloseSignOutDialog -> {
                 showDialog = false
             }
+            is EntireSideEffect.CloseRevokeDialog -> { }
         }
     }
 
