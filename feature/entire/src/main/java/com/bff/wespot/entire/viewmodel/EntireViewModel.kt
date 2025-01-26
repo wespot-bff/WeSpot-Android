@@ -119,6 +119,7 @@ class EntireViewModel @Inject constructor(
     }
 
     private fun handleSignOut() = intent {
+        postSideEffect(EntireSideEffect.CloseSignOutDialog)
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch(coroutineDispatcher) {

@@ -60,6 +60,9 @@ fun AccountSettingScreen(
                 val intent = activityNavigator.navigateToAuth(context)
                 context.startActivity(intent)
             }
+            is EntireSideEffect.CloseSignOutDialog -> {
+                showDialog = false
+            }
         }
     }
 

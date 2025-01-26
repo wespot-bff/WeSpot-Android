@@ -75,6 +75,7 @@ fun RevokeConfirmScreen(
                 intent.putExtra(EXTRA_TOAST_MESSAGE, context.getString(R.string.revoke_done))
                 context.startActivity(intent)
             }
+            else -> { }
         }
     }
 
