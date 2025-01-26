@@ -85,9 +85,17 @@ class KakaoLoginManager {
     companion object {
         fun logout() = UserApiClient.instance.logout { error ->
             if (error != null) {
-                Timber.d("로그아웃 실패. SDK에서 토큰 삭제됨")
+                Timber.e("Kakao 로그아웃 실패. SDK에서 토큰 삭제됨 : $error")
             } else {
-                Timber.d("로그아웃 성공. SDK에서 토큰 삭제됨")
+                Timber.d("Kakao 로그아웃 성공. SDK에서 토큰 삭제됨")
+            }
+        }
+
+        fun revoke() = UserApiClient.instance.unlink { error ->
+            if (error != null) {
+                Timber.e("Kakao 탈퇴 실패 : $error")
+            } else {
+                Timber.d("Kakao 탈퇴 성공. SDK에서 토큰 삭제됨")
             }
         }
     }
