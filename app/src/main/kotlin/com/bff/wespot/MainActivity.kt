@@ -52,12 +52,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.R.string
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.component.FeatureOverviewDialog
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -72,12 +74,9 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
-import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
-import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.model.VersionUpdateDialogState
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.ui.component.TopToast
@@ -93,7 +92,6 @@ import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import timber.log.Timber
-import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -117,15 +115,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
-
-        val navArgs = getMainScreenArgsFromIntent()
-        checkEnteredFromPushNotification(navArgs)
+        handleIntentData()
 
         setContent {
             WeSpotTheme {
                 MainScreen(
                     navigator = navigator,
-                    navArgs = navArgs,
                     analyticsHelper = analyticsHelper,
                     viewModel = viewModel,
                 )
@@ -146,16 +141,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkEnteredFromPushNotification(data: MainScreenNavArgs) {
-        if (data.type != NotificationType.IDLE) {
-            viewModel.onAction(MainAction.OnEnteredByPushNotification(data))
-        }
-    }
+    private fun handleIntentData() = with(intent) {
+        val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
+        if (type == NotificationType.IDLE) return
 
-    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
         val targetId = getIntExtra(EXTRA_TARGET_ID, -1)
         val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
-        val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
         val date = getStringExtra(EXTRA_DATE).orEmpty()
 
         removeExtra(EXTRA_TARGET_ID)
@@ -163,27 +154,22 @@ class MainActivity : ComponentActivity() {
         removeExtra(EXTRA_TYPE)
         removeExtra(EXTRA_DATE)
 
-        MainScreenNavArgs(
-            targetId = targetId,
-            userId = userId,
-            type = type,
-            date = date,
+        viewModel.onAction(
+            MainAction.OnEnteredByPushNotification(
+                type = type,
+                targetId = targetId,
+                userId = userId,
+                date = date,
+                appVersion = this@MainActivity.getAppVersionName(),
+            ),
         )
     }
 }
-
-data class MainScreenNavArgs(
-    val type: NotificationType,
-    val userId: String,
-    val targetId: Int,
-    val date: String,
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
     navigator: Navigator,
-    navArgs: MainScreenNavArgs,
     analyticsHelper: AnalyticsHelper,
     viewModel: MainViewModel,
 ) {
@@ -191,9 +177,12 @@ private fun MainScreen(
     val action = viewModel::onAction
 
     val navController = rememberNavController()
+    val notificationNavigator by remember { mutableStateOf(NotificationNavigatorImpl(navController)) }
+
     val context = LocalContext.current
     var toast by remember { mutableStateOf(ToastState()) }
-    var showVersionUpdateDialog by remember { mutableStateOf(VersionUpdateDialogState()) }
+    var showVersionUpdateDialog by remember { mutableStateOf(false) }
+    var showFeatureOverviewDialog by remember { mutableStateOf(false) }
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
@@ -201,10 +190,28 @@ private fun MainScreen(
     viewModel.collectSideEffect {
         when (it) {
             is MainSideEffect.ShowVersionUpdateDialog -> {
-                showVersionUpdateDialog = VersionUpdateDialogState(
-                    show = true,
-                    versionUpdateType = it.versionUpdateType,
+                showVersionUpdateDialog = true
+            }
+            is MainSideEffect.ShowFeatureOverviewDialog -> {
+                showFeatureOverviewDialog = true
+            }
+            is MainSideEffect.NavigateToVoteResultScreen -> {
+                notificationNavigator.navigateToVoteResultScreen(
+                    isNavigateFromNotification = false,
+                    isTodayVoteResult = it.isTodayVoteResult
                 )
+            }
+            is MainSideEffect.NavigateToMessageScreen -> {
+                notificationNavigator.navigateToMessageScreen(type = it.type, messageId = it.messageId)
+            }
+            MainSideEffect.NavigateToVoteStorageScreen -> {
+                notificationNavigator.navigateToVoteStorageScreen()
+            }
+            MainSideEffect.NavigateToReceiverSelectionScreen -> {
+                notificationNavigator.navigateToReceiverSelectionScreen()
+            }
+            MainSideEffect.NavigateToVotingScreen -> {
+                notificationNavigator.navigateToVotingScreen()
             }
         }
     }
@@ -306,11 +313,6 @@ private fun MainScreen(
                 restricted = state.restriction.restrictionType != RestrictionType.NONE,
             )
         }
-
-        if (state.isPushNotificationNavigation) {
-            action(MainAction.OnNavigateByPushNotification)
-            navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
-        }
     }
 
     TopToast(
@@ -321,17 +323,17 @@ private fun MainScreen(
         toast = toast.copy(show = false)
     }
 
-    if (showVersionUpdateDialog.show) {
+    if (showVersionUpdateDialog) {
         WSDialog(
-            title = showVersionUpdateDialog.versionUpdateType.title,
-            subTitle = showVersionUpdateDialog.versionUpdateType.subTitle,
+            title = state.versionUpdateType.title,
+            subTitle = state.versionUpdateType.subTitle,
             okButtonText = stringResource(string.update),
             cancelButtonText = stringResource(string.next_time_update),
             okButtonClick = {
                 navigator.navigateToWebLink(context, state.playStoreLink)
             },
             cancelButtonClick = {
-                showVersionUpdateDialog = showVersionUpdateDialog.copy(show = false)
+                showVersionUpdateDialog = false
             },
             onDismissRequest = {},
         )
@@ -347,6 +349,19 @@ private fun MainScreen(
             },
             state = state,
             navigator = navigator,
+        )
+    }
+
+    if (showFeatureOverviewDialog.not()) {
+        FeatureOverviewDialog(
+            notificationType = NotificationType.PROFILE_UPDATE/*state.notificationType*/,
+            onDismissButtonClicked = {
+                showFeatureOverviewDialog = false
+            },
+            onNavigateButtonClicked = { deepLink ->
+                showFeatureOverviewDialog = false
+                navController.navigate(deepLink.toUri())
+            },
         )
     }
 
@@ -462,45 +477,6 @@ private fun RowScope.TabItem(
                     WeSpotThemeManager.colors.disableIcnColor
                 },
             )
-        }
-    }
-}
-
-private fun navigateScreenFromNavArgs(
-    navArgs: MainScreenNavArgs,
-    navigator: NotificationNavigator
-) {
-    when (navArgs.type) {
-        NotificationType.MESSAGE -> {
-            navigator.navigateToReceiverSelectionScreen()
-        }
-
-        NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
-            navigator.navigateToMessageScreen(type = navArgs.type, messageId = navArgs.targetId)
-        }
-
-        NotificationType.VOTE -> {
-            navigator.navigateToVotingScreen()
-        }
-
-        NotificationType.VOTE_RESULT -> {
-            val voteResultDate = navArgs.date.toLocalDateFromDashPattern()
-            val isTodayVoteResult = LocalDate.now().equals(voteResultDate)
-            navigator.navigateToVoteResultScreen(
-                isNavigateFromNotification = false,
-                isTodayVoteResult = isTodayVoteResult
-            )
-        }
-
-        NotificationType.VOTE_RECEIVED -> {
-            navigator.navigateToVoteStorageScreen()
-        }
-
-        NotificationType.PROFILE_UPDATE -> {
-            navigator.navigateToProfileEditScreen()
-        }
-
-        NotificationType.IDLE -> {
         }
     }
 }
