@@ -15,6 +15,9 @@ import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 
+/**
+ * 알림 화면에서의 전환과 푸시 알림 전환에서 사용되는 Navigator
+ */
 class NotificationNavigatorImpl(private val navController: NavController): NotificationNavigator {
     override fun navigateUp() {
         navController.navigateUp()
