@@ -4,6 +4,7 @@ import com.bff.wespot.data.repository.CommonRepositoryImpl
 import com.bff.wespot.data.repository.DataStoreRepositoryImpl
 import com.bff.wespot.data.repository.firebase.config.RemoteConfigRepositoryImpl
 import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
+import com.bff.wespot.data.repository.dynamicui.DynamicUiRepositoryImpl
 import com.bff.wespot.data.repository.firebase.messaging.MessagingRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageStorageRepositoryImpl
@@ -15,6 +16,7 @@ import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
+import com.bff.wespot.domain.repository.dynamicui.DynamicUiRepository
 import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
@@ -96,4 +98,10 @@ abstract class DataModule {
     abstract fun messagingRepository(
         messagingRepositoryImpl: MessagingRepositoryImpl
     ): MessagingRepository
+
+    @Binds
+    @Singleton
+    abstract fun dynamicUiRepository(
+        dynamicUiRepositoryImpl: DynamicUiRepositoryImpl
+    ): DynamicUiRepository
 }
