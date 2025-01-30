@@ -6,6 +6,8 @@ import com.bff.wespot.data.remote.source.ImageDecoderDataSource
 import com.bff.wespot.data.remote.source.ImageDecoderDataSourceImpl
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
+import com.bff.wespot.data.remote.source.dynamicui.DynamicDataSourceImpl
+import com.bff.wespot.data.remote.source.dynamicui.DynamicUiDataSource
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSource
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSource
@@ -88,4 +90,10 @@ abstract class DataRemoteModule {
     abstract fun bindsImageDecoderDataSource(
         imageDecoderDataSourceImpl: ImageDecoderDataSourceImpl
     ): ImageDecoderDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsDynamicUiDataSource(
+        dynamicUiDataSourceImpl: DynamicDataSourceImpl
+    ): DynamicUiDataSource
 }
