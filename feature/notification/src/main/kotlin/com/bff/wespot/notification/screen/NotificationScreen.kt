@@ -118,7 +118,7 @@ fun NotificationScreen(
                                 action(NotificationAction.OnNotificationClicked(item))
 
                                 when (item.type) {
-                                    NotificationType.IDLE -> {}
+                                    NotificationType.IDLE, NotificationType.UPDATE_REQUIRED -> {}
 
                                     NotificationType.MESSAGE -> {
                                         if (checkMessageSentTime()) {

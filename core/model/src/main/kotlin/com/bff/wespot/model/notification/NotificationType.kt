@@ -9,13 +9,14 @@ enum class NotificationType {
     VOTE_RESULT,
     VOTE_RECEIVED,
     PROFILE_UPDATE,
+    UPDATE_REQUIRED,
     ;
 
     fun toDescription(): String = when (this) {
         MESSAGE, MESSAGE_SENT, MESSAGE_RECEIVED -> "쪽지 알림"
         VOTE, VOTE_RESULT, VOTE_RECEIVED -> "투표 알림"
         PROFILE_UPDATE -> "프로필 알림"
-        IDLE -> ""
+        IDLE, UPDATE_REQUIRED -> ""
     }
 
     fun isVoteNotificationType(): Boolean = this in listOf(VOTE, VOTE_RESULT, VOTE_RECEIVED)
