@@ -72,6 +72,7 @@ import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.clickableSingle
 import com.bff.wespot.ui.util.handleSideEffect
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
@@ -82,7 +83,13 @@ interface ProfileEditNavigator {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination(
+    deepLinks = [
+        DeepLink(
+            uriPattern = "wespot://all/profile-edit",
+        ),
+    ],
+)
 @Composable
 fun ProfileEditScreen(
     navigator: ProfileEditNavigator,
