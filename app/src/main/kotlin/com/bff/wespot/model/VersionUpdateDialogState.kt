@@ -5,11 +5,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
 import com.bff.wespot.R
 
-data class VersionUpdateDialogState(
-    val show: Boolean = false,
-    val versionUpdateType: VersionUpdateType = VersionUpdateType.USABILITY_IMPROVEMENT,
-)
-
 /**
  * @property [USABILITY_IMPROVEMENT] 사용성 개선
  * @property [NEW_FEATURE_ADDED] 새로운 기능 추가
