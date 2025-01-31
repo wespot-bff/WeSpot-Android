@@ -12,4 +12,6 @@ sealed class MainAction {
         val date: String,
         val appVersion: String,
     ) : MainAction()
+    data object OnFeatureOverviewDialogDismiss : MainAction()
+    data class OnFeatureOverviewDialogNavigate(val deepLink: String) : MainAction()
 }

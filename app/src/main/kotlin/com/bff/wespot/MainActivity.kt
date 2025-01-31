@@ -51,6 +51,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
@@ -59,7 +61,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.R.string
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
-import com.bff.wespot.component.FeatureOverviewDialog
+import com.bff.wespot.component.FeatureOverviewScreen
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -204,6 +206,9 @@ private fun MainScreen(
             is MainSideEffect.NavigateToMessageScreen -> {
                 notificationNavigator.navigateToMessageScreen(type = it.type, messageId = it.messageId)
             }
+            is MainSideEffect.NavigateToDeepLink -> {
+                navController.navigate(it.deepLink.toUri())
+            }
             MainSideEffect.NavigateToVoteStorageScreen -> {
                 notificationNavigator.navigateToVoteStorageScreen()
             }
@@ -212,6 +217,9 @@ private fun MainScreen(
             }
             MainSideEffect.NavigateToVotingScreen -> {
                 notificationNavigator.navigateToVotingScreen()
+            }
+            MainSideEffect.DismissFeatureOverviewDialog -> {
+                showFeatureOverviewDialog = false
             }
         }
     }
@@ -352,17 +360,21 @@ private fun MainScreen(
         )
     }
 
-    if (showFeatureOverviewDialog.not()) {
-        FeatureOverviewDialog(
-            notificationType = NotificationType.PROFILE_UPDATE/*state.notificationType*/,
-            onDismissButtonClicked = {
-                showFeatureOverviewDialog = false
-            },
-            onNavigateButtonClicked = { deepLink ->
-                showFeatureOverviewDialog = false
-                navController.navigate(deepLink.toUri())
-            },
-        )
+    if (showFeatureOverviewDialog) {
+        Dialog(
+            onDismissRequest = { },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            FeatureOverviewScreen(
+                notificationType = state.notificationType,
+                onDismissButtonClicked = {
+                    action(MainAction.OnFeatureOverviewDialogDismiss)
+                },
+                onNavigateButtonClicked = { deepLink ->
+                    action(MainAction.OnFeatureOverviewDialogNavigate(deepLink))
+                },
+            )
+        }
     }
 
     LaunchedEffect(Unit) {

@@ -84,6 +84,15 @@ class MainViewModel @Inject constructor(
                 )
             }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
+            is MainAction.OnFeatureOverviewDialogDismiss -> {
+                intent { postSideEffect(MainSideEffect.DismissFeatureOverviewDialog) }
+            }
+            is MainAction.OnFeatureOverviewDialogNavigate -> {
+                intent {
+                    postSideEffect(MainSideEffect.DismissFeatureOverviewDialog)
+                    postSideEffect(MainSideEffect.NavigateToDeepLink(action.deepLink))
+                }
+            }
         }
     }
 
