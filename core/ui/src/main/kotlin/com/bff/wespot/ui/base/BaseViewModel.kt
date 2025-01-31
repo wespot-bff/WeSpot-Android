@@ -18,7 +18,7 @@ open class BaseViewModel : ViewModel() {
     val networkState
         get() = networkStateChecker.networkState
 
-    private val _sideEffect = Channel<SideEffect>()
+    private val _sideEffect = Channel<SideEffect>(Channel.BUFFERED)
     val sideEffect = _sideEffect.receiveAsFlow()
 
     protected suspend fun postSideEffect(sideEffect: SideEffect) = _sideEffect.send(sideEffect)

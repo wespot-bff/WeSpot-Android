@@ -27,7 +27,10 @@ import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
+import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface AccountSettingNavigator {
@@ -47,6 +50,9 @@ fun AccountSettingScreen(
     var showDialog by remember { mutableStateOf(false) }
 
     val action = viewModel::onAction
+    val state by viewModel.collectAsState()
+
+    handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
@@ -54,7 +60,10 @@ fun AccountSettingScreen(
                 val intent = activityNavigator.navigateToAuth(context)
                 context.startActivity(intent)
             }
-            else -> {}
+            is EntireSideEffect.CloseSignOutDialog -> {
+                showDialog = false
+            }
+            is EntireSideEffect.CloseRevokeDialog -> { }
         }
     }
 
@@ -93,6 +102,10 @@ fun AccountSettingScreen(
             cancelButtonClick = { action(EntireAction.OnSignOutButtonClicked) },
             onDismissRequest = { },
         )
+    }
+
+    if (state.isLoading) {
+        LoadingAnimation()
     }
 }
 

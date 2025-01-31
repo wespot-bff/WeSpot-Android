@@ -37,6 +37,7 @@ import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.ui.component.BottomButtonLayout
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.component.WSSelectionItem
 import com.bff.wespot.ui.util.handleSideEffect
@@ -74,6 +75,12 @@ fun RevokeConfirmScreen(
                 intent.putExtra(EXTRA_TOAST_MESSAGE, context.getString(R.string.revoke_done))
                 context.startActivity(intent)
             }
+
+            is EntireSideEffect.CloseRevokeDialog -> {
+                showDialog = false
+            }
+
+            is EntireSideEffect.CloseSignOutDialog -> { }
         }
     }
 
@@ -169,6 +176,10 @@ fun RevokeConfirmScreen(
             },
             onDismissRequest = { },
         )
+    }
+
+    if (state.isLoading) {
+        LoadingAnimation()
     }
 }
 

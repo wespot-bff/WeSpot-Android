@@ -51,8 +51,8 @@ class EntireViewModel @Inject constructor(
             EntireAction.OnRevokeScreenEntered -> observeProfileDataFlow()
             EntireAction.OnBlockListScreenEntered -> getBlockedMessageList()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
-            EntireAction.OnRevokeButtonClicked -> revokeUser()
-            EntireAction.OnSignOutButtonClicked -> signOut()
+            EntireAction.OnRevokeButtonClicked -> handleRevoke()
+            EntireAction.OnSignOutButtonClicked -> handleSignOut()
             EntireAction.UnBlockMessage -> unblockMessage()
             EntireAction.OnInputRevokeReasonSelected -> handleInputRevokeReasonSelected()
             is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
@@ -93,34 +93,52 @@ class EntireViewModel @Inject constructor(
         reduce { state.copy(webLinkMap = webLinkMap) }
     }
 
-    private fun revokeUser() = intent {
+    private fun handleRevoke() = intent {
+        postSideEffect(EntireSideEffect.CloseRevokeDialog)
+        reduce { state.copy(isLoading = true) }
+
         val revokeReason = if (state.isInputRevokeReasonSelected) {
             state.revokeReasonList + state.inputRevokeReason
         } else {
             state.revokeReasonList
         }
 
-        viewModelScope.launch {
-            launch {
-                authRepository.revoke(revokeReason)
-                    .onSuccess {
-                        clearCachedData()
-                        postSideEffect(EntireSideEffect.NavigateToAuth)
-                    }
-                    .onNetworkFailure {
-                        postSideEffect(it.toSideEffect())
-                    }
-                    .onFailure {
-                        Timber.e(it)
-                    }
-            }
+        viewModelScope.launch(coroutineDispatcher) {
+            authRepository.revoke(revokeReason)
+                .onSuccess {
+                    KakaoLoginManager.revoke()
+                    clearCachedData()
+                    postSideEffect(EntireSideEffect.NavigateToAuth)
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    Timber.e(it)
+                }
         }
     }
 
-    private fun signOut() = intent {
-        clearCachedData()
-        KakaoLoginManager.logout()
-        postSideEffect(EntireSideEffect.NavigateToAuth)
+    private fun handleSignOut() = intent {
+        postSideEffect(EntireSideEffect.CloseSignOutDialog)
+        reduce { state.copy(isLoading = true) }
+
+        viewModelScope.launch(coroutineDispatcher) {
+            authRepository.signOut()
+                .onSuccess {
+                    KakaoLoginManager.logout()
+                    clearCachedData()
+                    postSideEffect(EntireSideEffect.NavigateToAuth)
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    Timber.e(it)
+                }
+        }
     }
 
     private fun clearCachedData() {
