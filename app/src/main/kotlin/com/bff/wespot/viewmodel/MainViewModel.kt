@@ -118,7 +118,7 @@ class MainViewModel @Inject constructor(
         when (result) {
             VersionCompareResult.MAJOR_VERSION_UPDATE -> {
                 if (isVersionMatchCachedVersion(latestVersion).not()) {
-                    reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED)}
+                    reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED) }
                     postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
                 }
             }
@@ -130,7 +130,7 @@ class MainViewModel @Inject constructor(
                         .fetchFromRemoteConfig(RemoteConfigKey.VERSION_UPDATE_TYPE)
                     val versionUpdateType = VersionUpdateType.convertVersionUpdateType(versionUpdateTypeString)
 
-                    reduce { state.copy(versionUpdateType = versionUpdateType)}
+                    reduce { state.copy(versionUpdateType = versionUpdateType) }
                     postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
                 }
             }
@@ -198,7 +198,7 @@ class MainViewModel @Inject constructor(
                 postSideEffect(MainSideEffect.ShowFeatureOverviewDialog)
             }
             NotificationType.UPDATE_REQUIRED -> {
-                reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED)}
+                reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED) }
                 postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
             }
             NotificationType.IDLE -> { }
