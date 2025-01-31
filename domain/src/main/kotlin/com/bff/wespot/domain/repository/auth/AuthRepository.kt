@@ -7,4 +7,5 @@ interface AuthRepository {
     suspend fun signIn(signIn: SignIn): Result<Any>
     suspend fun signUp(signUp: SignUp): Boolean
     suspend fun revoke(revokeReasonList: List<String>): Result<Unit>
+    suspend fun signOut(): Result<Unit>
 }

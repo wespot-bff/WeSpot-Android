@@ -61,4 +61,6 @@ class AuthRepositoryImpl @Inject constructor(
             RevokeReasonListDto(revokeReasons = revokeReasonList)
         )
     }
+
+    override suspend fun signOut(): Result<Unit> = authDataSource.signOut()
 }

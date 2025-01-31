@@ -60,4 +60,12 @@ class AuthDataSourceImpl @Inject constructor(
             }
             setBody(revokeReasonList)
         }
+
+    override suspend fun signOut(): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Patch
+                path("api/v1/auth/logout")
+            }
+        }
 }
