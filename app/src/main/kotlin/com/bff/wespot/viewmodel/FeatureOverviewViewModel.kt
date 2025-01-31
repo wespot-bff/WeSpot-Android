@@ -30,14 +30,16 @@ class FeatureOverviewViewModel @Inject constructor(
     fun onAction(action: FeatureOverviewAction) {
         when (action) {
             is FeatureOverviewAction.OnFeatureOverViewDialogShow -> {
-                handleDialogShow(type = action.notificationType)
+                handleDialogShown(type = action.notificationType)
             }
             is FeatureOverviewAction.OnNavigateButtonClicked -> handleNavigateButtonClicked(action.deepLink)
             FeatureOverviewAction.OnDismissButtonClicked -> handleDismissButtonClicked()
         }
     }
 
-    private fun handleDialogShow(type: NotificationType) = intent {
+    private fun handleDialogShown(type: NotificationType) = intent {
+        reduce { state.copy(isLoading = true) }
+
         viewModelScope.launch {
             dynamicUiRepository.getFeatureOverview(type)
                 .onSuccess {
@@ -50,6 +52,9 @@ class FeatureOverviewViewModel @Inject constructor(
                 }
                 .onFailure {
                     Timber.e(it)
+                }
+                .also {
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }
