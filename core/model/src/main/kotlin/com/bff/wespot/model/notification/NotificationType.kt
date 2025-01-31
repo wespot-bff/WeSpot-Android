@@ -31,6 +31,7 @@ enum class NotificationType {
                 VOTE_RESULT.name -> VOTE_RESULT
                 VOTE_RECEIVED.name -> VOTE_RECEIVED
                 PROFILE_UPDATE.name -> PROFILE_UPDATE
+                UPDATE_REQUIRED.name -> UPDATE_REQUIRED
                 else -> IDLE
             }
     }
