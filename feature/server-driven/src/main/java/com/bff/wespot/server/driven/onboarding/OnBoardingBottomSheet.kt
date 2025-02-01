@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 fun OnBoardingBottomSheet(
     viewModel: OnBoardingViewModel = hiltViewModel(),
     category: OnBoardingCategory,
-    closeOnBoarding: () -> Unit
+    closeOnBoarding: () -> Unit,
 ) {
     val contents by viewModel.contents.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
