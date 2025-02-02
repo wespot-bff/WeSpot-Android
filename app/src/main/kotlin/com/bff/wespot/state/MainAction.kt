@@ -1,6 +1,7 @@
 package com.bff.wespot.state
 
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.model.serverDriven.OnBoardingCategory
 
 sealed class MainAction {
     data class OnMainScreenEntered(val appVersionName: String) : MainAction()
@@ -14,4 +15,5 @@ sealed class MainAction {
     ) : MainAction()
     data object OnFeatureOverviewDialogDismiss : MainAction()
     data class OnFeatureOverviewDialogNavigate(val deepLink: String) : MainAction()
+    data class CloseOnBoarding(val category: OnBoardingCategory) : MainAction()
 }

@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":feature:message"))
     implementation(project(":feature:entire"))
     implementation(project(":feature:notification"))
+    implementation(project(":feature:server-driven"))
 
     implementation(libs.splash.screen)
     implementation(platform(libs.firebase.bom))

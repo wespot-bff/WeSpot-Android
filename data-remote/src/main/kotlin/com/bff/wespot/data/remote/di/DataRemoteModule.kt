@@ -18,6 +18,8 @@ import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSourceImpl
 import com.bff.wespot.data.remote.source.notification.NotificationDataSource
 import com.bff.wespot.data.remote.source.notification.NotificationDataSourceImpl
+import com.bff.wespot.data.remote.source.serverDriven.OnBoardingDataSource
+import com.bff.wespot.data.remote.source.serverDriven.OnBoardingDataSourceImpl
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
 import com.bff.wespot.data.remote.source.vote.VoteDataSource
@@ -96,4 +98,8 @@ abstract class DataRemoteModule {
     abstract fun bindsDynamicUiDataSource(
         dynamicUiDataSourceImpl: DynamicDataSourceImpl
     ): DynamicUiDataSource
+
+    abstract fun bindsOnBoardingDataSource(
+        onBoardingDataSourceImpl: OnBoardingDataSourceImpl
+    ): OnBoardingDataSource
 }

@@ -11,4 +11,6 @@ data class MainUiState (
     val notificationType: NotificationType = NotificationType.IDLE,
     val kakaoChannel: String,
     val playStoreLink: String,
+    val showVoteOnBoarding: Boolean = true,
+    val showMessageOnBoarding: Boolean = true
 )
