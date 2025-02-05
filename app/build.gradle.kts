@@ -85,6 +85,4 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kakao.link)
-    implementation(libs.coil.core)
-    implementation(libs.coil.compose)
 }

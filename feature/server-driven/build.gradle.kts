@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:analytics"))
+
     implementation(libs.bundles.orbit)
     implementation(libs.junit)
     implementation(libs.androidx.junit)
