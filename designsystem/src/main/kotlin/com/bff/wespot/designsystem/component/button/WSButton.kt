@@ -155,6 +155,24 @@ sealed interface WSButtonType {
         @Composable
         override fun fontStyle() = StaticTypeScale.Default.body3
     }
+
+    data class Custom(
+        val textColor: Long,
+        val buttonColor: Long,
+        val pressColor: Long,
+    ) : WSButtonType {
+        @Composable
+        override fun background(): Color = Color(buttonColor)
+
+        @Composable
+        override fun pressColor(): Color = Color(pressColor)
+
+        @Composable
+        override fun textColor(): Color = Color(textColor)
+
+        @Composable
+        override fun fontStyle(): TextStyle = StaticTypeScale.Default.body3
+    }
 }
 
 @OrientationPreviews
