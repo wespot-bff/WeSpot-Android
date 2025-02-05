@@ -12,6 +12,7 @@ import com.bff.wespot.R
 enum class VersionUpdateType {
     USABILITY_IMPROVEMENT,
     NEW_FEATURE_ADDED,
+    NONE,
     ;
 
     val title: String
@@ -20,6 +21,7 @@ enum class VersionUpdateType {
         get() = when(this) {
             USABILITY_IMPROVEMENT -> stringResource(id = R.string.update_title_usability_improvement)
             NEW_FEATURE_ADDED -> stringResource(id = R.string.update_title_new_feature_added)
+            NONE -> ""
         }
 
     val subTitle: String
@@ -28,6 +30,7 @@ enum class VersionUpdateType {
         get() = when(this) {
             USABILITY_IMPROVEMENT -> stringResource(id = R.string.update_subtitle_usability_improvement)
             NEW_FEATURE_ADDED -> stringResource(id = R.string.update_subtitle_new_feature_added)
+            NONE -> ""
         }
 
     companion object {

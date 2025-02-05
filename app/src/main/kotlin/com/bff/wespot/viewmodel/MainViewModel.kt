@@ -85,14 +85,12 @@ class MainViewModel @Inject constructor(
                 )
             }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
-            is MainAction.OnFeatureOverviewDialogDismiss -> {
-                intent { postSideEffect(MainSideEffect.DismissFeatureOverviewDialog) }
+            is MainAction.OnVersionUpdateDialogDismiss -> handleVersionUpdateDismiss()
+            is MainAction.OnUpdateOverviewDismiss -> {
+                handleUpdateOverviewDismiss()
             }
-            is MainAction.OnFeatureOverviewDialogNavigate -> {
-                intent {
-                    postSideEffect(MainSideEffect.DismissFeatureOverviewDialog)
-                    postSideEffect(MainSideEffect.NavigateToDeepLink(action.deepLink))
-                }
+            is MainAction.OnUpdateOverviewNavigate -> {
+                handleUpdateOverviewNavigate(action.deepLink)
             }
             is MainAction.CloseOnBoarding -> handleOnBoarding(action.category)
         }
@@ -121,7 +119,6 @@ class MainViewModel @Inject constructor(
             VersionCompareResult.MAJOR_VERSION_UPDATE -> {
                 if (isVersionMatchCachedVersion(latestVersion).not()) {
                     reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED) }
-                    postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
                 }
             }
 
@@ -133,7 +130,6 @@ class MainViewModel @Inject constructor(
                     val versionUpdateType = VersionUpdateType.convertVersionUpdateType(versionUpdateTypeString)
 
                     reduce { state.copy(versionUpdateType = versionUpdateType) }
-                    postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
                 }
             }
 
@@ -197,11 +193,9 @@ class MainViewModel @Inject constructor(
             NotificationType.PROFILE_UPDATE -> {
                 /** 한번 업데이트 유도 모달을 노출 한 경우, 이후 앱 진입에서 업데이트 유도 모달 노출을 방지한다. */
                 dataStoreRepository.saveString(DataStoreKey.VERSION_LAST_CHECKED, appVersion)
-                postSideEffect(MainSideEffect.ShowFeatureOverviewDialog)
             }
             NotificationType.UPDATE_REQUIRED -> {
                 reduce { state.copy(versionUpdateType = VersionUpdateType.NEW_FEATURE_ADDED) }
-                postSideEffect(MainSideEffect.ShowVersionUpdateDialog)
             }
             NotificationType.IDLE -> { }
         }
@@ -224,6 +218,25 @@ class MainViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    private fun handleVersionUpdateDismiss() = intent {
+        reduce {
+            state.copy(versionUpdateType = VersionUpdateType.NONE)
+        }
+    }
+
+    private fun handleUpdateOverviewDismiss() = intent {
+        reduce {
+            state.copy(notificationType = NotificationType.IDLE)
+        }
+    }
+
+    private fun handleUpdateOverviewNavigate(deepLink: String) = intent {
+        reduce {
+            state.copy(notificationType = NotificationType.IDLE)
+        }
+        postSideEffect(MainSideEffect.NavigateToDeepLink(deepLink))
     }
 
     private fun handleOnBoarding(category: OnBoardingCategory) = intent {

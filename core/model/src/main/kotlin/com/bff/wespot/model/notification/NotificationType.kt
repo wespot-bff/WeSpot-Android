@@ -21,6 +21,8 @@ enum class NotificationType {
 
     fun isVoteNotificationType(): Boolean = this in listOf(VOTE, VOTE_RESULT, VOTE_RECEIVED)
 
+    fun isUpdateOverviewType(): Boolean = this in listOf(PROFILE_UPDATE)
+
     companion object {
         fun convertNotificationType(type: String): NotificationType =
             when (type) {

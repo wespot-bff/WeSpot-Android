@@ -62,7 +62,6 @@ import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.R.string
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
-import com.bff.wespot.component.FeatureOverviewScreen
 import com.bff.wespot.designsystem.R
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -82,8 +81,10 @@ import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
 import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.model.VersionUpdateType
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.server.driven.onboarding.OnBoardingBottomSheet
+import com.bff.wespot.server.driven.overview.UpdateOverviewScreen
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
@@ -186,20 +187,12 @@ private fun MainScreen(
 
     val context = LocalContext.current
     var toast by remember { mutableStateOf(ToastState()) }
-    var showVersionUpdateDialog by remember { mutableStateOf(false) }
-    var showFeatureOverviewDialog by remember { mutableStateOf(false) }
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
 
     viewModel.collectSideEffect {
         when (it) {
-            is MainSideEffect.ShowVersionUpdateDialog -> {
-                showVersionUpdateDialog = true
-            }
-            is MainSideEffect.ShowFeatureOverviewDialog -> {
-                showFeatureOverviewDialog = true
-            }
             is MainSideEffect.NavigateToVoteResultScreen -> {
                 notificationNavigator.navigateToVoteResultScreen(
                     isNavigateFromNotification = false,
@@ -220,9 +213,6 @@ private fun MainScreen(
             }
             MainSideEffect.NavigateToVotingScreen -> {
                 notificationNavigator.navigateToVotingScreen()
-            }
-            MainSideEffect.DismissFeatureOverviewDialog -> {
-                showFeatureOverviewDialog = false
             }
         }
     }
@@ -334,7 +324,7 @@ private fun MainScreen(
         toast = toast.copy(show = false)
     }
 
-    if (showVersionUpdateDialog) {
+    if (state.versionUpdateType != VersionUpdateType.NONE) {
         WSDialog(
             title = state.versionUpdateType.title,
             subTitle = state.versionUpdateType.subTitle,
@@ -344,7 +334,7 @@ private fun MainScreen(
                 navigator.navigateToWebLink(context, state.playStoreLink)
             },
             cancelButtonClick = {
-                showVersionUpdateDialog = false
+                action(MainAction.OnVersionUpdateDialogDismiss)
             },
             onDismissRequest = {},
         )
@@ -363,18 +353,18 @@ private fun MainScreen(
         )
     }
 
-    if (showFeatureOverviewDialog) {
+    if (state.notificationType.isUpdateOverviewType()) {
         Dialog(
             onDismissRequest = { },
             properties = DialogProperties(usePlatformDefaultWidth = false),
         ) {
-            FeatureOverviewScreen(
+            UpdateOverviewScreen(
                 notificationType = state.notificationType,
-                onDismissButtonClicked = {
-                    action(MainAction.OnFeatureOverviewDialogDismiss)
+                onDismiss = {
+                    action(MainAction.OnUpdateOverviewDismiss)
                 },
-                onNavigateButtonClicked = { deepLink ->
-                    action(MainAction.OnFeatureOverviewDialogNavigate(deepLink))
+                onNavigate = { deepLink ->
+                    action(MainAction.OnUpdateOverviewNavigate(deepLink))
                 },
             )
         }

@@ -13,7 +13,8 @@ sealed class MainAction {
         val date: String,
         val appVersion: String,
     ) : MainAction()
-    data object OnFeatureOverviewDialogDismiss : MainAction()
-    data class OnFeatureOverviewDialogNavigate(val deepLink: String) : MainAction()
+    data object OnVersionUpdateDialogDismiss : MainAction()
+    data object OnUpdateOverviewDismiss : MainAction()
+    data class OnUpdateOverviewNavigate(val deepLink: String) : MainAction()
     data class CloseOnBoarding(val category: OnBoardingCategory) : MainAction()
 }
