@@ -1,5 +1,7 @@
 package com.bff.wespot.server.driven.component
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,12 +15,15 @@ internal fun ImageSection(
     width: Int,
     height: Int,
     enableTilt: Boolean = true,
+    contentDescription: String? = null,
+    paddingValues: PaddingValues = PaddingValues(0.dp),
 ) {
     AsyncImage(
         model = imageUrl,
-        contentDescription = null,
+        contentDescription = contentDescription,
         modifier = Modifier
             .size(width = width.dp, height = height.dp)
+            .padding(paddingValues)
             .autoTilt(enableTilt),
     )
 }
