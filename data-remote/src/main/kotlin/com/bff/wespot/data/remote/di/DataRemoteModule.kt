@@ -6,8 +6,8 @@ import com.bff.wespot.data.remote.source.ImageDecoderDataSource
 import com.bff.wespot.data.remote.source.ImageDecoderDataSourceImpl
 import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
-import com.bff.wespot.data.remote.source.dynamicui.DynamicDataSourceImpl
-import com.bff.wespot.data.remote.source.dynamicui.DynamicUiDataSource
+import com.bff.wespot.data.remote.source.serverDriven.UpdateOverviewDataSourceImpl
+import com.bff.wespot.data.remote.source.serverDriven.UpdateOverviewDataSource
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSource
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSource
@@ -95,10 +95,12 @@ abstract class DataRemoteModule {
 
     @Binds
     @Singleton
-    abstract fun bindsDynamicUiDataSource(
-        dynamicUiDataSourceImpl: DynamicDataSourceImpl
-    ): DynamicUiDataSource
+    abstract fun bindsUpdateOverviewDataSource(
+        updateOverviewDataSourceImpl: UpdateOverviewDataSourceImpl
+    ): UpdateOverviewDataSource
 
+    @Binds
+    @Singleton
     abstract fun bindsOnBoardingDataSource(
         onBoardingDataSourceImpl: OnBoardingDataSourceImpl
     ): OnBoardingDataSource
