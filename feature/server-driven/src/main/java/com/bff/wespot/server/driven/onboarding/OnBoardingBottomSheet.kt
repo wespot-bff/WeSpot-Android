@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -72,7 +73,11 @@ private fun OnBoardingPage(
         items(contents) { content ->
             when (content) {
                 is TitleComponent -> {
-                    TitleSection(title = content.text)
+                    TitleSection(
+                        title = content.text,
+                        width = 200.dp,
+                        textAlign = TextAlign.Center,
+                    )
                 }
 
                 is TextListComponent -> {
