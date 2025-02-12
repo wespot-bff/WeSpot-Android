@@ -64,6 +64,7 @@ import com.bff.wespot.entire.state.edit.ProfileEditAction
 import com.bff.wespot.entire.state.edit.ProfileEditSideEffect
 import com.bff.wespot.entire.viewmodel.ProfileEditViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.DeepLinkUtils
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
@@ -86,7 +87,7 @@ interface ProfileEditNavigator {
 @Destination(
     deepLinks = [
         DeepLink(
-            uriPattern = "wespot://all/profile-edit",
+            uriPattern = DeepLinkUtils.PROFILE_EDIT_DEEPLINK,
         ),
     ],
 )
