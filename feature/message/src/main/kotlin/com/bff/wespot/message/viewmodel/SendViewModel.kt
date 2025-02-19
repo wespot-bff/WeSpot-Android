@@ -81,6 +81,7 @@ class SendViewModel @Inject constructor(
             nameInput.value = content
             state.copy(
                 nameInput = content,
+                isInputInitialized = true,
             )
         }
     }

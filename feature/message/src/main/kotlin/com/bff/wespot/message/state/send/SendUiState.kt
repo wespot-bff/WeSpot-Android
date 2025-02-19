@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flow
 
 data class SendUiState(
     val nameInput: String = "",
+    val isInputInitialized: Boolean = false,
     val messageInput: String = "",
     val isRandomName: Boolean = false,
     val randomName: String = "",

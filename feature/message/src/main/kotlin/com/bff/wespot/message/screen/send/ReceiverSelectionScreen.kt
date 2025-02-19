@@ -148,8 +148,8 @@ fun ReceiverSelectionScreen(
 
                 WsTextField(
                     value = state.nameInput,
-                    onValueChange = {
-                        action(SendAction.OnSearchContentChanged(it))
+                    onValueChange = { value ->
+                        action(SendAction.OnSearchContentChanged(value))
                     },
                     placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
                     textFieldType = WsTextFieldType.Search,
@@ -157,7 +157,7 @@ fun ReceiverSelectionScreen(
                     singleLine = true,
                 )
 
-                if (pagingData.itemCount == 0) {
+                if (pagingData.itemCount == 0 && state.isInputInitialized) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
