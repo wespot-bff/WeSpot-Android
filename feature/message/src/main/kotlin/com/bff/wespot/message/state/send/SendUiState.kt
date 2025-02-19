@@ -11,7 +11,7 @@ data class SendUiState(
     val nameInput: String = "",
     val isInputInitialized: Boolean = false,
     val messageInput: String = "",
-    val isRandomName: Boolean = false,
+    val isRandomName: Boolean = true,
     val randomName: String = "",
     val userList: Flow<PagingData<User>> = flow { },
     val selectedUser: User = User(),
