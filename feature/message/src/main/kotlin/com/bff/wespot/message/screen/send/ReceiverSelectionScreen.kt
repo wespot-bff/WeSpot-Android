@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -238,6 +240,7 @@ fun ReceiverSelectionScreen(
                                 },
                                 imageContent = {
                                     AsyncImage(
+                                        modifier = Modifier.size(56.dp),
                                         model = ImageRequest.Builder(LocalContext.current)
                                             .data(item.profileCharacter.iconUrl)
                                             .crossfade(true)
@@ -245,6 +248,7 @@ fun ReceiverSelectionScreen(
                                         contentDescription = stringResource(
                                             com.bff.wespot.ui.R.string.user_character_image,
                                         ),
+                                        contentScale = ContentScale.Crop,
                                     )
                                 },
                             )
