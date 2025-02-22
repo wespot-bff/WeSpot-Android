@@ -100,6 +100,8 @@ fun ReceiverSelectionScreen(
                 navigator.popUpToMessageScreen()
             }
 
+            SendSideEffect.NavigateUp -> navigator.navigateUp()
+
             else -> { }
         }
     }
@@ -108,6 +110,10 @@ fun ReceiverSelectionScreen(
         topBar = {
             WSTopBar(
                 title = "",
+                canNavigateBack = navArgs.isEditing,
+                navigateUp = {
+                    action(SendAction.OnTopBarNavigateButtonClicked)
+                },
                 action = {
                     Text(
                         modifier = Modifier

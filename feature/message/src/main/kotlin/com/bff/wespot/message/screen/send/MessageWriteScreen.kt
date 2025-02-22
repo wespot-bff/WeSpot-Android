@@ -86,6 +86,8 @@ fun MessageWriteScreen(
                 navigator.popUpToMessageScreen()
             }
 
+            SendSideEffect.NavigateUp -> navigator.navigateUp()
+
             else -> { }
         }
     }
@@ -96,7 +98,7 @@ fun MessageWriteScreen(
                 title = "",
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(SendAction.OnTopBarNavigateButtonClicked)
                 },
                 action = {
                     Text(

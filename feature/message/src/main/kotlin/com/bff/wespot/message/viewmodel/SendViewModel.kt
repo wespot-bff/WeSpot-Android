@@ -74,6 +74,7 @@ class SendViewModel @Inject constructor(
             }
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
+            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNatvigateButtonClicked()
         }
     }
 
@@ -306,6 +307,10 @@ class SendViewModel @Inject constructor(
     private fun handleExitButtonClicked() = intent {
         postSideEffect(SendSideEffect.DismissExitDialog)
         postSideEffect(SendSideEffect.NavigateToMessage)
+    }
+
+    private fun handleTopBarNatvigateButtonClicked() = intent {
+        postSideEffect(SendSideEffect.NavigateUp)
     }
 
     private fun clearSendUiState() = intent {
