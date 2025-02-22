@@ -1,6 +1,7 @@
 package com.bff.wespot.message.state.send
 
 import androidx.paging.PagingData
+import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.user.response.User
@@ -12,7 +13,7 @@ data class SendUiState(
     val isInputInitialized: Boolean = false,
     val messageInput: String = "",
     val isRandomName: Boolean = true,
-    val randomName: String = "",
+    val randomName: String = RandomNameGenerator.getRandomName(),
     val userList: Flow<PagingData<User>> = flow { },
     val selectedUser: User = User(),
     val hasProfanity: Boolean = false,
