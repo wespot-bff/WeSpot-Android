@@ -19,14 +19,4 @@ data class Message(
     val isAnonymous: Boolean,
 ) : BaseMessage(id, senderName, receiver, content, receivedAt, isRead, readAt) {
     constructor() : this(-1, "", User(), "", LocalDateTime.MAX, false, null, false, false, false)
-
-    fun toReceivedMessage(): ReceivedMessage = ReceivedMessage(
-        id = id,
-        senderName = senderName,
-        receiver = receiver,
-        content = content,
-        receivedAt = receivedAt,
-        isRead = isRead,
-        readAt = readAt,
-    )
 }
