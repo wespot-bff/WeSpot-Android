@@ -117,6 +117,10 @@ fun MessageEditScreen(
                     ),
                 )
             }
+
+            SendSideEffect.DismissExitDialog -> {
+                exitDialog = false
+            }
         }
     }
 
@@ -234,10 +238,11 @@ fun MessageEditScreen(
             SendExitDialog(
                 isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
-                    exitDialog = false
-                    navigator.popUpToMessageScreen()
+                    action(SendAction.OnExitDialogExitButtonClicked)
                 },
-                cancelButtonClick = { exitDialog = false },
+                cancelButtonClick = {
+                    action(SendAction.OnExitDialogCancelButtonClicked)
+                },
             )
         }
 

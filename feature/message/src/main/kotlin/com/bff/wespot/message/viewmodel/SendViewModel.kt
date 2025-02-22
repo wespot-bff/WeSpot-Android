@@ -72,6 +72,8 @@ class SendViewModel @Inject constructor(
             SendAction.OnReservedMessageScreenEntered, SendAction.OnMessageScreenEntered -> {
                 clearSendUiState()
             }
+            SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
+            SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
         }
     }
 
@@ -295,6 +297,15 @@ class SendViewModel @Inject constructor(
                     Timber.e(it)
                 }
         }
+    }
+
+    private fun handleExitDialogCancelButtonClicked() = intent {
+        postSideEffect(SendSideEffect.DismissExitDialog)
+    }
+
+    private fun handleExitButtonClicked() = intent {
+        postSideEffect(SendSideEffect.DismissExitDialog)
+        postSideEffect(SendSideEffect.NavigateToMessage)
     }
 
     private fun clearSendUiState() = intent {

@@ -42,6 +42,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
+import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.navigation.Navigator
@@ -52,6 +53,7 @@ import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ReceiverSelectionNavigator {
     fun navigateUp()
@@ -85,6 +87,22 @@ fun ReceiverSelectionScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
     handleSideEffect(viewModel.sideEffect)
+
+    viewModel.collectSideEffect {
+        when (it) {
+            SendSideEffect.DismissExitDialog -> {
+                dialogState = false
+            }
+
+            SendSideEffect.NavigateToMessage -> {
+                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                keyboard?.hide()
+                navigator.popUpToMessageScreen()
+            }
+
+            else -> { }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -235,10 +253,11 @@ fun ReceiverSelectionScreen(
         SendExitDialog(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
-                dialogState = false
-                navigator.popUpToMessageScreen()
+                action(SendAction.OnExitDialogExitButtonClicked)
             },
-            cancelButtonClick = { dialogState = false },
+            cancelButtonClick = {
+                action(SendAction.OnExitDialogCancelButtonClicked)
+            },
         )
     }
 
