@@ -47,6 +47,7 @@ import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.model.user.response.User
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.NetworkDialog
@@ -183,7 +184,11 @@ fun ReceiverSelectionScreen(
                     singleLine = true,
                 )
 
-                if (pagingData.itemCount == 0 && state.isInputInitialized) {
+                if (
+                    pagingData.itemCount == 0 &&
+                    state.isInputInitialized &&
+                    state.selectedUser.isEmpty()
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -222,6 +227,21 @@ fun ReceiverSelectionScreen(
                 LazyColumn(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
+                    /** 선택된 유저가 존재하고 노출할 유저 목록에 포함되어 있지 않다면, 선택된 유저를 상위로 노출한다. */
+                    val isContained = pagingData.itemSnapshotList.contains(state.selectedUser).not()
+                    if (state.selectedUser.isEmpty().not() && isContained) {
+                        item {
+                            ReceiverItem(
+                                receiver = state.selectedUser,
+                                selected = true,
+                                onClick = {
+                                    keyboard?.hide()
+                                    action(SendAction.OnUserSelected(state.selectedUser))
+                                },
+                            )
+                        }
+                    }
+
                     items(
                         pagingData.itemCount,
                         key = pagingData.itemKey { key -> key.id },
@@ -229,27 +249,12 @@ fun ReceiverSelectionScreen(
                         val item = pagingData[index]
 
                         item?.let {
-                            WSListItem(
-                                title = item.name,
-                                subTitle = item.toSchoolInfo(),
+                            ReceiverItem(
+                                receiver = item,
                                 selected = state.selectedUser.id == item.id,
-                                backgroundColor = item.profileCharacter.backgroundColor,
                                 onClick = {
                                     keyboard?.hide()
                                     action(SendAction.OnUserSelected(item))
-                                },
-                                imageContent = {
-                                    AsyncImage(
-                                        modifier = Modifier.size(56.dp),
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(item.profileCharacter.iconUrl)
-                                            .crossfade(true)
-                                            .build(),
-                                        contentDescription = stringResource(
-                                            com.bff.wespot.ui.R.string.user_character_image,
-                                        ),
-                                        contentScale = ContentScale.Crop,
-                                    )
                                 },
                             )
                         }
@@ -282,4 +287,32 @@ fun ReceiverSelectionScreen(
     LaunchedEffect(Unit) {
         action(SendAction.OnReceiverScreenEntered)
     }
+}
+
+@Composable
+fun ReceiverItem(
+    receiver: User,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    WSListItem(
+        title = receiver.name,
+        subTitle = receiver.toSchoolInfo(),
+        selected = selected,
+        backgroundColor = receiver.profileCharacter.backgroundColor,
+        onClick = onClick,
+        imageContent = {
+            AsyncImage(
+                modifier = Modifier.size(56.dp),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(receiver.profileCharacter.iconUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = stringResource(
+                    com.bff.wespot.ui.R.string.user_character_image,
+                ),
+                contentScale = ContentScale.Crop,
+            )
+        },
+    )
 }

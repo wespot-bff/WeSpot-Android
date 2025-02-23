@@ -21,4 +21,6 @@ data class User(
         val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
         return "$schoolName ${grade}학년 ${classNumber}반 $name"
     }
+
+    fun isEmpty() = this == User()
 }
