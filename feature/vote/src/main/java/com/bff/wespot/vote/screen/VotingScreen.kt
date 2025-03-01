@@ -124,6 +124,7 @@ fun VotingScreen(
                 votingNavigator.navigateToVoteResultScreen(
                     VoteResultScreenArgs(
                         isVoting = true,
+                        isTodayVoteResult = true,
                     ),
                 )
             }
