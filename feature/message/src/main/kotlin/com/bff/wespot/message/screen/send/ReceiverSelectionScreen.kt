@@ -188,7 +188,7 @@ fun ReceiverSelectionScreen(
                 if (
                     pagingData.itemCount == 0 &&
                     state.isInputInitialized &&
-                    state.selectedUser.isEmpty()
+                    state.selectedUser.isInitialized().not()
                 ) {
                     Box(
                         modifier = Modifier
@@ -229,7 +229,7 @@ fun ReceiverSelectionScreen(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
                     /** 선택된 유저는 상위로 고정해야 하며, 처음 선택한 경우에는 고정하지 않는다. */
-                    if (state.selectedUser.isEmpty().not() && state.isSelectedContext.not()) {
+                    if (state.selectedUser.isInitialized() && state.isSelectedContext.not()) {
                         item {
                             ReceiverItem(
                                 receiver = state.selectedUser,

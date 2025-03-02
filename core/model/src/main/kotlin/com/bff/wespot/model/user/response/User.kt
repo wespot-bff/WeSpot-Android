@@ -22,5 +22,5 @@ data class User(
         return "$schoolName ${grade}학년 ${classNumber}반 $name"
     }
 
-    fun isEmpty() = this == User()
+    fun isInitialized() = this != User()
 }
