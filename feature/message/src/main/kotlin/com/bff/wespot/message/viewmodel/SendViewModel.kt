@@ -51,6 +51,7 @@ class SendViewModel @Inject constructor(
 
     private val nameInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
+    private val randomNameGenerator by lazy { RandomNameGenerator() }
 
     fun onAction(action: SendAction) {
         when (action) {
@@ -207,7 +208,7 @@ class SendViewModel @Inject constructor(
         reduce {
             state.copy(
                 isRandomName = state.isRandomName.not(),
-                randomName = RandomNameGenerator.getRandomName(),
+                randomName = randomNameGenerator.getRandomName(),
             )
         }
     }

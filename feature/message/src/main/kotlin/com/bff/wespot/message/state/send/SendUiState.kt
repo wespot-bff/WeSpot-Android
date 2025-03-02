@@ -13,7 +13,7 @@ data class SendUiState(
     val isInputInitialized: Boolean = false,
     val messageInput: String = "",
     val isRandomName: Boolean = true,
-    val randomName: String = RandomNameGenerator.getRandomName(),
+    val randomName: String = RandomNameGenerator().getRandomName(),
     val userList: Flow<PagingData<User>> = flow { },
     val selectedUser: User = User(),
     val hasProfanity: Boolean = false,

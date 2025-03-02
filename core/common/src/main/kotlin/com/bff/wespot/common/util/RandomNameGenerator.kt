@@ -1,6 +1,6 @@
 package com.bff.wespot.common.util
 
-object RandomNameGenerator {
+class RandomNameGenerator {
     fun getRandomName(): String = "${colorList.random()} ${animalList.random()}"
 
     private val colorList = listOf(
