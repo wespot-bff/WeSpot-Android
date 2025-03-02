@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -227,9 +228,8 @@ fun ReceiverSelectionScreen(
                 LazyColumn(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
-                    /** 선택된 유저가 존재하고 노출할 유저 목록에 포함되어 있지 않다면, 선택된 유저를 상위로 노출한다. */
-                    val isContained = pagingData.itemSnapshotList.contains(state.selectedUser).not()
-                    if (state.selectedUser.isEmpty().not() && isContained) {
+                    /** 선택된 유저는 상위로 고정해야 하며, 처음 선택한 경우에는 고정하지 않는다. */
+                    if (state.selectedUser.isEmpty().not() && state.isSelectedContext.not()) {
                         item {
                             ReceiverItem(
                                 receiver = state.selectedUser,
@@ -249,14 +249,16 @@ fun ReceiverSelectionScreen(
                         val item = pagingData[index]
 
                         item?.let {
-                            ReceiverItem(
-                                receiver = item,
-                                selected = state.selectedUser.id == item.id,
-                                onClick = {
-                                    keyboard?.hide()
-                                    action(SendAction.OnUserSelected(item))
-                                },
-                            )
+                            if (item.id != state.selectedUser.id || state.isSelectedContext) {
+                                ReceiverItem(
+                                    receiver = item,
+                                    selected = state.selectedUser.id == item.id,
+                                    onClick = {
+                                        keyboard?.hide()
+                                        action(SendAction.OnUserSelected(item))
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -290,12 +292,13 @@ fun ReceiverSelectionScreen(
 }
 
 @Composable
-fun ReceiverItem(
+fun LazyItemScope.ReceiverItem(
     receiver: User,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
     WSListItem(
+        modifier = Modifier.animateItem(),
         title = receiver.name,
         subTitle = receiver.toSchoolInfo(),
         selected = selected,

@@ -24,4 +24,5 @@ data class SendUiState(
     val messageSendFailedDialogContent: String = "",
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
     val profile: Profile = Profile(),
+    val isSelectedContext: Boolean = false,
 )

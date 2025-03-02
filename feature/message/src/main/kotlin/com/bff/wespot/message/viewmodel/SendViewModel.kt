@@ -84,15 +84,21 @@ class SendViewModel @Inject constructor(
             state.copy(
                 nameInput = content,
                 isInputInitialized = true,
+                isSelectedContext = false,
             )
         }
     }
 
     private fun handleUserSelected(user: User) = intent {
         reduce {
-            state.copy(
-                selectedUser = user,
-            )
+            if (user == state.selectedUser) {
+                state.copy(selectedUser = User())
+            } else {
+                state.copy(
+                    selectedUser = user,
+                    isSelectedContext = true,
+                )
+            }
         }
     }
 
