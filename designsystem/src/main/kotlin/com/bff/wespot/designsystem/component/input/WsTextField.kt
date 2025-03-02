@@ -74,7 +74,7 @@ fun WsTextField(
         }
     }
 
-    /** TextValue가 존재하는 경우, 마지막 커서에서 작성할 수 있도록 한다. */
+    /** TextValue가 존재하는 경우, Cusror를 마지막으로 설정한다. */
     LaunchedEffect(Unit) {
         textFieldValueState = textFieldValueState.copy(
             selection = TextRange(value.length),
