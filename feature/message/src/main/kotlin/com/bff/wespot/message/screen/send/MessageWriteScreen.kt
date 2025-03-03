@@ -34,6 +34,7 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
+import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -42,6 +43,7 @@ import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageWriteNavigator {
     fun navigateUp()
@@ -72,13 +74,31 @@ fun MessageWriteScreen(
 
     handleSideEffect(viewModel.sideEffect)
 
+    viewModel.collectSideEffect {
+        when (it) {
+            SendSideEffect.DismissExitDialog -> {
+                dialogState = false
+            }
+
+            SendSideEffect.NavigateToMessage -> {
+                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                keyboard?.hide()
+                navigator.popUpToMessageScreen()
+            }
+
+            SendSideEffect.NavigateUp -> navigator.navigateUp()
+
+            else -> { }
+        }
+    }
+
     Scaffold(
         topBar = {
             WSTopBar(
                 title = "",
                 canNavigateBack = true,
                 navigateUp = {
-                    navigator.navigateUp()
+                    action(SendAction.OnTopBarNavigateButtonClicked)
                 },
                 action = {
                     Text(
@@ -170,10 +190,11 @@ fun MessageWriteScreen(
         SendExitDialog(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
-                dialogState = false
-                navigator.popUpToMessageScreen()
+                action(SendAction.OnExitDialogExitButtonClicked)
             },
-            cancelButtonClick = { dialogState = false },
+            cancelButtonClick = {
+                action(SendAction.OnExitDialogCancelButtonClicked)
+            },
         )
     }
 

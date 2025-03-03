@@ -14,4 +14,7 @@ sealed class SendAction {
     data object OnWriteScreenEntered : SendAction()
     data object OnReservedMessageScreenEntered : SendAction()
     data object OnMessageScreenEntered : SendAction()
+    data object OnExitDialogExitButtonClicked : SendAction()
+    data object OnExitDialogCancelButtonClicked : SendAction()
+    data object OnTopBarNavigateButtonClicked : SendAction()
 }

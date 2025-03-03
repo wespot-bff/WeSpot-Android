@@ -1,12 +1,10 @@
 package com.bff.wespot
 
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.toBitmap
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.buildIntent
@@ -18,17 +16,9 @@ import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
 import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
-
 class NavigatorImpl @Inject constructor() : Navigator {
-    private val sharingName = listOf(
-        "instagram",
-        "kakao",
-    )
-
     override fun navigateToMain(
         context: Context,
         targetId: Pair<String, Int>,
@@ -115,12 +105,16 @@ class NavigatorImpl @Inject constructor() : Navigator {
     }
 
     override fun navigateToWebLink(context: Context, webLink: String) {
-        val webLinkIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse(webLink),
-        )
-        webLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(webLinkIntent)
+        try {
+            val webLinkIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(webLink),
+            )
+            webLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(webLinkIntent)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e)
+        }
     }
 
     override fun navigateToKakao(
@@ -162,32 +156,16 @@ class NavigatorImpl @Inject constructor() : Navigator {
     }
 
     override fun redirectToPlayStoreForInstagram(context: Context) {
-        val appStoreIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"),
-        )
-        appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(appStoreIntent)
-    }
-
-    private fun getImageUri(drawableId: Int, context: Context): Uri {
-        var bitmap: Bitmap?
-        bitmap = context.resources.getDrawable(drawableId, null).toBitmap()
-
-        val imagesFolder: File = File(context.cacheDir, "images")
-        var contentUri: Uri? = null
         try {
-            imagesFolder.mkdirs()
-            val file = File(imagesFolder, "shared_image.png")
-            val stream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            stream.flush()
-            stream.close()
-            contentUri = FileProvider.getUriForFile(context, "com.bff.wespot.fileProvider", file)
-        } catch (e: Exception) {
-            Timber.e("Error => " + e.message)
+            val appStoreIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.instagram.android"),
+            )
+            appStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(appStoreIntent)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e)
         }
-        return contentUri!!
     }
 
     private fun kakaoTemplate(

@@ -73,6 +73,9 @@ class SendViewModel @Inject constructor(
             SendAction.OnReservedMessageScreenEntered, SendAction.OnMessageScreenEntered -> {
                 clearSendUiState()
             }
+            SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
+            SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
+            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNatvigateButtonClicked()
         }
     }
 
@@ -81,15 +84,22 @@ class SendViewModel @Inject constructor(
             nameInput.value = content
             state.copy(
                 nameInput = content,
+                isInputInitialized = true,
+                isSelectedContext = false,
             )
         }
     }
 
     private fun handleUserSelected(user: User) = intent {
         reduce {
-            state.copy(
-                selectedUser = user,
-            )
+            if (user == state.selectedUser) {
+                state.copy(selectedUser = User())
+            } else {
+                state.copy(
+                    selectedUser = user,
+                    isSelectedContext = true,
+                )
+            }
         }
     }
 
@@ -295,6 +305,19 @@ class SendViewModel @Inject constructor(
                     Timber.e(it)
                 }
         }
+    }
+
+    private fun handleExitDialogCancelButtonClicked() = intent {
+        postSideEffect(SendSideEffect.DismissExitDialog)
+    }
+
+    private fun handleExitButtonClicked() = intent {
+        postSideEffect(SendSideEffect.DismissExitDialog)
+        postSideEffect(SendSideEffect.NavigateToMessage)
+    }
+
+    private fun handleTopBarNatvigateButtonClicked() = intent {
+        postSideEffect(SendSideEffect.NavigateUp)
     }
 
     private fun clearSendUiState() = intent {

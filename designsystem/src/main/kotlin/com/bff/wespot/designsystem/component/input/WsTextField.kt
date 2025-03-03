@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
@@ -71,6 +72,13 @@ fun WsTextField(
         if (value != textFieldValueState.text) {
             textFieldValueState = textFieldValueState.copy(text = value)
         }
+    }
+
+    /** TextValue가 존재하는 경우, Cusror를 마지막으로 설정한다. */
+    LaunchedEffect(Unit) {
+        textFieldValueState = textFieldValueState.copy(
+            selection = TextRange(value.length),
+        )
     }
 
     val colors = OutlinedTextFieldDefaults.colors(

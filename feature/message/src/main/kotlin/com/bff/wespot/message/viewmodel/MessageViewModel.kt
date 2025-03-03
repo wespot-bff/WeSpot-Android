@@ -150,15 +150,16 @@ class MessageViewModel @Inject constructor(
         getMessageStatus()
 
         if (state.timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-            _remainingTimeMillis.value = getRemainingTimeMillis()
+            _remainingTimeMillis.value = getRemainingTimeMillis(state.messageReceiveTime)
         }
     }
 
-    private fun getRemainingTimeMillis(): Long {
+    private fun getRemainingTimeMillis(messageReceiveTime: String): Long {
         val currentTimeMillis = System.currentTimeMillis() + MILLIS_KTC_OFFSET
         val elapsedMillis = currentTimeMillis % MILLIS_PER_DAY
+        val messageReceiveMillis = messageReceiveTime.toMillis()
 
-        return if (elapsedMillis <= MILLIS_TO_TEN_PM) MILLIS_TO_TEN_PM - elapsedMillis else 0L
+        return if (elapsedMillis <= messageReceiveMillis) messageReceiveMillis - elapsedMillis else 0L
     }
 
     private fun observeProfileFlow() = intent {
@@ -174,9 +175,13 @@ class MessageViewModel @Inject constructor(
         }
     }
 
+    private fun String.toMillis(): Long {
+        val (hour, minute) = this.split(":").map { it.toInt() }
+        return (hour * 3600 + minute * 60) * 1000L
+    }
+
     companion object {
         private const val MILLIS_PER_DAY = 24 * 3600 * 1000
-        private const val MILLIS_TO_TEN_PM = 22 * 3600 * 1000
         private const val MILLIS_KTC_OFFSET = 9 * 3600 * 1000
     }
 }
