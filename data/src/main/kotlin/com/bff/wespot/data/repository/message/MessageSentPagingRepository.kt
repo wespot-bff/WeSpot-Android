@@ -5,13 +5,13 @@ import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.domain.paging.BasePagingSource
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.SentMessage
 import javax.inject.Inject
 
 class MessageSentPagingRepository @Inject constructor(
     private val dataSource: MessageDataSource,
-) : BasePagingRepository<Message, Paging<Message>>() {
+) : BasePagingRepository<SentMessage, Paging<SentMessage>>() {
     override fun pagingSource(
         parameter: Map<String, String>?,
-    ): BasePagingSource<Message, Paging<Message>> = MessageSentPagingSource(dataSource)
+    ): BasePagingSource<SentMessage, Paging<SentMessage>> = MessageSentPagingSource(dataSource)
 }
