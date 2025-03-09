@@ -18,17 +18,17 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
 
 ## 🌟 Tech Stack 🌟
 
-| Kotlin | Kotlin 2.0.0v, Coroutines, Flow |
-|:---|:---|
-| Architecture | MVI(Orbit), CleanArchitecture |
-| Network | Ktor, Kotlin Serialization, Paging3 |
-| Local | Protobuf DataStore, DataStorePreference |
-| UI | Compose, ComposeDestination |
-| Dependency Management | Gradle Convention Plugin(build-logic), VersionCatalogs |
-| Dependency Injection | Dagger Hilt (KSP) |
-| Lint | KtLint, DeteKt |
+| Kotlin | Kotlin 2.0.0v, Coroutines, Flow                                 |
+|:---|:----------------------------------------------------------------|
+| Architecture | MVI(Orbit), CleanArchitecture                                   |
+| Network | Ktor, Kotlin Serialization, Paging3                             |
+| Local | Protobuf DataStore, DataStorePreference, Room Database          |
+| UI | Compose, ComposeDestination                                     |
+| Dependency Management | Gradle Convention Plugin(build-logic), VersionCatalogs          |
+| Dependency Injection | Dagger Hilt (KSP)                                               |
+| Lint | KtLint, DeteKt                                                  |
 | Third Party | Material3, Lottie, Coil, Crashlytics, Analytics, CloudMessaging |
-| Collaborate Tool | Github Action, Jira, Discord, Postman, Figma |
+| Collaborate Tool | Github Action, Jira, Discord, Postman, Figma                    |
 
 </br></br>
 
