@@ -19,7 +19,6 @@ dependencies {
     compileOnly(libs.compose.compiler.extension)
     compileOnly(libs.ktlint.plugin)
     compileOnly(libs.detekt.plugin)
-    compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
 }
 

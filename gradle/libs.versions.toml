@@ -128,7 +128,6 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 
 kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sdk" }
