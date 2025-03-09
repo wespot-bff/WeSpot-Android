@@ -44,7 +44,6 @@ class StorageViewModel @Inject constructor(
     remoteConfigRepository: RemoteConfigRepository,
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
-    private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
     private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(
@@ -136,7 +135,7 @@ class StorageViewModel @Inject constructor(
             runCatching {
                 reduce {
                     state.copy(
-                        receivedMessageList = messageReceivedRepository.fetchResultStream()
+                        receivedMessageList = messageStorageRepository.fetchReceivedMessageStream()
                             .cachedIn(viewModelScope),
                     )
                 }
@@ -238,9 +237,6 @@ class StorageViewModel @Inject constructor(
     private fun updateMessageReadStatus(messageId: Int) {
         viewModelScope.launch {
             messageStorageRepository.updateMessageReadStatus(messageId)
-                .onSuccess {
-                    getReceivedMessageList()
-                }
         }
     }
 
@@ -248,9 +244,8 @@ class StorageViewModel @Inject constructor(
         viewModelScope.launch {
             messageStorageRepository.deleteMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
-                    when (state.optionButtonClickedMessageType) {
-                        MessageType.RECEIVED -> getReceivedMessageList()
-                        MessageType.SENT -> getSentMessageList()
+                    if (state.optionButtonClickedMessageType == MessageType.SENT) {
+                        getSentMessageList()
                     }
 
                     postSideEffect(
@@ -282,7 +277,6 @@ class StorageViewModel @Inject constructor(
                             ),
                         ),
                     )
-                    getReceivedMessageList()
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
