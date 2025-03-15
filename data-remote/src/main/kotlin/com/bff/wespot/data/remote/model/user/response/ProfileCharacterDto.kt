@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProfileCharacterDto (
-    val iconUrl: String,
-    val backgroundColor: String,
+    val iconUrl: String = "",
+    val backgroundColor: String = "",
 ) {
     fun toProfileCharacter(): ProfileCharacter = ProfileCharacter(
         iconUrl = iconUrl,

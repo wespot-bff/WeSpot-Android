@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -42,8 +45,10 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
+import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
+import com.bff.wespot.model.user.response.User
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.NetworkDialog
@@ -52,6 +57,7 @@ import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ReceiverSelectionNavigator {
     fun navigateUp()
@@ -86,10 +92,32 @@ fun ReceiverSelectionScreen(
 
     handleSideEffect(viewModel.sideEffect)
 
+    viewModel.collectSideEffect {
+        when (it) {
+            SendSideEffect.DismissExitDialog -> {
+                dialogState = false
+            }
+
+            SendSideEffect.NavigateToMessage -> {
+                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                keyboard?.hide()
+                navigator.popUpToMessageScreen()
+            }
+
+            SendSideEffect.NavigateUp -> navigator.navigateUp()
+
+            else -> { }
+        }
+    }
+
     Scaffold(
         topBar = {
             WSTopBar(
                 title = "",
+                canNavigateBack = navArgs.isEditing,
+                navigateUp = {
+                    action(SendAction.OnTopBarNavigateButtonClicked)
+                },
                 action = {
                     Text(
                         modifier = Modifier
@@ -148,8 +176,8 @@ fun ReceiverSelectionScreen(
 
                 WsTextField(
                     value = state.nameInput,
-                    onValueChange = {
-                        action(SendAction.OnSearchContentChanged(it))
+                    onValueChange = { value ->
+                        action(SendAction.OnSearchContentChanged(value))
                     },
                     placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
                     textFieldType = WsTextFieldType.Search,
@@ -157,7 +185,11 @@ fun ReceiverSelectionScreen(
                     singleLine = true,
                 )
 
-                if (pagingData.itemCount == 0) {
+                if (
+                    pagingData.itemCount == 0 &&
+                    state.isInputInitialized &&
+                    state.selectedUser.isInitialized().not()
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -196,6 +228,20 @@ fun ReceiverSelectionScreen(
                 LazyColumn(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
+                    /** 선택된 유저는 상위로 고정해야 하며, 처음 선택한 경우에는 고정하지 않는다. */
+                    if (state.selectedUser.isInitialized() && state.isSelectedContext.not()) {
+                        item {
+                            ReceiverItem(
+                                receiver = state.selectedUser,
+                                selected = true,
+                                onClick = {
+                                    keyboard?.hide()
+                                    action(SendAction.OnUserSelected(state.selectedUser))
+                                },
+                            )
+                        }
+                    }
+
                     items(
                         pagingData.itemCount,
                         key = pagingData.itemKey { key -> key.id },
@@ -203,27 +249,16 @@ fun ReceiverSelectionScreen(
                         val item = pagingData[index]
 
                         item?.let {
-                            WSListItem(
-                                title = item.name,
-                                subTitle = item.toSchoolInfo(),
-                                selected = state.selectedUser.id == item.id,
-                                backgroundColor = item.profileCharacter.backgroundColor,
-                                onClick = {
-                                    keyboard?.hide()
-                                    action(SendAction.OnUserSelected(item))
-                                },
-                                imageContent = {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(item.profileCharacter.iconUrl)
-                                            .crossfade(true)
-                                            .build(),
-                                        contentDescription = stringResource(
-                                            com.bff.wespot.ui.R.string.user_character_image,
-                                        ),
-                                    )
-                                },
-                            )
+                            if (item.id != state.selectedUser.id || state.isSelectedContext) {
+                                ReceiverItem(
+                                    receiver = item,
+                                    selected = state.selectedUser.id == item.id,
+                                    onClick = {
+                                        keyboard?.hide()
+                                        action(SendAction.OnUserSelected(item))
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -235,10 +270,11 @@ fun ReceiverSelectionScreen(
         SendExitDialog(
             isReservedMessage = state.isReservedMessage,
             okButtonClick = {
-                dialogState = false
-                navigator.popUpToMessageScreen()
+                action(SendAction.OnExitDialogExitButtonClicked)
             },
-            cancelButtonClick = { dialogState = false },
+            cancelButtonClick = {
+                action(SendAction.OnExitDialogCancelButtonClicked)
+            },
         )
     }
 
@@ -253,4 +289,33 @@ fun ReceiverSelectionScreen(
     LaunchedEffect(Unit) {
         action(SendAction.OnReceiverScreenEntered)
     }
+}
+
+@Composable
+fun LazyItemScope.ReceiverItem(
+    receiver: User,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    WSListItem(
+        modifier = Modifier.animateItem(),
+        title = receiver.name,
+        subTitle = receiver.toSchoolInfo(),
+        selected = selected,
+        backgroundColor = receiver.profileCharacter.backgroundColor,
+        onClick = onClick,
+        imageContent = {
+            AsyncImage(
+                modifier = Modifier.size(56.dp),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(receiver.profileCharacter.iconUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = stringResource(
+                    com.bff.wespot.ui.R.string.user_character_image,
+                ),
+                contentScale = ContentScale.Crop,
+            )
+        },
+    )
 }

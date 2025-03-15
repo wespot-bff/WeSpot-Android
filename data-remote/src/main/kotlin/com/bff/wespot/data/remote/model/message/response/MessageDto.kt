@@ -3,7 +3,6 @@ package com.bff.wespot.data.remote.model.message.response
 import com.bff.wespot.data.remote.extensions.toISOLocalDateTime
 import com.bff.wespot.data.remote.model.user.response.UserDto
 import com.bff.wespot.model.message.response.Message
-import com.bff.wespot.model.message.response.ReceivedMessage
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,16 +28,6 @@ data class MessageDto(
         isReported = isReported,
         isBlocked = isBlocked,
         isAnonymous = isAnonymous,
-        readAt = readAt?.toISOLocalDateTime(),
-    )
-
-    fun toReceivedMessage(): ReceivedMessage = ReceivedMessage(
-        id = id,
-        senderName = senderName,
-        receiver = receiver.toUser(),
-        content = content,
-        receivedAt = receivedAt?.toISOLocalDateTime(),
-        isRead = isRead,
         readAt = readAt?.toISOLocalDateTime(),
     )
 }

@@ -3,7 +3,7 @@ package com.bff.wespot.model.message.response
 import com.bff.wespot.model.user.response.User
 import java.time.LocalDateTime
 
-data class ReceivedMessage(
+data class SentMessage(
     val id: Int = -1,
     val senderName: String = "",
     val receiver: User = User(),
@@ -11,6 +11,8 @@ data class ReceivedMessage(
     val sender: User = User(),
     val receivedAt: LocalDateTime? = null,
     val isRead: Boolean = false,
-    val isAnonymous: Boolean = false,
     val readAt: LocalDateTime? = null,
+    val isReported: Boolean = false,
+    val isBlocked: Boolean = false,
+    val isAnonymous: Boolean = false,
 )

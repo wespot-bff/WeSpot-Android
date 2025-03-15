@@ -18,9 +18,9 @@ import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.state.storage.StorageUiState
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.BaseMessage
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageContent
 import com.bff.wespot.model.message.response.ReceivedMessage
+import com.bff.wespot.model.message.response.SentMessage
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.ui.model.ToastState
@@ -45,7 +45,7 @@ class StorageViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
     private val messageReceivedRepository: BasePagingRepository<ReceivedMessage, Paging<ReceivedMessage>>,
-    private val messageSentRepository: BasePagingRepository<Message, Paging<Message>>,
+    private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(
         StorageUiState(
@@ -84,14 +84,14 @@ class StorageViewModel @Inject constructor(
                     MessageType.RECEIVED -> getReceivedMessageList()
                 }
             }
-            is StorageAction.OnMessageStorageScreenOpened -> {
+            is StorageAction.OnPushNotificationNavigated -> {
                 handleMessageStorageScreenOpened(action.messageId, action.type)
             }
             is StorageAction.OnSentMessageClicked -> {
-                handleMessageClicked(action.message, MessageType.SENT)
+                handleSentMessageClicked(action.message)
             }
             is StorageAction.OnReceivedMessageClicked -> {
-                handleMessageClicked(action.message, MessageType.RECEIVED)
+                handleReceivedMessageClicked(action.message)
             }
             is StorageAction.OnOptionButtonClicked -> {
                 handleOptionButtonClicked(action.messageId, action.messageType)
@@ -163,28 +163,59 @@ class StorageViewModel @Inject constructor(
 
     private fun handleMessageStorageScreenOpened(messageId: Int, type: MessageType) = intent {
         reduce { state.copy(isLoading = true) }
+
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
                 .onSuccess { message ->
-                    handleMessageClicked(message, type)
-                    reduce { state.copy(isLoading = false) }
+                    reduce {
+                        state.copy(
+                            messageDialogContent = MessageContent(
+                                receiver = message.receiver.toDescription(),
+                                sender = if (message.isAnonymous) message.senderName else message.sender.name,
+                                content = message.content,
+                            ),
+                        )
+                    }
+
+                    if (type == MessageType.RECEIVED && message.isRead.not()) {
+                        updateMessageReadStatus(messageId = message.id)
+                    }
+
                     postSideEffect(StorageSideEffect.ShowMessageDialog)
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
-                .onFailure {
+                .also {
                     reduce { state.copy(isLoading = false) }
                 }
         }
     }
 
-    private fun handleMessageClicked(message: BaseMessage, type: MessageType) = intent {
+    private fun handleSentMessageClicked(message: SentMessage) = intent {
         reduce {
-            state.copy(clickedMessage = message)
+            state.copy(
+                messageDialogContent = MessageContent(
+                    receiver = message.receiver.toDescription(),
+                    sender = if (message.isAnonymous) message.senderName else message.sender.name,
+                    content = message.content,
+                ),
+            )
+        }
+    }
+
+    private fun handleReceivedMessageClicked(message: ReceivedMessage) = intent {
+        reduce {
+            state.copy(
+                messageDialogContent = MessageContent(
+                    receiver = message.receiver.toDescription(),
+                    sender = if (message.isAnonymous) message.senderName else message.sender.name,
+                    content = message.content,
+                ),
+            )
         }
 
-        if (type == MessageType.RECEIVED && message.isRead.not()) {
+        if (message.isRead.not()) {
             updateMessageReadStatus(messageId = message.id)
         }
     }

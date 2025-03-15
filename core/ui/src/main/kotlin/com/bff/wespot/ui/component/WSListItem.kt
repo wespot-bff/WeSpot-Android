@@ -36,6 +36,7 @@ import com.bff.wespot.ui.util.hexToColor
 
 @Composable
 fun WSListItem(
+    modifier: Modifier = Modifier,
     title: String,
     subTitle: String,
     selected: Boolean,
@@ -44,7 +45,7 @@ fun WSListItem(
     onClick: () -> Unit = { },
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(vertical = 8.dp)

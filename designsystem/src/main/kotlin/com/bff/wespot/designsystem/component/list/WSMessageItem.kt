@@ -123,25 +123,39 @@ private fun WSLetterItemContent(
             }
         }
 
-        Column(modifier = Modifier.padding(top = 2.dp)) {
-            Text(
-                text = schoolName?.let {
-                    wsMessageItemType.letterStatusText() + " $schoolName"
-                } ?: wsMessageItemType.letterStatusText(),
-                color = Gray100,
-                style = StaticTypeScale.Default.body9,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+        Box(
+            modifier = Modifier.padding(top = 2.dp),
+        ) {
+            when (wsMessageItemType) {
+                WSMessageItemType.BlockedMessage, WSMessageItemType.ReportedMessage -> {
+                    Text(
+                        text = wsMessageItemType.restrictedStatusText().orEmpty(),
+                        color = Gray100,
+                        style = StaticTypeScale.Default.body9,
+                    )
+                }
 
-            userInfo?.let {
-                Text(
-                    text = userInfo,
-                    color = Gray100,
-                    style = StaticTypeScale.Default.body9,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                else -> {
+                    Column {
+                        Text(
+                            text = wsMessageItemType.headerText() + " ${schoolName.orEmpty()}",
+                            color = Gray100,
+                            style = StaticTypeScale.Default.body9,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+
+                        userInfo?.let {
+                            Text(
+                                text = userInfo,
+                                color = Gray100,
+                                style = StaticTypeScale.Default.body9,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -154,7 +168,7 @@ private fun WSLetterItemContent(
                 style = StaticTypeScale.Default.body11,
             )
 
-            wsMessageItemType.openStatusText()?.let {
+            wsMessageItemType.readStatusText()?.let {
                 Text(
                     modifier = Modifier.weight(1f),
                     text = it,
@@ -172,10 +186,13 @@ sealed interface WSMessageItemType {
     fun optionIcon(): ImageVector
 
     @Composable
-    fun letterStatusText(): String
+    fun headerText(): String?
 
     @Composable
-    fun openStatusText(): String?
+    fun restrictedStatusText(): String?
+
+    @Composable
+    fun readStatusText(): String?
 
     @Composable
     fun letterImage(): ImageBitmap
@@ -185,28 +202,34 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
+        override fun headerText(): String = stringResource(id = R.string.letter_sender)
+
+        @Composable
+        override fun restrictedStatusText(): String? = null
 
         @Composable
         override fun letterImage(): ImageBitmap = ImageBitmap.imageResource(id = R.drawable.closed_letter)
 
         @Composable
-        override fun openStatusText(): String? = null
+        override fun readStatusText(): String? = null
     }
 
     data object UnreadSentMessage : WSMessageItemType {
         @Composable
-        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.icn_close)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
+        override fun headerText(): String = stringResource(id = R.string.letter_receiver)
+
+        @Composable
+        override fun restrictedStatusText(): String? = null
 
         @Composable
         override fun letterImage(): ImageBitmap =
             ImageBitmap.imageResource(id = R.drawable.closed_letter)
 
         @Composable
-        override fun openStatusText(): String? = null
+        override fun readStatusText(): String? = null
     }
 
     data object ReadReceivedMessage : WSMessageItemType {
@@ -214,59 +237,73 @@ sealed interface WSMessageItemType {
         override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_sender)
+        override fun headerText(): String = stringResource(id = R.string.letter_sender)
+
+        @Composable
+        override fun restrictedStatusText(): String? = null
 
         @Composable
         override fun letterImage(): ImageBitmap =
             ImageBitmap.imageResource(id = R.drawable.opened_letter)
 
         @Composable
-        override fun openStatusText(): String? = null
+        override fun readStatusText(): String? = null
     }
 
     data object ReadSentMessage : WSMessageItemType {
         @Composable
-        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.icn_close)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(id = R.string.letter_receiver)
+        override fun headerText(): String = stringResource(id = R.string.letter_receiver)
+
+        @Composable
+        override fun restrictedStatusText(): String? = null
 
         @Composable
         override fun letterImage(): ImageBitmap =
             ImageBitmap.imageResource(id = R.drawable.opened_letter)
 
         @Composable
-        override fun openStatusText(): String = stringResource(id = R.string.letter_opened)
+        override fun readStatusText(): String = stringResource(id = R.string.letter_opened)
     }
 
+    /** 차단된 쪽지는 보낸 쪽지함에서만 확인할 수 있다.*/
     data object BlockedMessage : WSMessageItemType {
         @Composable
-        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.icn_close)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(R.string.blocked_message_title)
+        override fun headerText(): String? = null
+
+        @Composable
+        override fun restrictedStatusText(): String = stringResource(R.string.blocked_message_title)
 
         @Composable
         override fun letterImage(): ImageBitmap =
             ImageBitmap.imageResource(id = R.drawable.invalid_message)
 
         @Composable
-        override fun openStatusText(): String? = null
+        override fun readStatusText(): String? = null
     }
 
+    /** 신고된 쪽지는 보낸 쪽지함에서만 확인할 수 있다.*/
     data object ReportedMessage : WSMessageItemType {
         @Composable
-        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.option)
+        override fun optionIcon(): ImageVector = ImageVector.vectorResource(id = R.drawable.icn_close)
 
         @Composable
-        override fun letterStatusText(): String = stringResource(R.string.reported_message_title)
+        override fun headerText(): String? = null
+
+        @Composable
+        override fun restrictedStatusText(): String = stringResource(R.string.reported_message_title)
 
         @Composable
         override fun letterImage(): ImageBitmap =
             ImageBitmap.imageResource(id = R.drawable.invalid_message)
 
         @Composable
-        override fun openStatusText(): String? = null
+        override fun readStatusText(): String? = null
     }
 }
 

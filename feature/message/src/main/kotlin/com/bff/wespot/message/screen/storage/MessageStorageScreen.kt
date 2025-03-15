@@ -64,10 +64,10 @@ import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
 import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.BaseMessage
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageContent
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.model.message.response.ReceivedMessage
+import com.bff.wespot.model.message.response.SentMessage
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
@@ -227,7 +227,7 @@ fun MessageStorageScreen(
 
     if (showMessageDialog) {
         MessageContentDialog(
-            message = state.clickedMessage,
+            message = state.messageDialogContent,
             closeButtonClick = { showMessageDialog = false },
         )
     }
@@ -288,26 +288,22 @@ fun MessageStorageScreen(
         when (type) {
             NotificationType.MESSAGE_RECEIVED -> {
                 selectedChipIndex = RECEIVED_MESSAGE_INDEX
-                messageId?.let {
-                    action(
-                        StorageAction.OnMessageStorageScreenOpened(
-                            messageId = messageId,
-                            type = MessageType.RECEIVED,
-                        ),
-                    )
-                }
+                action(
+                    StorageAction.OnPushNotificationNavigated(
+                        messageId = messageId ?: return@LaunchedEffect,
+                        type = MessageType.RECEIVED,
+                    ),
+                )
             }
 
             NotificationType.MESSAGE_SENT -> {
                 selectedChipIndex = SENT_MESSAGE_INDEX
-                messageId?.let {
-                    action(
-                        StorageAction.OnMessageStorageScreenOpened(
-                            messageId = messageId,
-                            type = MessageType.SENT,
-                        ),
-                    )
-                }
+                action(
+                    StorageAction.OnPushNotificationNavigated(
+                        messageId = messageId ?: return@LaunchedEffect,
+                        type = MessageType.SENT,
+                    ),
+                )
             }
 
             else -> { }
@@ -365,8 +361,12 @@ private fun ReceivedMessageStorageScreen(
                     val item = data[index]
                     item?.let {
                         WSMessageItem(
-                            userInfo = item.receiver.toUserInfoWithoutSchoolName(),
-                            schoolName = item.receiver.toShortSchoolName(),
+                            userInfo = if (item.isAnonymous) {
+                                item.senderName
+                            } else {
+                                item.sender.toUserInfoWithoutSchoolName()
+                            },
+                            schoolName = item.sender.toShortSchoolName(),
                             date = item.receivedAt?.toStringWithDotSeparator() ?: "",
                             wsMessageItemType = if (item.isRead) {
                                 WSMessageItemType.ReadReceivedMessage
@@ -389,10 +389,10 @@ private fun ReceivedMessageStorageScreen(
 
 @Composable
 private fun SentMessageStorageScreen(
-    data: LazyPagingItems<Message>,
+    data: LazyPagingItems<SentMessage>,
     messageStatus: MessageStatus,
     isBannerVisible: Boolean,
-    itemClick: (Message) -> Unit,
+    itemClick: (SentMessage) -> Unit,
     optionButtonClick: (Int) -> Unit,
     bannerClick: () -> Unit,
     showToast: (ToastState) -> Unit,
@@ -490,7 +490,7 @@ private fun SentMessageStorageBanner(
 
 @Composable
 private fun MessageContentDialog(
-    message: BaseMessage,
+    message: MessageContent,
     closeButtonClick: () -> Unit,
 ) {
     Dialog(onDismissRequest = { }) {
@@ -518,13 +518,13 @@ private fun MessageContentDialog(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
-                    MessageDialogText("To.\n" + message.receiver.toDescription())
+                    MessageDialogText("To.\n" + message.receiver)
 
                     MessageDialogText(message.content, isMessageContent = true)
                 }
 
                 MessageDialogText(
-                    text = "From.\n" + message.senderName,
+                    text = "From.\n" + message.sender,
                     textAlign = TextAlign.End,
                 )
             }
