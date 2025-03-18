@@ -14,4 +14,6 @@ plugins {
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.firebase.performance) apply false
     alias(libs.plugins.module.graph) apply true
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.baseline.profile) apply false
 }

@@ -53,6 +53,11 @@ splash-screen = "1.0.1"
 
 module-graph = "2.7.1"
 
+uiautomator = "2.3.0"
+benchmark-macro-junit4 = "1.3.3"
+baseline-profile = "1.3.3"
+profile-installer = "1.4.1"
+
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
 kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -135,6 +140,9 @@ paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "p
 paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
 
 splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmark-macro-junit4" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profile-installer" }
 
 [bundles]
 androidx-compose = [
@@ -179,6 +187,9 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "performace" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plguin" }
+module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module-graph" }
+android-test = { id = "com.android.test", version.ref = "gradle-plugin" }
+baseline-profile = { id = "androidx.baselineprofile", version.ref = "baseline-profile" }
 
 # Gradle Plugin
 wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified" }
@@ -189,4 +200,3 @@ wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified
 wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified" }
 wespot-android-ktlint = { id = "com.bff.wespot.ktlint", version = "unspecified" }
 wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified" }
-module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module-graph" }

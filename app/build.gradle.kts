@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 
-
 val properties = Properties()
 properties.load(rootProject.file("local.properties").inputStream())
 
@@ -9,6 +8,7 @@ plugins {
     alias(libs.plugins.wespot.android.hilt)
     alias(libs.plugins.wespot.android.compose)
     alias(libs.plugins.wespot.android.firebase)
+    alias(libs.plugins.baseline.profile)
 }
 
 android {
@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":feature:message"))
     implementation(project(":feature:entire"))
     implementation(project(":feature:notification"))
+    baselineProfile(project(":benchmarks"))
 
     implementation(libs.splash.screen)
     implementation(platform(libs.firebase.bom))
@@ -84,4 +85,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kakao.link)
+    implementation(libs.androidx.profileinstaller)
 }
