@@ -23,8 +23,8 @@ import com.bff.wespot.ui.util.carouselTransition
 
 @Composable
 fun WSCarousel(
-    pageCount: Int = 10,
     modifier: Modifier = Modifier,
+    pageCount: Int = 10,
     pagerState: PagerState = rememberPagerState(pageCount = { pageCount }),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     pageSpacing: Dp = 0.dp,
