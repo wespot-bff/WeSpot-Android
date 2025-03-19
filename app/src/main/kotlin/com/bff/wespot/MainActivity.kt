@@ -45,11 +45,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -179,7 +183,7 @@ data class MainScreenNavArgs(
     val date: String,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun MainScreen(
     navigator: Navigator,
@@ -210,7 +214,11 @@ private fun MainScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .semantics {
+                testTagsAsResourceId = true
+            },
         topBar = {
             AnimatedContent(
                 targetState = isTopNavigationScreen,
@@ -246,6 +254,7 @@ private fun MainScreen(
                                     },
                                 ) {
                                     Icon(
+                                        modifier = Modifier.testTag("notification_icon"),
                                         painter = painterResource(id = R.drawable.icn_alarm),
                                         contentDescription = stringResource(
                                             id = R.string.notification_icon,
@@ -262,6 +271,7 @@ private fun MainScreen(
                                     },
                                 ) {
                                     Icon(
+                                        modifier = Modifier.testTag("setting_icon"),
                                         painter = painterResource(id = R.drawable.icn_settings),
                                         contentDescription = stringResource(
                                             id = R.string.setting_icon,
@@ -375,7 +385,7 @@ private fun BottomNavigationTab(
                     icon = painterResource(id = destination.icon),
                     emptyIcon = painterResource(id = destination.emptyIcon),
                     title = stringResource(id = destination.title),
-                    description = stringResource(id = destination.title),
+                    description = stringResource(id = destination.description),
                     selected = selectedNavigation == destination.screen,
                 ) {
                     onNavigationSelected(destination.screen)
@@ -438,7 +448,8 @@ private fun RowScope.TabItem(
         modifier = Modifier
             .size(80.dp)
             .weight(1f)
-            .clickableSingle { onClick.invoke() },
+            .clickableSingle { onClick.invoke() }
+            .testTag(description),
         contentAlignment = Alignment.Center,
     ) {
         Column(
