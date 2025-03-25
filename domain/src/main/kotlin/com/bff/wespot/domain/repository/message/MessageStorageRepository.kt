@@ -1,7 +1,5 @@
 package com.bff.wespot.domain.repository.message
 
-import com.bff.wespot.model.message.response.Message
-
 interface MessageStorageRepository {
     suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
 
@@ -10,6 +8,4 @@ interface MessageStorageRepository {
     suspend fun blockMessage(messageId: Int): Result<Unit>
 
     suspend fun unBlockMessage(messageId: Int): Result<Unit>
-
-    suspend fun getReservedMessage(): Result<List<Message>>
 }
