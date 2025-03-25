@@ -70,7 +70,7 @@ class SendViewModel @Inject constructor(
             is SendAction.OnSendButtonClicked -> handleMessageSent()
             is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
             is SendAction.OnEditButtonClicked -> handleEditButtonClicked(action.messageId)
-            SendAction.OnReservedMessageScreenEntered, SendAction.OnMessageScreenEntered -> {
+            SendAction.OnMessageScreenEntered -> {
                 clearSendUiState()
             }
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
@@ -278,7 +278,6 @@ class SendViewModel @Inject constructor(
                 ),
             ).onSuccess {
                 postSideEffect(SendSideEffect.ShowToast(R.string.edit_done))
-                postSideEffect(SendSideEffect.NavigateToReservedMessage)
             }.onNetworkFailure { exception ->
                 if (exception.status == 400) {
                     reduce { state.copy(messageSendFailedDialogContent = exception.detail) }

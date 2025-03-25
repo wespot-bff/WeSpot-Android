@@ -59,7 +59,6 @@ interface MessageEditNavigator {
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun popUpToMessageScreen()
-    fun popUpToReservedMessageScreen()
 }
 
 data class EditMessageScreenArgs(
@@ -102,10 +101,6 @@ fun MessageEditScreen(
 
             SendSideEffect.NavigateToMessage -> {
                 navigator.popUpToMessageScreen()
-            }
-
-            SendSideEffect.NavigateToReservedMessage -> {
-                navigator.popUpToReservedMessageScreen()
             }
 
             is SendSideEffect.ShowToast -> {

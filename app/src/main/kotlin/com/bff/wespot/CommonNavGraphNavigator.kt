@@ -18,12 +18,10 @@ import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
-import com.bff.wespot.message.screen.ReservedMessageNavigator
 import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.message.screen.destinations.ReservedMessageScreenDestination
 import com.bff.wespot.message.screen.send.EditMessageScreenArgs
 import com.bff.wespot.message.screen.send.MessageEditNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
@@ -63,7 +61,6 @@ class CommonNavGraphNavigator(
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
-    ReservedMessageNavigator,
     IndividualVoteNavigator,
     ProfileEditNavigator {
     override fun navigateUp() {
@@ -91,17 +88,6 @@ class CommonNavGraphNavigator(
 
     override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
         navController.navigate(MessageEditScreenDestination(args) within navGraph)
-    }
-
-    override fun navigateToReservedMessageScreen() {
-        navController.navigate(ReservedMessageScreenDestination() within navGraph)
-    }
-
-    override fun popUpToReservedMessageScreen() {
-        navController.popBackStack(
-            route = (ReservedMessageScreenDestination() within navGraph).route,
-            inclusive = false
-        )
     }
 
     override fun navigateToVoteHome() {

@@ -8,14 +8,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -40,7 +38,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -57,7 +54,6 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.RECEIVED_MESSAGE_INDEX
 import com.bff.wespot.message.common.SENT_MESSAGE_INDEX
 import com.bff.wespot.message.common.toStringWithDotSeparator
-import com.bff.wespot.message.component.ReservedMessageBanner
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.screen.MessageReportScreen
 import com.bff.wespot.message.state.storage.StorageAction
@@ -65,7 +61,6 @@ import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
 import com.bff.wespot.model.message.request.MessageType
 import com.bff.wespot.model.message.response.MessageContent
-import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.model.message.response.ReceivedMessage
 import com.bff.wespot.model.message.response.SentMessage
 import com.bff.wespot.model.notification.NotificationType
@@ -84,7 +79,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun MessageStorageScreen(
     type: NotificationType,
     messageId: Int? = null,
-    navigateToReservedMessageScreen: () -> Unit,
     showToast: (ToastState) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
 ) {
@@ -159,9 +153,6 @@ fun MessageStorageScreen(
                     val sentMessageList = state.sentMessageList.collectAsLazyPagingItems()
                     SentMessageStorageScreen(
                         data = sentMessageList,
-                        messageStatus = state.messageStatus,
-                        isBannerVisible = state.messageStatus.hasReservedMessages() &&
-                            state.isTimePeriodEveningToNight,
                         showToast = showToast,
                         itemClick = { item ->
                             action(StorageAction.OnSentMessageClicked(message = item))
@@ -182,7 +173,6 @@ fun MessageStorageScreen(
                             )
                             showMessageOptionDialog = true
                         },
-                        bannerClick = navigateToReservedMessageScreen,
                     )
                 }
             }
@@ -276,13 +266,6 @@ fun MessageStorageScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
-
-    LifecycleStartEffect(Unit) {
-        action(StorageAction.StartTimeTracking)
-        onStopOrDispose {
-            action(StorageAction.CancelTimeTracking)
-        }
-    }
 
     LaunchedEffect(Unit) {
         when (type) {
@@ -390,11 +373,8 @@ private fun ReceivedMessageStorageScreen(
 @Composable
 private fun SentMessageStorageScreen(
     data: LazyPagingItems<SentMessage>,
-    messageStatus: MessageStatus,
-    isBannerVisible: Boolean,
     itemClick: (SentMessage) -> Unit,
     optionButtonClick: (Int) -> Unit,
-    bannerClick: () -> Unit,
     showToast: (ToastState) -> Unit,
 ) {
     when (data.loadState.refresh) {
@@ -421,15 +401,6 @@ private fun SentMessageStorageScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                if (isBannerVisible) {
-                    item(span = { GridItemSpan(2) }) {
-                        SentMessageStorageBanner(
-                            messageStatus = messageStatus,
-                            bannerClick = bannerClick,
-                        )
-                    }
-                }
-
                 items(
                     data.itemCount,
                     key = data.itemKey { it.id },
@@ -462,29 +433,6 @@ private fun SentMessageStorageScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun SentMessageStorageBanner(
-    messageStatus: MessageStatus,
-    bannerClick: () -> Unit,
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ReservedMessageBanner(
-            paddingValues = PaddingValues(),
-            messageStatus = messageStatus,
-            onBannerClick = bannerClick,
-        )
-
-        Text(
-            modifier = Modifier.padding(top = 24.dp, start = 4.dp),
-            text = stringResource(
-                R.string.sent_message_storage_title,
-            ),
-            color = WeSpotThemeManager.colors.txtTitleColor,
-            style = StaticTypeScale.Default.body3,
-        )
     }
 }
 

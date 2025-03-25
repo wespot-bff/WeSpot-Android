@@ -30,7 +30,6 @@ import kotlinx.collections.immutable.persistentListOf
 interface MessageNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
-    fun navigateToReservedMessageScreen()
 }
 
 data class MessageScreenArgs(
@@ -72,9 +71,6 @@ internal fun MessageScreen(
                 when (page) {
                     HOME_SCREEN_INDEX -> {
                         MessageHomeScreen(
-                            navigateToReservedMessageScreen = {
-                                messageNavigator.navigateToReservedMessageScreen()
-                            },
                             navigateToMessageStorageScreen = {
                                 selectedTabIndex = STORAGE_SCREEN_INDEX
                             },
@@ -91,9 +87,6 @@ internal fun MessageScreen(
                         MessageStorageScreen(
                             type = navArgs.type,
                             messageId = navArgs.messageId,
-                            navigateToReservedMessageScreen = {
-                                messageNavigator.navigateToReservedMessageScreen()
-                            },
                             showToast = showToast,
                         )
                     }
