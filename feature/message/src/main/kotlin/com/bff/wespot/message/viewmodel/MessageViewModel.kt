@@ -2,13 +2,8 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
-import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
-import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
-import com.bff.wespot.domain.util.RemoteConfigKey
-import com.bff.wespot.message.model.TimePeriod
-import com.bff.wespot.message.model.getCurrentTimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
@@ -35,24 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MessageViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
-    private val messageStorageRepository: MessageStorageRepository,
     private val profileRepository: ProfileRepository,
-    remoteConfigRepository: RemoteConfigRepository,
 ) : BaseViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
-    override val container = container<MessageUiState, MessageSideEffect>(
-        MessageUiState(
-            messageStartTime = remoteConfigRepository.fetchFromRemoteConfig(
-                RemoteConfigKey.MESSAGE_START_TIME,
-            ),
-            messageReceiveTime = remoteConfigRepository.fetchFromRemoteConfig(
-                RemoteConfigKey.MESSAGE_RECEIVE_TIME,
-            ),
-        ).let { state ->
-            state.copy(
-                timePeriod = getCurrentTimePeriod(state.messageStartTime, state.messageReceiveTime),
-            )
-        },
-    )
+    override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
     private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val remainingTimeMillis: StateFlow<Long> = _remainingTimeMillis.asStateFlow()
@@ -65,17 +45,7 @@ class MessageViewModel @Inject constructor(
                 val delayMills = System.currentTimeMillis() - previousTimeMills
                 if (delayMills == 1000L) {
                     intent {
-                        val currentTimePeriod = getCurrentTimePeriod(
-                            messageStartTime = state.messageStartTime,
-                            messageReceiveTime = state.messageReceiveTime,
-                        )
-
-                        updateTimePeriod(currentTimePeriod)
-
-                        // TimerPeriod 상태에 따라 타이머 시각 상태 변경
-                        if (currentTimePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                            _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
-                        }
+                        _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
                     }
                     previousTimeMills = System.currentTimeMillis()
                 }
@@ -85,81 +55,11 @@ class MessageViewModel @Inject constructor(
 
     fun onAction(action: MessageAction) {
         when (action) {
-            MessageAction.OnMessageHomeScreenEntered -> observeProfileFlow()
-            MessageAction.StartTimeTracking -> startTimer()
-            MessageAction.CancelTimeTracking -> cancelTimer()
-            MessageAction.OnReservedMessageScreenEntered -> handleReservedMessageScreenEntered()
-        }
-    }
-
-    private fun getMessageStatus() = intent {
-        viewModelScope.launch {
-            messageRepository.getMessageStatus()
-                .onSuccess { messageStatus ->
-                    reduce {
-                        state.copy(messageStatus = messageStatus)
-                    }
-                }.onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
-        }
-    }
-
-    private fun startTimer() = intent {
-        if (!timerJob.isActive) {
-            setTimer()
-            timerJob.start()
-        }
-    }
-
-    private fun cancelTimer() {
-        timerJob.cancel()
-    }
-
-    private fun handleReservedMessageScreenEntered() = intent {
-        viewModelScope.launch {
-            reduce { state.copy(isLoading = true) }
-            messageStorageRepository.getReservedMessage()
-                .onSuccess { reservedMessageList ->
-                    reduce {
-                        state.copy(
-                            reservedMessageList = reservedMessageList,
-                            isLoading = false,
-                        )
-                    }
-                }
-                .onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
-                    reduce { state.copy(isLoading = false) }
-                }
-        }
-    }
-
-    private fun updateTimePeriod(currentTimePeriod: TimePeriod) = intent {
-        if (state.timePeriod != currentTimePeriod) {
-            reduce {
-                state.copy(timePeriod = currentTimePeriod)
+            MessageAction.OnMessageHomeScreenEntered -> {
+                observeProfileFlow()
+                getMessageStatus()
             }
-            setTimer()
         }
-    }
-
-    private fun setTimer() = intent {
-        getMessageStatus()
-
-        if (state.timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-            _remainingTimeMillis.value = getRemainingTimeMillis(state.messageReceiveTime)
-        }
-    }
-
-    private fun getRemainingTimeMillis(messageReceiveTime: String): Long {
-        val currentTimeMillis = System.currentTimeMillis() + MILLIS_KTC_OFFSET
-        val elapsedMillis = currentTimeMillis % MILLIS_PER_DAY
-        val messageReceiveMillis = messageReceiveTime.toMillis()
-
-        return if (elapsedMillis <= messageReceiveMillis) messageReceiveMillis - elapsedMillis else 0L
     }
 
     private fun observeProfileFlow() = intent {
@@ -175,13 +75,41 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun String.toMillis(): Long {
-        val (hour, minute) = this.split(":").map { it.toInt() }
-        return (hour * 3600 + minute * 60) * 1000L
+    private fun getMessageStatus() = intent {
+        viewModelScope.launch {
+            messageRepository.getMessageStatus()
+                .onSuccess { messageStatus ->
+                    /** 작성할 수 있는 쪽지가 없는 경우, 타이머를 노출한다. */
+                    if (messageStatus.countRemainingMessages <= 0) {
+                        startTimer()
+                    }
+
+                    reduce {
+                        state.copy(messageStatus = messageStatus)
+                    }
+                }.onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+        }
+    }
+
+    private fun startTimer() = intent {
+        if (!timerJob.isActive) {
+            _remainingTimeMillis.value = getRemainingTimeMillis()
+            timerJob.start()
+        }
+    }
+
+    private fun getRemainingTimeMillis(): Long {
+        val currentTimeMillis = System.currentTimeMillis() + MILLIS_KTC_OFFSET
+        val elapsedMillis = currentTimeMillis % MILLIS_PER_DAY
+
+        return MILLIS_MIDNIGHT - elapsedMillis
     }
 
     companion object {
         private const val MILLIS_PER_DAY = 24 * 3600 * 1000
+        private const val MILLIS_MIDNIGHT = 24 * 3600 * 1000
         private const val MILLIS_KTC_OFFSET = 9 * 3600 * 1000
     }
 }
