@@ -306,7 +306,7 @@ fun LazyItemScope.ReceiverItem(
         onClick = onClick,
         imageContent = {
             AsyncImage(
-                modifier = Modifier.size(56.dp),
+                modifier = Modifier.size(46.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(receiver.profileCharacter.iconUrl)
                     .crossfade(true)
