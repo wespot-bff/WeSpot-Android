@@ -2,8 +2,8 @@
 <resources>
     <string name="message_card_button_text">새로운 쪽지 보내기</string>
     <string name="message_card_button_text_disabled">내일 새로운 쪽지를 작성할 수 있어요</string>
-    <string name="received_message_banner_title">내 답장을 기다리는 쪽지가 있어요</string>
-    <string name="received_message_banner_subtitle">지금 바로 열어보세요</string>
+    <string name="received_message_banner_title">답장을 기다리는 쪽지가 있어요</string>
+    <string name="received_message_banner_subtitle">눌러서 바로 확인하기</string>
     <string name="message_home_screen">쪽지 홈</string>
     <string name="message_storage_screen">쪽지 보관함</string>
     <string name="wespot_logo">WeSpot Logo</string>
