@@ -1,5 +1,6 @@
 package com.bff.wespot.server.driven.onboarding
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,15 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.model.serverDriven.BaseComponent
-import com.bff.wespot.model.serverDriven.ButtonComponent
+import com.bff.wespot.model.serverDriven.ButtonsComponent
 import com.bff.wespot.model.serverDriven.ImageComponent
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
+import com.bff.wespot.model.serverDriven.TextComponent
 import com.bff.wespot.model.serverDriven.TextListComponent
-import com.bff.wespot.model.serverDriven.TitleComponent
-import com.bff.wespot.server.driven.component.ButtonSection
+import com.bff.wespot.model.serverDriven.section.BaseSection
+import com.bff.wespot.model.serverDriven.section.BottomSection
+import com.bff.wespot.model.serverDriven.section.ContentSection
+import com.bff.wespot.server.driven.component.ButtonsSection
 import com.bff.wespot.server.driven.component.ImageSection
 import com.bff.wespot.server.driven.component.TextListSection
-import com.bff.wespot.server.driven.component.TitleSection
+import com.bff.wespot.server.driven.component.TextSection
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,7 +46,7 @@ fun OnBoardingBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         userScrollEnabled = false,
     ) { page ->
-        OnBoardingPage(contents[page].data) {
+        OnBoardingPage(sections = contents[page].data) {
             if (page == contents.size - 1) {
                 closeOnBoarding.invoke()
             } else {
@@ -60,8 +64,32 @@ fun OnBoardingBottomSheet(
 
 @Composable
 private fun OnBoardingPage(
-    contents: List<BaseComponent>,
+    sections: List<BaseSection>,
     onClick: () -> Unit,
+) {
+    Column {
+        sections.forEach {
+            when (it) {
+                is ContentSection -> {
+                    ContentPart(
+                        components = it.components,
+                    )
+                }
+
+                is BottomSection -> {
+                    BottomPart(
+                        section = it,
+                        onClick = onClick,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContentPart(
+    components: List<BaseComponent>,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -69,26 +97,49 @@ private fun OnBoardingPage(
             .padding(start = 20.dp, top = 40.dp, end = 20.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(contents) { content ->
-            when (content) {
-                is TitleComponent -> {
-                    TitleSection(title = content.text)
-                }
-
-                is TextListComponent -> {
-                    TextListSection(textList = content.textList)
+        items(components) {
+            when (it) {
+                is TextComponent -> {
+                    TextSection(
+                        richText = it.richText,
+                        paddings = it.paddings,
+                    )
                 }
 
                 is ImageComponent -> {
                     ImageSection(
-                        imageUrl = content.url,
-                        width = content.width,
-                        height = content.height,
+                        imageUrl = it.url,
+                        width = it.width,
+                        height = it.height,
+                        paddings = it.paddings,
                     )
                 }
 
-                is ButtonComponent -> {
-                    ButtonSection(text = content.text, onClick = onClick)
+                is TextListComponent -> {
+                    TextListSection(
+                        textList = it.textList,
+                        paddings = it.paddings,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BottomPart(
+    section: BottomSection,
+    onClick: () -> Unit,
+) {
+    LazyColumn {
+        items(section.components) {
+            when (it) {
+                is ButtonsComponent -> {
+                    ButtonsSection(
+                        buttonsComponent = it,
+                        onClick = listOf(onClick),
+                        paddings = it.paddings,
+                    )
                 }
             }
         }
