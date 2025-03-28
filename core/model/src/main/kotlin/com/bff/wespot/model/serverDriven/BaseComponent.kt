@@ -1,3 +1,5 @@
 package com.bff.wespot.model.serverDriven
 
-interface BaseComponent
+interface BaseComponent {
+    val paddings: Paddings
+}

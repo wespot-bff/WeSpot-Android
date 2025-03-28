@@ -1,8 +1,6 @@
 package com.bff.wespot.model.serverDriven
 
-data class ImageComponent(
-    val url: String,
-    val width: Int,
-    val height: Int,
+data class TextComponent(
+    val richText: RichText,
     override val paddings: Paddings,
 ) : BaseComponent

@@ -12,7 +12,7 @@ import javax.inject.Inject
 class OnBoardingDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient
 ) : OnBoardingDataSource {
-    override suspend fun getOnBoarding(category: OnBoardingCategory): Result<OnBoardingDto> =
+    override suspend fun getOnBoarding(category: OnBoardingCategory): Result<List<OnBoardingDto>> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get

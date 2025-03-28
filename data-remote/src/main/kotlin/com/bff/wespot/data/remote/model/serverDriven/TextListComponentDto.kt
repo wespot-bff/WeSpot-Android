@@ -8,11 +8,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("textListComponent")
 data class TextListComponentDto(
-    val textList: List<TextListDto>
+    val textList: List<TextListDto>,
+    val paddings: PaddingsDto = PaddingsDto.DEFAULT
 ) : BaseComponentDto {
     override fun toDomain(): TextListComponent {
         return TextListComponent(
-            textList = textList.map { it.toDomain() }
+            textList = textList.map { it.toDomain() },
+            paddings = paddings.toDomain()
         )
     }
 }
@@ -20,10 +22,10 @@ data class TextListComponentDto(
 @Serializable
 data class TextListDto(
     val icon: String,
-    val text: String
+    val richText: RichTextDto
 ) {
     fun toDomain() = TextList(
         icon = icon,
-        text = text
+        richText = richText.toDomain()
     )
 }

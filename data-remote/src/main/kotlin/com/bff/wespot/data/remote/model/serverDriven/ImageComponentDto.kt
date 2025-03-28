@@ -7,15 +7,22 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("imageComponent")
 data class ImageComponentDto(
-    val url: String,
-    val width: Int,
-    val height: Int
+    val content: ImageComponentContent
 ) : BaseComponentDto {
     override fun toDomain(): ImageComponent {
         return ImageComponent(
-            url = url,
-            width = width,
-            height = height
+            url = content.url,
+            width = content.width,
+            height = content.height,
+            paddings = content.paddings.toDomain()
         )
     }
 }
+
+@Serializable
+data class ImageComponentContent(
+    val url: String,
+    val width: Int,
+    val height: Int,
+    val paddings: PaddingsDto = PaddingsDto.DEFAULT,
+)
