@@ -370,6 +370,7 @@ fun ProfileEditLockedItem(
             WsTextField(
                 value = "",
                 onValueChange = {},
+                enabled = false,
                 placeholder = content,
                 textFieldType = WsTextFieldType.Lock,
             )
