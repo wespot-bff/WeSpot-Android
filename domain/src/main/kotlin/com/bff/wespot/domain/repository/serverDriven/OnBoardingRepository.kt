@@ -4,5 +4,5 @@ import com.bff.wespot.model.serverDriven.OnBoarding
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
 
 interface OnBoardingRepository {
-    suspend fun getOnBoarding(category: OnBoardingCategory): Result<OnBoarding>
+    suspend fun getOnBoarding(category: OnBoardingCategory): Result<List<OnBoarding>>
 }

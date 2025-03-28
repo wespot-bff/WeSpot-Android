@@ -9,9 +9,11 @@ import javax.inject.Inject
 class OnBoardingRepositoryImpl @Inject constructor(
     private val onBoardingDataSource: OnBoardingDataSource
 ) : OnBoardingRepository {
-    override suspend fun getOnBoarding(category: OnBoardingCategory): Result<OnBoarding> =
+    override suspend fun getOnBoarding(category: OnBoardingCategory): Result<List<OnBoarding>> =
         onBoardingDataSource.getOnBoarding(category)
             .mapCatching {
-                it.toDomain()
+                it.map {
+                    it.toDomain()
+                }
             }
 }
