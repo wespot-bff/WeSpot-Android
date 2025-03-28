@@ -16,4 +16,8 @@ class OnBoardingRepositoryImpl @Inject constructor(
                     it.toDomain()
                 }
             }
+
+    override suspend fun viewedOnBoarding(category: OnBoardingCategory) {
+        onBoardingDataSource.viewedOnBoarding(category)
+    }
 }

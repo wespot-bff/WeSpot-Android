@@ -20,4 +20,13 @@ class OnBoardingDataSourceImpl @Inject constructor(
                 parameter("category", category.name)
             }
         }
+
+    override suspend fun viewedOnBoarding(category: OnBoardingCategory): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("api/v1/on-boarding/viewed")
+                parameter("category", category)
+            }
+        }
 }

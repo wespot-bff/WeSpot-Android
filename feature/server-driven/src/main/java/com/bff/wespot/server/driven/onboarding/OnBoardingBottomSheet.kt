@@ -29,6 +29,7 @@ import com.bff.wespot.server.driven.component.ButtonsSection
 import com.bff.wespot.server.driven.component.ImageSection
 import com.bff.wespot.server.driven.component.TextListSection
 import com.bff.wespot.server.driven.component.TextSection
+import com.bff.wespot.server.driven.onboarding.state.OnBoardingNotificationAction
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,6 +42,8 @@ fun OnBoardingBottomSheet(
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState { contents.size }
 
+    val action = viewModel::onAction
+
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxWidth(),
@@ -48,6 +51,7 @@ fun OnBoardingBottomSheet(
     ) { page ->
         OnBoardingPage(sections = contents[page].data) {
             if (page == contents.size - 1) {
+                action(OnBoardingNotificationAction.ViewedOnBoarding(category))
                 closeOnBoarding.invoke()
             } else {
                 coroutineScope.launch {
@@ -58,7 +62,7 @@ fun OnBoardingBottomSheet(
     }
 
     LaunchedEffect(category) {
-        viewModel.getOnBoarding(category)
+        action(OnBoardingNotificationAction.GetOnBoarding(category))
     }
 }
 
