@@ -165,7 +165,7 @@ fun ProfileEditScreen(
                 Box(
                     modifier = Modifier
                         .padding(top = 16.dp)
-                        .clickableSingle {
+                        .clickableSingle(removeInteraction = true) {
                             if (state.profilePath.isNullOrEmpty()) {
                                 action(ProfileEditAction.OpenPicker)
                             } else {
@@ -179,9 +179,9 @@ fun ProfileEditScreen(
                             .clip(CircleShape),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(state.profilePath)
-                            .error(com.bff.wespot.designsystem.R.drawable.default_image)
-                            .fallback(com.bff.wespot.designsystem.R.drawable.default_image)
-                            .placeholder(com.bff.wespot.designsystem.R.drawable.default_image)
+                            .error(com.bff.wespot.designsystem.R.drawable.default_profile)
+                            .fallback(com.bff.wespot.designsystem.R.drawable.default_profile)
+                            .placeholder(com.bff.wespot.designsystem.R.drawable.default_profile)
                             .crossfade(true)
                             .build(),
                         contentDescription = stringResource(

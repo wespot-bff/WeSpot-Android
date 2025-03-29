@@ -20,8 +20,8 @@ import com.bff.wespot.ui.util.hexToColor
 fun ProfileCircleImage(
     size: Dp,
     imageUrl: String,
-    backgroundColor: String,
     contentDescription: String,
+    backgroundColor: String = "",
 ) {
     Box(
         modifier = Modifier
@@ -40,6 +40,9 @@ fun ProfileCircleImage(
             modifier = Modifier.size(size),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
+                .error(com.bff.wespot.designsystem.R.drawable.default_profile)
+                .fallback(com.bff.wespot.designsystem.R.drawable.default_profile)
+                .placeholder(com.bff.wespot.designsystem.R.drawable.default_profile)
                 .crossfade(true)
                 .build(),
             contentDescription = contentDescription,
