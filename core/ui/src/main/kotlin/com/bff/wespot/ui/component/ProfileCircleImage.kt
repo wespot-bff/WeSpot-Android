@@ -14,26 +14,18 @@ import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.ui.util.hexToColor
 
 @Composable
 fun ProfileCircleImage(
     size: Dp,
     imageUrl: String,
     contentDescription: String,
-    backgroundColor: String = "",
 ) {
     Box(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(
-                if (backgroundColor.isNotEmpty()) {
-                    hexToColor(backgroundColor)
-                } else {
-                    WeSpotThemeManager.colors.cardBackgroundColor
-                },
-            ),
+            .background(WeSpotThemeManager.colors.cardBackgroundColor),
         contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
