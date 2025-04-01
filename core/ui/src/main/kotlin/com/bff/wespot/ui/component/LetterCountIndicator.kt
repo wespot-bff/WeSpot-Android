@@ -1,6 +1,7 @@
 package com.bff.wespot.ui.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,9 +17,10 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 fun LetterCountIndicator(
     currentCount: Int,
     maxCount: Int,
+    paddingValues: PaddingValues = PaddingValues(top = 4.dp, start = 10.dp, end = 10.dp),
 ) {
     Text(
-        modifier = Modifier.padding(top = 4.dp, start = 10.dp, end = 10.dp),
+        modifier = Modifier.padding(paddingValues),
         text = "$currentCount / $maxCount",
         style = StaticTypeScale.Default.body7,
         color = if (currentCount <= maxCount) Gray400 else WeSpotThemeManager.colors.dangerColor,
