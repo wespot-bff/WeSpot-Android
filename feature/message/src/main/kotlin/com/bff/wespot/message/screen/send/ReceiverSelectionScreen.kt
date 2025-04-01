@@ -268,7 +268,6 @@ fun ReceiverSelectionScreen(
 
     if (dialogState) {
         SendExitDialog(
-            isReservedMessage = state.isReservedMessage,
             okButtonClick = {
                 action(SendAction.OnExitDialogExitButtonClicked)
             },

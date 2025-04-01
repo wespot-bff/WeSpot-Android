@@ -48,7 +48,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface MessageWriteNavigator {
     fun navigateUp()
     fun popUpToMessageScreen()
-    fun navigateMessageEditScreen(args: EditMessageScreenArgs)
+    fun navigateMessageEditScreen()
 }
 
 data class MessageWriteScreenArgs(
@@ -120,11 +120,7 @@ fun MessageWriteScreen(
             button = {
                 WSButton(
                     onClick = {
-                        if (state.isReservedMessage) {
-                            navigator.navigateUp()
-                        } else {
-                            navigator.navigateMessageEditScreen(EditMessageScreenArgs())
-                        }
+                        navigator.navigateMessageEditScreen()
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
                     text = stringResource(
@@ -188,7 +184,6 @@ fun MessageWriteScreen(
 
     if (dialogState) {
         SendExitDialog(
-            isReservedMessage = state.isReservedMessage,
             okButtonClick = {
                 action(SendAction.OnExitDialogExitButtonClicked)
             },

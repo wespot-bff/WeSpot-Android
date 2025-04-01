@@ -22,7 +22,6 @@ import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.message.screen.send.EditMessageScreenArgs
 import com.bff.wespot.message.screen.send.MessageEditNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
@@ -86,8 +85,8 @@ class CommonNavGraphNavigator(
         )
     }
 
-    override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
-        navController.navigate(MessageEditScreenDestination(args) within navGraph)
+    override fun navigateMessageEditScreen() {
+        navController.navigate(MessageEditScreenDestination within navGraph)
     }
 
     override fun navigateToVoteHome() {
