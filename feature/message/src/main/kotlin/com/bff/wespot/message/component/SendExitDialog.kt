@@ -7,18 +7,11 @@ import com.bff.wespot.message.R
 
 @Composable
 fun SendExitDialog(
-    isReservedMessage: Boolean,
     okButtonClick: () -> Unit,
     cancelButtonClick: () -> Unit,
 ) {
     WSDialog(
-        title = stringResource(
-            if (isReservedMessage) {
-                R.string.edit_exit_dialog_title
-            } else {
-                R.string.send_exit_dialog_title
-            },
-        ),
+        title = stringResource(R.string.send_exit_dialog_title),
         subTitle = stringResource(R.string.send_exit_dialog_subtitle),
         okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
         cancelButtonText = stringResource(id = R.string.close),
