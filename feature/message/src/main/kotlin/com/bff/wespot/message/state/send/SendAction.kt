@@ -1,14 +1,12 @@
 package com.bff.wespot.message.state.send
 
+import com.bff.wespot.model.message.response.AnonymousProfile
 import com.bff.wespot.model.user.response.User
 
 sealed class SendAction {
     data class OnSearchContentChanged(val content: String) : SendAction()
     data class OnUserSelected(val user: User) : SendAction()
     data class OnMessageChanged(val content: String) : SendAction()
-    data class OnRandomNameToggled(val state: Boolean) : SendAction()
-    data class OnMessageEditScreenEntered(val isReservedMessage: Boolean, val messageId: Int) : SendAction()
-    data class OnEditButtonClicked(val messageId: Int) : SendAction()
     data object OnSendButtonClicked : SendAction()
     data object OnReceiverScreenEntered : SendAction()
     data object OnWriteScreenEntered : SendAction()
@@ -16,4 +14,16 @@ sealed class SendAction {
     data object OnExitDialogExitButtonClicked : SendAction()
     data object OnExitDialogCancelButtonClicked : SendAction()
     data object OnTopBarNavigateButtonClicked : SendAction()
+    data class OnAnonymousToggled(val state: Boolean) : SendAction()
+    data object OnProfileBottomSheetClosed : SendAction()
+    data object OnProfileAddButtonClicked : SendAction()
+    data class OnProfileSelected(val anonymousProfile: AnonymousProfile) : SendAction()
+    data object OnMessageEditScreenEntered : SendAction()
+    data object OnProfileImageClicked : SendAction()
+    data class OnProfileNameChanged(val name: String) : SendAction()
+    data object OnProfileCreatorModalClosed : SendAction()
+    data object OnPickerOpenOptionClicked : SendAction()
+    data object OnRemoveProfileOptionClicked : SendAction()
+    data object OnProfileOptionSheetClosed : SendAction()
+    data class OnProfileImagePicked(val profilePath: String) : SendAction()
 }

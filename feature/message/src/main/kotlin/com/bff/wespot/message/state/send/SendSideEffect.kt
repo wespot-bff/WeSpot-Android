@@ -11,4 +11,5 @@ sealed class SendSideEffect {
     ) : SendSideEffect()
     data object DismissExitDialog : SendSideEffect()
     data object NavigateUp : SendSideEffect()
+    data object OpenPicker : SendSideEffect()
 }

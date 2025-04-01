@@ -5,7 +5,6 @@ import androidx.paging.cachedIn
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.extension.onNetworkFailure
-import com.bff.wespot.common.util.RandomNameGenerator
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
@@ -19,6 +18,7 @@ import com.bff.wespot.message.state.send.SendUiState
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
+import com.bff.wespot.model.message.response.AnonymousProfile
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
@@ -51,7 +51,7 @@ class SendViewModel @Inject constructor(
 
     private val nameInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
-    private val randomNameGenerator by lazy { RandomNameGenerator() }
+    private val profileNameInput: MutableStateFlow<String> = MutableStateFlow("")
 
     fun onAction(action: SendAction) {
         when (action) {
@@ -60,22 +60,27 @@ class SendViewModel @Inject constructor(
                 getProfile()
                 observeNameInput()
             }
-            is SendAction.OnMessageEditScreenEntered -> {
-                handleMessageEditScreenEntered(action.isReservedMessage, action.messageId)
-            }
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.OnSendButtonClicked -> handleMessageSent()
-            is SendAction.OnRandomNameToggled -> handleRandomNameToggled()
-            is SendAction.OnEditButtonClicked -> handleEditButtonClicked(action.messageId)
-            SendAction.OnMessageScreenEntered -> {
-                clearSendUiState()
-            }
+            is SendAction.OnAnonymousToggled -> handleAnonymousToggled()
+            SendAction.OnMessageScreenEntered -> clearSendUiState()
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
-            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNatvigateButtonClicked()
+            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
+            is SendAction.OnProfileSelected -> handleAnonymousProfileSelected(action.anonymousProfile)
+            SendAction.OnProfileAddButtonClicked -> handleAnonymousProfileAddButtonClicked()
+            SendAction.OnProfileBottomSheetClosed -> handleAnonymousBottomSheetClosed()
+            SendAction.OnProfileImageClicked -> handleAnonymousProfileClicked()
+            SendAction.OnProfileCreatorModalClosed -> handleAnonymousProfileCreatorModalClosed()
+            SendAction.OnMessageEditScreenEntered -> observeProfileNameInput()
+            SendAction.OnPickerOpenOptionClicked -> handlePickerOpenOptionClicked()
+            SendAction.OnRemoveProfileOptionClicked -> handleRemoveProfileOptionClicked()
+            SendAction.OnProfileOptionSheetClosed -> handleProfileOptionSheetClosed()
+            is SendAction.OnProfileNameChanged -> handleProfileNameChanged(action.name)
+            is SendAction.OnProfileImagePicked -> handleAnonymousProfileImagePicked(action.profilePath)
         }
     }
 
@@ -103,15 +108,6 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageChanged(content: String) = intent {
-        reduce {
-            messageInput.value = content
-            state.copy(
-                messageInput = content,
-            )
-        }
-    }
-
     private fun observeNameInput() {
         viewModelScope.launch {
             nameInput
@@ -122,6 +118,16 @@ class SendViewModel @Inject constructor(
                         getUserList(name)
                     }
                 }
+        }
+    }
+
+    private fun getUserList(name: String) = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            runCatching {
+                val result = userListRepository.fetchResultStream(mapOf("name" to name))
+                    .cachedIn(viewModelScope)
+                reduce { state.copy(userList = result) }
+            }
         }
     }
 
@@ -138,54 +144,25 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageEditScreenEntered(
-        isReservedMessage: Boolean,
-        messageId: Int,
-    ) = intent {
-        // 기존 상태가 존재하는 경우 재호출하지 않는다.
-        if (state.sender.isNotEmpty()) {
-            return@intent
-        }
-
-        if (isReservedMessage) {
-            reduce {
-                state.copy(isReservedMessage = true, messageId = messageId)
+    private fun hasProfanity(content: String) = intent {
+        viewModelScope.launch {
+            runCatching {
+                val hasProfanity = checkProfanityUseCase(content)
+                reduce {
+                    state.copy(
+                        hasProfanity = hasProfanity,
+                    )
+                }
             }
-            getReservedMessage(state.messageId)
-        } else {
-            getProfile()
         }
     }
 
-    private fun getReservedMessage(messageId: Int) = intent {
-        reduce { state.copy(isLoading = true) }
-        viewModelScope.launch {
-            messageRepository.getMessage(messageId)
-                .onSuccess { message ->
-                    reduce {
-                        state.copy(
-                            selectedUser = message.receiver,
-                            messageInput = message.content,
-                            isRandomName = message.isAnonymous,
-                            isLoading = false,
-                        )
-                    }
-                    // 예약된 메세지 보낸이가 익명인 경우, 새로 프로필을 불러와 상태에 대입한다.
-                    if (message.isAnonymous) {
-                        reduce { state.copy(randomName = message.senderName) }
-                        getProfile()
-                    } else {
-                        reduce { state.copy(sender = message.senderName) }
-                    }
-
-                    messageInput.value = message.content
-                }
-                .onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
-                    reduce { state.copy(isLoading = false) }
-                }
+    private fun handleMessageChanged(content: String) = intent {
+        reduce {
+            messageInput.value = content
+            state.copy(
+                messageInput = content,
+            )
         }
     }
 
@@ -204,89 +181,38 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleRandomNameToggled() = intent {
-        reduce {
-            state.copy(
-                isRandomName = state.isRandomName.not(),
-                randomName = randomNameGenerator.getRandomName(),
-            )
-        }
-    }
-
-    private fun handleMessageSent() = intent {
-        reduce { state.copy(isLoading = true) }
-        postSideEffect(SendSideEffect.CloseReserveDialog)
-
-        viewModelScope.launch {
-            messageRepository.postMessage(
-                WrittenMessage(
-                    receiverId = state.selectedUser.id,
-                    content = state.messageInput,
-                    senderName = if (state.isRandomName) state.randomName else state.sender,
-                    isAnonymous = state.isRandomName,
-                ),
-            ).onSuccess {
-                trackMessageSendEvent()
-                reduce { state.copy(isLoading = false) }
-                postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
-                postSideEffect(SendSideEffect.NavigateToMessage)
-            }.onNetworkFailure { exception ->
-                if (exception.status == 400) {
-                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
-                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
+    private fun handleAnonymousToggled() = intent {
+        /**
+         * 익명으로 보낸 적이 없다면, 랜덤 프로필 선택 바텀시트를 노출한다.
+         * 익명으로 보낸 적이 있다면, 랜덤 프로필 생성 모달을 노출한다.
+         **/
+        if (!state.isAnonymous) {
+            reduce {
+                if (state.anonymousProfileList.isEmpty()) {
+                    state.copy(showAnonymousProfileCreatorModal = true)
                 } else {
-                    postSideEffect(exception.toSideEffect())
+                    state.copy(showAnonymousProfileBottomSheet = true)
                 }
-            }.onFailure {
-                reduce { state.copy(isLoading = false) }
+            }
+        } else {
+            reduce {
+                state.copy(
+                    isAnonymous = false,
+                    selectedAnonymousProfile = AnonymousProfile(),
+                )
             }
         }
     }
 
-    private fun getUserList(name: String) = intent {
-        viewModelScope.launch(coroutineDispatcher) {
-            runCatching {
-                val result = userListRepository.fetchResultStream(mapOf("name" to name))
-                    .cachedIn(viewModelScope)
-                reduce { state.copy(userList = result) }
-            }
-        }
-    }
-
-    private fun hasProfanity(content: String) = intent {
+    private fun hasProfileNameProfanity(content: String) = intent {
         viewModelScope.launch {
             runCatching {
                 val hasProfanity = checkProfanityUseCase(content)
                 reduce {
                     state.copy(
-                        hasProfanity = hasProfanity,
+                        hasProfileNameProfanity = hasProfanity,
                     )
                 }
-            }
-        }
-    }
-
-    private fun handleEditButtonClicked(messageId: Int) = intent {
-        viewModelScope.launch {
-            messageRepository.editMessage(
-                messageId = messageId,
-                WrittenMessage(
-                    receiverId = state.selectedUser.id,
-                    content = state.messageInput,
-                    senderName = if (state.isRandomName) state.randomName else state.sender,
-                    isAnonymous = state.isRandomName,
-                ),
-            ).onSuccess {
-                postSideEffect(SendSideEffect.ShowToast(R.string.edit_done))
-            }.onNetworkFailure { exception ->
-                if (exception.status == 400) {
-                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
-                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
-                } else {
-                    postSideEffect(exception.toSideEffect())
-                }
-            }.onFailure {
-                reduce { state.copy(isLoading = false) }
             }
         }
     }
@@ -306,6 +232,129 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    private fun observeProfileNameInput() {
+        viewModelScope.launch {
+            profileNameInput
+                .debounce(INPUT_DEBOUNCE_TIME)
+                .distinctUntilChanged()
+                .collect { name ->
+                    if (name.length in 1..10) {
+                        hasProfileNameProfanity(name)
+                    }
+                }
+        }
+    }
+
+    private fun handleAnonymousProfileSelected(anonymousProfile: AnonymousProfile) = intent {
+        reduce {
+            state.copy(
+                showAnonymousProfileBottomSheet = false,
+                showAnonymousProfileCreatorModal = false,
+                anonymousProfileInput = AnonymousProfile(),
+                selectedAnonymousProfile = anonymousProfile,
+                isAnonymous = true,
+            )
+        }
+        profileNameInput.value = ""
+    }
+
+    private fun handleAnonymousBottomSheetClosed() = intent {
+        reduce {
+            state.copy(showAnonymousProfileBottomSheet = false)
+        }
+    }
+
+    private fun handleAnonymousProfileAddButtonClicked() = intent {
+        reduce {
+            state.copy(
+                showAnonymousProfileBottomSheet = false,
+                showAnonymousProfileCreatorModal = true,
+            )
+        }
+    }
+
+    private fun handleProfileNameChanged(name: String) = intent {
+        profileNameInput.value = name
+        reduce {
+            state.copy(anonymousProfileInput = state.anonymousProfileInput.copy(name = name))
+        }
+    }
+
+    private fun handleAnonymousProfileCreatorModalClosed() = intent {
+        reduce {
+            state.copy(
+                showAnonymousProfileCreatorModal = false,
+                anonymousProfileInput = AnonymousProfile(),
+            )
+        }
+    }
+
+    private fun handleAnonymousProfileClicked() = intent {
+        reduce {
+            state.copy(showProfileOptionSheet = true)
+        }
+    }
+
+    private fun handleAnonymousProfileImagePicked(profilePath: String) = intent {
+        reduce {
+            state.copy(
+                anonymousProfileInput = state.anonymousProfileInput.copy(imageUrl = profilePath),
+            )
+        }
+    }
+
+    private fun handlePickerOpenOptionClicked() = intent {
+        reduce {
+            state.copy(showProfileOptionSheet = false)
+        }
+        postSideEffect(SendSideEffect.OpenPicker)
+    }
+
+    private fun handleRemoveProfileOptionClicked() = intent {
+        reduce {
+            state.copy(
+                anonymousProfileInput = state.anonymousProfileInput.copy(imageUrl = ""),
+                showProfileOptionSheet = false,
+            )
+        }
+    }
+
+    private fun handleProfileOptionSheetClosed() = intent {
+        reduce {
+            state.copy(showProfileOptionSheet = false)
+        }
+    }
+
+    private fun handleMessageSent() = intent {
+        reduce { state.copy(isLoading = true) }
+        postSideEffect(SendSideEffect.CloseReserveDialog)
+
+        viewModelScope.launch {
+            messageRepository.postMessage(
+                WrittenMessage(
+                    receiverId = state.selectedUser.id,
+                    content = state.messageInput,
+                    senderName = if (state.isAnonymous) state.selectedAnonymousProfile.name else state.sender,
+                    isAnonymous = state.isAnonymous,
+                ),
+            ).onSuccess {
+                trackMessageSendEvent()
+                reduce { state.copy(isLoading = false) }
+                postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
+                postSideEffect(SendSideEffect.NavigateToMessage)
+            }.onNetworkFailure { exception ->
+                if (exception.status == 400) {
+                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
+                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
+                } else {
+                    postSideEffect(exception.toSideEffect())
+                }
+            }.onFailure {
+                reduce { state.copy(isLoading = false) }
+            }
+        }
+    }
+
     private fun handleExitDialogCancelButtonClicked() = intent {
         postSideEffect(SendSideEffect.DismissExitDialog)
     }
@@ -315,7 +364,7 @@ class SendViewModel @Inject constructor(
         postSideEffect(SendSideEffect.NavigateToMessage)
     }
 
-    private fun handleTopBarNatvigateButtonClicked() = intent {
+    private fun handleTopBarNavigateButtonClicked() = intent {
         postSideEffect(SendSideEffect.NavigateUp)
     }
 
@@ -325,10 +374,10 @@ class SendViewModel @Inject constructor(
         }
         nameInput.value = ""
         messageInput.value = ""
+        profileNameInput.value = ""
     }
 
-    private suspend fun trackMessageSendEvent() {
-        val userId = runCatching { profileRepository.getProfile().id }.getOrNull()
+    private fun trackMessageSendEvent() = intent {
         val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val sendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter)
 
@@ -336,7 +385,7 @@ class SendViewModel @Inject constructor(
             event = AnalyticsEvent(
                 type = "message_send",
                 extras = listOf(
-                    AnalyticsEvent.Param("userId", userId.toString()),
+                    AnalyticsEvent.Param("userId", state.profile.id.toString()),
                     AnalyticsEvent.Param("time", sendTime),
                 ),
             ),
