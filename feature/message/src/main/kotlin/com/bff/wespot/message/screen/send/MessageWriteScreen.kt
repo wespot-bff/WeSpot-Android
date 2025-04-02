@@ -48,7 +48,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface MessageWriteNavigator {
     fun navigateUp()
     fun popUpToMessageScreen()
-    fun navigateMessageEditScreen()
+    fun navigateMessageSendScreen()
 }
 
 data class MessageWriteScreenArgs(
@@ -120,7 +120,7 @@ fun MessageWriteScreen(
             button = {
                 WSButton(
                     onClick = {
-                        navigator.navigateMessageEditScreen()
+                        navigator.navigateMessageSendScreen()
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
                     text = stringResource(

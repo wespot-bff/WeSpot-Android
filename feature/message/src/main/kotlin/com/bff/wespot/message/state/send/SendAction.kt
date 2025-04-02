@@ -18,7 +18,7 @@ sealed class SendAction {
     data object OnProfileBottomSheetClosed : SendAction()
     data object OnProfileAddButtonClicked : SendAction()
     data class OnProfileSelected(val anonymousProfile: AnonymousProfile) : SendAction()
-    data object OnMessageEditScreenEntered : SendAction()
+    data object OnMessageSendScreenEntered : SendAction()
     data object OnProfileImageClicked : SendAction()
     data class OnProfileNameChanged(val name: String) : SendAction()
     data object OnProfileCreatorModalClosed : SendAction()

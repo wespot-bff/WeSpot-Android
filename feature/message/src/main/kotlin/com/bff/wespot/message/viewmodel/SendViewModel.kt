@@ -75,7 +75,7 @@ class SendViewModel @Inject constructor(
             SendAction.OnProfileBottomSheetClosed -> handleAnonymousBottomSheetClosed()
             SendAction.OnProfileImageClicked -> handleAnonymousProfileClicked()
             SendAction.OnProfileCreatorModalClosed -> handleAnonymousProfileCreatorModalClosed()
-            SendAction.OnMessageEditScreenEntered -> observeProfileNameInput()
+            SendAction.OnMessageSendScreenEntered -> observeProfileNameInput()
             SendAction.OnPickerOpenOptionClicked -> handlePickerOpenOptionClicked()
             SendAction.OnRemoveProfileOptionClicked -> handleRemoveProfileOptionClicked()
             SendAction.OnProfileOptionSheetClosed -> handleProfileOptionSheetClosed()

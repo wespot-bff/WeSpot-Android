@@ -78,7 +78,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-interface MessageEditNavigator {
+interface MessageSendNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
     fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
@@ -88,8 +88,8 @@ interface MessageEditNavigator {
 @Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageEditScreen(
-    navigator: MessageEditNavigator,
+fun MessageSendScreen(
+    navigator: MessageSendNavigator,
     showToast: (ToastState) -> Unit,
     viewModel: SendViewModel,
 ) {
@@ -355,7 +355,7 @@ fun MessageEditScreen(
     NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(Unit) {
-        action(SendAction.OnMessageEditScreenEntered)
+        action(SendAction.OnMessageSendScreenEntered)
     }
 }
 
