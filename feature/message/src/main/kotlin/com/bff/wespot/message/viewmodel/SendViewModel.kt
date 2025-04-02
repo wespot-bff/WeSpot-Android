@@ -172,10 +172,7 @@ class SendViewModel @Inject constructor(
                 profileRepository.getProfile()
             }.onSuccess { profile ->
                 reduce {
-                    state.copy(
-                        sender = profile.toDescription(),
-                        profile = profile,
-                    )
+                    state.copy(profile = profile)
                 }
             }
         }
@@ -329,12 +326,18 @@ class SendViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
         postSideEffect(SendSideEffect.CloseReserveDialog)
 
+        val senderName = if (state.isAnonymous) {
+            state.selectedAnonymousProfile.name
+        } else {
+            state.profile.toDescription()
+        }
+
         viewModelScope.launch {
             messageRepository.postMessage(
                 WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    senderName = if (state.isAnonymous) state.selectedAnonymousProfile.name else state.sender,
+                    senderName = senderName,
                     isAnonymous = state.isAnonymous,
                 ),
             ).onSuccess {

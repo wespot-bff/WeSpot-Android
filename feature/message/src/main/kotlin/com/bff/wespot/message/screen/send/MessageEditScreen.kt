@@ -227,7 +227,7 @@ fun MessageEditScreen(
                     buttonText = if (state.isAnonymous) {
                         state.selectedAnonymousProfile.name
                     } else {
-                        state.profile.toDescription()
+                        state.profile.toMessageReceiverInfo()
                     },
                     imageUrl = if (state.isAnonymous) {
                         state.selectedAnonymousProfile.imageUrl

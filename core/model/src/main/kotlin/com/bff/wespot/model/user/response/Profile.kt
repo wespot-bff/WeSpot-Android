@@ -23,5 +23,10 @@ data class Profile(
         else -> ""
     }
 
+    fun toMessageReceiverInfo(): String {
+        val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
+        return "$name | $schoolName ${grade}학년 ${classNumber}반"
+    }
+
     fun toSchoolInfo() = "$schoolName ${grade}학년 ${classNumber}반"
 }

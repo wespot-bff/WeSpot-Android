@@ -21,7 +21,6 @@ data class SendUiState(
     val userList: Flow<PagingData<User>> = flow { },
     val selectedUser: User = User(),
     val hasProfanity: Boolean = false,
-    val sender: String = "",
     val isLoading: Boolean = false,
     val messageSendFailedDialogContent: String = "",
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
