@@ -70,7 +70,6 @@ import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.ProfileCircleImage
-import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.clickableSingle
@@ -97,7 +96,6 @@ fun MessageEditScreen(
     var exitDialog by remember { mutableStateOf(false) }
     var reserveDialog by remember { mutableStateOf(false) }
     var timeoutDialog by remember { mutableStateOf(false) }
-    var toast by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
     val state by viewModel.collectAsState()
@@ -237,7 +235,7 @@ fun MessageEditScreen(
                         state.profile.profileCharacter.iconUrl
                     },
                     contentDescription = stringResource(R.string.sender_profile_image),
-                    onClicked = { toast = true },
+                    onClicked = { },
                 )
 
                 Row(
@@ -352,14 +350,6 @@ fun MessageEditScreen(
         if (state.isLoading) {
             LoadingAnimation()
         }
-    }
-
-    TopToast(
-        message = stringResource(R.string.toast_error_name_edit),
-        toastType = WSToastType.Error,
-        showToast = toast,
-    ) {
-        toast = false
     }
 
     NetworkDialog(context = context, networkState = networkState)

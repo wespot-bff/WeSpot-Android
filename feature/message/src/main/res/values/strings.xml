@@ -22,7 +22,6 @@
     <string name="message_write_text_holder">오늘 바나나 우유 고마웠어! 점심 시간에 축구하는 거 봤는데 잘 하더라! 경기 얼마 안남았는데 다치지 말고 화이팅해~ㅎㅎ</string>
     <string name="message_length_limit">200자 이내로 입력해 주세요</string>
     <string name="write_done">작성 완료</string>
-    <string name="toast_error_name_edit">닉네임은 직접 수정이 어려워요</string>
     <string name="message_send_dialog_title">쪽지를 전송할게요</string>
     <string name="message_send_dialog_subtitle">쪽지 전송 후에는 수정이나 전송 취소가 불가하며\n남은 쪽지 개수에서 1개가 차감돼요</string>
     <string name="message_send_dialog_button_text">네 좋아요</string>
