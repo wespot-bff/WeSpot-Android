@@ -68,7 +68,6 @@ private fun RowScope.SingleButton(
             containerColor = containerColor,
         ),
         modifier = Modifier
-            .padding(paddings.toPaddingValues())
             .weight(1f),
         interactionSource = interactionSource,
         shape = WeSpotThemeManager.shapes.small,
@@ -79,6 +78,8 @@ private fun RowScope.SingleButton(
             fontWeight = richText.fontWeight.toFontWeight(),
             textAlign = richText.align.toTextAlign(),
             color = richText.color.toColor(),
+            modifier = Modifier
+                .padding(paddings.toPaddingValues()),
         )
     }
 }
