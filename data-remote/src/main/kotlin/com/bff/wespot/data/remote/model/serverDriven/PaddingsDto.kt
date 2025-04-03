@@ -18,6 +18,6 @@ data class PaddingsDto(
     )
 
     companion object {
-        val DEFAULT = PaddingsDto()
+        val None = PaddingsDto()
     }
 }

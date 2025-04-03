@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
+import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.model.serverDriven.Paddings
 import com.bff.wespot.model.serverDriven.RichText
 import com.bff.wespot.server.driven.util.toColor
@@ -20,7 +20,7 @@ internal fun TextSection(
 ) {
     Text(
         text = richText.text,
-        fontSize = richText.fontSize.sp,
+        fontSize = richText.fontSize.textDp,
         fontWeight = richText.fontWeight.toFontWeight(),
         modifier = modifier
             .padding(paddings.toPaddingValues()),

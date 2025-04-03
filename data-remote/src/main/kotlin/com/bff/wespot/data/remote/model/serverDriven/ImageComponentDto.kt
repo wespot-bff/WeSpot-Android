@@ -24,5 +24,5 @@ data class ImageComponentContent(
     val url: String,
     val width: Int,
     val height: Int,
-    val paddings: PaddingsDto = PaddingsDto.DEFAULT,
+    val paddings: PaddingsDto = PaddingsDto.None,
 )

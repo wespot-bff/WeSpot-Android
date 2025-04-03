@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @SerialName("textListComponent")
 data class TextListComponentDto(
     val textList: List<TextListDto>,
-    val paddings: PaddingsDto = PaddingsDto.DEFAULT
+    val paddings: PaddingsDto = PaddingsDto.None
 ) : BaseComponentDto {
     override fun toDomain(): TextListComponent {
         return TextListComponent(

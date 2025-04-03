@@ -24,7 +24,7 @@ data class ButtonsComponentDto(
 @Serializable
 data class ButtonsComponentContent(
     val buttons: List<ButtonComponentContent>,
-    val paddings: PaddingsDto = PaddingsDto.DEFAULT
+    val paddings: PaddingsDto = PaddingsDto.None
 )
 
 @Serializable
@@ -33,7 +33,7 @@ data class ButtonComponentContent(
     val buttonColor: String,
     val pressColor: String,
     val onClickAction: ClickActionDto,
-    val paddings: PaddingsDto = PaddingsDto.DEFAULT
+    val paddings: PaddingsDto = PaddingsDto.None
 ) {
     fun toDomain(): ButtonComponent {
         return ButtonComponent(
