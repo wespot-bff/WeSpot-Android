@@ -42,6 +42,9 @@ class OnBoardingViewModel @Inject constructor(
                     }
                     _contents.value = it
                 }
+                .onFailure {
+                    _sideEffect.send(OnBoardingSideEffect.CloseOnBoarding)
+                }
         }
     }
 
