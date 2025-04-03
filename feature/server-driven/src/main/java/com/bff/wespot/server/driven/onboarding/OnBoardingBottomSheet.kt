@@ -30,6 +30,7 @@ import com.bff.wespot.server.driven.component.ImageSection
 import com.bff.wespot.server.driven.component.TextListSection
 import com.bff.wespot.server.driven.component.TextSection
 import com.bff.wespot.server.driven.onboarding.state.OnBoardingNotificationAction
+import com.bff.wespot.server.driven.onboarding.state.OnBoardingSideEffect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,6 +64,16 @@ fun OnBoardingBottomSheet(
 
     LaunchedEffect(category) {
         action(OnBoardingNotificationAction.GetOnBoarding(category))
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect {
+            when (it) {
+                is OnBoardingSideEffect.CloseOnBoarding -> {
+                    closeOnBoarding.invoke()
+                }
+            }
+        }
     }
 }
 

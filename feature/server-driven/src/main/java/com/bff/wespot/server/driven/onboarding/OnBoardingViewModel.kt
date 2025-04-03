@@ -6,9 +6,12 @@ import com.bff.wespot.domain.repository.serverDriven.OnBoardingRepository
 import com.bff.wespot.model.serverDriven.OnBoarding
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import com.bff.wespot.server.driven.onboarding.state.OnBoardingNotificationAction
+import com.bff.wespot.server.driven.onboarding.state.OnBoardingSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +21,9 @@ class OnBoardingViewModel @Inject constructor(
 ) : ViewModel() {
     private val _contents = MutableStateFlow<List<OnBoarding>>(emptyList())
     val contents = _contents.asStateFlow()
+
+    private val _sideEffect = Channel<OnBoardingSideEffect>()
+    val sideEffect = _sideEffect.receiveAsFlow()
 
     fun onAction(action: OnBoardingNotificationAction) {
         when (action) {
@@ -30,6 +36,10 @@ class OnBoardingViewModel @Inject constructor(
         viewModelScope.launch {
             onBoardingRepository.getOnBoarding(category)
                 .onSuccess {
+                    if (it.isEmpty()) {
+                        _sideEffect.send(OnBoardingSideEffect.CloseOnBoarding)
+                        return@launch
+                    }
                     _contents.value = it
                 }
         }
