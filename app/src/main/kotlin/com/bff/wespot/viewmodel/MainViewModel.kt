@@ -15,6 +15,7 @@ import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.model.VersionUpdateType
+import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainSideEffect
 import com.bff.wespot.state.MainUiState
@@ -74,6 +75,7 @@ class MainViewModel @Inject constructor(
                 trackPushNotificationClicked(action.data)
             }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
+            is MainAction.CloseOnBoarding -> handleOnBoardingClose(action.category)
         }
     }
 
@@ -168,6 +170,12 @@ class MainViewModel @Inject constructor(
                     )
                 )
             )
+        }
+    }
+    private fun handleOnBoardingClose(category: OnBoardingCategory) = intent {
+        when (category) {
+            OnBoardingCategory.VOTE -> reduce { state.copy(showVoteOnBoarding = false) }
+            OnBoardingCategory.MESSAGE -> reduce { state.copy(showMessageOnBoarding = false) }
         }
     }
 }
