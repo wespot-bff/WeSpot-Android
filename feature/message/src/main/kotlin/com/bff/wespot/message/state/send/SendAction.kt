@@ -14,7 +14,7 @@ sealed class SendAction {
     data object OnExitDialogExitButtonClicked : SendAction()
     data object OnExitDialogCancelButtonClicked : SendAction()
     data object OnTopBarNavigateButtonClicked : SendAction()
-    data class OnAnonymousToggled(val state: Boolean) : SendAction()
+    data object OnAnonymousToggled : SendAction()
     data object OnProfileBottomSheetClosed : SendAction()
     data object OnProfileAddButtonClicked : SendAction()
     data class OnProfileSelected(val anonymousProfile: AnonymousProfile) : SendAction()

@@ -65,7 +65,7 @@ class SendViewModel @Inject constructor(
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.OnSendButtonClicked -> handleMessageSent()
-            is SendAction.OnAnonymousToggled -> handleAnonymousToggled()
+            SendAction.OnAnonymousToggled -> handleAnonymousToggled()
             SendAction.OnMessageScreenEntered -> clearSendUiState()
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
