@@ -81,7 +81,7 @@ fun MessageStorageScreen(
         ),
         WSChipGroupType.WSIconChipItem(
             label = stringResource(R.string.favories),
-            icon = ImageVector.vectorResource(id = R.drawable.favorites),
+            icon = ImageVector.vectorResource(id = R.drawable.favorites_chip),
         ),
     )
 
