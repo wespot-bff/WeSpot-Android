@@ -69,7 +69,7 @@ internal fun MessageItem(
                     if (messageItemType.isFavorites) {
                         R.drawable.favorites
                     } else {
-                        R.drawable.disabled_favorites
+                        R.drawable.unselected_favorites
                     },
                 ),
                 tint = Gray300,
