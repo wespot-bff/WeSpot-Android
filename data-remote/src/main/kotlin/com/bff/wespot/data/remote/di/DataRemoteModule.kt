@@ -16,6 +16,8 @@ import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSourceImpl
 import com.bff.wespot.data.remote.source.notification.NotificationDataSource
 import com.bff.wespot.data.remote.source.notification.NotificationDataSourceImpl
+import com.bff.wespot.data.remote.source.serverDriven.OnBoardingDataSource
+import com.bff.wespot.data.remote.source.serverDriven.OnBoardingDataSourceImpl
 import com.bff.wespot.data.remote.source.user.UserDataSource
 import com.bff.wespot.data.remote.source.user.UserDataSourceImpl
 import com.bff.wespot.data.remote.source.vote.VoteDataSource
@@ -88,4 +90,10 @@ abstract class DataRemoteModule {
     abstract fun bindsImageDecoderDataSource(
         imageDecoderDataSourceImpl: ImageDecoderDataSourceImpl
     ): ImageDecoderDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsOnBoardingDataSource(
+        onBoardingDataSourceImpl: OnBoardingDataSourceImpl
+    ): OnBoardingDataSource
 }

@@ -185,7 +185,7 @@ private fun MessageTimer(viewModel: MessageViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(R.string.message_card_description_ready_to_send),
+            text = stringResource(R.string.message_card_description_all_sent),
             style = StaticTypeScale.Default.body9,
             color = WeSpotThemeManager.colors.txtSubColor,
         )
@@ -218,7 +218,7 @@ private fun RemainingMessageCounter(count: Int) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(R.string.message_card_description_all_sent),
+            text = stringResource(R.string.message_card_description_ready_to_send),
             style = StaticTypeScale.Default.body9,
             color = WeSpotThemeManager.colors.txtSubColor,
         )
