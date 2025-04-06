@@ -60,6 +60,10 @@
     <string name="message_report_title">해당 쪽지를 신고하려는 이유가 궁금해요</string>
     <string name="choice_done">선택 완료</string>
     <string name="report_message_success">신고 접수 완료</string>
+    <string name="option_button">Option Button</string>
+    <string name="favorites_button">Favorites Button</string>
+    <string name="blocked_message_title">\n차단된 쪽지입니다</string>
+    <string name="reported_message_title">\n신고 접수된 쪽지입니다</string>
 
     <!-- Notices -->
     <string name="notice_warning">유의 사항</string>
