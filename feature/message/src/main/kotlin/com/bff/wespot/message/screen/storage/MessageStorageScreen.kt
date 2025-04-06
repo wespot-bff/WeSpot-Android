@@ -27,9 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -56,7 +58,8 @@ import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSBottomSheet
-import com.bff.wespot.ui.component.WSHomeChipGroup
+import com.bff.wespot.ui.component.WSChipGroup
+import com.bff.wespot.ui.component.WSChipGroupType
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import kotlinx.collections.immutable.persistentListOf
@@ -71,13 +74,15 @@ fun MessageStorageScreen(
     showToast: (ToastState) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
 ) {
-    val chipTextList = persistentListOf(
-        stringResource(R.string.all),
-        stringResource(R.string.favories),
-    )
-    val chipLeadingIconList = persistentListOf(
-        painterResource(id = R.drawable.all),
-        painterResource(id = R.drawable.favorites),
+    val chipItems = persistentListOf(
+        WSChipGroupType.WSIconChipItem(
+            label = stringResource(R.string.all),
+            icon = ImageVector.vectorResource(id = R.drawable.all),
+        ),
+        WSChipGroupType.WSIconChipItem(
+            label = stringResource(R.string.favories),
+            icon = ImageVector.vectorResource(id = R.drawable.favorites),
+        ),
     )
 
     var selectedChipIndex by remember { mutableIntStateOf(0) }
@@ -111,10 +116,9 @@ fun MessageStorageScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WSHomeChipGroup(
-            items = chipTextList,
+        WSChipGroup(
+            type = WSChipGroupType.LeadingIcon(chipItems),
             selectedItemIndex = selectedChipIndex,
-            leadingIcons = chipLeadingIconList,
             onSelectedChanged = { index -> selectedChipIndex = index },
         )
 
