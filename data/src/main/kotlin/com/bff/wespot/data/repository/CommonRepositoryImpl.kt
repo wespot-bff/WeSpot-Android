@@ -1,10 +1,9 @@
 package com.bff.wespot.data.repository
 
+import com.bff.wespot.data.local.database.dao.ReceivedMessageDao
 import com.bff.wespot.data.remote.model.ImageUploadFailedException
-import com.bff.wespot.data.remote.model.common.EditProfileDto
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
-import com.bff.wespot.data.remote.model.common.UpdateProfileDto
 import com.bff.wespot.data.remote.source.CommonDataSource
 import com.bff.wespot.data.remote.source.ImageDecoderDataSource
 import com.bff.wespot.domain.repository.CommonRepository
@@ -15,7 +14,8 @@ import javax.inject.Inject
 
 class CommonRepositoryImpl @Inject constructor(
     private val commonDataSource: CommonDataSource,
-    private val decoder: ImageDecoderDataSource
+    private val decoder: ImageDecoderDataSource,
+    private val receivedMessageDao: ReceivedMessageDao,
 ) : CommonRepository {
     override suspend fun checkProfanity(content: String): Result<Unit> =
         commonDataSource.checkProfanity(ProfanityDto(content))
@@ -24,7 +24,11 @@ class CommonRepositoryImpl @Inject constructor(
         report: ReportType,
         targetId: Int,
         content: String?,
-    ): Result<Unit> = commonDataSource.sendReport(ReportDto(targetId, report, content))
+    ): Result<Unit> = commonDataSource.sendReport(ReportDto(targetId, report, content)).onSuccess {
+        if (report == ReportType.MESSAGE) {
+            receivedMessageDao.deleteReceivedMessage(targetId)
+        }
+    }
 
     override suspend fun getKakaoContent(type: String): Result<KakaoContent> =
         commonDataSource.getKakaoContent(type)

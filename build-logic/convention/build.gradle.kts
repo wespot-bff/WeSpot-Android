@@ -19,6 +19,7 @@ dependencies {
     compileOnly(libs.compose.compiler.extension)
     compileOnly(libs.ktlint.plugin)
     compileOnly(libs.detekt.plugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 gradlePlugin {
@@ -58,6 +59,10 @@ gradlePlugin {
         create("androidKtLint") {
             id = "com.bff.wespot.ktlint"
             implementationClass = "com.bff.wespot.plugin.AndroidKtLintPlugin"
+        }
+        create("androidRoom") {
+            id = "com.bff.wespot.room"
+            implementationClass = "com.bff.wespot.plugin.AndroidRoomPlugin"
         }
     }
 }

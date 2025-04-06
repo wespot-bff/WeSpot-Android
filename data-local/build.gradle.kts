@@ -1,4 +1,3 @@
-import com.google.protobuf.gradle.GenerateProtoTask
 import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -6,6 +5,7 @@ plugins {
     alias(libs.plugins.wespot.android.library)
     alias(libs.plugins.wespot.android.hilt)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.wespot.android.room)
 }
 
 android {
@@ -52,4 +52,5 @@ dependencies {
     implementation(libs.datastore.prefereces)
     implementation(libs.kotlin.coroutines)
     implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.kotlin.serialization.json)
 }
