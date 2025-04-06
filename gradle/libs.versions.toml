@@ -48,6 +48,7 @@ google-protobuf = "3.25.3"
 kakao_sdk = "2.12.1"
 
 paging3 = "3.3.2"
+room = "2.6.1"
 
 splash-screen = "1.0.1"
 
@@ -127,12 +128,18 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 
 kakao_sdk = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao_sdk" }
 kakao_link = { group = "com.kakao.sdk", name = "v2-share", version.ref = "kakao_sdk" }
 
 paging3 = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 paging3-domain = { group = "androidx.paging", name = "paging-common", version.ref = "paging3"}
+
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-paging3 = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen" }
 
@@ -179,6 +186,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "performace" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "google-protobuf-plguin" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
 
 # Gradle Plugin
 wespot-android-application = { id = "com.bff.wespot.application", version = "unspecified" }
@@ -188,5 +196,6 @@ wespot-android-firebase = { id = "com.bff.wespot.firebase", version = "unspecifi
 wespot-android-compose = { id = "com.bff.wespot.compose", version = "unspecified" }
 wespot-android-hilt = { id = "com.bff.wespot.hilt", version = "unspecified" }
 wespot-android-ktlint = { id = "com.bff.wespot.ktlint", version = "unspecified" }
+wespot-android-room = { id = "com.bff.wespot.room", version = "unspecified" }
 wespot-jvm-library = { id = "com.bff.wespot.jvm.library", version = "unspecified" }
 module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "module-graph" }
