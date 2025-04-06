@@ -83,12 +83,6 @@ internal fun MessageItem(
             Box(
                 modifier = Modifier.size(50.dp),
             ) {
-                ProfileCircleImage(
-                    size = 50.dp,
-                    imageUrl = message.receiver.profileCharacter.iconUrl,
-                    contentDescription = "Message Receiver Profile Image",
-                )
-
                 if (message.isRead.not()) {
                     RedDot(
                         modifier = Modifier
@@ -100,16 +94,23 @@ internal fun MessageItem(
                 }
 
                 when (messageItemType) {
+                    is MessageItemType.Normal, MessageItemType.Favorites -> {
+                        ProfileCircleImage(
+                            size = 50.dp,
+                            imageUrl = message.receiver.profileCharacter.iconUrl,
+                            contentDescription = "Message Receiver Profile Image",
+                        )
+                    }
+
                     MessageItemType.Reported, MessageItemType.Blocked -> {
                         Image(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .align(Alignment.Center),
                             painter = painterResource(id = R.drawable.restrict),
-                            contentDescription = "Restrict Message Icon",
+                            contentDescription = stringResource(R.string.restrict_message_icon),
                         )
                     }
-                    else -> { }
                 }
             }
 

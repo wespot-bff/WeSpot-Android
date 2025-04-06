@@ -78,6 +78,7 @@
     <string name="report_category_custom">직접 입력</string>
     <string name="all">전체</string>
     <string name="favories">즐겨찾기</string>
+    <string name="restrict_message_icon">Restrict Message Icon</string>
     <string name="message_image">Message Image</string>
     <string name="receiver_profile_image">Receiver Profile Image</string>
     <string name="sender_profile_image">Sender Profile Image</string>
