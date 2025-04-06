@@ -8,7 +8,7 @@ import java.time.LocalDateTime
  */
 data class Message(
     val id: Int = -1,
-    val senderName: String,
+    val senderName: String = "",
     val sender: User = User(),
     val receiver: User = User(),
     val content: String = "",
@@ -18,4 +18,5 @@ data class Message(
     val isReported: Boolean = false,
     val isBlocked: Boolean = false,
     val isAnonymous: Boolean = false,
+    val isFavorites: Boolean = false,
 )
