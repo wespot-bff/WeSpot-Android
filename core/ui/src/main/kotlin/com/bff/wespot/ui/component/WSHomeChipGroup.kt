@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -21,6 +23,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 fun WSHomeChipGroup(
     items: List<String>,
     selectedItemIndex: Int = 0,
+    leadingIcons: List<Painter> = listOf(),
     onSelectedChanged: (Int) -> Unit = {},
 ) {
     LazyRow(
@@ -40,6 +43,14 @@ fun WSHomeChipGroup(
                         style = StaticTypeScale.Default.body6,
                     )
                 },
+                leadingIcon = leadingIcons.getOrNull(index)?.let { icon ->
+                    {
+                        Icon(
+                            painter = icon,
+                            contentDescription = "${items[index]} chip icon",
+                        )
+                    }
+                },
                 border = if (index != selectedItemIndex) {
                     BorderStroke(
                         width = 1.dp,
@@ -51,6 +62,7 @@ fun WSHomeChipGroup(
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = WeSpotThemeManager.colors.backgroundColor,
                     labelColor = WeSpotThemeManager.colors.disableIcnColor,
+                    iconColor = WeSpotThemeManager.colors.disableIcnColor,
                     selectedContainerColor = WeSpotThemeManager.colors.secondaryBtnColor,
                     selectedLabelColor = Color(0xFFF7F7F8),
                 ),
