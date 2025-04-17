@@ -1,7 +1,7 @@
 package com.bff.wespot.domain.repository.message
 
 import com.bff.wespot.model.message.request.SendMessage
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageDetail
 import com.bff.wespot.model.message.response.MessageHomeTitle
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.model.message.response.SenderProfile
@@ -13,7 +13,7 @@ interface MessageRepository {
 
     suspend fun getMessageStatus(): Result<MessageStatus>
 
-    suspend fun getMessage(messageId: Int): Result<Message>
+    suspend fun getMessage(messageId: Int): Result<MessageDetail>
 
     suspend fun getMessageHomeTitle(): Result<MessageHomeTitle>
 }
