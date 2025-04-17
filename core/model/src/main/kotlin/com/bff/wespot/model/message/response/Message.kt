@@ -1,22 +1,22 @@
 package com.bff.wespot.model.message.response
 
-import com.bff.wespot.model.user.response.User
 import java.time.LocalDateTime
 
 /**
- * 예약된 쪽지, 쪽지 조회에서 사용되는 전체 필드를 가진 Model
+ * [schoolName], [grade], [classNumber] 익명인 경우 null로 내려온다.
  */
 data class Message(
-    val id: Int = -1,
-    val senderName: String = "",
-    val sender: User = User(),
-    val receiver: User = User(),
-    val content: String = "",
-    val receivedAt: LocalDateTime? = null,
-    val isRead: Boolean = false,
-    val readAt: LocalDateTime? = null,
-    val isReported: Boolean = false,
-    val isBlocked: Boolean = false,
-    val isAnonymous: Boolean = false,
-    val isFavorites: Boolean = false,
+    val id: Int,
+    val thumbnail: String,
+    val isExistsUnreadMessage: Boolean,
+    val latestChatTime: LocalDateTime?,
+    val isAnonymous: Boolean,
+    val name: String,
+    val schoolName: String?,
+    val grade: Int?,
+    val classNumber: Int?,
+    val isBookmarked: Boolean,
+    val isReported: Boolean,
+    val isBlocked: Boolean,
+    val isEver: Boolean,
 )
