@@ -5,7 +5,7 @@ import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.data.remote.source.message.MessageDataSource
-import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageDetail
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
@@ -26,8 +26,8 @@ class MessageRepositoryImpl @Inject constructor(
     override suspend fun editMessage(messageId: Int, writtenMessage: WrittenMessage): Result<Unit> =
         messageDataSource.editMessage(messageId, writtenMessage.toWrittenMessageDto())
 
-    override suspend fun getMessage(messageId: Int): Result<Message> =
+    override suspend fun getMessage(messageId: Int): Result<MessageDetail> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
-            messageDto.toMessage()
+            messageDto.toMessageDetail()
         }
 }

@@ -2,7 +2,7 @@ package com.bff.wespot.data.remote.source.message
 
 import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
-import com.bff.wespot.data.remote.model.message.response.MessageDto
+import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
@@ -66,7 +66,7 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getMessage(messageId: Int): Result<MessageDto> =
+    override suspend fun getMessage(messageId: Int): Result<MessageDetailDto> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
