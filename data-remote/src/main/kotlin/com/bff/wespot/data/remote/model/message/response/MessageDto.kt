@@ -1,33 +1,38 @@
 package com.bff.wespot.data.remote.model.message.response
 
 import com.bff.wespot.data.remote.extensions.toISOLocalDateTime
-import com.bff.wespot.data.remote.model.user.response.UserDto
 import com.bff.wespot.model.message.response.Message
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MessageDto(
     val id: Int,
-    val senderName: String,
-    val receiver: UserDto,
-    val content: String,
-    val receivedAt: String? = "",
-    val isRead: Boolean,
+    val thumbnail: String,
+    val isExistsUnreadMessage: Boolean,
+    val latestChatTime: String,
+    val isAnonymous: Boolean,
+    val name: String,
+    val schoolName: String?,
+    val grade: Int?,
+    val classNumber: Int?,
+    val isBookmarked: Boolean,
     val isReported: Boolean,
     val isBlocked: Boolean,
-    val isAnonymous: Boolean,
-    val readAt: String? = "",
+    val isEver: Boolean
 ) {
-    fun toMessage(): Message = Message(
+    fun toMessage() = Message(
         id = id,
-        senderName = senderName,
-        receiver = receiver.toUser(),
-        content = content,
-        receivedAt = receivedAt?.toISOLocalDateTime(),
-        isRead = isRead,
+        thumbnail = thumbnail,
+        isExistsUnreadMessage = isExistsUnreadMessage,
+        latestChatTime = latestChatTime.toISOLocalDateTime(),
+        isAnonymous = isAnonymous,
+        name = name,
+        schoolName = schoolName,
+        grade = grade,
+        classNumber = classNumber,
+        isBookmarked = isBookmarked,
         isReported = isReported,
         isBlocked = isBlocked,
-        isAnonymous = isAnonymous,
-        readAt = readAt?.toISOLocalDateTime(),
+        isEver = isEver
     )
 }
