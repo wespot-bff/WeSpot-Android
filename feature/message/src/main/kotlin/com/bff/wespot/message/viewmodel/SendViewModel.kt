@@ -55,31 +55,43 @@ class SendViewModel @Inject constructor(
 
     fun onAction(action: SendAction) {
         when (action) {
+            /** 쪽지 수신자 선택 화면 */
             is SendAction.OnReceiverScreenEntered -> {
                 getKakaoContent()
                 getProfile()
                 observeNameInput()
             }
-            is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
+
+            /** 쪽지 내용 작성 화면 */
+            is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
-            is SendAction.OnSendButtonClicked -> handleSendMessage()
-            SendAction.OnMessageScreenEntered -> clearSendUiState()
-            SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
-            SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
-            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
-            is SendAction.OnProfileSelected -> handleSenderProfileSelected(action.senderProfile)
-            SendAction.OnProfileAddButtonClicked -> handleSenderProfileAddButtonClicked()
-            SendAction.OnProfileBottomSheetClosed -> handleAnonymousBottomSheetClosed()
-            SendAction.OnProfileImageClicked -> handleSenderProfileClicked()
-            SendAction.OnProfileCreatorModalClosed -> handleSenderProfileCreatorModalClosed()
+            is SendAction.OnProfileBottomSheetSelected -> handleProfileBottomSheetSelected(action.senderProfile)
+            is SendAction.OnProfileModalSelected -> handleProfileModalSelected(action.senderProfile)
+            SendAction.OnProfileAddButtonClicked -> handleProfileAddButtonClicked()
+            SendAction.OnProfileBottomSheetClosed -> handleProfileBottomSheetClosed()
+            SendAction.OnWriteDoneButtonClicked -> handleWriteDoneButtonClicked()
+
+            /** 쪽지 전송 화면 */
             SendAction.OnMessageSendScreenEntered -> observeProfileNameInput()
+            is SendAction.OnSendButtonClicked -> handleSendMessage()
+            SendAction.OnSenderClicked -> handleSenderClicked()
+
+            /** 프로필 선택 모달 */
+            SendAction.OnProfileImageClicked -> handleProfileImageClicked()
+            SendAction.OnProfileModalClosed -> handleProfileModalClosed()
             SendAction.OnPickerOpenOptionClicked -> handlePickerOpenOptionClicked()
             SendAction.OnRemoveProfileOptionClicked -> handleRemoveProfileOptionClicked()
             SendAction.OnProfileOptionSheetClosed -> handleProfileOptionSheetClosed()
             is SendAction.OnProfileNameChanged -> handleProfileNameChanged(action.name)
-            is SendAction.OnProfileImagePicked -> handleSenderProfileImagePicked(action.profilePath)
+            is SendAction.OnProfileImagePicked -> handleProfileImagePicked(action.profilePath)
+
+            /** 공통 */
+            SendAction.OnMessageScreenEntered -> clearSendUiState()
+            SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
+            SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
+            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
         }
     }
 
@@ -218,25 +230,51 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleSenderProfileSelected(senderProfile: SenderProfile) = intent {
+    private fun handleWriteDoneButtonClicked() = intent {
+        reduce { state.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            messageRepository.getSenderProfileList(state.selectedUser.id)
+                .onSuccess {
+                    reduce {
+                        state.copy(
+                            senderProfileList = it,
+                            showProfileSelectBottomSheet = true,
+                        )
+                    }
+                }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .also {
+                    reduce { state.copy(isLoading = false) }
+                }
+        }
+    }
+
+    private fun handleProfileBottomSheetSelected(senderProfile: SenderProfile) = intent {
         reduce {
             state.copy(
                 showProfileSelectBottomSheet = false,
-                showProfileCreatorModal = false,
-                senderProfileInput = SenderProfile(),
                 senderProfile = senderProfile,
             )
         }
-        profileNameInput.value = ""
+
+        if (senderProfile.isNeverTalkBefore()) {
+            postSideEffect(SendSideEffect.NavigateToMessageSendScreen)
+            return@intent
+        }
+
+        // TODO 답장으로 이동
     }
 
-    private fun handleAnonymousBottomSheetClosed() = intent {
+    private fun handleProfileBottomSheetClosed() = intent {
         reduce {
             state.copy(showProfileSelectBottomSheet = false)
         }
     }
 
-    private fun handleSenderProfileAddButtonClicked() = intent {
+    private fun handleProfileAddButtonClicked() = intent {
         reduce {
             state.copy(
                 showProfileSelectBottomSheet = false,
@@ -252,27 +290,42 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleSenderProfileCreatorModalClosed() = intent {
+    private fun handleProfileModalClosed() = intent {
         reduce {
             state.copy(
                 showProfileCreatorModal = false,
-                senderProfileInput = SenderProfile(),
             )
         }
     }
 
-    private fun handleSenderProfileClicked() = intent {
+    private fun handleSenderClicked() = intent {
+        reduce {
+            state.copy(showProfileCreatorModal = true)
+        }
+    }
+
+    private fun handleProfileImageClicked() = intent {
         reduce {
             state.copy(showProfileImageOptionBottomSheet = true)
         }
     }
 
-    private fun handleSenderProfileImagePicked(profilePath: String) = intent {
+    private fun handleProfileImagePicked(profilePath: String) = intent {
         reduce {
             state.copy(
                 senderProfileInput = state.senderProfileInput.copy(image = profilePath),
             )
         }
+    }
+
+    private fun handleProfileModalSelected(senderProfile: SenderProfile) = intent {
+        reduce {
+            state.copy(
+                showProfileCreatorModal = false,
+                senderProfile = senderProfile,
+            )
+        }
+        postSideEffect(SendSideEffect.NavigateToMessageSendScreen)
     }
 
     private fun handlePickerOpenOptionClicked() = intent {

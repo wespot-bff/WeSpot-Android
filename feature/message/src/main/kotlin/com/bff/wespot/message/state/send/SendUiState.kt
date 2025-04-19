@@ -14,22 +14,25 @@ import kotlinx.coroutines.flow.flow
  **/
 
 data class SendUiState(
+    /** 쪽지 수신자 선택 화면 */
+    val profile: Profile = Profile(),
     val nameInput: String = "",
     val isInputInitialized: Boolean = false,
-    val messageInput: String = "",
-    val userList: Flow<PagingData<User>> = flow { },
-    val selectedUser: User = User(),
-    val hasProfanity: Boolean = false,
-    val isLoading: Boolean = false,
-    val messageSendFailedDialogContent: String = "",
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
     val isSelectedContext: Boolean = false,
-    val profile: Profile = Profile(),
+    val userList: Flow<PagingData<User>> = flow { },
+    val selectedUser: User = User(),
+    /** 쪽지 내용 작성 화면 */
+    val messageInput: String = "",
+    val hasProfanity: Boolean = false,
+    val senderProfileList: List<SenderProfile> = listOf(),
+    val senderProfile: SenderProfile = SenderProfile(),
+    /** 쪽지 전송 화면 */
+    val isLoading: Boolean = false,
+    val messageSendFailedDialogContent: String = "",
     val showProfileSelectBottomSheet: Boolean = false,
     val showProfileImageOptionBottomSheet: Boolean = false,
     val showProfileCreatorModal: Boolean = false,
-    val senderProfileList: List<SenderProfile> = listOf(),
-    val senderProfile: SenderProfile = SenderProfile(),
     val senderProfileInput: SenderProfile = SenderProfile(),
     val hasProfileNameProfanity: Boolean = false,
 )

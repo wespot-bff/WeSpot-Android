@@ -10,6 +10,7 @@ sealed class SendSideEffect {
         @StringRes val message: Int,
     ) : SendSideEffect()
     data object DismissExitDialog : SendSideEffect()
+    data object NavigateToMessageSendScreen : SendSideEffect()
     data object NavigateUp : SendSideEffect()
     data object OpenPicker : SendSideEffect()
 }

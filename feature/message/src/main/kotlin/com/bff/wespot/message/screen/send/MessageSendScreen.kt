@@ -42,7 +42,6 @@ import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
-import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
@@ -130,6 +129,8 @@ fun MessageSendScreen(
                     ),
                 )
             }
+
+            else -> { }
         }
     }
 
@@ -198,6 +199,10 @@ fun MessageSendScreen(
                     imageUrl = state.senderProfile.image,
                     contentDescription = stringResource(R.string.sender_profile_image),
                     onClicked = {
+                        /** 새로 생성한 익명 프로필인 경우, 수정이 가능하게 한다. */
+                        if (state.senderProfile.isNeverTalkBefore()) {
+                            action(SendAction.OnSenderClicked)
+                        }
                     },
                 )
             }
@@ -235,21 +240,6 @@ fun MessageSendScreen(
                 okButtonClick = navigator::popUpToMessageScreen,
                 cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },
-            )
-        }
-
-        if (state.showProfileSelectBottomSheet) {
-            ProfileSelectBottomSheet(
-                profileList = state.senderProfileList,
-                closeSheet = {
-                    action(SendAction.OnProfileBottomSheetClosed)
-                },
-                onProfileAddButtonClicked = {
-                    action(SendAction.OnProfileAddButtonClicked)
-                },
-                onProfileSelected = {
-                    action(SendAction.OnProfileSelected(it))
-                },
             )
         }
 

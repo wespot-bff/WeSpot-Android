@@ -83,4 +83,6 @@
     <string name="sender_profile_sheet_title">익명 프로필을 선택해 주세요</string>
     <string name="sender_profile_sheet_content">익명 프로필은 받는 사람 당 최대 3개 설정 가능해요\n한 번 설정한 익명 프로필은 수정하거나 삭제할 수 없어요</string>
     <string name="close_sender_profile_creator_modal_button">Close Sender Profile Creator Modal Button</string>
+    <string name="wait_friend_response">친구의 답장을 기다려주세요</string>
+    <string name="impossible_to_send_message">쪽지를 보낼 수 없어요</string>
 </resources>

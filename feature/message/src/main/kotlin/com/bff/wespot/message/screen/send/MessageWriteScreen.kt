@@ -32,13 +32,16 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
+import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -57,6 +60,7 @@ interface MessageWriteNavigator {
 fun MessageWriteScreen(
     navigator: MessageWriteNavigator,
     viewModel: SendViewModel,
+    showToast: (ToastState) -> Unit,
 ) {
     var dialogState by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
@@ -82,6 +86,8 @@ fun MessageWriteScreen(
             }
 
             SendSideEffect.NavigateUp -> navigator.navigateUp()
+
+            SendSideEffect.NavigateToMessageSendScreen -> navigator.navigateMessageSendScreen()
 
             else -> { }
         }
@@ -115,7 +121,7 @@ fun MessageWriteScreen(
             button = {
                 WSButton(
                     onClick = {
-                        navigator.navigateMessageSendScreen()
+                        action(SendAction.OnWriteDoneButtonClicked)
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
                     text = stringResource(R.string.write_done),
@@ -159,6 +165,7 @@ fun MessageWriteScreen(
                         state.hasProfanity -> {
                             stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
                         }
+
                         else -> ""
                     }
 
@@ -184,6 +191,33 @@ fun MessageWriteScreen(
                 action(SendAction.OnExitDialogCancelButtonClicked)
             },
         )
+    }
+
+    if (state.showProfileSelectBottomSheet) {
+        ProfileSelectBottomSheet(
+            profileList = state.senderProfileList,
+            closeSheet = {
+                action(SendAction.OnProfileBottomSheetClosed)
+            },
+            onProfileAddButtonClicked = {
+                action(SendAction.OnProfileAddButtonClicked)
+            },
+            onProfileSelected = {
+                action(SendAction.OnProfileBottomSheetSelected(it))
+            },
+            showToast = showToast,
+        )
+    }
+
+    if (state.showProfileCreatorModal) {
+        ProfileCreatorModal(
+            state = state,
+            action = action,
+        )
+    }
+
+    if (state.isLoading) {
+        LoadingAnimation()
     }
 
     NetworkDialog(context = context, networkState = networkState)

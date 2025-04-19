@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -25,6 +27,7 @@ import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.component.WSBottomSheet
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.clickableSingle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +37,7 @@ internal fun ProfileSelectBottomSheet(
     closeSheet: () -> Unit,
     onProfileAddButtonClicked: () -> Unit,
     onProfileSelected: (SenderProfile) -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     WSBottomSheet(closeSheet = closeSheet) {
         Column(
@@ -63,10 +67,11 @@ internal fun ProfileSelectBottomSheet(
                 ProfileSheetItem(
                     profile = it,
                     onClick = { onProfileSelected(it) },
+                    showToast = showToast,
                 )
             }
 
-            if (profileList.size < 3) {
+            if (profileList.size < 4) {
                 ProfileAddSheetItem {
                     onProfileAddButtonClicked()
                 }
@@ -79,9 +84,27 @@ internal fun ProfileSelectBottomSheet(
 private fun ProfileSheetItem(
     profile: SenderProfile,
     onClick: () -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
     Row(
-        modifier = Modifier.clickableSingle(removeInteraction = true, onClick = onClick),
+        modifier = Modifier
+            .then(
+                if (profile.myTurnToAnswer) {
+                    Modifier.clickableSingle(removeInteraction = true, onClick = onClick)
+                } else {
+                    val toastState = ToastState(
+                        show = true,
+                        message = R.string.wait_friend_response,
+                        type = WSToastType.Success,
+                    )
+                    Modifier
+                        .alpha(0.5f)
+                        .clickableSingle(
+                            removeInteraction = true,
+                            onClick = { showToast(toastState) },
+                        )
+                },
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ProfileCircleImage(
@@ -102,7 +125,11 @@ private fun ProfileSheetItem(
         Text(
             modifier = Modifier
                 .padding(start = 12.dp),
-            text = "최근 " + profile.recentlyTalk.toStringWithDotSeparator(),
+            text = if (profile.myTurnToAnswer) {
+                "최근 " + profile.recentlyTalk?.toStringWithDotSeparator()
+            } else {
+                stringResource(R.string.impossible_to_send_message)
+            },
             style = StaticTypeScale.Default.body9,
             color = WeSpotThemeManager.colors.disableIcnColor,
         )

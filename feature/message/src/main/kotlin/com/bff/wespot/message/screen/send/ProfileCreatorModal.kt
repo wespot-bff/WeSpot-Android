@@ -63,7 +63,7 @@ internal fun ProfileCreatorModal(
                 Icon(
                     modifier = Modifier.clickableSingle(
                         onClick = {
-                            action(SendAction.OnProfileCreatorModalClosed)
+                            action(SendAction.OnProfileModalClosed)
                         },
                     ),
                     painter = painterResource(id = R.drawable.close),
@@ -135,7 +135,7 @@ internal fun ProfileCreatorModal(
                 enabled = state.hasProfileNameProfanity.not() && state.senderProfileInput.name.length in 1..10,
                 onClick = {
                     action(
-                        SendAction.OnProfileSelected(
+                        SendAction.OnProfileModalSelected(
                             SenderProfile(
                                 name = state.senderProfileInput.name,
                                 image = state.senderProfileInput.image,
