@@ -28,5 +28,5 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun providesReceivedMessageDao(database: WeSpotDatabase) = database.receivedMessageDao()
+    fun providesMessageDao(database: WeSpotDatabase) = database.messageDao()
 }

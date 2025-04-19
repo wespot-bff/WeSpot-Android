@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cf7ee6d8c6e616aed25516291e1bbc3c",
+    "identityHash": "34ee36a9fd2b44d4b774f9f8c31b0275",
     "entities": [
       {
-        "tableName": "received_message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` INTEGER NOT NULL, `sender` TEXT NOT NULL, `sender_name` TEXT NOT NULL, `receiver` TEXT NOT NULL, `content` TEXT NOT NULL, `received_at` TEXT NOT NULL, `is_read` INTEGER NOT NULL, `is_anonymous` INTEGER NOT NULL, `read_at` TEXT NOT NULL, `last_cursor_id` INTEGER)",
+        "tableName": "message",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` INTEGER NOT NULL, `thumbnail` TEXT NOT NULL, `is_exists_unread_message` INTEGER NOT NULL, `latest_chat_time` TEXT NOT NULL, `is_anonymous` INTEGER NOT NULL, `name` TEXT NOT NULL, `school_name` TEXT, `grade` INTEGER, `class_number` INTEGER, `is_bookmarked` INTEGER NOT NULL, `is_reported` INTEGER NOT NULL, `is_blocked` INTEGER NOT NULL, `is_ever` INTEGER NOT NULL, `last_cursor_id` INTEGER)",
         "fields": [
           {
             "fieldPath": "number",
@@ -21,39 +21,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "sender",
-            "columnName": "sender",
+            "fieldPath": "thumbnail",
+            "columnName": "thumbnail",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "senderName",
-            "columnName": "sender_name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "receiver",
-            "columnName": "receiver",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "content",
-            "columnName": "content",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "receivedAt",
-            "columnName": "received_at",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isRead",
-            "columnName": "is_read",
+            "fieldPath": "isExistsUnreadMessage",
+            "columnName": "is_exists_unread_message",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latestChatTime",
+            "columnName": "latest_chat_time",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -63,9 +45,51 @@
             "notNull": true
           },
           {
-            "fieldPath": "readAt",
-            "columnName": "read_at",
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "schoolName",
+            "columnName": "school_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "grade",
+            "columnName": "grade",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "classNumber",
+            "columnName": "class_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isBookmarked",
+            "columnName": "is_bookmarked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReported",
+            "columnName": "is_reported",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBlocked",
+            "columnName": "is_blocked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isEver",
+            "columnName": "is_ever",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -88,7 +112,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cf7ee6d8c6e616aed25516291e1bbc3c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '34ee36a9fd2b44d4b774f9f8c31b0275')"
     ]
   }
 }
