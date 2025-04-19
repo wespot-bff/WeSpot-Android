@@ -61,21 +61,16 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface ReceiverSelectionNavigator {
     fun navigateUp()
-    fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
+    fun navigateMessageWriteScreen()
     fun popUpToMessageScreen()
 }
 
-data class ReceiverSelectionScreenArgs(
-    val isEditing: Boolean,
-)
-
-@Destination(navArgsDelegate = ReceiverSelectionScreenArgs::class)
+@Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceiverSelectionScreen(
     activityNavigator: Navigator,
     navigator: ReceiverSelectionNavigator,
-    navArgs: ReceiverSelectionScreenArgs,
     viewModel: SendViewModel,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -114,10 +109,6 @@ fun ReceiverSelectionScreen(
         topBar = {
             WSTopBar(
                 title = "",
-                canNavigateBack = navArgs.isEditing,
-                navigateUp = {
-                    action(SendAction.OnTopBarNavigateButtonClicked)
-                },
                 action = {
                     Text(
                         modifier = Modifier
@@ -145,20 +136,10 @@ fun ReceiverSelectionScreen(
             button = {
                 WSButton(
                     onClick = {
-                        if (navArgs.isEditing) {
-                            navigator.navigateUp()
-                            return@WSButton
-                        }
-                        navigator.navigateMessageWriteScreen(
-                            args = MessageWriteScreenArgs(isEditing = false),
-                        )
+                        navigator.navigateMessageWriteScreen()
                     },
                     enabled = state.selectedUser.name.isNotBlank(),
-                    text = if (navArgs.isEditing) {
-                        stringResource(R.string.edit_done)
-                    } else {
-                        stringResource(R.string.next)
-                    },
+                    text = stringResource(R.string.next),
                     content = { it() },
                 )
             },

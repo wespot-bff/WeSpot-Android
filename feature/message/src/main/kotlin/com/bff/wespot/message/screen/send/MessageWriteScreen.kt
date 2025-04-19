@@ -51,16 +51,11 @@ interface MessageWriteNavigator {
     fun navigateMessageSendScreen()
 }
 
-data class MessageWriteScreenArgs(
-    val isEditing: Boolean,
-)
-
-@Destination(navArgsDelegate = MessageWriteScreenArgs::class)
+@Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageWriteScreen(
     navigator: MessageWriteNavigator,
-    navArgs: MessageWriteScreenArgs,
     viewModel: SendViewModel,
 ) {
     var dialogState by remember { mutableStateOf(false) }
@@ -123,9 +118,7 @@ fun MessageWriteScreen(
                         navigator.navigateMessageSendScreen()
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
-                    text = stringResource(
-                        if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
-                    ),
+                    text = stringResource(R.string.write_done),
                     content = { it() },
                 )
             },
