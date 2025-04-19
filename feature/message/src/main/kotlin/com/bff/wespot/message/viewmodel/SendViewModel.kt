@@ -64,7 +64,7 @@ class SendViewModel @Inject constructor(
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
-            is SendAction.OnSendButtonClicked -> handleMessageSent()
+            is SendAction.OnSendButtonClicked -> handleSendMessage()
             SendAction.OnMessageScreenEntered -> clearSendUiState()
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
@@ -297,7 +297,7 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageSent() = intent {
+    private fun handleSendMessage() = intent {
         reduce { state.copy(isLoading = true) }
         postSideEffect(SendSideEffect.CloseReserveDialog)
 
