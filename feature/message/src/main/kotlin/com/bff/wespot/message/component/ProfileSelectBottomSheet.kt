@@ -30,10 +30,10 @@ import com.bff.wespot.ui.util.clickableSingle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProfileSelectBottomSheet(
-    anonymousProfileList: List<SenderProfile>,
+    profileList: List<SenderProfile>,
     closeSheet: () -> Unit,
-    onAnonymousProfileAddButtonClicked: () -> Unit,
-    onAnonymousProfileSelected: (SenderProfile) -> Unit,
+    onProfileAddButtonClicked: () -> Unit,
+    onProfileSelected: (SenderProfile) -> Unit,
 ) {
     WSBottomSheet(closeSheet = closeSheet) {
         Column(
@@ -44,14 +44,14 @@ internal fun ProfileSelectBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.anonymous_profile_sheet_title),
+                    text = stringResource(R.string.sender_profile_sheet_title),
                     style = StaticTypeScale.Default.body1,
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 )
 
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = stringResource(R.string.anonymous_profile_sheet_content),
+                    text = stringResource(R.string.sender_profile_sheet_content),
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtSubColor,
                 )
@@ -59,16 +59,16 @@ internal fun ProfileSelectBottomSheet(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            anonymousProfileList.forEach {
+            profileList.forEach {
                 ProfileSheetItem(
                     profile = it,
-                    onClick = { onAnonymousProfileSelected(it) },
+                    onClick = { onProfileSelected(it) },
                 )
             }
 
-            if (anonymousProfileList.size < 3) {
+            if (profileList.size < 3) {
                 ProfileAddSheetItem {
-                    onAnonymousProfileAddButtonClicked()
+                    onProfileAddButtonClicked()
                 }
             }
         }
@@ -87,7 +87,7 @@ private fun ProfileSheetItem(
         ProfileCircleImage(
             size = 34.dp,
             imageUrl = profile.image,
-            contentDescription = stringResource(R.string.anonymous_profile_icon),
+            contentDescription = stringResource(R.string.sender_profile_icon),
         )
 
         Text(
@@ -127,12 +127,12 @@ private fun ProfileAddSheetItem(
         Image(
             modifier = Modifier.size(34.dp),
             painter = painterResource(id = R.drawable.add),
-            contentDescription = stringResource(R.string.add_anonymous_profile_icon),
+            contentDescription = stringResource(R.string.add_sender_profile_icon),
         )
 
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.create_anonymous_profile_button_title),
+            text = stringResource(R.string.create_sender_profile_button_title),
             style = StaticTypeScale.Default.body3,
             color = WeSpotThemeManager.colors.txtTitleColor,
         )

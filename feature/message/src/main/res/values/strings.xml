@@ -26,8 +26,6 @@
     <string name="message_send_dialog_subtitle">쪽지 전송 후에는 수정이나 전송 취소가 불가하며\n남은 쪽지 개수에서 1개가 차감돼요</string>
     <string name="message_send_dialog_button_text">네 좋아요</string>
     <string name="cancel">취소</string>
-    <string name="anonymous_nickname_title">익명으로 보내기</string>
-    <string name="anonymous_nickname_subtitle">이 기능을 끄면 실명으로 전송되어요</string>
     <string name="sender">보내는 사람</string>
     <string name="message_sent_content">전달할 내용</string>
     <string name="message_send">쪽지 보내기</string>
@@ -79,10 +77,10 @@
     <string name="receiver_profile_image">Receiver Profile Image</string>
     <string name="sender_profile_image">Sender Profile Image</string>
     <string name="edit_icon">Edit Icon</string>
-    <string name="anonymous_profile_icon">Anonymous Profile Icon</string>
-    <string name="add_anonymous_profile_icon">Add Anonymous Profile Icon</string>
-    <string name="create_anonymous_profile_button_title">새로운 익명 프로필 만들기</string>
-    <string name="anonymous_profile_sheet_title">익명 프로필을 선택해 주세요</string>
-    <string name="anonymous_profile_sheet_content">익명 프로필은 받는 사람 당 최대 3개 설정 가능해요\n한 번 설정한 익명 프로필은 수정하거나 삭제할 수 없어요</string>
-    <string name="close_anonymous_profile_creator_modal_button">Close Anonymous Profile Creator Modal Button</string>
+    <string name="sender_profile_icon">Sender Profile Icon</string>
+    <string name="add_sender_profile_icon">Add Sender Profile Icon</string>
+    <string name="create_sender_profile_button_title">새로운 익명 프로필 만들기</string>
+    <string name="sender_profile_sheet_title">익명 프로필을 선택해 주세요</string>
+    <string name="sender_profile_sheet_content">익명 프로필은 받는 사람 당 최대 3개 설정 가능해요\n한 번 설정한 익명 프로필은 수정하거나 삭제할 수 없어요</string>
+    <string name="close_sender_profile_creator_modal_button">Close Sender Profile Creator Modal Button</string>
 </resources>

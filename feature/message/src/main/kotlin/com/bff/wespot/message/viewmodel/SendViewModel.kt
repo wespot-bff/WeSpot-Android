@@ -69,17 +69,17 @@ class SendViewModel @Inject constructor(
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
             SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
-            is SendAction.OnProfileSelected -> handleAnonymousProfileSelected(action.senderProfile)
-            SendAction.OnProfileAddButtonClicked -> handleAnonymousProfileAddButtonClicked()
+            is SendAction.OnProfileSelected -> handleSenderProfileSelected(action.senderProfile)
+            SendAction.OnProfileAddButtonClicked -> handleSenderProfileAddButtonClicked()
             SendAction.OnProfileBottomSheetClosed -> handleAnonymousBottomSheetClosed()
-            SendAction.OnProfileImageClicked -> handleAnonymousProfileClicked()
-            SendAction.OnProfileCreatorModalClosed -> handleAnonymousProfileCreatorModalClosed()
+            SendAction.OnProfileImageClicked -> handleSenderProfileClicked()
+            SendAction.OnProfileCreatorModalClosed -> handleSenderProfileCreatorModalClosed()
             SendAction.OnMessageSendScreenEntered -> observeProfileNameInput()
             SendAction.OnPickerOpenOptionClicked -> handlePickerOpenOptionClicked()
             SendAction.OnRemoveProfileOptionClicked -> handleRemoveProfileOptionClicked()
             SendAction.OnProfileOptionSheetClosed -> handleProfileOptionSheetClosed()
             is SendAction.OnProfileNameChanged -> handleProfileNameChanged(action.name)
-            is SendAction.OnProfileImagePicked -> handleAnonymousProfileImagePicked(action.profilePath)
+            is SendAction.OnProfileImagePicked -> handleSenderProfileImagePicked(action.profilePath)
         }
     }
 
@@ -218,13 +218,13 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileSelected(anonymousProfile: SenderProfile) = intent {
+    private fun handleSenderProfileSelected(senderProfile: SenderProfile) = intent {
         reduce {
             state.copy(
                 showProfileSelectBottomSheet = false,
                 showProfileCreatorModal = false,
                 senderProfileInput = SenderProfile(),
-                senderProfile = anonymousProfile,
+                senderProfile = senderProfile,
             )
         }
         profileNameInput.value = ""
@@ -236,7 +236,7 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileAddButtonClicked() = intent {
+    private fun handleSenderProfileAddButtonClicked() = intent {
         reduce {
             state.copy(
                 showProfileSelectBottomSheet = false,
@@ -252,7 +252,7 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileCreatorModalClosed() = intent {
+    private fun handleSenderProfileCreatorModalClosed() = intent {
         reduce {
             state.copy(
                 showProfileCreatorModal = false,
@@ -261,13 +261,13 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileClicked() = intent {
+    private fun handleSenderProfileClicked() = intent {
         reduce {
             state.copy(showProfileImageOptionBottomSheet = true)
         }
     }
 
-    private fun handleAnonymousProfileImagePicked(profilePath: String) = intent {
+    private fun handleSenderProfileImagePicked(profilePath: String) = intent {
         reduce {
             state.copy(
                 senderProfileInput = state.senderProfileInput.copy(image = profilePath),

@@ -67,7 +67,7 @@ internal fun ProfileCreatorModal(
                         },
                     ),
                     painter = painterResource(id = R.drawable.close),
-                    contentDescription = stringResource(R.string.close_anonymous_profile_creator_modal_button),
+                    contentDescription = stringResource(R.string.close_sender_profile_creator_modal_button),
                 )
             }
 
@@ -92,7 +92,7 @@ internal fun ProfileCreatorModal(
                 ProfileCircleImage(
                     size = 87.dp,
                     imageUrl = state.senderProfileInput.image,
-                    contentDescription = "Anonymous Profile Image",
+                    contentDescription = stringResource(id = R.string.sender_profile_image),
                 )
 
                 Box(
