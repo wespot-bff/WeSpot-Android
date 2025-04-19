@@ -4,9 +4,7 @@ import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
-import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
-import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -17,27 +15,7 @@ import javax.inject.Inject
 
 class MessageDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
-): MessageDataSource {
-    override suspend fun getReceivedMessageList(cursorId: Int?): Result<ReceivedMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages")
-                parameter("type", "RECEIVED")
-                parameter("cursorId", cursorId)
-            }
-        }
-
-    override suspend fun getSentMessageList(cursorId: Int?): Result<SentMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages")
-                parameter("type", "SENT")
-                parameter("cursorId", cursorId)
-            }
-        }
-
+) : MessageDataSource {
     override suspend fun postMessage(
         writtenMessageDto: WrittenMessageDto,
     ): Result<MessageIdDto> =
@@ -57,7 +35,10 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun editMessage(messageId: Int, writtenMessageDto: WrittenMessageDto): Result<Unit> =
+    override suspend fun editMessage(
+        messageId: Int,
+        writtenMessageDto: WrittenMessageDto
+    ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
