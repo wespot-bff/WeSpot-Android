@@ -43,7 +43,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/messages/send")
+                path("/api/v2/messages")
                 setBody(sendMessage)
             }
         }
@@ -53,15 +53,6 @@ class MessageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v1/messages/status/me")
-            }
-        }
-
-    override suspend fun editMessage(messageId: Int, sendMessage: SendMessageDto): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Put
-                path("api/v1/messages/$messageId")
-                setBody(sendMessage)
             }
         }
 

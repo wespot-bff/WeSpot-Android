@@ -9,7 +9,5 @@ interface MessageRepository {
 
     suspend fun getMessageStatus(): Result<MessageStatus>
 
-    suspend fun editMessage(messageId: Int, sendMessage: SendMessage): Result<Unit>
-
     suspend fun getMessage(messageId: Int): Result<Message>
 }

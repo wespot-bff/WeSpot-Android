@@ -16,8 +16,6 @@ interface MessageDataSource {
 
     suspend fun getMessageStatus(): Result<MessageStatusDto>
 
-    suspend fun editMessage(messageId: Int, sendMessage: SendMessageDto): Result<Unit>
-
     suspend fun getMessage(messageId: Int): Result<MessageDto>
 
     suspend fun getBlockedMessage(cursorId: Int?): Result<BlockedMessageListDto>

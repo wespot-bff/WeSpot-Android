@@ -21,9 +21,6 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun editMessage(messageId: Int, sendMessage: SendMessage): Result<Unit> =
-        messageDataSource.editMessage(messageId, sendMessage.toDto())
-
     override suspend fun getMessage(messageId: Int): Result<Message> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
             messageDto.toMessage()
