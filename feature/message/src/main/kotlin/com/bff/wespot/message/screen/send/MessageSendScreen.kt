@@ -39,7 +39,6 @@ import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -201,29 +200,6 @@ fun MessageSendScreen(
                     onClicked = {
                     },
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp, start = 30.dp, end = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.anonymous_nickname_title),
-                            style = StaticTypeScale.Default.body1,
-                            color = WeSpotThemeManager.colors.txtTitleColor,
-                        )
-
-                        Text(
-                            text = stringResource(R.string.anonymous_nickname_subtitle),
-                            style = StaticTypeScale.Default.body8,
-                            color = Gray400,
-                        )
-                    }
-                }
             }
         }
 
@@ -264,14 +240,14 @@ fun MessageSendScreen(
 
         if (state.showProfileSelectBottomSheet) {
             ProfileSelectBottomSheet(
-                anonymousProfileList = state.senderProfileList,
+                profileList = state.senderProfileList,
                 closeSheet = {
                     action(SendAction.OnProfileBottomSheetClosed)
                 },
-                onAnonymousProfileAddButtonClicked = {
+                onProfileAddButtonClicked = {
                     action(SendAction.OnProfileAddButtonClicked)
                 },
-                onAnonymousProfileSelected = {
+                onProfileSelected = {
                     action(SendAction.OnProfileSelected(it))
                 },
             )
