@@ -95,4 +95,7 @@
     <string name="anonoymous_profile_placeholder">닉네임을 입력해 주세요</string>
     <string name="select_image_from_album">앨범에서 사진 선택</string>
     <string name="set_default_image">기본 이미지 적용</string>
+    <string name="empty_message">Empty Message Main Image</string>
+    <string name="empty_message_title">아직 즐겨찾기에 추가된 쪽지가 없어요</string>
+    <string name="empty_message_content">소중한 쪽지를 놓치지 않도록\n즐겨찾기에 추가해보세요</string>
 </resources>
