@@ -2,7 +2,7 @@ package com.bff.wespot.message.state.send
 
 import androidx.paging.PagingData
 import com.bff.wespot.model.common.KakaoContent
-import com.bff.wespot.model.message.response.AnonymousProfile
+import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.model.user.response.User
 import kotlinx.coroutines.flow.Flow
@@ -24,14 +24,14 @@ data class SendUiState(
     val isLoading: Boolean = false,
     val messageSendFailedDialogContent: String = "",
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
-    val profile: Profile = Profile(),
     val isSelectedContext: Boolean = false,
+    val profile: Profile = Profile(),
     val isAnonymous: Boolean = false,
-    val showAnonymousProfileBottomSheet: Boolean = false,
-    val showProfileOptionSheet: Boolean = false,
-    val showAnonymousProfileCreatorModal: Boolean = false,
-    val anonymousProfileList: List<AnonymousProfile> = listOf(),
-    val selectedAnonymousProfile: AnonymousProfile = AnonymousProfile(),
-    val anonymousProfileInput: AnonymousProfile = AnonymousProfile(),
+    val showProfileSelectBottomSheet: Boolean = false,
+    val showProfileImageOptionBottomSheet: Boolean = false,
+    val showProfileCreatorModal: Boolean = false,
+    val anonymousProfileList: List<SenderProfile> = listOf(),
+    val selectedAnonymousProfile: SenderProfile = SenderProfile(),
+    val anonymousProfileInput: SenderProfile = SenderProfile(),
     val hasProfileNameProfanity: Boolean = false,
 )

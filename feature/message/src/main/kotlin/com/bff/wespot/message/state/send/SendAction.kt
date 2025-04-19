@@ -1,6 +1,6 @@
 package com.bff.wespot.message.state.send
 
-import com.bff.wespot.model.message.response.AnonymousProfile
+import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.model.user.response.User
 
 sealed class SendAction {
@@ -17,7 +17,8 @@ sealed class SendAction {
     data object OnAnonymousToggled : SendAction()
     data object OnProfileBottomSheetClosed : SendAction()
     data object OnProfileAddButtonClicked : SendAction()
-    data class OnProfileSelected(val anonymousProfile: AnonymousProfile) : SendAction()
+
+    data class OnProfileSelected(val senderProfile: SenderProfile) : SendAction()
     data object OnMessageSendScreenEntered : SendAction()
     data object OnProfileImageClicked : SendAction()
     data class OnProfileNameChanged(val name: String) : SendAction()

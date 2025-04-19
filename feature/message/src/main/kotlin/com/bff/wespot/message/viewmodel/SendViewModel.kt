@@ -18,7 +18,7 @@ import com.bff.wespot.message.state.send.SendUiState
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.WrittenMessage
-import com.bff.wespot.model.message.response.AnonymousProfile
+import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
@@ -70,7 +70,7 @@ class SendViewModel @Inject constructor(
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
             SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
-            is SendAction.OnProfileSelected -> handleAnonymousProfileSelected(action.anonymousProfile)
+            is SendAction.OnProfileSelected -> handleAnonymousProfileSelected(action.senderProfile)
             SendAction.OnProfileAddButtonClicked -> handleAnonymousProfileAddButtonClicked()
             SendAction.OnProfileBottomSheetClosed -> handleAnonymousBottomSheetClosed()
             SendAction.OnProfileImageClicked -> handleAnonymousProfileClicked()
@@ -186,16 +186,16 @@ class SendViewModel @Inject constructor(
         if (!state.isAnonymous) {
             reduce {
                 if (state.anonymousProfileList.isEmpty()) {
-                    state.copy(showAnonymousProfileCreatorModal = true)
+                    state.copy(showProfileCreatorModal = true)
                 } else {
-                    state.copy(showAnonymousProfileBottomSheet = true)
+                    state.copy(showProfileSelectBottomSheet = true)
                 }
             }
         } else {
             reduce {
                 state.copy(
                     isAnonymous = false,
-                    selectedAnonymousProfile = AnonymousProfile(),
+                    selectedAnonymousProfile = SenderProfile(),
                 )
             }
         }
@@ -242,12 +242,12 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileSelected(anonymousProfile: AnonymousProfile) = intent {
+    private fun handleAnonymousProfileSelected(anonymousProfile: SenderProfile) = intent {
         reduce {
             state.copy(
-                showAnonymousProfileBottomSheet = false,
-                showAnonymousProfileCreatorModal = false,
-                anonymousProfileInput = AnonymousProfile(),
+                showProfileSelectBottomSheet = false,
+                showProfileCreatorModal = false,
+                anonymousProfileInput = SenderProfile(),
                 selectedAnonymousProfile = anonymousProfile,
                 isAnonymous = true,
             )
@@ -257,15 +257,15 @@ class SendViewModel @Inject constructor(
 
     private fun handleAnonymousBottomSheetClosed() = intent {
         reduce {
-            state.copy(showAnonymousProfileBottomSheet = false)
+            state.copy(showProfileSelectBottomSheet = false)
         }
     }
 
     private fun handleAnonymousProfileAddButtonClicked() = intent {
         reduce {
             state.copy(
-                showAnonymousProfileBottomSheet = false,
-                showAnonymousProfileCreatorModal = true,
+                showProfileSelectBottomSheet = false,
+                showProfileCreatorModal = true,
             )
         }
     }
@@ -280,29 +280,29 @@ class SendViewModel @Inject constructor(
     private fun handleAnonymousProfileCreatorModalClosed() = intent {
         reduce {
             state.copy(
-                showAnonymousProfileCreatorModal = false,
-                anonymousProfileInput = AnonymousProfile(),
+                showProfileCreatorModal = false,
+                anonymousProfileInput = SenderProfile(),
             )
         }
     }
 
     private fun handleAnonymousProfileClicked() = intent {
         reduce {
-            state.copy(showProfileOptionSheet = true)
+            state.copy(showProfileImageOptionBottomSheet = true)
         }
     }
 
     private fun handleAnonymousProfileImagePicked(profilePath: String) = intent {
         reduce {
             state.copy(
-                anonymousProfileInput = state.anonymousProfileInput.copy(imageUrl = profilePath),
+                anonymousProfileInput = state.anonymousProfileInput.copy(image = profilePath),
             )
         }
     }
 
     private fun handlePickerOpenOptionClicked() = intent {
         reduce {
-            state.copy(showProfileOptionSheet = false)
+            state.copy(showProfileImageOptionBottomSheet = false)
         }
         postSideEffect(SendSideEffect.OpenPicker)
     }
@@ -310,15 +310,15 @@ class SendViewModel @Inject constructor(
     private fun handleRemoveProfileOptionClicked() = intent {
         reduce {
             state.copy(
-                anonymousProfileInput = state.anonymousProfileInput.copy(imageUrl = ""),
-                showProfileOptionSheet = false,
+                anonymousProfileInput = state.anonymousProfileInput.copy(image = ""),
+                showProfileImageOptionBottomSheet = false,
             )
         }
     }
 
     private fun handleProfileOptionSheetClosed() = intent {
         reduce {
-            state.copy(showProfileOptionSheet = false)
+            state.copy(showProfileImageOptionBottomSheet = false)
         }
     }
 
