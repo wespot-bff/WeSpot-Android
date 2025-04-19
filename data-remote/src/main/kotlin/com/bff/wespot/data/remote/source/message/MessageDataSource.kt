@@ -6,11 +6,14 @@ import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
+import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
 
 interface MessageDataSource {
     suspend fun getReceivedMessageList(cursorId: Int?): Result<ReceivedMessageListDto>
 
     suspend fun getSentMessageList(cursorId: Int?): Result<SentMessageListDto>
+
+    suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfileDto>>
 
     suspend fun postMessage(sendMessage: SendMessageDto): Result<Unit>
 

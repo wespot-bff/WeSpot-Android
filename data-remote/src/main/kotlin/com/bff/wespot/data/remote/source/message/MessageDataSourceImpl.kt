@@ -6,6 +6,7 @@ import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
+import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -37,13 +38,21 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
+    override suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfileDto>> =
+        httpClient.safeRequest {
+            method = HttpMethod.Get
+            url {
+                path("api/v2/messages/sender/$receiverId/profiles")
+            }
+        }
+
     override suspend fun postMessage(
         sendMessage: SendMessageDto,
     ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("/api/v2/messages")
+                path("api/v2/messages")
                 setBody(sendMessage)
             }
         }

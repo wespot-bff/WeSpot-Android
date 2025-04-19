@@ -6,14 +6,19 @@ import com.bff.wespot.model.message.request.SendMessage
 import com.bff.wespot.model.message.response.MessageStatus
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.SenderProfile
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
     private val messageDataSource: MessageDataSource,
 ) : MessageRepository {
-    override suspend fun postMessage(sendMessage: SendMessage): Result<Unit> {
-        return messageDataSource.postMessage(sendMessage.toDto())
-    }
+    override suspend fun postMessage(sendMessage: SendMessage): Result<Unit> =
+        messageDataSource.postMessage(sendMessage.toDto())
+
+    override suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfile>> =
+        messageDataSource.getSenderProfileList(receiverId).mapCatching { data ->
+            data.map { it.toDomain() }
+        }
 
     override suspend fun getMessageStatus(): Result<MessageStatus> {
         return messageDataSource.getMessageStatus().mapCatching { messageStatusDto ->
