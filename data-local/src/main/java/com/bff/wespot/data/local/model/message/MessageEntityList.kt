@@ -2,8 +2,8 @@ package com.bff.wespot.data.local.model.message
 
 import com.bff.wespot.model.common.Paging
 
-data class ReceivedMessageEntityList(
-    override val data: List<ReceivedMessageEntity>,
+data class MessageEntityList(
+    override val data: List<MessageEntity>,
     override val lastCursorId: Int,
     override val hasNext: Boolean,
-) : Paging<ReceivedMessageEntity>
+) : Paging<MessageEntity>
