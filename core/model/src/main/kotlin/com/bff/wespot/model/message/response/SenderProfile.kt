@@ -6,7 +6,9 @@ data class SenderProfile(
     val id: Int = -1,
     val name: String = "",
     val image: String = "",
-    val recentlyTalk: LocalDateTime = LocalDateTime.MIN,
+    val recentlyTalk: LocalDateTime? = null,
     val myTurnToAnswer: Boolean = false,
     val isAnonymous: Boolean = false,
-)
+) {
+    fun isNeverTalkBefore() = recentlyTalk == null
+}
