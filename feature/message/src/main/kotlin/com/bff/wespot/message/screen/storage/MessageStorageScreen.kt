@@ -1,18 +1,13 @@
 package com.bff.wespot.message.screen.storage
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -23,37 +18,34 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
-import com.bff.wespot.message.common.ALL_MESSAGE_INDEX
-import com.bff.wespot.message.common.FAVORITES_MESSAGE_INDEX
+import com.bff.wespot.message.component.MessageItem
+import com.bff.wespot.message.component.MessageItemType
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.screen.MessageReportScreen
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
-import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.MessageContent
+import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
@@ -86,9 +78,8 @@ fun MessageStorageScreen(
     )
 
     var selectedChipIndex by remember { mutableIntStateOf(0) }
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showMessageDialog by remember { mutableStateOf(false) }
-    var showMessageOptionDialog by remember { mutableStateOf(false) }
+    var showOptionBottomSheet by remember { mutableStateOf(false) }
+    var showOptionDialog by remember { mutableStateOf(false) }
     var showMessageReportScreen by remember { mutableStateOf(false) }
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
@@ -105,12 +96,28 @@ fun MessageStorageScreen(
                 showToast(it.toastState)
             }
 
-            is StorageSideEffect.ShowMessageDialog -> {
-                showMessageDialog = true
-            }
-
             is StorageSideEffect.ShowReportMessageScreen -> {
                 showMessageReportScreen = true
+            }
+
+            is StorageSideEffect.ShowOptionBottomSheet -> {
+                showOptionBottomSheet = true
+            }
+
+            is StorageSideEffect.ShowOptionDialog -> {
+                showOptionDialog = true
+            }
+
+            is StorageSideEffect.CloseOptionBottomSheet -> {
+                showOptionBottomSheet = false
+            }
+
+            is StorageSideEffect.CloseOptionDialog -> {
+                showOptionDialog = false
+            }
+
+            is StorageSideEffect.CloseReportMessageScreen -> {
+                showMessageReportScreen = false
             }
         }
     }
@@ -122,65 +129,24 @@ fun MessageStorageScreen(
             onSelectedChanged = { index -> selectedChipIndex = index },
         )
 
-        Crossfade(
-            targetState = selectedChipIndex,
-            label = stringResource(R.string.message_storage_screen_crossfade),
-        ) { page ->
-            when (page) {
-                ALL_MESSAGE_INDEX -> {
-                    val receivedMessageList = state.receivedMessageList.collectAsLazyPagingItems()
-                    AllMessageStorageScreen(
-                        data = receivedMessageList,
-                        showToast = showToast,
-                        itemClick = { item ->
-                            action(StorageAction.OnReceivedMessageClicked(message = item))
-                            showMessageDialog = true
-                        },
-                        optionButtonClick = { messageId ->
-                            action(
-                                StorageAction.OnOptionButtonClicked(
-                                    messageId = messageId,
-                                    messageType = MessageType.RECEIVED,
-                                ),
-                            )
-                            showBottomSheet = true
-                        },
-                    )
-                }
-
-                FAVORITES_MESSAGE_INDEX -> {
-                    val sentMessageList = state.sentMessageList.collectAsLazyPagingItems()
-                    FavoritesMessageStorageScreen(
-                        data = sentMessageList,
-                        showToast = showToast,
-                        itemClick = { item ->
-                            action(StorageAction.OnSentMessageClicked(message = item))
-                            showMessageDialog = true
-                        },
-                        optionButtonClick = { messageId ->
-                            action(
-                                StorageAction.OnOptionButtonClicked(
-                                    messageId = messageId,
-                                    messageType = MessageType.SENT,
-                                ),
-                            )
-                            // 보낸 쪽지인 경우, 삭제 옵션만 제공한다.
-                            action(
-                                StorageAction.OnOptionBottomSheetClicked(
-                                    MessageOptionType.DELETE,
-                                ),
-                            )
-                            showMessageOptionDialog = true
-                        },
-                    )
-                }
-            }
-        }
+        MessageStorageContent(
+            data = state.messageList.collectAsLazyPagingItems(),
+            showToast = showToast,
+            itemClick = { item ->
+                action(StorageAction.OnMessageClicked(message = item))
+            },
+            optionButtonClick = { messageId ->
+                action(StorageAction.OnOptionButtonClicked(messageId = messageId))
+            },
+            bookmarkedButtonClick = { messageId ->
+                action(StorageAction.OnBookmarkButtonClicked(messageId = messageId))
+            },
+        )
     }
 
-    if (showBottomSheet) {
+    if (showOptionBottomSheet) {
         WSBottomSheet(
-            closeSheet = { showBottomSheet = false },
+            closeSheet = { action(StorageAction.OnOptionBottomSheetClosed) },
         ) {
             Column(
                 modifier = Modifier
@@ -190,7 +156,6 @@ fun MessageStorageScreen(
                     text = stringResource(R.string.delete),
                     onClick = {
                         action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
-                        showMessageOptionDialog = true
                     },
                 )
 
@@ -198,7 +163,6 @@ fun MessageStorageScreen(
                     text = stringResource(R.string.report_title),
                     onClick = {
                         action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
-                        showMessageOptionDialog = true
                     },
                 )
 
@@ -207,21 +171,13 @@ fun MessageStorageScreen(
                     showDivider = false,
                     onClick = {
                         action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
-                        showMessageOptionDialog = true
                     },
                 )
             }
         }
     }
 
-    if (showMessageDialog) {
-        MessageContentDialog(
-            message = state.messageDialogContent,
-            closeButtonClick = { showMessageDialog = false },
-        )
-    }
-
-    if (showMessageOptionDialog) {
+    if (showOptionDialog) {
         WSDialog(
             title = state.messageOptionType.title,
             subTitle = state.messageOptionType.subTitle,
@@ -239,11 +195,9 @@ fun MessageStorageScreen(
                         action(StorageAction.OnMessageReportButtonClicked)
                     }
                 }
-                showMessageOptionDialog = false
-                showBottomSheet = false
             },
-            onDismissRequest = { showMessageOptionDialog = false },
-            cancelButtonClick = { showMessageOptionDialog = false },
+            onDismissRequest = { action(StorageAction.OnOptionDialogClosed) },
+            cancelButtonClick = { action(StorageAction.OnOptionDialogClosed) },
         )
     }
 
@@ -255,7 +209,7 @@ fun MessageStorageScreen(
             MessageReportScreen(
                 messageId = state.optionButtonClickedMessageId,
                 showToast = showToast,
-                onDismiss = { showMessageReportScreen = false },
+                onDismiss = { action(StorageAction.OnMessageReportScreenClosed) },
             )
         }
     }
@@ -268,22 +222,10 @@ fun MessageStorageScreen(
 
     LaunchedEffect(Unit) {
         when (type) {
-            NotificationType.MESSAGE_RECEIVED -> {
-                selectedChipIndex = ALL_MESSAGE_INDEX
+            NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
                 action(
                     StorageAction.OnPushNotificationNavigated(
                         messageId = messageId ?: return@LaunchedEffect,
-                        type = MessageType.RECEIVED,
-                    ),
-                )
-            }
-
-            NotificationType.MESSAGE_SENT -> {
-                selectedChipIndex = FAVORITES_MESSAGE_INDEX
-                action(
-                    StorageAction.OnPushNotificationNavigated(
-                        messageId = messageId ?: return@LaunchedEffect,
-                        type = MessageType.SENT,
                     ),
                 )
             }
@@ -293,80 +235,76 @@ fun MessageStorageScreen(
     }
 
     LaunchedEffect(selectedChipIndex) {
-        when (selectedChipIndex) {
-            ALL_MESSAGE_INDEX -> {
-                action(StorageAction.OnStorageChipSelected(MessageType.RECEIVED))
-            }
-
-            FAVORITES_MESSAGE_INDEX -> {
-                action(StorageAction.OnStorageChipSelected(MessageType.SENT))
-            }
-        }
+        action(StorageAction.OnStorageChipSelected(selectedChipIndex))
     }
 }
 
 @Composable
-private fun MessageContentDialog(
-    message: MessageContent,
-    closeButtonClick: () -> Unit,
+internal fun MessageStorageContent(
+    data: LazyPagingItems<Message>,
+    itemClick: (Message) -> Unit,
+    optionButtonClick: (Int) -> Unit,
+    bookmarkedButtonClick: (Int) -> Unit,
+    showToast: (ToastState) -> Unit,
 ) {
-    Dialog(onDismissRequest = { }) {
-        Box(modifier = Modifier.width(296.dp)) {
-            Image(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 8.dp)
-                    .clickable { closeButtonClick() }
-                    .zIndex(1f),
-                painter = painterResource(id = R.drawable.close),
-                contentDescription = stringResource(id = R.string.close),
+    when (data.loadState.refresh) {
+        is LoadState.Error -> {
+            showToast(
+                ToastState(
+                    show = true,
+                    message = R.string.load_message_error_message,
+                    type = WSToastType.Error,
+                ),
             )
+        }
 
-            Column(
+        is LoadState.Loading -> {
+            LoadingAnimation()
+        }
+
+        else -> {
+            if (data.itemCount == 0) {
+                EmptyMessageScreen()
+            }
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
-                    .clip(WeSpotThemeManager.shapes.extraLarge)
-                    .background(WeSpotThemeManager.colors.modalColor)
-                    .border(
-                        width = 1.dp,
-                        color = Primary400,
-                        shape = WeSpotThemeManager.shapes.extraLarge,
-                    )
-                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Column {
-                    MessageDialogText("To.\n" + message.receiver)
+                items(
+                    data.itemCount,
+                    key = data.itemKey { it.id },
+                ) { index ->
+                    val item = data[index]
 
-                    MessageDialogText(message.content, isMessageContent = true)
+                    item?.let { message ->
+                        MessageItem(
+                            message = message,
+                            messageItemType = when {
+                                message.isBlocked -> MessageItemType.Blocked
+                                message.isReported -> MessageItemType.Reported
+                                message.isEver -> MessageItemType.Ever
+                                else -> MessageItemType.Normal(item.isBookmarked)
+                            },
+                            itemClick = {
+                                itemClick(message)
+                            },
+                            optionButtonClick = {
+                                optionButtonClick(message.id)
+                            },
+                            favoritesButtonClick = {
+                                bookmarkedButtonClick(message.id)
+                            },
+                        )
+                    }
                 }
-
-                MessageDialogText(
-                    text = "From.\n" + message.sender,
-                    textAlign = TextAlign.End,
-                )
             }
         }
     }
-}
-
-@Composable
-private fun MessageDialogText(
-    text: String,
-    textAlign: TextAlign = TextAlign.Start,
-    isMessageContent: Boolean = false,
-) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)
-            .let {
-                if (isMessageContent) it.heightIn(min = 192.dp, max = 240.dp) else it
-            },
-        text = text,
-        style = StaticTypeScale.Default.body4,
-        color = WeSpotThemeManager.colors.txtTitleColor,
-        textAlign = textAlign,
-    )
 }
 
 @Composable

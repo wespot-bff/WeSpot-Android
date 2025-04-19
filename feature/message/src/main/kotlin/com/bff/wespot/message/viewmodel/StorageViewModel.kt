@@ -4,23 +4,22 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
-import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.message.R
+import com.bff.wespot.message.common.ALL_MESSAGE_INDEX
+import com.bff.wespot.message.common.BOOKMARKED_MESSAGE_INDEX
 import com.bff.wespot.message.model.MessageOptionType
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.state.storage.StorageUiState
-import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.MessageContent
-import com.bff.wespot.model.message.response.ReceivedMessage
-import com.bff.wespot.model.message.response.SentMessage
+import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.ui.model.ToastState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -34,7 +33,6 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val messageStorageRepository: MessageStorageRepository,
-    private val messageSentRepository: BasePagingRepository<SentMessage, Paging<SentMessage>>,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(StorageUiState())
 
@@ -44,61 +42,68 @@ class StorageViewModel @Inject constructor(
             StorageAction.OnMessageBlockButtonClicked -> handleMessageBlockButtonClicked()
             StorageAction.OnMessageReportButtonClicked -> handleMessageReportButtonClicked()
             is StorageAction.OnStorageChipSelected -> {
-                when (action.messageType) {
-                    MessageType.SENT -> getSentMessageList()
-                    MessageType.RECEIVED -> getReceivedMessageList()
+                when (action.screenIndex) {
+                    ALL_MESSAGE_INDEX -> getMessageList()
+                    BOOKMARKED_MESSAGE_INDEX -> getBookmarkedMessageList()
                 }
             }
             is StorageAction.OnPushNotificationNavigated -> {
-                handleNavigatedByPushNotification(action.messageId, action.type)
+                handleNavigatedByPushNotification(action.messageId)
             }
-            is StorageAction.OnSentMessageClicked -> {
-                handleSentMessageClicked(action.message)
+            is StorageAction.OnMessageClicked -> {
+                handleMessageClicked(action.message)
             }
-            is StorageAction.OnReceivedMessageClicked -> {
-                handleReceivedMessageClicked(action.message)
+            is StorageAction.OnBookmarkButtonClicked -> {
+                handleBookmarkButtonClicked(action.messageId)
             }
             is StorageAction.OnOptionButtonClicked -> {
-                handleOptionButtonClicked(action.messageId, action.messageType)
+                handleOptionButtonClicked(action.messageId)
             }
             is StorageAction.OnOptionBottomSheetClicked -> {
                 handleOptionBottomSheetClicked(action.messageOptionType)
             }
-        }
-    }
-
-    private fun getReceivedMessageList() = intent {
-        viewModelScope.launch(coroutineDispatcher) {
-            runCatching {
-                reduce {
-                    state.copy(
-                        receivedMessageList = messageStorageRepository.fetchReceivedMessageStream()
-                            .cachedIn(viewModelScope),
-                    )
-                }
-            }.onFailure { exception ->
-                Timber.e(exception)
+            StorageAction.OnOptionBottomSheetClosed -> {
+                handleOptionBottomSheetClosed()
+            }
+            StorageAction.OnOptionDialogClosed -> {
+                handleOptionDialogClosed()
+            }
+            StorageAction.OnMessageReportScreenClosed -> {
+                handleMessageReportScreenClosed()
             }
         }
     }
 
-    private fun getSentMessageList() = intent {
+    private fun getMessageList() = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            runCatching {
-                reduce {
-                    state.copy(
-                        sentMessageList = messageSentRepository.fetchResultStream()
-                            .cachedIn(viewModelScope),
-                    )
+            val messageList = messageStorageRepository.fetchMessagesStream()
+                .cachedIn(viewModelScope)
+                .catch { exception ->
+                    Timber.e(exception)
+                    postSideEffect(SideEffect.toToastEffect())
                 }
-            }.onFailure { exception ->
-                Timber.e(exception)
+            reduce {
+                state.copy(messageList = messageList)
             }
         }
     }
 
-    private fun handleNavigatedByPushNotification(messageId: Int, type: MessageType) = intent {
-        reduce { state.copy(isLoading = true) }
+    private fun getBookmarkedMessageList() = intent {
+        viewModelScope.launch(coroutineDispatcher) {
+            val messageList = messageStorageRepository.fetchBookmarkedMessagesStream()
+                .cachedIn(viewModelScope)
+                .catch { exception ->
+                    Timber.e(exception)
+                    postSideEffect(SideEffect.toToastEffect())
+                }
+            reduce {
+                state.copy(messageList = messageList)
+            }
+        }
+    }
+
+    private fun handleNavigatedByPushNotification(messageId: Int) = intent {
+        /*reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
             messageRepository.getMessage(messageId)
@@ -123,50 +128,32 @@ class StorageViewModel @Inject constructor(
                 }.also {
                     reduce { state.copy(isLoading = false) }
                 }
+        }*/
+    }
+
+    private fun handleMessageClicked(message: Message) = intent {
+    }
+
+    private fun handleBookmarkButtonClicked(messageId: Int) = intent {
+        viewModelScope.launch {
+            messageStorageRepository.updateMessageBookmarkStatus(messageId)
         }
     }
 
-    private fun handleSentMessageClicked(message: SentMessage) = intent {
-        reduce {
-            state.copy(
-                messageDialogContent = MessageContent(
-                    receiver = message.receiver.toDescription(),
-                    sender = if (message.isAnonymous) message.senderName else message.sender.name,
-                    content = message.content,
-                ),
-            )
-        }
-    }
-
-    private fun handleReceivedMessageClicked(message: ReceivedMessage) = intent {
-        reduce {
-            state.copy(
-                messageDialogContent = MessageContent(
-                    receiver = message.receiver.toDescription(),
-                    sender = if (message.isAnonymous) message.senderName else message.sender.name,
-                    content = message.content,
-                ),
-            )
-        }
-
-        if (message.isRead.not()) {
-            updateMessageReadStatus(messageId = message.id)
-        }
-    }
-
-    private fun handleOptionButtonClicked(messageId: Int, messageType: MessageType) = intent {
+    private fun handleOptionButtonClicked(messageId: Int) = intent {
         reduce {
             state.copy(
                 optionButtonClickedMessageId = messageId,
-                optionButtonClickedMessageType = messageType,
             )
         }
+        postSideEffect(StorageSideEffect.ShowOptionBottomSheet)
     }
 
     private fun handleOptionBottomSheetClicked(messageOptionType: MessageOptionType) = intent {
         reduce {
             state.copy(messageOptionType = messageOptionType)
         }
+        postSideEffect(StorageSideEffect.ShowOptionDialog)
     }
 
     private fun updateMessageReadStatus(messageId: Int) {
@@ -176,13 +163,12 @@ class StorageViewModel @Inject constructor(
     }
 
     private fun handleMessageDeleteButtonClicked() = intent {
+        postSideEffect(StorageSideEffect.CloseOptionDialog)
+        postSideEffect(StorageSideEffect.CloseOptionBottomSheet)
+
         viewModelScope.launch {
             messageStorageRepository.deleteMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
-                    if (state.optionButtonClickedMessageType == MessageType.SENT) {
-                        getSentMessageList()
-                    }
-
                     postSideEffect(
                         StorageSideEffect.ShowToast(
                             ToastState(
@@ -200,6 +186,9 @@ class StorageViewModel @Inject constructor(
     }
 
     private fun handleMessageBlockButtonClicked() = intent {
+        postSideEffect(StorageSideEffect.CloseOptionDialog)
+        postSideEffect(StorageSideEffect.CloseOptionBottomSheet)
+
         viewModelScope.launch {
             messageStorageRepository.blockMessage(state.optionButtonClickedMessageId)
                 .onSuccess {
@@ -220,6 +209,20 @@ class StorageViewModel @Inject constructor(
     }
 
     private fun handleMessageReportButtonClicked() = intent {
+        postSideEffect(StorageSideEffect.CloseOptionDialog)
+        postSideEffect(StorageSideEffect.CloseOptionBottomSheet)
         postSideEffect(StorageSideEffect.ShowReportMessageScreen)
+    }
+
+    private fun handleOptionBottomSheetClosed() = intent {
+        postSideEffect(StorageSideEffect.CloseOptionBottomSheet)
+    }
+
+    private fun handleOptionDialogClosed() = intent {
+        postSideEffect(StorageSideEffect.CloseOptionDialog)
+    }
+
+    private fun handleMessageReportScreenClosed() = intent {
+        postSideEffect(StorageSideEffect.CloseReportMessageScreen)
     }
 }

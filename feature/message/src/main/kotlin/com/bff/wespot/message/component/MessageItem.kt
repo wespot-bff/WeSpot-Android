@@ -49,15 +49,18 @@ internal fun MessageItem(
             .background(WeSpotThemeManager.colors.cardBackgroundColor)
             .clickable { itemClick() },
     ) {
-        Icon(
-            modifier = Modifier
-                .padding(top = 4.dp, end = 4.dp)
-                .align(Alignment.TopEnd)
-                .clickableSingle { optionButtonClick() },
-            imageVector = ImageVector.vectorResource(id = R.drawable.option),
-            tint = Gray300,
-            contentDescription = stringResource(id = R.string.option_button),
-        )
+        /** 에버 쪽지의 경우, 삭제를 막기 위해 옵션 버튼을 노출하지 않는다. */
+        if (messageItemType !is MessageItemType.Ever) {
+            Icon(
+                modifier = Modifier
+                    .padding(top = 4.dp, end = 4.dp)
+                    .align(Alignment.TopEnd)
+                    .clickableSingle { optionButtonClick() },
+                imageVector = ImageVector.vectorResource(id = R.drawable.option),
+                tint = Gray300,
+                contentDescription = stringResource(id = R.string.option_button),
+            )
+        }
 
         if (messageItemType is MessageItemType.Normal) {
             Icon(
@@ -83,7 +86,7 @@ internal fun MessageItem(
             Box(
                 modifier = Modifier.size(50.dp),
             ) {
-                if (message.isRead.not()) {
+                if (message.isExistsUnreadMessage.not()) {
                     RedDot(
                         modifier = Modifier
                             .padding(top = 2.dp, end = 2.dp)
@@ -94,14 +97,6 @@ internal fun MessageItem(
                 }
 
                 when (messageItemType) {
-                    is MessageItemType.Normal, MessageItemType.Favorites -> {
-                        ProfileCircleImage(
-                            size = 50.dp,
-                            imageUrl = message.receiver.profileCharacter.iconUrl,
-                            contentDescription = "Message Receiver Profile Image",
-                        )
-                    }
-
                     MessageItemType.Reported, MessageItemType.Blocked -> {
                         Image(
                             modifier = Modifier
@@ -111,14 +106,18 @@ internal fun MessageItem(
                             contentDescription = stringResource(R.string.restrict_message_icon),
                         )
                     }
+
+                    else -> {
+                        ProfileCircleImage(
+                            size = 50.dp,
+                            imageUrl = message.thumbnail,
+                            contentDescription = "Message Receiver Profile Image",
+                        )
+                    }
                 }
             }
 
             when (messageItemType) {
-                is MessageItemType.Normal, MessageItemType.Favorites -> {
-                    MessageItemTitle(message.receiver.name)
-                }
-
                 MessageItemType.Blocked -> {
                     MessageItemTitle(
                         stringResource(id = R.string.blocked_message_title),
@@ -130,9 +129,13 @@ internal fun MessageItem(
                         stringResource(id = R.string.reported_message_title),
                     )
                 }
+
+                else -> {
+                    MessageItemTitle(message.name)
+                }
             }
 
-            message.receivedAt?.let {
+            message.latestChatTime?.let {
                 Text(
                     modifier = Modifier.padding(top = 12.dp),
                     text = it.toStringWithDotSeparator(),
@@ -166,6 +169,8 @@ sealed interface MessageItemType {
     data object Blocked : MessageItemType
 
     data object Reported : MessageItemType
+
+    data object Ever : MessageItemType
 }
 
 @Preview
