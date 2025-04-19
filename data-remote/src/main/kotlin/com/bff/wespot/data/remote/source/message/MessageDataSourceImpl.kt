@@ -5,9 +5,7 @@ import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
-import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
-import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -19,26 +17,6 @@ import javax.inject.Inject
 class MessageDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
 ): MessageDataSource {
-    override suspend fun getReceivedMessageList(cursorId: Int?): Result<ReceivedMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages")
-                parameter("type", "RECEIVED")
-                parameter("cursorId", cursorId)
-            }
-        }
-
-    override suspend fun getSentMessageList(cursorId: Int?): Result<SentMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages")
-                parameter("type", "SENT")
-                parameter("cursorId", cursorId)
-            }
-        }
-
     override suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfileDto>> =
         httpClient.safeRequest {
             method = HttpMethod.Get
