@@ -91,7 +91,7 @@ internal fun ProfileCreatorModal(
             ) {
                 ProfileCircleImage(
                     size = 87.dp,
-                    imageUrl = state.anonymousProfileInput.image,
+                    imageUrl = state.senderProfileInput.image,
                     contentDescription = "Anonymous Profile Image",
                 )
 
@@ -114,7 +114,7 @@ internal fun ProfileCreatorModal(
             }
 
             ProfileNameTextField(
-                value = state.anonymousProfileInput.name,
+                value = state.senderProfileInput.name,
                 onValueChanged = { action(SendAction.OnProfileNameChanged(it)) },
             )
 
@@ -132,13 +132,13 @@ internal fun ProfileCreatorModal(
             WSButton(
                 paddingValues = PaddingValues(top = 40.dp),
                 text = "설정 완료",
-                enabled = state.hasProfileNameProfanity.not() && state.anonymousProfileInput.name.length in 1..10,
+                enabled = state.hasProfileNameProfanity.not() && state.senderProfileInput.name.length in 1..10,
                 onClick = {
                     action(
                         SendAction.OnProfileSelected(
                             SenderProfile(
-                                name = state.anonymousProfileInput.name,
-                                image = state.anonymousProfileInput.image,
+                                name = state.senderProfileInput.name,
+                                image = state.senderProfileInput.image,
                             ),
                         ),
                     )

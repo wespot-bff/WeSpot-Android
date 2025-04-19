@@ -65,7 +65,6 @@ class SendViewModel @Inject constructor(
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.OnSendButtonClicked -> handleMessageSent()
-            SendAction.OnAnonymousToggled -> handleAnonymousToggled()
             SendAction.OnMessageScreenEntered -> clearSendUiState()
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
@@ -178,29 +177,6 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousToggled() = intent {
-        /**
-         * 익명으로 보낸 적이 없다면, 랜덤 프로필 선택 바텀시트를 노출한다.
-         * 익명으로 보낸 적이 있다면, 랜덤 프로필 생성 모달을 노출한다.
-         **/
-        if (!state.isAnonymous) {
-            reduce {
-                if (state.anonymousProfileList.isEmpty()) {
-                    state.copy(showProfileCreatorModal = true)
-                } else {
-                    state.copy(showProfileSelectBottomSheet = true)
-                }
-            }
-        } else {
-            reduce {
-                state.copy(
-                    isAnonymous = false,
-                    selectedAnonymousProfile = SenderProfile(),
-                )
-            }
-        }
-    }
-
     private fun hasProfileNameProfanity(content: String) = intent {
         viewModelScope.launch {
             runCatching {
@@ -247,9 +223,8 @@ class SendViewModel @Inject constructor(
             state.copy(
                 showProfileSelectBottomSheet = false,
                 showProfileCreatorModal = false,
-                anonymousProfileInput = SenderProfile(),
-                selectedAnonymousProfile = anonymousProfile,
-                isAnonymous = true,
+                senderProfileInput = SenderProfile(),
+                senderProfile = anonymousProfile,
             )
         }
         profileNameInput.value = ""
@@ -273,7 +248,7 @@ class SendViewModel @Inject constructor(
     private fun handleProfileNameChanged(name: String) = intent {
         profileNameInput.value = name
         reduce {
-            state.copy(anonymousProfileInput = state.anonymousProfileInput.copy(name = name))
+            state.copy(senderProfileInput = state.senderProfileInput.copy(name = name))
         }
     }
 
@@ -281,7 +256,7 @@ class SendViewModel @Inject constructor(
         reduce {
             state.copy(
                 showProfileCreatorModal = false,
-                anonymousProfileInput = SenderProfile(),
+                senderProfileInput = SenderProfile(),
             )
         }
     }
@@ -295,7 +270,7 @@ class SendViewModel @Inject constructor(
     private fun handleAnonymousProfileImagePicked(profilePath: String) = intent {
         reduce {
             state.copy(
-                anonymousProfileInput = state.anonymousProfileInput.copy(image = profilePath),
+                senderProfileInput = state.senderProfileInput.copy(image = profilePath),
             )
         }
     }
@@ -310,7 +285,7 @@ class SendViewModel @Inject constructor(
     private fun handleRemoveProfileOptionClicked() = intent {
         reduce {
             state.copy(
-                anonymousProfileInput = state.anonymousProfileInput.copy(image = ""),
+                senderProfileInput = state.senderProfileInput.copy(image = ""),
                 showProfileImageOptionBottomSheet = false,
             )
         }
@@ -326,19 +301,13 @@ class SendViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
         postSideEffect(SendSideEffect.CloseReserveDialog)
 
-        val senderName = if (state.isAnonymous) {
-            state.selectedAnonymousProfile.name
-        } else {
-            state.profile.toDescription()
-        }
-
         viewModelScope.launch {
             messageRepository.postMessage(
                 WrittenMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    senderName = senderName,
-                    isAnonymous = state.isAnonymous,
+                    senderName = state.senderProfile.name,
+                    isAnonymous = state.senderProfile.isAnonymous,
                 ),
             ).onSuccess {
                 trackMessageSendEvent()

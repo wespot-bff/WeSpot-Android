@@ -39,7 +39,6 @@ import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.designsystem.component.toggle.WSSwitch
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -62,8 +61,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageSendNavigator {
     fun navigateUp()
-    fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
-    fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun popUpToMessageScreen()
 }
 
@@ -178,22 +175,14 @@ fun MessageSendScreen(
                     buttonText = state.selectedUser.toMessageReceiverInfo(),
                     imageUrl = state.selectedUser.profileCharacter.iconUrl,
                     contentDescription = stringResource(R.string.receiver_profile_image),
-                ) {
-                    navigator.navigateReceiverSelectionScreen(
-                        args = ReceiverSelectionScreenArgs(isEditing = true),
-                    )
-                }
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 MessageContentItem(
                     title = stringResource(R.string.message_sent_content),
                     buttonText = state.messageInput,
-                ) {
-                    navigator.navigateMessageWriteScreen(
-                        args = MessageWriteScreenArgs(isEditing = true),
-                    )
-                }
+                )
 
                 Box(
                     modifier = Modifier
@@ -206,18 +195,11 @@ fun MessageSendScreen(
 
                 MessageProfileItem(
                     title = stringResource(R.string.sender),
-                    buttonText = if (state.isAnonymous) {
-                        state.selectedAnonymousProfile.name
-                    } else {
-                        state.profile.toMessageReceiverInfo()
-                    },
-                    imageUrl = if (state.isAnonymous) {
-                        state.selectedAnonymousProfile.image
-                    } else {
-                        state.profile.profileCharacter.iconUrl
-                    },
+                    buttonText = state.senderProfile.name,
+                    imageUrl = state.senderProfile.image,
                     contentDescription = stringResource(R.string.sender_profile_image),
-                    onClicked = { },
+                    onClicked = {
+                    },
                 )
 
                 Row(
@@ -240,12 +222,6 @@ fun MessageSendScreen(
                             style = StaticTypeScale.Default.body8,
                             color = Gray400,
                         )
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    WSSwitch(checked = state.isAnonymous) {
-                        action(SendAction.OnAnonymousToggled)
                     }
                 }
             }
@@ -288,7 +264,7 @@ fun MessageSendScreen(
 
         if (state.showProfileSelectBottomSheet) {
             ProfileSelectBottomSheet(
-                anonymousProfileList = state.anonymousProfileList,
+                anonymousProfileList = state.senderProfileList,
                 closeSheet = {
                     action(SendAction.OnProfileBottomSheetClosed)
                 },
@@ -326,7 +302,7 @@ private fun MessageProfileItem(
     buttonText: String,
     imageUrl: String,
     contentDescription: String,
-    onClicked: () -> Unit,
+    onClicked: (() -> Unit)? = null,
 ) {
     Column {
         Text(
@@ -336,7 +312,9 @@ private fun MessageProfileItem(
         )
 
         WSButton(
-            onClick = onClicked,
+            onClick = {
+                onClicked?.invoke()
+            },
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
@@ -359,10 +337,12 @@ private fun MessageProfileItem(
                     maxLines = 1,
                 )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.edit),
-                    contentDescription = stringResource(R.string.edit_icon),
-                )
+                if (onClicked != null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit),
+                        contentDescription = stringResource(R.string.edit_icon),
+                    )
+                }
             }
         }
     }
@@ -372,7 +352,6 @@ private fun MessageProfileItem(
 private fun MessageContentItem(
     title: String,
     buttonText: String,
-    onClicked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -384,7 +363,7 @@ private fun MessageContentItem(
         )
 
         WSButton(
-            onClick = onClicked,
+            onClick = { },
             heightRange = HeightRange(170.dp, 228.dp),
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,

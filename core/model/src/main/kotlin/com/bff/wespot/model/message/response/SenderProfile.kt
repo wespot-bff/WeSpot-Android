@@ -8,6 +8,7 @@ data class SenderProfile(
     val image: String = "",
     val recentlyTalk: LocalDateTime = LocalDateTime.MIN,
     val myTurnToAnswer: Boolean = false,
+    val isAnonymous: Boolean = false,
 ) {
     fun isEmpty() = name.isEmpty() && image.isEmpty()
 }
