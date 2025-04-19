@@ -1,10 +1,11 @@
 package com.bff.wespot.data.mapper.message
 
-import com.bff.wespot.data.local.model.message.ReceivedMessageEntity
-import com.bff.wespot.data.local.model.message.ReceivedMessageEntityList
+import com.bff.wespot.data.local.model.message.MessageEntity
+import com.bff.wespot.data.local.model.message.MessageEntityList
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
-import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
+import com.bff.wespot.data.remote.model.message.response.MessageDto
+import com.bff.wespot.data.remote.model.message.response.MessageListDto
 
 internal fun WrittenMessage.toWrittenMessageDto(): WrittenMessageDto = WrittenMessageDto(
     receiverId = receiverId,
@@ -13,25 +14,29 @@ internal fun WrittenMessage.toWrittenMessageDto(): WrittenMessageDto = WrittenMe
     isAnonymous = isAnonymous,
 )
 
-internal fun ReceivedMessageListDto.toEntity(
+internal fun MessageListDto.toEntity(
     lastCursorId: Int?,
-) = ReceivedMessageEntityList(
-    data = messages.map { it.toReceivedMessageEntity(lastCursorId) },
+) = MessageEntityList(
+    data = messages.map { it.toMessageEntity(lastCursorId) },
     lastCursorId = lastCursorId ?: -1,
     hasNext = hasNext,
 )
 
-private fun ReceivedMessageListDto.ReceivedMessageDto.toReceivedMessageEntity(
+private fun MessageDto.toMessageEntity(
     lastCursorId: Int?,
-): ReceivedMessageEntity = ReceivedMessageEntity(
+): MessageEntity = MessageEntity(
     id = id,
-    senderName = senderName,
-    receiver = receiver.toUser(),
-    content = content,
-    sender = sender.toUser(),
-    receivedAt = receivedAt,
-    isRead = isRead,
+    thumbnail = thumbnail,
+    isExistsUnreadMessage = isExistsUnreadMessage,
+    latestChatTime = latestChatTime,
     isAnonymous = isAnonymous,
-    readAt = readAt,
+    name = name,
+    schoolName = schoolName,
+    grade = grade,
+    classNumber = classNumber,
+    isBookmarked = isBookmarked,
+    isReported = isReported,
+    isBlocked = isBlocked,
+    isEver = isEver,
     lastCursorId = lastCursorId,
 )
