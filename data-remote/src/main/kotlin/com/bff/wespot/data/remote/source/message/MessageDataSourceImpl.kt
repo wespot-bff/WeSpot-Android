@@ -1,9 +1,8 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
+import com.bff.wespot.data.remote.model.message.request.SendMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDto
-import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
@@ -39,13 +38,13 @@ class MessageDataSourceImpl @Inject constructor(
         }
 
     override suspend fun postMessage(
-        writtenMessageDto: WrittenMessageDto,
-    ): Result<MessageIdDto> =
+        sendMessage: SendMessageDto,
+    ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/messages/send")
-                setBody(writtenMessageDto)
+                setBody(sendMessage)
             }
         }
 
@@ -57,12 +56,12 @@ class MessageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun editMessage(messageId: Int, writtenMessageDto: WrittenMessageDto): Result<Unit> =
+    override suspend fun editMessage(messageId: Int, sendMessage: SendMessageDto): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Put
                 path("api/v1/messages/$messageId")
-                setBody(writtenMessageDto)
+                setBody(sendMessage)
             }
         }
 

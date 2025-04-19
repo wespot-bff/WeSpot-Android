@@ -17,7 +17,7 @@ import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.message.request.WrittenMessage
+import com.bff.wespot.model.message.request.SendMessage
 import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.ui.base.BaseViewModel
@@ -303,11 +303,12 @@ class SendViewModel @Inject constructor(
 
         viewModelScope.launch {
             messageRepository.postMessage(
-                WrittenMessage(
+                SendMessage(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
-                    senderName = state.senderProfile.name,
                     isAnonymous = state.senderProfile.isAnonymous,
+                    imageUrl = state.senderProfile.image,
+                    name = state.senderProfile.name,
                 ),
             ).onSuccess {
                 trackMessageSendEvent()
