@@ -1,10 +1,11 @@
 package com.bff.wespot.data.mapper.message
 
-import com.bff.wespot.data.local.model.message.ReceivedMessageEntity
+import com.bff.wespot.data.local.model.message.MessageEntity
 import com.bff.wespot.data.local.model.message.ReceivedMessageEntityList
-import com.bff.wespot.model.message.request.SendMessage
 import com.bff.wespot.data.remote.model.message.request.SendMessageDto
-import com.bff.wespot.data.remote.model.message.response.ReceivedMessageListDto
+import com.bff.wespot.data.remote.model.message.response.MessageDto
+import com.bff.wespot.data.remote.model.message.response.MessageListDto
+import com.bff.wespot.model.message.request.SendMessage
 
 internal fun SendMessage.toDto(): SendMessageDto = SendMessageDto(
     receiverId = receiverId,
@@ -14,7 +15,7 @@ internal fun SendMessage.toDto(): SendMessageDto = SendMessageDto(
     anonymousProfileName = anonymousProfileName,
 )
 
-internal fun ReceivedMessageListDto.toEntity(
+internal fun MessageListDto.toEntity(
     lastCursorId: Int?,
 ) = ReceivedMessageEntityList(
     data = messages.map { it.toReceivedMessageEntity(lastCursorId) },
@@ -22,17 +23,21 @@ internal fun ReceivedMessageListDto.toEntity(
     hasNext = hasNext,
 )
 
-private fun ReceivedMessageListDto.ReceivedMessageDto.toReceivedMessageEntity(
+private fun MessageDto.toMessageEntity(
     lastCursorId: Int?,
-): ReceivedMessageEntity = ReceivedMessageEntity(
+): MessageEntity = MessageEntity(
     id = id,
-    senderName = senderName,
-    receiver = receiver.toUser(),
-    content = content,
-    sender = sender.toUser(),
-    receivedAt = receivedAt,
-    isRead = isRead,
+    thumbnail = thumbnail,
+    isExistsUnreadMessage = isExistsUnreadMessage,
+    latestChatTime = latestChatTime,
     isAnonymous = isAnonymous,
-    readAt = readAt,
+    name = name,
+    schoolName = schoolName,
+    grade = grade,
+    classNumber = classNumber,
+    isBookmarked = isBookmarked,
+    isReported = isReported,
+    isBlocked = isBlocked,
+    isEver = isEver,
     lastCursorId = lastCursorId,
 )
