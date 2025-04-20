@@ -35,7 +35,7 @@ fun EmptyMessageScreen() {
             Image(
                 painter = painterResource(id = R.drawable.empty_message),
                 contentDescription = stringResource(R.string.empty_message),
-                modifier = Modifier.size(83.dp),
+                modifier = Modifier.size(86.dp),
             )
 
             Text(
