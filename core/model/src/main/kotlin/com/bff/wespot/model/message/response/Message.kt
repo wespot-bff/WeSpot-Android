@@ -11,6 +11,7 @@ data class Message(
     val isExistsUnreadMessage: Boolean = false,
     val latestChatTime: LocalDateTime? = LocalDateTime.MIN,
     val isAnonymous: Boolean = false,
+    val isMeMessageRoomOwner: Boolean = false,
     val name: String = "",
     val schoolName: String? = "",
     val grade: Int? = -1,
