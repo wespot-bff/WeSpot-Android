@@ -81,4 +81,8 @@
     <string name="anonoymous_profile_placeholder">닉네임을 입력해 주세요</string>
     <string name="select_image_from_album">앨범에서 사진 선택</string>
     <string name="set_default_image">기본 이미지 적용</string>
+    <string name="message_room_bookmark">Message Room Bookmark</string>
+    <string name="send_reply">답장 보내기</string>
+    <string name="reply_complete">답장 완료</string>
+    <string name="message_type_icon">Message Type Icon</string>
 </resources>
