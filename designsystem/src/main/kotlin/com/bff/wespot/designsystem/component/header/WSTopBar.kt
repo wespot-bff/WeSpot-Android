@@ -31,6 +31,7 @@ import com.bff.wespot.designsystem.util.OrientationPreviews
 @Composable
 fun WSTopBar(
     title: String,
+    titleContent: (@Composable () -> Unit)? = null,
     navigation: @Composable () -> Unit = {},
     canNavigateBack: Boolean = false,
     navigateUp: () -> Unit = {},
@@ -39,11 +40,15 @@ fun WSTopBar(
 ) {
     CenterAlignedTopAppBar(
         title = {
-            Text(
-                text = title,
-                style = StaticTypeScale.Default.header2,
-                color = WeSpotThemeManager.colors.txtTitleColor,
-            )
+            if (titleContent != null) {
+                titleContent.invoke()
+            } else {
+                Text(
+                    text = title,
+                    style = StaticTypeScale.Default.header2,
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                )
+            }
         },
         navigationIcon = {
             if (canNavigateBack) {
