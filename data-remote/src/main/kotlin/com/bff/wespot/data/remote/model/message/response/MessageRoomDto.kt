@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MessageRoomDto(
-    val messageRoomId: Long,
+    val messageRoomId: Int,
     val name: String,
     val thumbnail: String,
     val isBookmarked: Boolean,
@@ -22,7 +22,7 @@ data class MessageRoomDto(
 
     @Serializable
     data class MessageDetailDto(
-        val id: Long,
+        val id: Int,
         val createdAt: String,
         val content: String,
         val isReceived: Boolean,
