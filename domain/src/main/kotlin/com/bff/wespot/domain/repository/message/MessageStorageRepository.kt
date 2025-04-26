@@ -1,6 +1,7 @@
 package com.bff.wespot.domain.repository.message
 
 import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageRoom
 
 interface MessageStorageRepository {
     suspend fun getMessages(): Result<List<Message>>
@@ -16,4 +17,6 @@ interface MessageStorageRepository {
     suspend fun blockMessage(messageId: Int): Result<Unit>
 
     suspend fun unBlockMessage(messageId: Int): Result<Unit>
+
+    suspend fun getMessageRoom(receivedId: Int): Result<MessageRoom>
 }

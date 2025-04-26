@@ -3,6 +3,7 @@ package com.bff.wespot.data.repository.message
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.model.message.response.Message
+import com.bff.wespot.model.message.response.MessageRoom
 import javax.inject.Inject
 
 class MessageStorageRepositoryImpl @Inject constructor(
@@ -32,4 +33,9 @@ class MessageStorageRepositoryImpl @Inject constructor(
 
     override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
         messageStorageDataSource.unBlockMessage(messageId = messageId)
+
+    override suspend fun getMessageRoom(receivedId: Int): Result<MessageRoom> =
+        messageStorageDataSource.getMessageRoom(receivedId).mapCatching {
+            it.toDomain()
+        }
 }
