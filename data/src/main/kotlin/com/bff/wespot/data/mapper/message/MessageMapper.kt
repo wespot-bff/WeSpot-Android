@@ -39,4 +39,5 @@ private fun MessageDto.toMessageEntity(
     isBlocked = isBlocked,
     isEver = isEver,
     lastCursorId = lastCursorId,
+    isMeMessageRoomOwner = isMeMessageRoomOwner,
 )
