@@ -1,5 +1,8 @@
 package com.bff.wespot.message.screen.send
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,7 +20,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,23 +37,61 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
-import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendUiState
-import com.bff.wespot.model.message.response.SenderProfile
+import com.bff.wespot.message.model.AnonymousProfile
+import com.bff.wespot.message.state.send.anonymous.AnonymousProfileAction
+import com.bff.wespot.message.state.send.anonymous.AnonymousProfileSideEffect
+import com.bff.wespot.message.viewmodel.AnonymousProfileViewModel
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.util.clickableSingle
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-internal fun ProfileCreatorModal(
-    state: SendUiState,
-    action: (SendAction) -> Unit,
+internal fun AnonymousProfileModal(
+    profile: AnonymousProfile,
+    viewModel: AnonymousProfileViewModel = hiltViewModel(),
+    onProfileSelected: (AnonymousProfile) -> Unit,
+    onDismiss: () -> Unit,
 ) {
+    val state by viewModel.collectAsState()
+    var showProfileImageOptionBottomSheet by remember { mutableStateOf(false) }
+
+    val action = viewModel::onAction
+
+    val pickImage =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
+            it?.let {
+                action(AnonymousProfileAction.OnProfileImagePicked(it.toString()))
+            }
+        }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            AnonymousProfileSideEffect.OpenPicker -> {
+                pickImage.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.SingleMimeType("image/*"),
+                    ),
+                )
+            }
+
+            AnonymousProfileSideEffect.ShowProfileOptionBottomSheet -> {
+                showProfileImageOptionBottomSheet = true
+            }
+
+            AnonymousProfileSideEffect.DismissProfileOptionBottomSheet -> {
+                showProfileImageOptionBottomSheet = false
+            }
+        }
+    }
+
     Dialog(
         onDismissRequest = { },
     ) {
@@ -62,9 +107,7 @@ internal fun ProfileCreatorModal(
             ) {
                 Icon(
                     modifier = Modifier.clickableSingle(
-                        onClick = {
-                            action(SendAction.OnProfileModalClosed)
-                        },
+                        onClick = onDismiss,
                     ),
                     painter = painterResource(id = R.drawable.close),
                     contentDescription = stringResource(R.string.close_sender_profile_creator_modal_button),
@@ -75,7 +118,7 @@ internal fun ProfileCreatorModal(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp),
-                text = "받는 사람에게 보여질\n익명 프로필을 설정해 주세요",
+                text = stringResource(R.string.anonymous_profile_title),
                 style = StaticTypeScale.Default.header1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
                 textAlign = TextAlign.Center,
@@ -86,12 +129,12 @@ internal fun ProfileCreatorModal(
                     .padding(top = 24.dp)
                     .clickableSingle(
                         removeInteraction = true,
-                        onClick = { action(SendAction.OnProfileImageClicked) },
+                        onClick = { action(AnonymousProfileAction.OnProfileImageClicked) },
                     ),
             ) {
                 ProfileCircleImage(
                     size = 87.dp,
-                    imageUrl = state.senderProfileInput.image,
+                    imageUrl = state.imageUrl,
                     contentDescription = stringResource(id = R.string.sender_profile_image),
                 )
 
@@ -114,11 +157,11 @@ internal fun ProfileCreatorModal(
             }
 
             ProfileNameTextField(
-                value = state.senderProfileInput.name,
-                onValueChanged = { action(SendAction.OnProfileNameChanged(it)) },
+                value = state.name,
+                onValueChanged = { action(AnonymousProfileAction.OnProfileNameChanged(it)) },
             )
 
-            if (state.hasProfileNameProfanity) {
+            if (state.hasNameProfanity) {
                 Text(
                     modifier = Modifier
                         .padding(top = 4.dp, start = 12.dp)
@@ -132,28 +175,25 @@ internal fun ProfileCreatorModal(
             WSButton(
                 paddingValues = PaddingValues(top = 40.dp),
                 text = "설정 완료",
-                enabled = state.hasProfileNameProfanity.not() && state.senderProfileInput.name.length in 1..10,
+                enabled = state.hasNameProfanity.not() && state.name.length in 1..10,
                 onClick = {
-                    action(
-                        SendAction.OnProfileModalSelected(
-                            SenderProfile(
-                                name = state.senderProfileInput.name,
-                                image = state.senderProfileInput.image,
-                            ),
-                        ),
-                    )
+                    onProfileSelected(AnonymousProfile(state.name, state.imageUrl))
                 },
                 content = { it() },
             )
         }
     }
 
-    if (state.showProfileImageOptionBottomSheet) {
+    if (showProfileImageOptionBottomSheet) {
         ProfileImageOptionBottomSheet(
-            closeSheet = { action(SendAction.OnProfileOptionSheetClosed) },
-            onPickerOpenOptionClicked = { action(SendAction.OnPickerOpenOptionClicked) },
-            onRemoveProfileOptionClicked = { action(SendAction.OnRemoveProfileOptionClicked) },
+            closeSheet = { action(AnonymousProfileAction.OnProfileOptionSheetClosed) },
+            onPickerOpenOptionClicked = { action(AnonymousProfileAction.OnPickerOpenOptionClicked) },
+            onRemoveProfileOptionClicked = { action(AnonymousProfileAction.OnRemoveProfileOptionClicked) },
         )
+    }
+
+    LaunchedEffect(Unit) {
+        action(AnonymousProfileAction.OnProfileModalOpened(profile))
     }
 }
 
@@ -171,7 +211,7 @@ private fun ProfileImageOptionBottomSheet(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "앨범에서 사진 선택",
+                text = stringResource(R.string.select_image_from_album),
                 modifier = Modifier
                     .clickableSingle(onClick = onPickerOpenOptionClicked)
                     .fillMaxWidth()
@@ -184,7 +224,7 @@ private fun ProfileImageOptionBottomSheet(
             HorizontalDivider(color = Color(0xFF4F5157))
 
             Text(
-                text = "기본 이미지 적용",
+                text = stringResource(R.string.set_default_image),
                 modifier = Modifier
                     .clickableSingle(onClick = onRemoveProfileOptionClicked)
                     .fillMaxWidth()
@@ -225,7 +265,7 @@ private fun ProfileNameTextField(
                 interactionSource = interactionSource,
                 placeholder = {
                     Text(
-                        text = "닉네임을 입력해 주세요",
+                        text = stringResource(R.string.anonoymous_profile_placeholder),
                         style = StaticTypeScale.Default.body4,
                         color = WeSpotThemeManager.colors.disableBtnColor,
                     )

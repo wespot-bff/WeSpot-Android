@@ -12,6 +12,7 @@ import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
+import com.bff.wespot.message.model.AnonymousProfile
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.state.send.SendUiState
@@ -51,7 +52,6 @@ class SendViewModel @Inject constructor(
 
     private val nameInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
-    private val profileNameInput: MutableStateFlow<String> = MutableStateFlow("")
 
     fun onAction(action: SendAction) {
         when (action) {
@@ -69,30 +69,21 @@ class SendViewModel @Inject constructor(
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
             is SendAction.OnMessageChanged -> handleMessageChanged(action.content)
             is SendAction.OnProfileBottomSheetSelected -> handleProfileBottomSheetSelected(action.senderProfile)
-            is SendAction.OnProfileModalSelected -> handleProfileModalSelected(action.senderProfile)
             SendAction.OnProfileAddButtonClicked -> handleProfileAddButtonClicked()
             SendAction.OnProfileBottomSheetClosed -> handleProfileBottomSheetClosed()
             SendAction.OnWriteDoneButtonClicked -> handleWriteDoneButtonClicked()
 
             /** 쪽지 전송 화면 */
-            SendAction.OnMessageSendScreenEntered -> observeProfileNameInput()
             is SendAction.OnSendButtonClicked -> handleSendMessage()
             SendAction.OnSenderClicked -> handleSenderClicked()
-
-            /** 프로필 선택 모달 */
-            SendAction.OnProfileImageClicked -> handleProfileImageClicked()
-            SendAction.OnProfileModalClosed -> handleProfileModalClosed()
-            SendAction.OnPickerOpenOptionClicked -> handlePickerOpenOptionClicked()
-            SendAction.OnRemoveProfileOptionClicked -> handleRemoveProfileOptionClicked()
-            SendAction.OnProfileOptionSheetClosed -> handleProfileOptionSheetClosed()
-            is SendAction.OnProfileNameChanged -> handleProfileNameChanged(action.name)
-            is SendAction.OnProfileImagePicked -> handleProfileImagePicked(action.profilePath)
 
             /** 공통 */
             SendAction.OnMessageScreenEntered -> clearSendUiState()
             SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
             SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
             SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
+            is SendAction.OnAnonymousProfileSelected -> handleAnonymousProfileSelected(action.profile)
+            SendAction.OnAnonymousProfileModalDismiss -> handleAnonymousProfileDismiss()
         }
     }
 
@@ -190,19 +181,6 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun hasProfileNameProfanity(content: String) = intent {
-        viewModelScope.launch {
-            runCatching {
-                val hasProfanity = checkProfanityUseCase(content)
-                reduce {
-                    state.copy(
-                        hasProfileNameProfanity = hasProfanity,
-                    )
-                }
-            }
-        }
-    }
-
     private fun getKakaoContent() = intent {
         viewModelScope.launch(coroutineDispatcher) {
             commonRepository.getKakaoContent(KakaoSharingType.FIND.name)
@@ -214,19 +192,6 @@ class SendViewModel @Inject constructor(
                 }
                 .onFailure {
                     Timber.e(it)
-                }
-        }
-    }
-
-    private fun observeProfileNameInput() {
-        viewModelScope.launch {
-            profileNameInput
-                .debounce(INPUT_DEBOUNCE_TIME)
-                .distinctUntilChanged()
-                .collect { name ->
-                    if (name.length in 1..10) {
-                        hasProfileNameProfanity(name)
-                    }
                 }
         }
     }
@@ -283,76 +248,13 @@ class SendViewModel @Inject constructor(
         reduce {
             state.copy(
                 showProfileSelectBottomSheet = false,
-                showProfileCreatorModal = true,
             )
         }
-    }
-
-    private fun handleProfileNameChanged(name: String) = intent {
-        profileNameInput.value = name
-        reduce {
-            state.copy(senderProfileInput = state.senderProfileInput.copy(name = name))
-        }
-    }
-
-    private fun handleProfileModalClosed() = intent {
-        reduce {
-            state.copy(
-                showProfileCreatorModal = false,
-            )
-        }
+        postSideEffect(SendSideEffect.ShowAnonymousProfileModal)
     }
 
     private fun handleSenderClicked() = intent {
-        reduce {
-            state.copy(showProfileCreatorModal = true)
-        }
-    }
-
-    private fun handleProfileImageClicked() = intent {
-        reduce {
-            state.copy(showProfileImageOptionBottomSheet = true)
-        }
-    }
-
-    private fun handleProfileImagePicked(profilePath: String) = intent {
-        reduce {
-            state.copy(
-                senderProfileInput = state.senderProfileInput.copy(image = profilePath),
-            )
-        }
-    }
-
-    private fun handleProfileModalSelected(senderProfile: SenderProfile) = intent {
-        reduce {
-            state.copy(
-                showProfileCreatorModal = false,
-                senderProfile = senderProfile,
-            )
-        }
-        postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
-    }
-
-    private fun handlePickerOpenOptionClicked() = intent {
-        reduce {
-            state.copy(showProfileImageOptionBottomSheet = false)
-        }
-        postSideEffect(SendSideEffect.OpenPicker)
-    }
-
-    private fun handleRemoveProfileOptionClicked() = intent {
-        reduce {
-            state.copy(
-                senderProfileInput = state.senderProfileInput.copy(image = ""),
-                showProfileImageOptionBottomSheet = false,
-            )
-        }
-    }
-
-    private fun handleProfileOptionSheetClosed() = intent {
-        reduce {
-            state.copy(showProfileImageOptionBottomSheet = false)
-        }
+        postSideEffect(SendSideEffect.ShowAnonymousProfileModal)
     }
 
     private fun handleSendMessage() = intent {
@@ -394,13 +296,28 @@ class SendViewModel @Inject constructor(
         postSideEffect(SendSideEffect.NavigateUp)
     }
 
+    private fun handleAnonymousProfileSelected(profile: AnonymousProfile) = intent {
+        reduce {
+            state.copy(
+                senderProfile = state.senderProfile.copy(
+                    name = profile.name,
+                    image = profile.imageUrl,
+                ),
+            )
+        }
+        postSideEffect(SendSideEffect.DismissAnonymousProfileModal)
+    }
+
+    private fun handleAnonymousProfileDismiss() = intent {
+        postSideEffect(SendSideEffect.DismissAnonymousProfileModal)
+    }
+
     private fun clearSendUiState() = intent {
         reduce {
             SendUiState()
         }
         nameInput.value = ""
         messageInput.value = ""
-        profileNameInput.value = ""
     }
 
     private fun trackMessageSendEvent() = intent {

@@ -1,8 +1,5 @@
 package com.bff.wespot.message.screen.send
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -48,6 +45,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
+import com.bff.wespot.message.model.AnonymousProfile
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -85,19 +83,13 @@ fun ReceiverSelectionScreen(
     val interactionSource = remember { MutableInteractionSource() }
     val context = LocalContext.current
     var dialogState by remember { mutableStateOf(false) }
+    var showAnonymousProfileModal by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
     val pagingData = state.userList.collectAsLazyPagingItems()
     val action = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
-
-    val pickImage =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            it?.let {
-                action(SendAction.OnProfileImagePicked(it.toString()))
-            }
-        }
 
     handleSideEffect(viewModel.sideEffect)
 
@@ -119,17 +111,15 @@ fun ReceiverSelectionScreen(
                 navigator.navigateMessageWriteScreen()
             }
 
-            SendSideEffect.OpenPicker -> {
-                pickImage.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                            "image/*",
-                        ),
-                    ),
-                )
+            SendSideEffect.ShowAnonymousProfileModal -> {
+                showAnonymousProfileModal = true
             }
 
-            else -> { }
+            SendSideEffect.DismissAnonymousProfileModal -> {
+                showAnonymousProfileModal = false
+            }
+
+            else -> {}
         }
     }
 
@@ -302,10 +292,18 @@ fun ReceiverSelectionScreen(
         )
     }
 
-    if (state.showProfileCreatorModal) {
-        ProfileCreatorModal(
-            state = state,
-            action = action,
+    if (showAnonymousProfileModal) {
+        AnonymousProfileModal(
+            profile = AnonymousProfile(
+                name = state.senderProfile.name,
+                imageUrl = state.senderProfile.image,
+            ),
+            onProfileSelected = {
+                action(SendAction.OnAnonymousProfileSelected(it))
+            },
+            onDismiss = {
+                action(SendAction.OnAnonymousProfileModalDismiss)
+            },
         )
     }
 

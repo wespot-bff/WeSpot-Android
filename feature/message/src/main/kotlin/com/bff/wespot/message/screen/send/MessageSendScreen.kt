@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +39,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
+import com.bff.wespot.message.model.AnonymousProfile
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -70,6 +70,7 @@ fun MessageSendScreen(
     var exitDialog by remember { mutableStateOf(false) }
     var reserveDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+    var showAnonymousProfileModal by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -104,6 +105,14 @@ fun MessageSendScreen(
             }
 
             SendSideEffect.NavigateUp -> navigator.navigateUp()
+
+            SendSideEffect.ShowAnonymousProfileModal -> {
+                showAnonymousProfileModal = true
+            }
+
+            SendSideEffect.DismissAnonymousProfileModal -> {
+                showAnonymousProfileModal = false
+            }
 
             else -> { }
         }
@@ -206,10 +215,18 @@ fun MessageSendScreen(
             )
         }
 
-        if (state.showProfileCreatorModal) {
-            ProfileCreatorModal(
-                state = state,
-                action = action,
+        if (showAnonymousProfileModal) {
+            AnonymousProfileModal(
+                profile = AnonymousProfile(
+                    name = state.senderProfile.name,
+                    imageUrl = state.senderProfile.image,
+                ),
+                onProfileSelected = {
+                    action(SendAction.OnAnonymousProfileSelected(it))
+                },
+                onDismiss = {
+                    action(SendAction.OnAnonymousProfileModalDismiss)
+                },
             )
         }
 
@@ -219,10 +236,6 @@ fun MessageSendScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
-
-    LaunchedEffect(Unit) {
-        action(SendAction.OnMessageSendScreenEntered)
-    }
 }
 
 @Composable

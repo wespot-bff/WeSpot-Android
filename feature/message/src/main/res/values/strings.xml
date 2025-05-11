@@ -83,4 +83,8 @@
     <string name="close_sender_profile_creator_modal_button">Close Sender Profile Creator Modal Button</string>
     <string name="wait_friend_response">친구의 답장을 기다려주세요</string>
     <string name="impossible_to_send_message">쪽지를 보낼 수 없어요</string>
+    <string name="anonymous_profile_title">받는 사람에게 보여질\n익명 프로필을 설정해 주세요</string>
+    <string name="anonoymous_profile_placeholder">닉네임을 입력해 주세요</string>
+    <string name="select_image_from_album">앨범에서 사진 선택</string>
+    <string name="set_default_image">기본 이미지 적용</string>
 </resources>

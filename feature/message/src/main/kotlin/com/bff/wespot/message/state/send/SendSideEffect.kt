@@ -12,5 +12,6 @@ sealed class SendSideEffect {
     data object NavigateToMessageSendScreen : SendSideEffect()
     data object NavigateToMessageWriteScreen : SendSideEffect()
     data object NavigateUp : SendSideEffect()
-    data object OpenPicker : SendSideEffect()
+    data object ShowAnonymousProfileModal : SendSideEffect()
+    data object DismissAnonymousProfileModal : SendSideEffect()
 }
