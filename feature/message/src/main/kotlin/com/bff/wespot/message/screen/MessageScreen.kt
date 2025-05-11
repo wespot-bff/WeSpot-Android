@@ -18,7 +18,6 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
 import com.bff.wespot.message.screen.storage.MessageStorageScreen
-import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.notification.NotificationType
@@ -99,7 +98,6 @@ internal fun MessageScreen(
             }
             else -> { }
         }
-
-        sendViewModel.onAction(SendAction.OnMessageScreenEntered)
+        sendViewModel.clearSendUiState()
     }
 }

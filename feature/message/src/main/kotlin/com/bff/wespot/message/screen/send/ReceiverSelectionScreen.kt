@@ -46,8 +46,8 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.model.AnonymousProfile
-import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendSideEffect
+import com.bff.wespot.message.state.send.MessageSendSideEffect
+import com.bff.wespot.message.state.send.receiver.ReceiverAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.User
@@ -88,7 +88,7 @@ fun ReceiverSelectionScreen(
 
     val state by viewModel.collectAsState()
     val pagingData = state.userList.collectAsLazyPagingItems()
-    val action = viewModel::onAction
+    val action: (ReceiverAction) -> Unit = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 
@@ -96,35 +96,35 @@ fun ReceiverSelectionScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            SendSideEffect.DismissExitDialog -> {
+            MessageSendSideEffect.DismissExitDialog -> {
                 dialogState = false
             }
 
-            SendSideEffect.NavigateToMessage -> {
+            MessageSendSideEffect.NavigateToMessage -> {
                 /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
                 keyboard?.hide()
                 navigator.popUpToMessageScreen()
             }
 
-            SendSideEffect.NavigateUp -> navigator.navigateUp()
+            MessageSendSideEffect.NavigateUp -> navigator.navigateUp()
 
-            SendSideEffect.NavigateToMessageWriteScreen -> {
+            MessageSendSideEffect.NavigateToMessageWriteScreen -> {
                 navigator.navigateMessageWriteScreen()
             }
 
-            SendSideEffect.ShowAnonymousProfileModal -> {
+            MessageSendSideEffect.ShowAnonymousProfileModal -> {
                 showAnonymousProfileModal = true
             }
 
-            SendSideEffect.DismissAnonymousProfileModal -> {
+            MessageSendSideEffect.DismissAnonymousProfileModal -> {
                 showAnonymousProfileModal = false
             }
 
-            SendSideEffect.ShowProfileSelectBottomSheet -> {
+            MessageSendSideEffect.ShowProfileSelectBottomSheet -> {
                 showProfileSelectBottomSheet = true
             }
 
-            SendSideEffect.DismissProfileSelectBottomSheet -> {
+            MessageSendSideEffect.DismissProfileSelectBottomSheet -> {
                 showProfileSelectBottomSheet = false
             }
 
@@ -163,7 +163,7 @@ fun ReceiverSelectionScreen(
             button = {
                 WSButton(
                     onClick = {
-                        action(SendAction.OnSelectDoneButtonClicked)
+                        action(ReceiverAction.OnSelectDoneButtonClicked)
                     },
                     enabled = state.selectedUser.name.isNotBlank(),
                     text = stringResource(R.string.next),
@@ -185,7 +185,7 @@ fun ReceiverSelectionScreen(
                 WsTextField(
                     value = state.nameInput,
                     onValueChange = { value ->
-                        action(SendAction.OnSearchContentChanged(value))
+                        action(ReceiverAction.OnSearchContentChanged(value))
                     },
                     placeholder = stringResource(R.string.receiver_search_text_field_placeholder),
                     textFieldType = WsTextFieldType.Search,
@@ -244,7 +244,7 @@ fun ReceiverSelectionScreen(
                                 selected = true,
                                 onClick = {
                                     keyboard?.hide()
-                                    action(SendAction.OnUserSelected(state.selectedUser))
+                                    action(ReceiverAction.OnUserSelected(state.selectedUser))
                                 },
                             )
                         }
@@ -263,7 +263,7 @@ fun ReceiverSelectionScreen(
                                     selected = state.selectedUser.id == item.id,
                                     onClick = {
                                         keyboard?.hide()
-                                        action(SendAction.OnUserSelected(item))
+                                        action(ReceiverAction.OnUserSelected(item))
                                     },
                                 )
                             }
@@ -277,10 +277,10 @@ fun ReceiverSelectionScreen(
     if (dialogState) {
         SendExitDialog(
             okButtonClick = {
-                action(SendAction.OnExitDialogExitButtonClicked)
+                action(ReceiverAction.OnExitDialogExitButtonClicked)
             },
             cancelButtonClick = {
-                action(SendAction.OnExitDialogCancelButtonClicked)
+                action(ReceiverAction.OnExitDialogCancelButtonClicked)
             },
         )
     }
@@ -289,13 +289,13 @@ fun ReceiverSelectionScreen(
         ProfileSelectBottomSheet(
             profileList = state.senderProfileList,
             closeSheet = {
-                action(SendAction.OnProfileBottomSheetClosed)
+                action(ReceiverAction.OnProfileBottomSheetClosed)
             },
             onProfileAddButtonClicked = {
-                action(SendAction.OnProfileAddButtonClicked)
+                action(ReceiverAction.OnProfileAddButtonClicked)
             },
             onProfileSelected = {
-                action(SendAction.OnProfileBottomSheetSelected(it))
+                action(ReceiverAction.OnProfileBottomSheetSelected(it))
             },
             showToast = showToast,
         )
@@ -308,10 +308,10 @@ fun ReceiverSelectionScreen(
                 imageUrl = state.senderProfile.image,
             ),
             onProfileSelected = {
-                action(SendAction.OnAnonymousProfileSelected(it))
+                action(ReceiverAction.OnAnonymousProfileSelected(it))
             },
             onDismiss = {
-                action(SendAction.OnAnonymousProfileModalDismiss)
+                action(ReceiverAction.OnAnonymousProfileModalDismiss)
             },
         )
     }
@@ -329,7 +329,7 @@ fun ReceiverSelectionScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(SendAction.OnReceiverScreenEntered)
+        action(ReceiverAction.OnReceiverScreenEntered)
     }
 }
 

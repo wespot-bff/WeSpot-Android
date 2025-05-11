@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
  * [isSelectedContext] 보낸이를 선택한 시점에서는 위치가 변경되지 않고, 이후 시점에서는 상위에 노출한다.
  **/
 
-data class SendUiState(
+data class MessageSendUiState(
     /** 쪽지 수신자 선택 화면 */
     val profile: Profile = Profile(),
     val nameInput: String = "",

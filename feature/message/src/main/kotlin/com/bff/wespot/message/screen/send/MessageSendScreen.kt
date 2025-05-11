@@ -40,8 +40,8 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.model.AnonymousProfile
-import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendSideEffect
+import com.bff.wespot.message.state.send.MessageSendSideEffect
+import com.bff.wespot.message.state.send.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -73,7 +73,7 @@ fun MessageSendScreen(
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
-    val action = viewModel::onAction
+    val action: (SendAction) -> Unit = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -82,15 +82,15 @@ fun MessageSendScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            SendSideEffect.CloseSendConfirmModal -> {
+            MessageSendSideEffect.CloseSendConfirmModal -> {
                 showSendConfirmModal = false
             }
 
-            SendSideEffect.NavigateToMessage -> {
+            MessageSendSideEffect.NavigateToMessage -> {
                 navigator.popUpToMessageScreen()
             }
 
-            is SendSideEffect.ShowToast -> {
+            is MessageSendSideEffect.ShowToast -> {
                 showToast(
                     ToastState(
                         message = it.message,
@@ -100,17 +100,17 @@ fun MessageSendScreen(
                 )
             }
 
-            SendSideEffect.DismissExitDialog -> {
+            MessageSendSideEffect.DismissExitDialog -> {
                 exitDialog = false
             }
 
-            SendSideEffect.NavigateUp -> navigator.navigateUp()
+            MessageSendSideEffect.NavigateUp -> navigator.navigateUp()
 
-            SendSideEffect.ShowAnonymousProfileModal -> {
+            MessageSendSideEffect.ShowAnonymousProfileModal -> {
                 showAnonymousProfileModal = true
             }
 
-            SendSideEffect.DismissAnonymousProfileModal -> {
+            MessageSendSideEffect.DismissAnonymousProfileModal -> {
                 showAnonymousProfileModal = false
             }
 
