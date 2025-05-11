@@ -98,6 +98,6 @@ internal fun MessageScreen(
             }
             else -> { }
         }
-        sendViewModel.clearSendUiState()
+        sendViewModel.clearUiState()
     }
 }

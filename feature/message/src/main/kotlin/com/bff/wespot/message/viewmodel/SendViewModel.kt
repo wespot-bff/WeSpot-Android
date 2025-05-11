@@ -23,10 +23,12 @@ import com.bff.wespot.message.state.send.writing.WritingAction
 import com.bff.wespot.message.state.send.writing.WritingSideEffect
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
+import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.model.message.request.SendMessage
 import com.bff.wespot.model.message.response.SenderProfile
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.SideEffect
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -215,7 +217,7 @@ class SendViewModel @Inject constructor(
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect { message ->
-                    if (message.length <= MESSAGE_MAX_LENGTH) {
+                    if (message.isNotEmpty() && message.length <= MESSAGE_MAX_LENGTH) {
                         hasProfanity(message)
                     }
                 }
@@ -227,9 +229,7 @@ class SendViewModel @Inject constructor(
             runCatching {
                 val hasProfanity = checkProfanityUseCase(content)
                 reduce {
-                    state.copy(
-                        hasProfanity = hasProfanity,
-                    )
+                    state.copy(hasProfanity = hasProfanity)
                 }
             }
         }
@@ -268,6 +268,18 @@ class SendViewModel @Inject constructor(
                 .onFailure {
                     Timber.e(it)
                 }
+        }
+    }
+
+    private fun handleAnonymousProfileSelected(profile: AnonymousProfile) = intent {
+        reduce {
+            state.copy(
+                senderProfile = state.senderProfile.copy(
+                    name = profile.name,
+                    image = profile.imageUrl,
+                    isAnonymous = true,
+                ),
+            )
         }
     }
 
@@ -331,12 +343,19 @@ class SendViewModel @Inject constructor(
         postSideEffect(SendSideEffect.CloseSendConfirmModal)
 
         viewModelScope.launch {
+            val imageUrl = uploadAndGetImageUrl(profilePath = state.senderProfile.image)
+                .getOrElse { exception ->
+                    Timber.d(exception)
+                    postSideEffect(SideEffect.toToastEffect())
+                    return@launch
+                }
+
             messageRepository.postMessage(
                 SendMessage(
                     receiverId = state.receiver.id,
                     content = state.messageInput,
                     isAnonymous = state.senderProfile.isAnonymous,
-                    anonymousImageUrl = state.senderProfile.image,
+                    anonymousImageUrl = imageUrl,
                     anonymousProfileName = state.senderProfile.name,
                 ),
             ).onSuccess {
@@ -352,17 +371,13 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleAnonymousProfileSelected(profile: AnonymousProfile) = intent {
-        reduce {
-            state.copy(
-                senderProfile = state.senderProfile.copy(
-                    name = profile.name,
-                    image = profile.imageUrl,
-                    isAnonymous = true,
-                ),
-            )
+    private suspend fun uploadAndGetImageUrl(profilePath: String): Result<String> =
+        runCatching {
+            commonRepository.uploadImage(profilePath)
+        }.mapCatching { uploadResult ->
+            if (!uploadResult.isSuccess) throw NetworkException()
+            uploadResult.getOrThrow()
         }
-    }
 
     private fun trackMessageSendEvent() = intent {
         val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
