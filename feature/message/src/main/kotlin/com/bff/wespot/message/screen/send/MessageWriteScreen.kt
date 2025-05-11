@@ -33,8 +33,8 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.state.send.MessageSendSideEffect
 import com.bff.wespot.message.state.send.writing.WritingAction
+import com.bff.wespot.message.state.send.writing.WritingSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -70,22 +70,19 @@ fun MessageWriteScreen(
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
-        when (it) {
-            MessageSendSideEffect.DismissExitDialog -> {
-                dialogState = false
+        if (it is WritingSideEffect) {
+            when (it) {
+                WritingSideEffect.DismissExitDialog -> {
+                    dialogState = false
+                }
+                WritingSideEffect.NavigateToMessage -> {
+                    /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                    keyboard?.hide()
+                    navigator.popUpToMessageScreen()
+                }
+                WritingSideEffect.NavigateUp -> navigator.navigateUp()
+                WritingSideEffect.NavigateToMessageSendScreen -> navigator.navigateMessageSendScreen()
             }
-
-            MessageSendSideEffect.NavigateToMessage -> {
-                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
-                keyboard?.hide()
-                navigator.popUpToMessageScreen()
-            }
-
-            MessageSendSideEffect.NavigateUp -> navigator.navigateUp()
-
-            MessageSendSideEffect.NavigateToMessageSendScreen -> navigator.navigateMessageSendScreen()
-
-            else -> { }
         }
     }
 

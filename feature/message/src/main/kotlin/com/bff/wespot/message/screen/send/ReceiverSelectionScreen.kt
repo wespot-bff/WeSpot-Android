@@ -46,8 +46,8 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.model.AnonymousProfile
-import com.bff.wespot.message.state.send.MessageSendSideEffect
 import com.bff.wespot.message.state.send.receiver.ReceiverAction
+import com.bff.wespot.message.state.send.receiver.ReceiverSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.User
@@ -95,40 +95,34 @@ fun ReceiverSelectionScreen(
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
-        when (it) {
-            MessageSendSideEffect.DismissExitDialog -> {
-                dialogState = false
+        if (it is ReceiverSideEffect) {
+            when (it) {
+                ReceiverSideEffect.DismissExitDialog -> {
+                    dialogState = false
+                }
+                ReceiverSideEffect.NavigateToMessage -> {
+                    /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                    keyboard?.hide()
+                    navigator.popUpToMessageScreen()
+                }
+                ReceiverSideEffect.NavigateUp -> navigator.navigateUp()
+                ReceiverSideEffect.NavigateToMessageWriteScreen -> {
+                    keyboard?.hide()
+                    navigator.navigateMessageWriteScreen()
+                }
+                ReceiverSideEffect.ShowAnonymousProfileModal -> {
+                    showAnonymousProfileModal = true
+                }
+                ReceiverSideEffect.DismissAnonymousProfileModal -> {
+                    showAnonymousProfileModal = false
+                }
+                ReceiverSideEffect.ShowProfileSelectBottomSheet -> {
+                    showProfileSelectBottomSheet = true
+                }
+                ReceiverSideEffect.DismissProfileSelectBottomSheet -> {
+                    showProfileSelectBottomSheet = false
+                }
             }
-
-            MessageSendSideEffect.NavigateToMessage -> {
-                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
-                keyboard?.hide()
-                navigator.popUpToMessageScreen()
-            }
-
-            MessageSendSideEffect.NavigateUp -> navigator.navigateUp()
-
-            MessageSendSideEffect.NavigateToMessageWriteScreen -> {
-                navigator.navigateMessageWriteScreen()
-            }
-
-            MessageSendSideEffect.ShowAnonymousProfileModal -> {
-                showAnonymousProfileModal = true
-            }
-
-            MessageSendSideEffect.DismissAnonymousProfileModal -> {
-                showAnonymousProfileModal = false
-            }
-
-            MessageSendSideEffect.ShowProfileSelectBottomSheet -> {
-                showProfileSelectBottomSheet = true
-            }
-
-            MessageSendSideEffect.DismissProfileSelectBottomSheet -> {
-                showProfileSelectBottomSheet = false
-            }
-
-            else -> {}
         }
     }
 

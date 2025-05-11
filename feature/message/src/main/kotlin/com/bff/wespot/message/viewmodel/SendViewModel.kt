@@ -16,8 +16,11 @@ import com.bff.wespot.message.model.AnonymousProfile
 import com.bff.wespot.message.state.send.MessageSendSideEffect
 import com.bff.wespot.message.state.send.MessageSendUiState
 import com.bff.wespot.message.state.send.receiver.ReceiverAction
+import com.bff.wespot.message.state.send.receiver.ReceiverSideEffect
 import com.bff.wespot.message.state.send.send.SendAction
+import com.bff.wespot.message.state.send.send.SendSideEffect
 import com.bff.wespot.message.state.send.writing.WritingAction
+import com.bff.wespot.message.state.send.writing.WritingSideEffect
 import com.bff.wespot.model.common.KakaoSharingType
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.message.request.SendMessage
@@ -69,11 +72,35 @@ class SendViewModel @Inject constructor(
             is ReceiverAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is ReceiverAction.OnUserSelected -> handleUserSelected(action.user)
             is ReceiverAction.OnSelectDoneButtonClicked -> handleSelectDoneButtonClicked()
-            ReceiverAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
-            ReceiverAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
-            ReceiverAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
-            is ReceiverAction.OnAnonymousProfileSelected -> handleAnonymousProfileSelected(action.profile)
-            ReceiverAction.OnAnonymousProfileModalDismiss -> handleAnonymousProfileDismiss()
+
+            ReceiverAction.OnExitDialogCancelButtonClicked -> {
+                intent {
+                    postSideEffect(ReceiverSideEffect.DismissExitDialog)
+                }
+            }
+            ReceiverAction.OnExitDialogExitButtonClicked -> {
+                intent {
+                    postSideEffect(ReceiverSideEffect.DismissExitDialog)
+                    postSideEffect(ReceiverSideEffect.NavigateToMessage)
+                }
+            }
+            ReceiverAction.OnTopBarNavigateButtonClicked -> {
+                intent {
+                    postSideEffect(ReceiverSideEffect.NavigateUp)
+                }
+            }
+            is ReceiverAction.OnAnonymousProfileSelected -> {
+                handleAnonymousProfileSelected(action.profile)
+                intent {
+                    postSideEffect(ReceiverSideEffect.DismissAnonymousProfileModal)
+                    postSideEffect(ReceiverSideEffect.NavigateToMessageWriteScreen)
+                }
+            }
+            ReceiverAction.OnAnonymousProfileModalDismiss -> {
+                intent {
+                    postSideEffect(ReceiverSideEffect.DismissAnonymousProfileModal)
+                }
+            }
         }
     }
 
@@ -82,21 +109,56 @@ class SendViewModel @Inject constructor(
             is WritingAction.OnWriteScreenEntered -> observeMessageInput()
             is WritingAction.OnMessageChanged -> handleMessageChanged(action.content)
             WritingAction.OnWriteDoneButtonClicked -> handleWriteDoneButtonClicked()
-            WritingAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
-            WritingAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
-            WritingAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
+            WritingAction.OnExitDialogCancelButtonClicked -> {
+                intent {
+                    postSideEffect(WritingSideEffect.DismissExitDialog)
+                }
+            }
+            WritingAction.OnExitDialogExitButtonClicked -> {
+                intent {
+                    postSideEffect(WritingSideEffect.DismissExitDialog)
+                    postSideEffect(WritingSideEffect.NavigateToMessage)
+                }
+            }
+            WritingAction.OnTopBarNavigateButtonClicked -> {
+                intent {
+                    postSideEffect(WritingSideEffect.NavigateUp)
+                }
+            }
         }
     }
 
     fun onAction(action: SendAction) {
         when (action) {
-            is SendAction.OnSendButtonClicked -> handleSendMessage()
+            is SendAction.OnSendButtonClicked -> handleMessageSend()
             SendAction.OnSenderClicked -> handleSenderClicked()
-            SendAction.OnExitDialogCancelButtonClicked -> handleExitDialogCancelButtonClicked()
-            SendAction.OnExitDialogExitButtonClicked -> handleExitButtonClicked()
-            SendAction.OnTopBarNavigateButtonClicked -> handleTopBarNavigateButtonClicked()
-            is SendAction.OnAnonymousProfileSelected -> handleAnonymousProfileSelected(action.profile)
-            SendAction.OnAnonymousProfileModalDismiss -> handleAnonymousProfileDismiss()
+            SendAction.OnExitDialogCancelButtonClicked -> {
+                intent {
+                    postSideEffect(SendSideEffect.DismissExitDialog)
+                }
+            }
+            SendAction.OnExitDialogExitButtonClicked -> {
+                intent {
+                    postSideEffect(SendSideEffect.DismissExitDialog)
+                    postSideEffect(SendSideEffect.NavigateToMessage)
+                }
+            }
+            SendAction.OnTopBarNavigateButtonClicked -> {
+                intent {
+                    postSideEffect(SendSideEffect.NavigateUp)
+                }
+            }
+            is SendAction.OnAnonymousProfileSelected -> {
+                handleAnonymousProfileSelected(action.profile)
+                intent {
+                    postSideEffect(SendSideEffect.DismissAnonymousProfileModal)
+                }
+            }
+            SendAction.OnAnonymousProfileModalDismiss -> {
+                intent {
+                    postSideEffect(SendSideEffect.DismissAnonymousProfileModal)
+                }
+            }
         }
     }
 
@@ -210,7 +272,7 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleWriteDoneButtonClicked() = intent {
-        postSideEffect(MessageSendSideEffect.NavigateToMessageSendScreen)
+        postSideEffect(WritingSideEffect.NavigateToMessageSendScreen)
     }
 
     private fun handleSelectDoneButtonClicked() = intent {
@@ -222,7 +284,7 @@ class SendViewModel @Inject constructor(
                     reduce {
                         state.copy(senderProfileList = it)
                     }
-                    postSideEffect(MessageSendSideEffect.ShowProfileSelectBottomSheet)
+                    postSideEffect(ReceiverSideEffect.ShowProfileSelectBottomSheet)
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
@@ -237,10 +299,10 @@ class SendViewModel @Inject constructor(
         reduce {
             state.copy(senderProfile = senderProfile)
         }
-        postSideEffect(MessageSendSideEffect.DismissProfileSelectBottomSheet)
+        postSideEffect(ReceiverSideEffect.DismissProfileSelectBottomSheet)
 
         if (senderProfile.isNeverTalkBefore()) {
-            postSideEffect(MessageSendSideEffect.NavigateToMessageWriteScreen)
+            postSideEffect(ReceiverSideEffect.NavigateToMessageWriteScreen)
             return@intent
         }
 
@@ -248,21 +310,21 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleProfileBottomSheetClosed() = intent {
-        postSideEffect(MessageSendSideEffect.DismissProfileSelectBottomSheet)
+        postSideEffect(ReceiverSideEffect.DismissProfileSelectBottomSheet)
     }
 
     private fun handleProfileAddButtonClicked() = intent {
-        postSideEffect(MessageSendSideEffect.DismissProfileSelectBottomSheet)
-        postSideEffect(MessageSendSideEffect.ShowAnonymousProfileModal)
+        postSideEffect(ReceiverSideEffect.DismissProfileSelectBottomSheet)
+        postSideEffect(ReceiverSideEffect.ShowAnonymousProfileModal)
     }
 
     private fun handleSenderClicked() = intent {
-        postSideEffect(MessageSendSideEffect.ShowAnonymousProfileModal)
+        postSideEffect(SendSideEffect.ShowAnonymousProfileModal)
     }
 
-    private fun handleSendMessage() = intent {
+    private fun handleMessageSend() = intent {
         reduce { state.copy(isLoading = true) }
-        postSideEffect(MessageSendSideEffect.CloseSendConfirmModal)
+        postSideEffect(SendSideEffect.CloseSendConfirmModal)
 
         viewModelScope.launch {
             messageRepository.postMessage(
@@ -276,27 +338,14 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 trackMessageSendEvent()
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(MessageSendSideEffect.ShowToast(R.string.message_reserve_success))
-                postSideEffect(MessageSendSideEffect.NavigateToMessage)
+                postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
+                postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
                 postSideEffect(exception.toSideEffect())
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
             }
         }
-    }
-
-    private fun handleExitDialogCancelButtonClicked() = intent {
-        postSideEffect(MessageSendSideEffect.DismissExitDialog)
-    }
-
-    private fun handleExitButtonClicked() = intent {
-        postSideEffect(MessageSendSideEffect.DismissExitDialog)
-        postSideEffect(MessageSendSideEffect.NavigateToMessage)
-    }
-
-    private fun handleTopBarNavigateButtonClicked() = intent {
-        postSideEffect(MessageSendSideEffect.NavigateUp)
     }
 
     private fun handleAnonymousProfileSelected(profile: AnonymousProfile) = intent {
@@ -308,11 +357,6 @@ class SendViewModel @Inject constructor(
                 ),
             )
         }
-        postSideEffect(MessageSendSideEffect.DismissAnonymousProfileModal)
-    }
-
-    private fun handleAnonymousProfileDismiss() = intent {
-        postSideEffect(MessageSendSideEffect.DismissAnonymousProfileModal)
     }
 
     private fun trackMessageSendEvent() = intent {

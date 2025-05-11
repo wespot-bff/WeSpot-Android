@@ -40,8 +40,8 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.model.AnonymousProfile
-import com.bff.wespot.message.state.send.MessageSendSideEffect
 import com.bff.wespot.message.state.send.send.SendAction
+import com.bff.wespot.message.state.send.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -81,40 +81,34 @@ fun MessageSendScreen(
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
-        when (it) {
-            MessageSendSideEffect.CloseSendConfirmModal -> {
-                showSendConfirmModal = false
+        if (it is SendSideEffect) {
+            when (it) {
+                SendSideEffect.CloseSendConfirmModal -> {
+                    showSendConfirmModal = false
+                }
+                SendSideEffect.NavigateToMessage -> {
+                    navigator.popUpToMessageScreen()
+                }
+                is SendSideEffect.ShowToast -> {
+                    showToast(
+                        ToastState(
+                            message = it.message,
+                            show = true,
+                            type = WSToastType.Success,
+                        ),
+                    )
+                }
+                SendSideEffect.DismissExitDialog -> {
+                    exitDialog = false
+                }
+                SendSideEffect.NavigateUp -> navigator.navigateUp()
+                SendSideEffect.ShowAnonymousProfileModal -> {
+                    showAnonymousProfileModal = true
+                }
+                SendSideEffect.DismissAnonymousProfileModal -> {
+                    showAnonymousProfileModal = false
+                }
             }
-
-            MessageSendSideEffect.NavigateToMessage -> {
-                navigator.popUpToMessageScreen()
-            }
-
-            is MessageSendSideEffect.ShowToast -> {
-                showToast(
-                    ToastState(
-                        message = it.message,
-                        show = true,
-                        type = WSToastType.Success,
-                    ),
-                )
-            }
-
-            MessageSendSideEffect.DismissExitDialog -> {
-                exitDialog = false
-            }
-
-            MessageSendSideEffect.NavigateUp -> navigator.navigateUp()
-
-            MessageSendSideEffect.ShowAnonymousProfileModal -> {
-                showAnonymousProfileModal = true
-            }
-
-            MessageSendSideEffect.DismissAnonymousProfileModal -> {
-                showAnonymousProfileModal = false
-            }
-
-            else -> { }
         }
     }
 
