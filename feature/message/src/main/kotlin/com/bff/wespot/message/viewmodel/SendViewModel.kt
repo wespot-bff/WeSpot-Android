@@ -259,7 +259,7 @@ class SendViewModel @Inject constructor(
 
     private fun handleSendMessage() = intent {
         reduce { state.copy(isLoading = true) }
-        postSideEffect(SendSideEffect.CloseReserveDialog)
+        postSideEffect(SendSideEffect.CloseSendConfirmModal)
 
         viewModelScope.launch {
             messageRepository.postMessage(

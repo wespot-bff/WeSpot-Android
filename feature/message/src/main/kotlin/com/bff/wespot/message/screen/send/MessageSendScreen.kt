@@ -68,7 +68,7 @@ fun MessageSendScreen(
     viewModel: SendViewModel,
 ) {
     var exitDialog by remember { mutableStateOf(false) }
-    var reserveDialog by remember { mutableStateOf(false) }
+    var showSendConfirmModal by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
 
@@ -82,8 +82,8 @@ fun MessageSendScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            SendSideEffect.CloseReserveDialog -> {
-                reserveDialog = false
+            SendSideEffect.CloseSendConfirmModal -> {
+                showSendConfirmModal = false
             }
 
             SendSideEffect.NavigateToMessage -> {
@@ -146,7 +146,7 @@ fun MessageSendScreen(
             button = {
                 WSButton(
                     onClick = {
-                        reserveDialog = true
+                        showSendConfirmModal = true
                     },
                     text = stringResource(R.string.message_send),
                     content = { it() },
@@ -203,14 +203,14 @@ fun MessageSendScreen(
             )
         }
 
-        if (reserveDialog) {
+        if (showSendConfirmModal) {
             WSDialog(
                 title = stringResource(R.string.message_send_dialog_title),
                 subTitle = stringResource(R.string.message_send_dialog_subtitle),
                 okButtonText = stringResource(R.string.message_send_dialog_button_text),
                 cancelButtonText = stringResource(R.string.cancel),
                 okButtonClick = { action(SendAction.OnSendButtonClicked) },
-                cancelButtonClick = { reserveDialog = false },
+                cancelButtonClick = { showSendConfirmModal = false },
                 onDismissRequest = { },
             )
         }

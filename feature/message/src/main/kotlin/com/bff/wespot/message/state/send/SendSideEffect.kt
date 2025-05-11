@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 
 sealed class SendSideEffect {
     data object NavigateToMessage : SendSideEffect()
-    data object CloseReserveDialog : SendSideEffect()
     data class ShowToast(
         @StringRes val message: Int,
     ) : SendSideEffect()
@@ -14,4 +13,5 @@ sealed class SendSideEffect {
     data object NavigateUp : SendSideEffect()
     data object ShowAnonymousProfileModal : SendSideEffect()
     data object DismissAnonymousProfileModal : SendSideEffect()
+    data object CloseSendConfirmModal : SendSideEffect()
 }
