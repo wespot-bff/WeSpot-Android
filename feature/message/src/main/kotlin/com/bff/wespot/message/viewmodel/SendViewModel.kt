@@ -207,11 +207,9 @@ class SendViewModel @Inject constructor(
             messageRepository.getSenderProfileList(state.selectedUser.id)
                 .onSuccess {
                     reduce {
-                        state.copy(
-                            senderProfileList = it,
-                            showProfileSelectBottomSheet = true,
-                        )
+                        state.copy(senderProfileList = it)
                     }
+                    postSideEffect(SendSideEffect.ShowProfileSelectBottomSheet)
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
@@ -224,11 +222,9 @@ class SendViewModel @Inject constructor(
 
     private fun handleProfileBottomSheetSelected(senderProfile: SenderProfile) = intent {
         reduce {
-            state.copy(
-                showProfileSelectBottomSheet = false,
-                senderProfile = senderProfile,
-            )
+            state.copy(senderProfile = senderProfile)
         }
+        postSideEffect(SendSideEffect.DismissProfileSelectBottomSheet)
 
         if (senderProfile.isNeverTalkBefore()) {
             postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
@@ -239,17 +235,11 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleProfileBottomSheetClosed() = intent {
-        reduce {
-            state.copy(showProfileSelectBottomSheet = false)
-        }
+        postSideEffect(SendSideEffect.DismissProfileSelectBottomSheet)
     }
 
     private fun handleProfileAddButtonClicked() = intent {
-        reduce {
-            state.copy(
-                showProfileSelectBottomSheet = false,
-            )
-        }
+        postSideEffect(SendSideEffect.DismissProfileSelectBottomSheet)
         postSideEffect(SendSideEffect.ShowAnonymousProfileModal)
     }
 

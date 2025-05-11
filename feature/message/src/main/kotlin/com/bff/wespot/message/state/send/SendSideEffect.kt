@@ -13,5 +13,7 @@ sealed class SendSideEffect {
     data object NavigateUp : SendSideEffect()
     data object ShowAnonymousProfileModal : SendSideEffect()
     data object DismissAnonymousProfileModal : SendSideEffect()
+    data object ShowProfileSelectBottomSheet : SendSideEffect()
+    data object DismissProfileSelectBottomSheet : SendSideEffect()
     data object CloseSendConfirmModal : SendSideEffect()
 }

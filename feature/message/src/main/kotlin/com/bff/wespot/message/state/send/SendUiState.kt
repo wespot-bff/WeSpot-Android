@@ -29,5 +29,4 @@ data class SendUiState(
     val senderProfile: SenderProfile = SenderProfile(),
     /** 쪽지 전송 화면 */
     val isLoading: Boolean = false,
-    val showProfileSelectBottomSheet: Boolean = false,
 )

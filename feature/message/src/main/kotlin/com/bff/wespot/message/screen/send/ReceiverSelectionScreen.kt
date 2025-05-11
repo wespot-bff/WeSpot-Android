@@ -84,6 +84,7 @@ fun ReceiverSelectionScreen(
     val context = LocalContext.current
     var dialogState by remember { mutableStateOf(false) }
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
+    var showProfileSelectBottomSheet by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
     val pagingData = state.userList.collectAsLazyPagingItems()
@@ -117,6 +118,14 @@ fun ReceiverSelectionScreen(
 
             SendSideEffect.DismissAnonymousProfileModal -> {
                 showAnonymousProfileModal = false
+            }
+
+            SendSideEffect.ShowProfileSelectBottomSheet -> {
+                showProfileSelectBottomSheet = true
+            }
+
+            SendSideEffect.DismissProfileSelectBottomSheet -> {
+                showProfileSelectBottomSheet = false
             }
 
             else -> {}
@@ -276,7 +285,7 @@ fun ReceiverSelectionScreen(
         )
     }
 
-    if (state.showProfileSelectBottomSheet) {
+    if (showProfileSelectBottomSheet) {
         ProfileSelectBottomSheet(
             profileList = state.senderProfileList,
             closeSheet = {
