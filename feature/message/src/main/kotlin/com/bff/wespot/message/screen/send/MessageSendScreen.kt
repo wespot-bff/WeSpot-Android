@@ -150,8 +150,8 @@ fun MessageSendScreen(
             Column(modifier = Modifier.verticalScroll(scrollState)) {
                 MessageProfileItem(
                     title = stringResource(R.string.receiver),
-                    buttonText = state.selectedUser.toMessageReceiverInfo(),
-                    imageUrl = state.selectedUser.profileCharacter.iconUrl,
+                    buttonText = state.receiver.toMessageReceiverInfo(),
+                    imageUrl = state.receiver.profileCharacter.iconUrl,
                     contentDescription = stringResource(R.string.receiver_profile_image),
                 )
 

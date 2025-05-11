@@ -87,7 +87,7 @@ fun ReceiverSelectionScreen(
     var showProfileSelectBottomSheet by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
-    val pagingData = state.userList.collectAsLazyPagingItems()
+    val pagingData = state.receiverList.collectAsLazyPagingItems()
     val action: (ReceiverAction) -> Unit = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
@@ -159,7 +159,7 @@ fun ReceiverSelectionScreen(
                     onClick = {
                         action(ReceiverAction.OnSelectDoneButtonClicked)
                     },
-                    enabled = state.selectedUser.name.isNotBlank(),
+                    enabled = state.receiver.name.isNotBlank(),
                     text = stringResource(R.string.next),
                     content = { it() },
                 )
@@ -190,7 +190,7 @@ fun ReceiverSelectionScreen(
                 if (
                     pagingData.itemCount == 0 &&
                     state.isInputInitialized &&
-                    state.selectedUser.isInitialized().not()
+                    state.receiver.isInitialized().not()
                 ) {
                     Box(
                         modifier = Modifier
@@ -231,14 +231,14 @@ fun ReceiverSelectionScreen(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
                     /** 선택된 유저는 상위로 고정해야 하며, 처음 선택한 경우에는 고정하지 않는다. */
-                    if (state.selectedUser.isInitialized() && state.isSelectedContext.not()) {
+                    if (state.receiver.isInitialized() && state.isSelectedContext.not()) {
                         item {
                             ReceiverItem(
-                                receiver = state.selectedUser,
+                                receiver = state.receiver,
                                 selected = true,
                                 onClick = {
                                     keyboard?.hide()
-                                    action(ReceiverAction.OnUserSelected(state.selectedUser))
+                                    action(ReceiverAction.OnUserSelected(state.receiver))
                                 },
                             )
                         }
@@ -251,10 +251,10 @@ fun ReceiverSelectionScreen(
                         val item = pagingData[index]
 
                         item?.let {
-                            if (item.id != state.selectedUser.id || state.isSelectedContext) {
+                            if (item.id != state.receiver.id || state.isSelectedContext) {
                                 ReceiverItem(
                                     receiver = item,
-                                    selected = state.selectedUser.id == item.id,
+                                    selected = state.receiver.id == item.id,
                                     onClick = {
                                         keyboard?.hide()
                                         action(ReceiverAction.OnUserSelected(item))

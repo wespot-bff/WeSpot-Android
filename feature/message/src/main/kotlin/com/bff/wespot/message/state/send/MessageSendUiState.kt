@@ -14,19 +14,16 @@ import kotlinx.coroutines.flow.flow
  **/
 
 data class MessageSendUiState(
-    /** 쪽지 수신자 선택 화면 */
     val profile: Profile = Profile(),
     val nameInput: String = "",
     val isInputInitialized: Boolean = false,
     val kakaoContent: KakaoContent = KakaoContent.EMPTY,
     val isSelectedContext: Boolean = false,
-    val userList: Flow<PagingData<User>> = flow { },
-    val selectedUser: User = User(),
-    /** 쪽지 내용 작성 화면 */
+    val receiverList: Flow<PagingData<User>> = flow { },
+    val receiver: User = User(),
     val messageInput: String = "",
     val hasProfanity: Boolean = false,
     val senderProfileList: List<SenderProfile> = listOf(),
     val senderProfile: SenderProfile = SenderProfile(),
-    /** 쪽지 전송 화면 */
     val isLoading: Boolean = false,
 )

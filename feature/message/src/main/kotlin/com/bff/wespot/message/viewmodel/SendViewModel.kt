@@ -55,7 +55,7 @@ class SendViewModel @Inject constructor(
 ) : BaseViewModel(), ContainerHost<MessageSendUiState, MessageSendSideEffect> {
     override val container = container<MessageSendUiState, MessageSendSideEffect>(MessageSendUiState())
 
-    private val nameInput: MutableStateFlow<String> = MutableStateFlow("")
+    private val receiverInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
 
     fun onAction(action: ReceiverAction) {
@@ -164,7 +164,7 @@ class SendViewModel @Inject constructor(
 
     private fun handleSearchContentChanged(content: String) = intent {
         reduce {
-            nameInput.value = content
+            receiverInput.value = content
             state.copy(
                 nameInput = content,
                 isInputInitialized = true,
@@ -175,11 +175,11 @@ class SendViewModel @Inject constructor(
 
     private fun handleUserSelected(user: User) = intent {
         reduce {
-            if (user == state.selectedUser) {
-                state.copy(selectedUser = User())
+            if (user == state.receiver) {
+                state.copy(receiver = User())
             } else {
                 state.copy(
-                    selectedUser = user,
+                    receiver = user,
                     isSelectedContext = true,
                 )
             }
@@ -188,7 +188,7 @@ class SendViewModel @Inject constructor(
 
     private fun observeNameInput() {
         viewModelScope.launch {
-            nameInput
+            receiverInput
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect { name ->
@@ -204,7 +204,7 @@ class SendViewModel @Inject constructor(
             runCatching {
                 val result = userListRepository.fetchResultStream(mapOf("name" to name))
                     .cachedIn(viewModelScope)
-                reduce { state.copy(userList = result) }
+                reduce { state.copy(receiverList = result) }
             }
         }
     }
@@ -279,7 +279,7 @@ class SendViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            messageRepository.getSenderProfileList(state.selectedUser.id)
+            messageRepository.getSenderProfileList(state.receiver.id)
                 .onSuccess {
                     reduce {
                         state.copy(senderProfileList = it)
@@ -314,6 +314,10 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleProfileAddButtonClicked() = intent {
+        reduce {
+            state.copy(senderProfile = SenderProfile())
+        }
+
         postSideEffect(ReceiverSideEffect.DismissProfileSelectBottomSheet)
         postSideEffect(ReceiverSideEffect.ShowAnonymousProfileModal)
     }
@@ -329,7 +333,7 @@ class SendViewModel @Inject constructor(
         viewModelScope.launch {
             messageRepository.postMessage(
                 SendMessage(
-                    receiverId = state.selectedUser.id,
+                    receiverId = state.receiver.id,
                     content = state.messageInput,
                     isAnonymous = state.senderProfile.isAnonymous,
                     anonymousImageUrl = state.senderProfile.image,
@@ -354,6 +358,7 @@ class SendViewModel @Inject constructor(
                 senderProfile = state.senderProfile.copy(
                     name = profile.name,
                     image = profile.imageUrl,
+                    isAnonymous = true,
                 ),
             )
         }
@@ -374,11 +379,11 @@ class SendViewModel @Inject constructor(
         )
     }
 
-    fun clearSendUiState() = intent {
+    fun clearUiState() = intent {
         reduce {
             MessageSendUiState()
         }
-        nameInput.value = ""
+        receiverInput.value = ""
         messageInput.value = ""
     }
 
