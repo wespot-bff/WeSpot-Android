@@ -9,7 +9,7 @@ data class SenderProfileDto(
     val id: Int,
     val name: String,
     val image: String,
-    val recentlyTalk: String,
+    val recentlyTalk: String? = null,
     val myTurnToAnswer: Boolean,
     val isAnonymous: Boolean,
 ) {
@@ -17,7 +17,7 @@ data class SenderProfileDto(
         id = id,
         name = name,
         image = image,
-        recentlyTalk = recentlyTalk.toISOLocalDateTime(),
+        recentlyTalk = recentlyTalk?.toISOLocalDateTime(),
         myTurnToAnswer = myTurnToAnswer,
         isAnonymous = isAnonymous,
     )
