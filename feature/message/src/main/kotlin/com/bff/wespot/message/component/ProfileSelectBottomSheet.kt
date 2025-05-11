@@ -4,9 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,21 +57,19 @@ internal fun ProfileSelectBottomSheet(
                     style = StaticTypeScale.Default.body6,
                     color = WeSpotThemeManager.colors.txtSubColor,
                 )
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                profileList.forEach {
+                    ProfileSheetItem(
+                        profile = it,
+                        onClick = { onProfileSelected(it) },
+                        showToast = showToast,
+                    )
+                }
 
-            profileList.forEach {
-                ProfileSheetItem(
-                    profile = it,
-                    onClick = { onProfileSelected(it) },
-                    showToast = showToast,
-                )
-            }
-
-            if (profileList.size < 4) {
-                ProfileAddSheetItem {
-                    onProfileAddButtonClicked()
+                if (profileList.size < 4) {
+                    ProfileAddSheetItem {
+                        onProfileAddButtonClicked()
+                    }
                 }
             }
         }
@@ -126,7 +122,9 @@ private fun ProfileSheetItem(
             modifier = Modifier
                 .padding(start = 12.dp),
             text = if (profile.myTurnToAnswer) {
-                "최근 " + profile.recentlyTalk?.toStringWithDotSeparator()
+                profile.recentlyTalk?.let {
+                    "최근 " + profile.recentlyTalk?.toStringWithDotSeparator()
+                } ?: ""
             } else {
                 stringResource(R.string.impossible_to_send_message)
             },
