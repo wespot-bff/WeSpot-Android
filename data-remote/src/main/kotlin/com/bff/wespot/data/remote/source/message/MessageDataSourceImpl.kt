@@ -42,7 +42,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             method = HttpMethod.Get
             url {
-                path("api/v2/messages/sender/$receiverId/profiles")
+                path("api/v1/messages/receiver/$receiverId/profiles")
             }
         }
 
