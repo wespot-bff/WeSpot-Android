@@ -1,8 +1,5 @@
 package com.bff.wespot.message.screen.send
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -72,7 +69,6 @@ fun MessageSendScreen(
 ) {
     var exitDialog by remember { mutableStateOf(false) }
     var reserveDialog by remember { mutableStateOf(false) }
-    var timeoutDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
     val state by viewModel.collectAsState()
@@ -81,23 +77,12 @@ fun MessageSendScreen(
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val pickImage =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
-            it?.let {
-                action(SendAction.OnProfileImagePicked(it.toString()))
-            }
-        }
-
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
             SendSideEffect.CloseReserveDialog -> {
                 reserveDialog = false
-            }
-
-            SendSideEffect.ShowTimeoutDialog -> {
-                timeoutDialog = true
             }
 
             SendSideEffect.NavigateToMessage -> {
@@ -119,16 +104,6 @@ fun MessageSendScreen(
             }
 
             SendSideEffect.NavigateUp -> navigator.navigateUp()
-
-            SendSideEffect.OpenPicker -> {
-                pickImage.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                            "image/*",
-                        ),
-                    ),
-                )
-            }
 
             else -> { }
         }
@@ -227,18 +202,6 @@ fun MessageSendScreen(
                 cancelButtonText = stringResource(R.string.cancel),
                 okButtonClick = { action(SendAction.OnSendButtonClicked) },
                 cancelButtonClick = { reserveDialog = false },
-                onDismissRequest = { },
-            )
-        }
-
-        if (timeoutDialog) {
-            WSDialog(
-                title = stringResource(R.string.timeout_dialog_title),
-                subTitle = state.messageSendFailedDialogContent,
-                okButtonText = stringResource(R.string.positive_answer),
-                cancelButtonText = stringResource(R.string.close),
-                okButtonClick = navigator::popUpToMessageScreen,
-                cancelButtonClick = { timeoutDialog = false },
                 onDismissRequest = { },
             )
         }

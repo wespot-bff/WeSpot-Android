@@ -8,6 +8,7 @@ sealed class SendAction {
     data object OnReceiverScreenEntered : SendAction()
     data class OnSearchContentChanged(val content: String) : SendAction()
     data class OnUserSelected(val user: User) : SendAction()
+    data object OnSelectDoneButtonClicked : SendAction()
 
     /** 쪽지 내용 작성 화면 */
     data object OnWriteScreenEntered : SendAction()

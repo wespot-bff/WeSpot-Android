@@ -29,7 +29,6 @@ data class SendUiState(
     val senderProfile: SenderProfile = SenderProfile(),
     /** 쪽지 전송 화면 */
     val isLoading: Boolean = false,
-    val messageSendFailedDialogContent: String = "",
     val showProfileSelectBottomSheet: Boolean = false,
     val showProfileImageOptionBottomSheet: Boolean = false,
     val showProfileCreatorModal: Boolean = false,

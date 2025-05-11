@@ -4,6 +4,6 @@ data class SendMessage(
     val receiverId: Int,
     val content: String,
     val isAnonymous: Boolean,
-    val imageUrl: String,
-    val name: String,
+    val anonymousImageUrl: String,
+    val anonymousProfileName: String,
 )

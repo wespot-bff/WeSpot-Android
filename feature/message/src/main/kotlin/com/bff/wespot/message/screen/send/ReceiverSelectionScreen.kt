@@ -1,5 +1,8 @@
 package com.bff.wespot.message.screen.send
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -43,6 +46,7 @@ import com.bff.wespot.designsystem.theme.Gray300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
+import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.state.send.SendSideEffect
@@ -51,8 +55,10 @@ import com.bff.wespot.model.common.KakaoContent
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.BottomButtonLayout
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSListItem
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -72,6 +78,7 @@ fun ReceiverSelectionScreen(
     activityNavigator: Navigator,
     navigator: ReceiverSelectionNavigator,
     viewModel: SendViewModel,
+    showToast: (ToastState) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -84,6 +91,13 @@ fun ReceiverSelectionScreen(
     val action = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+
+    val pickImage =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {
+            it?.let {
+                action(SendAction.OnProfileImagePicked(it.toString()))
+            }
+        }
 
     handleSideEffect(viewModel.sideEffect)
 
@@ -100,6 +114,20 @@ fun ReceiverSelectionScreen(
             }
 
             SendSideEffect.NavigateUp -> navigator.navigateUp()
+
+            SendSideEffect.NavigateToMessageWriteScreen -> {
+                navigator.navigateMessageWriteScreen()
+            }
+
+            SendSideEffect.OpenPicker -> {
+                pickImage.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                            "image/*",
+                        ),
+                    ),
+                )
+            }
 
             else -> { }
         }
@@ -136,7 +164,7 @@ fun ReceiverSelectionScreen(
             button = {
                 WSButton(
                     onClick = {
-                        navigator.navigateMessageWriteScreen()
+                        action(SendAction.OnSelectDoneButtonClicked)
                     },
                     enabled = state.selectedUser.name.isNotBlank(),
                     text = stringResource(R.string.next),
@@ -256,6 +284,33 @@ fun ReceiverSelectionScreen(
                 action(SendAction.OnExitDialogCancelButtonClicked)
             },
         )
+    }
+
+    if (state.showProfileSelectBottomSheet) {
+        ProfileSelectBottomSheet(
+            profileList = state.senderProfileList,
+            closeSheet = {
+                action(SendAction.OnProfileBottomSheetClosed)
+            },
+            onProfileAddButtonClicked = {
+                action(SendAction.OnProfileAddButtonClicked)
+            },
+            onProfileSelected = {
+                action(SendAction.OnProfileBottomSheetSelected(it))
+            },
+            showToast = showToast,
+        )
+    }
+
+    if (state.showProfileCreatorModal) {
+        ProfileCreatorModal(
+            state = state,
+            action = action,
+        )
+    }
+
+    if (state.isLoading) {
+        LoadingAnimation()
     }
 
     NetworkDialog(context = context, networkState = networkState)

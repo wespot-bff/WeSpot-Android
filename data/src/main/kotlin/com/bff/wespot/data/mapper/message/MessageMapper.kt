@@ -10,8 +10,8 @@ internal fun SendMessage.toDto(): SendMessageDto = SendMessageDto(
     receiverId = receiverId,
     content = content,
     isAnonymous = isAnonymous,
-    imageUrl = imageUrl,
-    name = name,
+    anonymousImageUrl = anonymousImageUrl,
+    anonymousProfileName = anonymousProfileName,
 )
 
 internal fun ReceivedMessageListDto.toEntity(

@@ -63,6 +63,7 @@ class SendViewModel @Inject constructor(
             }
             is SendAction.OnSearchContentChanged -> handleSearchContentChanged(action.content)
             is SendAction.OnUserSelected -> handleUserSelected(action.user)
+            is SendAction.OnSelectDoneButtonClicked -> handleSelectDoneButtonClicked()
 
             /** 쪽지 내용 작성 화면 */
             is SendAction.OnWriteScreenEntered -> observeMessageInput()
@@ -231,6 +232,10 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleWriteDoneButtonClicked() = intent {
+        postSideEffect(SendSideEffect.NavigateToMessageSendScreen)
+    }
+
+    private fun handleSelectDoneButtonClicked() = intent {
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
@@ -261,7 +266,7 @@ class SendViewModel @Inject constructor(
         }
 
         if (senderProfile.isNeverTalkBefore()) {
-            postSideEffect(SendSideEffect.NavigateToMessageSendScreen)
+            postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
             return@intent
         }
 
@@ -325,7 +330,7 @@ class SendViewModel @Inject constructor(
                 senderProfile = senderProfile,
             )
         }
-        postSideEffect(SendSideEffect.NavigateToMessageSendScreen)
+        postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
     }
 
     private fun handlePickerOpenOptionClicked() = intent {
@@ -360,8 +365,8 @@ class SendViewModel @Inject constructor(
                     receiverId = state.selectedUser.id,
                     content = state.messageInput,
                     isAnonymous = state.senderProfile.isAnonymous,
-                    imageUrl = state.senderProfile.image,
-                    name = state.senderProfile.name,
+                    anonymousImageUrl = state.senderProfile.image,
+                    anonymousProfileName = state.senderProfile.name,
                 ),
             ).onSuccess {
                 trackMessageSendEvent()
@@ -369,12 +374,7 @@ class SendViewModel @Inject constructor(
                 postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
-                if (exception.status == 400) {
-                    reduce { state.copy(messageSendFailedDialogContent = exception.detail) }
-                    postSideEffect(SendSideEffect.ShowTimeoutDialog)
-                } else {
-                    postSideEffect(exception.toSideEffect())
-                }
+                postSideEffect(exception.toSideEffect())
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
             }
