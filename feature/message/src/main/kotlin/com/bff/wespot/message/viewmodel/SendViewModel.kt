@@ -60,6 +60,9 @@ class SendViewModel @Inject constructor(
     private val receiverInput: MutableStateFlow<String> = MutableStateFlow("")
     private val messageInput: MutableStateFlow<String> = MutableStateFlow("")
 
+    /**
+     * 쪽지 수신자 선택 화면 Action
+     */
     fun onAction(action: ReceiverAction) {
         when (action) {
             is ReceiverAction.OnReceiverScreenEntered -> {
@@ -106,6 +109,9 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 쪽지 내용 작성 화면 Action
+     */
     fun onAction(action: WritingAction) {
         when (action) {
             is WritingAction.OnWriteScreenEntered -> observeMessageInput()
@@ -130,6 +136,9 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 쪽지 전송 화면 Action
+     */
     fun onAction(action: SendAction) {
         when (action) {
             is SendAction.OnSendButtonClicked -> handleMessageSend()
@@ -343,12 +352,18 @@ class SendViewModel @Inject constructor(
         postSideEffect(SendSideEffect.CloseSendConfirmModal)
 
         viewModelScope.launch {
-            val imageUrl = uploadAndGetImageUrl(profilePath = state.senderProfile.image)
-                .getOrElse { exception ->
-                    Timber.d(exception)
-                    postSideEffect(SideEffect.toToastEffect())
-                    return@launch
-                }
+            val imagePath = state.senderProfile.image
+            val imageUrl = if (imagePath.isBlank() || imagePath.startsWith("http")) {
+                imagePath
+            } else {
+                uploadAndGetImageUrl(profilePath = imagePath)
+                    .getOrElse { exception ->
+                        Timber.d(exception)
+                        postSideEffect(SideEffect.toToastEffect())
+                        reduce { state.copy(isLoading = false) }
+                        return@launch
+                    }
+            }
 
             messageRepository.postMessage(
                 SendMessage(
