@@ -73,7 +73,10 @@ fun MessageHomeScreen(
         if (state.messageStatus.countRemainingMessages > 0) {
             MessageCard(
                 canSendMessage = !restricted.restricted,
-                title = state.homeTitle,
+                title = state.homeTitle ?: stringResource(
+                    R.string.message_card_title_ready_to_send,
+                    state.profile.name,
+                ),
                 buttonText = stringResource(R.string.message_card_button_text),
                 imageRes = R.raw.message_evening,
                 content = {

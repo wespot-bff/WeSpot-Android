@@ -96,7 +96,7 @@ class MessageViewModel @Inject constructor(
 
     private fun getMessageHomeTitle() = intent {
         viewModelScope.launch {
-            val homeTitle = messageRepository.getMessageHomeTitle() ?: return@launch
+            val homeTitle = messageRepository.getMessageHomeTitle()
             reduce {
                 state.copy(homeTitle = homeTitle)
             }
