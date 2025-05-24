@@ -12,4 +12,6 @@ interface MessageRepository {
     suspend fun editMessage(messageId: Int, writtenMessage: WrittenMessage): Result<Unit>
 
     suspend fun getMessage(messageId: Int): Result<Message>
+
+    suspend fun getMessageHomeTitle(): String?
 }

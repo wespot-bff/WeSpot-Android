@@ -10,4 +10,6 @@ object DataStoreKey {
     const val VERSION_LAST_CHECKED = "version_last_checked"
     const val NAME = "name"
     const val ID = "id"
+    const val MESSAGE_HOME_TITLE = "message_home_title"
+    const val MESSAGE_HOME_TITLE_CACHED_TIME = "message_home_title_cached_time"
 }
