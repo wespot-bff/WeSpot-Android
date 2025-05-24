@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -101,6 +102,13 @@ fun MessageHomeScreen(
 
     LaunchedEffect(Unit) {
         action(MessageAction.OnMessageHomeScreenEntered)
+    }
+
+    LifecycleStartEffect(Unit) {
+        action(MessageAction.OnLifecycleStart)
+        onStopOrDispose {
+            action(MessageAction.OnLifecycleStop)
+        }
     }
 }
 
