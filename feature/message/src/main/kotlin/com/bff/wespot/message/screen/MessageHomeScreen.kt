@@ -1,5 +1,6 @@
 package com.bff.wespot.message.screen
 
+import androidx.annotation.RawRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
@@ -64,20 +65,15 @@ fun MessageHomeScreen(
     handleSideEffect(viewModel.sideEffect)
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (state.messageStatus.countUnReadMessages > 0) {
-            ReceivedMessageBanner(
-                visible = state.messageStatus.hasUnReadMessages(),
-                onBannerClick = navigateToMessageStorageScreen,
-            )
-        }
+        ReplyMessageBanner(
+            visible = state.messageStatus.shouldShowReplyBanner(),
+            onBannerClick = navigateToMessageStorageScreen,
+        )
 
         if (state.messageStatus.countRemainingMessages > 0) {
             MessageCard(
                 canSendMessage = !restricted.restricted,
-                title = stringResource(
-                    R.string.message_card_title_ready_to_send,
-                    state.profile.name,
-                ),
+                title = state.homeTitle,
                 buttonText = stringResource(R.string.message_card_button_text),
                 imageRes = R.raw.message_evening,
                 content = {
@@ -110,7 +106,7 @@ private fun MessageCard(
     canSendMessage: Boolean,
     title: String,
     buttonText: String,
-    @androidx.annotation.RawRes imageRes: Int,
+    @RawRes imageRes: Int,
     onButtonClick: () -> Unit = { },
     content: @Composable () -> Unit,
 ) {
@@ -159,7 +155,7 @@ private fun MessageCard(
 }
 
 @Composable
-private fun ReceivedMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
+private fun ReplyMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
@@ -247,7 +243,7 @@ private fun RemainingMessageCounter(count: Int) {
 
 @Composable
 private fun MessageLottieAnimation(
-    @androidx.annotation.RawRes imageRes: Int,
+    @RawRes imageRes: Int,
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(imageRes))
     val progress by animateLottieCompositionAsState(composition)

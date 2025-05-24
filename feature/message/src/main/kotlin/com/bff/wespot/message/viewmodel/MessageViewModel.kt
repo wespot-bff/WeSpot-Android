@@ -58,6 +58,7 @@ class MessageViewModel @Inject constructor(
             MessageAction.OnMessageHomeScreenEntered -> {
                 observeProfileFlow()
                 getMessageStatus()
+                getMessageHomeTitle()
             }
         }
     }
@@ -90,6 +91,15 @@ class MessageViewModel @Inject constructor(
                 }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
+        }
+    }
+
+    private fun getMessageHomeTitle() = intent {
+        viewModelScope.launch {
+            val homeTitle = messageRepository.getMessageHomeTitle() ?: return@launch
+            reduce {
+                state.copy(homeTitle = homeTitle)
+            }
         }
     }
 
