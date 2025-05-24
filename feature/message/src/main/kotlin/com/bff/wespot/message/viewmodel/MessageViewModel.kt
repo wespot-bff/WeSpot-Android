@@ -91,6 +91,8 @@ class MessageViewModel @Inject constructor(
                     /** 작성할 수 있는 쪽지가 없는 경우, 타이머를 노출한다. */
                     if (messageStatus.countRemainingMessages <= 0) {
                         startTimer()
+                    } else {
+                        checkAndCancelTimer()
                     }
 
                     reduce {
