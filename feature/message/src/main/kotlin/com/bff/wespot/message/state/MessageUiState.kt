@@ -7,5 +7,5 @@ data class MessageUiState(
     val messageStatus: MessageStatus = MessageStatus(),
     val profile: Profile = Profile(),
     val isLoading: Boolean = false,
-    val homeTitle: String? = null,
+    val homeTitle: String = "",
 )
