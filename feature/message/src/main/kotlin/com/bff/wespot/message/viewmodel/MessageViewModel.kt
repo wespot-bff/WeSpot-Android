@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
+import com.bff.wespot.domain.usecase.GetMessageHomeTitleUseCase
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.state.MessageUiState
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class MessageViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val profileRepository: ProfileRepository,
+    private val getMessageHomeTitle: GetMessageHomeTitleUseCase,
 ) : BaseViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
     override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
 
@@ -102,7 +104,7 @@ class MessageViewModel @Inject constructor(
 
     private fun getMessageHomeTitle() = intent {
         viewModelScope.launch {
-            val homeTitle = messageRepository.getMessageHomeTitle()
+            val homeTitle = getMessageHomeTitle.invoke()
             reduce {
                 state.copy(homeTitle = homeTitle)
             }
