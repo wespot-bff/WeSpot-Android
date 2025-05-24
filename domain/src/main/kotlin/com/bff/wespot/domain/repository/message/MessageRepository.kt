@@ -13,4 +13,6 @@ interface MessageRepository {
     suspend fun getMessageStatus(): Result<MessageStatus>
 
     suspend fun getMessage(messageId: Int): Result<Message>
+
+    suspend fun getMessageHomeTitle(): String?
 }

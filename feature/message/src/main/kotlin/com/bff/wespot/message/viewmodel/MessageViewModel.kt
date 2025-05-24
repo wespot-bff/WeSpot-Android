@@ -58,6 +58,13 @@ class MessageViewModel @Inject constructor(
             MessageAction.OnMessageHomeScreenEntered -> {
                 observeProfileFlow()
                 getMessageStatus()
+                getMessageHomeTitle()
+            }
+            MessageAction.OnLifecycleStart -> {
+                checkAndStartTimer()
+            }
+            MessageAction.OnLifecycleStop -> {
+                checkAndCancelTimer()
             }
         }
     }
@@ -93,10 +100,31 @@ class MessageViewModel @Inject constructor(
         }
     }
 
+    private fun getMessageHomeTitle() = intent {
+        viewModelScope.launch {
+            val homeTitle = messageRepository.getMessageHomeTitle()
+            reduce {
+                state.copy(homeTitle = homeTitle)
+            }
+        }
+    }
+
     private fun startTimer() = intent {
         if (!timerJob.isActive) {
             _remainingTimeMillis.value = getRemainingTimeMillis()
             timerJob.start()
+        }
+    }
+
+    private fun checkAndStartTimer() = intent {
+        if (state.messageStatus.countRemainingMessages <= 0) {
+            startTimer()
+        }
+    }
+
+    private fun checkAndCancelTimer() = intent {
+        if (timerJob.isActive) {
+            timerJob.cancel()
         }
     }
 
