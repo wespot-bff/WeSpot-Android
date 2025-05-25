@@ -4,9 +4,9 @@ import com.bff.wespot.data.mapper.message.toWrittenMessageDto
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.model.message.request.WrittenMessage
-import com.bff.wespot.model.message.response.MessageStatus
-import com.bff.wespot.model.message.response.MessageHomeTitle
 import com.bff.wespot.model.message.response.MessageDetail
+import com.bff.wespot.model.message.response.MessageHomeTitle
+import com.bff.wespot.model.message.response.MessageStatus
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
