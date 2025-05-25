@@ -1,10 +1,11 @@
 package com.bff.wespot.data.repository.message
 
 import com.bff.wespot.data.mapper.message.toWrittenMessageDto
+import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.model.message.request.WrittenMessage
 import com.bff.wespot.model.message.response.MessageStatus
-import com.bff.wespot.data.remote.source.message.MessageDataSource
+import com.bff.wespot.model.message.response.MessageHomeTitle
 import com.bff.wespot.model.message.response.MessageDetail
 import javax.inject.Inject
 
@@ -29,5 +30,10 @@ class MessageRepositoryImpl @Inject constructor(
     override suspend fun getMessage(messageId: Int): Result<MessageDetail> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
             messageDto.toMessageDetail()
+        }
+
+    override suspend fun getMessageHomeTitle(): Result<MessageHomeTitle> =
+        messageDataSource.getMessageHomeTitle().mapCatching {
+            it.toMessageHomeTitle()
         }
 }

@@ -8,10 +8,12 @@ data class MessageStatusDto (
     val isSendAllowed: Boolean,
     val countRemainingMessages: Int,
     val countUnReadMessages: Int,
+    val countUnReplayMessages: Int,
 ) {
     fun toMessageStatus() = MessageStatus(
         isSendAllowed = isSendAllowed,
         countRemainingMessages = countRemainingMessages,
         countUnReadMessages = countUnReadMessages,
+        countUnReplayMessages = countUnReplayMessages,
     )
 }

@@ -3,6 +3,7 @@ package com.bff.wespot.data.remote.source.message
 import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
+import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 
@@ -16,4 +17,6 @@ interface MessageDataSource {
     suspend fun getMessage(messageId: Int): Result<MessageDetailDto>
 
     suspend fun getBlockedMessage(cursorId: Int?): Result<BlockedMessageListDto>
+
+    suspend fun getMessageHomeTitle(): Result<MessageHomeTitleDto>
 }
