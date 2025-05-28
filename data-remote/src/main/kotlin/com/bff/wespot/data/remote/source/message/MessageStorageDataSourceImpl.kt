@@ -1,6 +1,6 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.response.MessageListDto
+import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
@@ -10,11 +10,19 @@ import javax.inject.Inject
 class MessageStorageDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
 ) : MessageStorageDataSource {
-    override suspend fun getMessageList(lastCursorId: Int?): Result<MessageListDto> =
+    override suspend fun getMessageList(): Result<List<MessageDto>> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
                 path("api/v2/messages")
+            }
+        }
+
+    override suspend fun getBookmarkedMessageList(): Result<List<MessageDto>> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v2/messages/bookmarks")
             }
         }
 
@@ -28,7 +36,7 @@ class MessageStorageDataSourceImpl @Inject constructor(
 
     override suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit> =
         httpClient.safeRequest {
-            method = HttpMethod.Post
+            method = HttpMethod.Patch
             url {
                 path("api/v2/messages/$messageId/bookmark")
             }
