@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -26,22 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
-import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.MessageItem
-import com.bff.wespot.message.component.MessageItemType
-import com.bff.wespot.message.model.MessageOptionType
-import com.bff.wespot.message.screen.MessageReportScreen
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
@@ -73,14 +62,13 @@ fun MessageStorageScreen(
         ),
         WSChipGroupType.WSIconChipItem(
             label = stringResource(R.string.favories),
-            icon = ImageVector.vectorResource(id = R.drawable.favorites_chip),
+            icon = ImageVector.vectorResource(id = R.drawable.bookmark_chip),
         ),
     )
 
     var selectedChipIndex by remember { mutableIntStateOf(0) }
     var showOptionBottomSheet by remember { mutableStateOf(false) }
-    var showOptionDialog by remember { mutableStateOf(false) }
-    var showMessageReportScreen by remember { mutableStateOf(false) }
+    var showBlockDialog by remember { mutableStateOf(false) }
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -96,28 +84,24 @@ fun MessageStorageScreen(
                 showToast(it.toastState)
             }
 
-            is StorageSideEffect.ShowReportMessageScreen -> {
-                showMessageReportScreen = true
-            }
-
             is StorageSideEffect.ShowOptionBottomSheet -> {
                 showOptionBottomSheet = true
             }
 
-            is StorageSideEffect.ShowOptionDialog -> {
-                showOptionDialog = true
+            is StorageSideEffect.ShowBlockDialog -> {
+                showBlockDialog = true
             }
 
             is StorageSideEffect.CloseOptionBottomSheet -> {
                 showOptionBottomSheet = false
             }
 
-            is StorageSideEffect.CloseOptionDialog -> {
-                showOptionDialog = false
+            is StorageSideEffect.CloseBlockDialog -> {
+                showBlockDialog = false
             }
 
-            is StorageSideEffect.CloseReportMessageScreen -> {
-                showMessageReportScreen = false
+            is StorageSideEffect.NavigateToMessageRoom -> {
+                // TODO Navigate to Message Room
             }
         }
     }
@@ -130,16 +114,12 @@ fun MessageStorageScreen(
         )
 
         MessageStorageContent(
-            data = state.messageList.collectAsLazyPagingItems(),
-            showToast = showToast,
+            data = state.messageList,
             itemClick = { item ->
                 action(StorageAction.OnMessageClicked(message = item))
             },
-            optionButtonClick = { messageId ->
-                action(StorageAction.OnOptionButtonClicked(messageId = messageId))
-            },
-            bookmarkedButtonClick = { messageId ->
-                action(StorageAction.OnBookmarkButtonClicked(messageId = messageId))
+            optionButtonClick = { message ->
+                action(StorageAction.OnOptionButtonClicked(message = message))
             },
         )
     }
@@ -153,65 +133,36 @@ fun MessageStorageScreen(
                     .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 32.dp),
             ) {
                 BottomSheetText(
-                    text = stringResource(R.string.delete),
+                    text = stringResource(R.string.do_block),
                     onClick = {
-                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.DELETE))
+                        action(StorageAction.OnBlockBottomSheetItemClicked)
                     },
                 )
 
                 BottomSheetText(
-                    text = stringResource(R.string.report_title),
-                    onClick = {
-                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.REPORT))
+                    text = if (state.optionButtonClickedMessage.isBookmarked) {
+                        stringResource(R.string.undo_bookmark)
+                    } else {
+                        stringResource(R.string.do_bookmark)
                     },
-                )
-
-                BottomSheetText(
-                    text = stringResource(R.string.block),
-                    showDivider = false,
                     onClick = {
-                        action(StorageAction.OnOptionBottomSheetClicked(MessageOptionType.BLOCK))
+                        action(StorageAction.OnBookmarkBottomSheetItemClicked)
                     },
                 )
             }
         }
     }
 
-    if (showOptionDialog) {
+    if (showBlockDialog) {
         WSDialog(
-            title = state.messageOptionType.title,
-            subTitle = state.messageOptionType.subTitle,
-            okButtonText = state.messageOptionType.okButtonText,
-            cancelButtonText = state.messageOptionType.cancelButtonText,
-            okButtonClick = {
-                when (state.messageOptionType) {
-                    MessageOptionType.DELETE -> {
-                        action(StorageAction.OnMessageDeleteButtonClicked)
-                    }
-                    MessageOptionType.BLOCK -> {
-                        action(StorageAction.OnMessageBlockButtonClicked)
-                    }
-                    MessageOptionType.REPORT -> {
-                        action(StorageAction.OnMessageReportButtonClicked)
-                    }
-                }
-            },
-            onDismissRequest = { action(StorageAction.OnOptionDialogClosed) },
-            cancelButtonClick = { action(StorageAction.OnOptionDialogClosed) },
+            title = stringResource(id = R.string.message_block_dialog_title),
+            subTitle = stringResource(id = R.string.message_block_dialog_subtitle),
+            okButtonText = stringResource(id = R.string.message_block_dialog_ok_button),
+            cancelButtonText = stringResource(id = R.string.close),
+            okButtonClick = { action(StorageAction.OnBlockButtonClicked) },
+            onDismissRequest = { action(StorageAction.OnBlockDialogClosed) },
+            cancelButtonClick = { action(StorageAction.OnBlockDialogClosed) },
         )
-    }
-
-    if (showMessageReportScreen) {
-        Dialog(
-            onDismissRequest = { },
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-        ) {
-            MessageReportScreen(
-                messageId = state.optionButtonClickedMessageId,
-                showToast = showToast,
-                onDismiss = { action(StorageAction.OnMessageReportScreenClosed) },
-            )
-        }
     }
 
     if (state.isLoading) {
@@ -241,67 +192,36 @@ fun MessageStorageScreen(
 
 @Composable
 internal fun MessageStorageContent(
-    data: LazyPagingItems<Message>,
+    data: List<Message>,
     itemClick: (Message) -> Unit,
-    optionButtonClick: (Int) -> Unit,
-    bookmarkedButtonClick: (Int) -> Unit,
-    showToast: (ToastState) -> Unit,
+    optionButtonClick: (Message) -> Unit,
 ) {
-    when (data.loadState.refresh) {
-        is LoadState.Error -> {
-            showToast(
-                ToastState(
-                    show = true,
-                    message = R.string.load_message_error_message,
-                    type = WSToastType.Error,
-                ),
-            )
-        }
+    if (data.isEmpty()) {
+        EmptyMessageScreen()
+    }
 
-        is LoadState.Loading -> {
-            LoadingAnimation()
-        }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            data.size,
+            key = { index -> data[index].id },
+        ) { index ->
+            val item = data[index]
 
-        else -> {
-            if (data.itemCount == 0) {
-                EmptyMessageScreen()
-            }
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(
-                    data.itemCount,
-                    key = data.itemKey { it.id },
-                ) { index ->
-                    val item = data[index]
-
-                    item?.let { message ->
-                        MessageItem(
-                            message = message,
-                            messageItemType = when {
-                                message.isBlocked -> MessageItemType.Blocked
-                                message.isReported -> MessageItemType.Reported
-                                message.isEver -> MessageItemType.Ever
-                                else -> MessageItemType.Normal(item.isBookmarked)
-                            },
-                            itemClick = {
-                                itemClick(message)
-                            },
-                            optionButtonClick = {
-                                optionButtonClick(message.id)
-                            },
-                            favoritesButtonClick = {
-                                bookmarkedButtonClick(message.id)
-                            },
-                        )
-                    }
-                }
+            item.let { message ->
+                MessageItem(
+                    message = message,
+                    itemClick = {
+                        itemClick(message)
+                    },
+                    optionButtonClick = {
+                        optionButtonClick(message)
+                    },
+                )
             }
         }
     }
