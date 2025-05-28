@@ -1,9 +1,11 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.response.MessageListDto
+import com.bff.wespot.data.remote.model.message.response.MessageDto
 
 interface MessageStorageDataSource {
-    suspend fun getMessageList(lastCursorId: Int?): Result<MessageListDto>
+    suspend fun getMessageList(): Result<List<MessageDto>>
+
+    suspend fun getBookmarkedMessageList(): Result<List<MessageDto>>
 
     suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
 
