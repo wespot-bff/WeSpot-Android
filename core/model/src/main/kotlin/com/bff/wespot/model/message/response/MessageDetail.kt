@@ -15,7 +15,6 @@ data class MessageDetail(
     val receivedAt: LocalDateTime? = null,
     val isRead: Boolean = false,
     val readAt: LocalDateTime? = null,
-    val isReported: Boolean = false,
     val isBlocked: Boolean = false,
     val isAnonymous: Boolean = false,
     val isFavorites: Boolean = false,
