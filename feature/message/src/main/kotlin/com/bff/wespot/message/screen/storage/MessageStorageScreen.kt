@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.message.R
+import com.bff.wespot.message.common.BOOKMARKED_MESSAGE_INDEX
 import com.bff.wespot.message.component.MessageItem
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
@@ -113,15 +114,19 @@ fun MessageStorageScreen(
             onSelectedChanged = { index -> selectedChipIndex = index },
         )
 
-        MessageStorageContent(
-            data = state.messageList,
-            itemClick = { item ->
-                action(StorageAction.OnMessageClicked(message = item))
-            },
-            optionButtonClick = { message ->
-                action(StorageAction.OnOptionButtonClicked(message = message))
-            },
-        )
+        if (selectedChipIndex == BOOKMARKED_MESSAGE_INDEX && state.showEmptyBookmarkScreen) {
+            EmptyBookmarkScreen()
+        } else {
+            MessageStorageContent(
+                data = state.messageList,
+                itemClick = { item ->
+                    action(StorageAction.OnMessageClicked(message = item))
+                },
+                optionButtonClick = { message ->
+                    action(StorageAction.OnOptionButtonClicked(message = message))
+                },
+            )
+        }
     }
 
     if (showOptionBottomSheet) {
@@ -196,10 +201,6 @@ internal fun MessageStorageContent(
     itemClick: (Message) -> Unit,
     optionButtonClick: (Message) -> Unit,
 ) {
-    if (data.isEmpty()) {
-        EmptyMessageScreen()
-    }
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
