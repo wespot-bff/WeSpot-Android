@@ -1,14 +1,14 @@
 package com.bff.wespot.message.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,141 +35,140 @@ import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
 internal fun MessageItem(
-    messageItemType: MessageItemType,
     message: Message,
     itemClick: () -> Unit,
     optionButtonClick: () -> Unit,
-    favoritesButtonClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
-            .clip(WeSpotThemeManager.shapes.medium)
-            .size(width = 160.dp, height = 170.dp)
+            .clip(RoundedCornerShape(16.0.dp))
+            .fillMaxWidth()
             .background(WeSpotThemeManager.colors.cardBackgroundColor)
-            .clickable { itemClick() },
+            .clickableSingle { itemClick() },
     ) {
-        /** 에버 쪽지의 경우, 삭제를 막기 위해 옵션 버튼을 노출하지 않는다. */
-        if (messageItemType !is MessageItemType.Ever) {
+        if (message.isExistsUnreadMessage) {
+            RedDot(
+                modifier = Modifier
+                    .zIndex(1f)
+                    .padding(top = 14.dp, start = 14.dp),
+                size = 8.dp,
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            MessageUserItem(
+                imageUrl = message.senderProfile.iconUrl,
+                type = stringResource(R.string.me),
+                name = message.senderProfile.toDescription(),
+                isBookmarked = false,
+            )
+
             Icon(
                 modifier = Modifier
-                    .padding(top = 4.dp, end = 4.dp)
-                    .align(Alignment.TopEnd)
-                    .clickableSingle { optionButtonClick() },
+                    .padding(start = 8.dp),
+                imageVector = ImageVector.vectorResource(id = R.drawable.message_room_arrow),
+                tint = WeSpotThemeManager.colors.primaryColor,
+                contentDescription = "Message Room Arrow",
+            )
+
+            MessageUserItem(
+                imageUrl = message.receiverProfile.iconUrl,
+                type = if (message.receiverProfile.isAnonymous) {
+                    stringResource(R.string.anonymous)
+                } else {
+                    stringResource(R.string.real_name)
+                },
+                name = message.receiverProfile.toDescription(),
+                isBookmarked = message.isBookmarked,
+            )
+        }
+
+        /** 에버 쪽지의 경우, 삭제를 막기 위해 옵션 버튼을 노출하지 않는다. */
+        if (!message.isEver) {
+            Icon(
+                modifier = Modifier
+                    .clickableSingle { optionButtonClick() }
+                    .padding(top = 14.dp, end = 16.dp)
+                    .align(Alignment.TopEnd),
                 imageVector = ImageVector.vectorResource(id = R.drawable.option),
                 tint = Gray300,
                 contentDescription = stringResource(id = R.string.option_button),
             )
         }
 
-        if (messageItemType is MessageItemType.Normal) {
-            Icon(
+        message.latestChatTime?.let {
+            Text(
                 modifier = Modifier
-                    .padding(bottom = 8.dp, end = 8.dp)
                     .align(Alignment.BottomEnd)
-                    .clickableSingle { favoritesButtonClick() },
-                imageVector = ImageVector.vectorResource(
-                    if (messageItemType.isFavorites) {
-                        R.drawable.favorites
-                    } else {
-                        R.drawable.unselected_favorites
-                    },
-                ),
-                tint = Gray300,
-                contentDescription = stringResource(id = R.string.favorites_button),
+                    .padding(bottom = 16.dp, end = 14.dp),
+                text = it.toStringWithDotSeparator(),
+                style = StaticTypeScale.Default.body9,
+                color = WeSpotThemeManager.colors.txtSubColor,
             )
-        }
-
-        Column(
-            modifier = Modifier.padding(top = 18.dp, bottom = 12.dp, start = 14.dp, end = 14.dp),
-        ) {
-            Box(
-                modifier = Modifier.size(50.dp),
-            ) {
-                if (message.isExistsUnreadMessage.not()) {
-                    RedDot(
-                        modifier = Modifier
-                            .padding(top = 2.dp, end = 2.dp)
-                            .align(Alignment.TopEnd)
-                            .zIndex(1f),
-                        size = 4.dp,
-                    )
-                }
-
-                when (messageItemType) {
-                    MessageItemType.Reported, MessageItemType.Blocked -> {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .align(Alignment.Center),
-                            painter = painterResource(id = R.drawable.restrict),
-                            contentDescription = stringResource(R.string.restrict_message_icon),
-                        )
-                    }
-
-                    else -> {
-                        ProfileCircleImage(
-                            size = 50.dp,
-                            imageUrl = message.thumbnail,
-                            contentDescription = "Message Receiver Profile Image",
-                        )
-                    }
-                }
-            }
-
-            when (messageItemType) {
-                MessageItemType.Blocked -> {
-                    MessageItemTitle(
-                        stringResource(id = R.string.blocked_message_title),
-                    )
-                }
-
-                MessageItemType.Reported -> {
-                    MessageItemTitle(
-                        stringResource(id = R.string.reported_message_title),
-                    )
-                }
-
-                else -> {
-                    MessageItemTitle(message.name)
-                }
-            }
-
-            message.latestChatTime?.let {
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = it.toStringWithDotSeparator(),
-                    style = StaticTypeScale.Default.body9,
-                    color = WeSpotThemeManager.colors.txtSubColor,
-                )
-            }
         }
     }
 }
 
 @Composable
-private fun MessageItemTitle(
-    title: String,
+private fun MessageUserItem(
+    imageUrl: String,
+    type: String,
+    name: String,
+    isBookmarked: Boolean,
 ) {
-    Text(
-        modifier = Modifier.padding(top = 18.dp),
-        text = title,
-        style = StaticTypeScale.Default.body6,
-        color = WeSpotThemeManager.colors.txtTitleColor,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-    )
-}
+    Row(
+        modifier = Modifier.height(45.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        ProfileCircleImage(
+            size = 34.dp,
+            imageUrl = imageUrl,
+            contentDescription = "Message Profile Image",
+        )
 
-sealed interface MessageItemType {
-    data class Normal(val isFavorites: Boolean) : MessageItemType
+        Column(
+            modifier = Modifier.padding(start = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(WeSpotThemeManager.shapes.extraLarge)
+                    .background(WeSpotThemeManager.colors.bottomSheetColor)
+                    .padding(horizontal = 8.dp, vertical = 1.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (isBookmarked) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.bookmark),
+                            tint = WeSpotThemeManager.colors.primaryColor,
+                            contentDescription = "Bookmarked User",
+                        )
+                    }
 
-    data object Favorites : MessageItemType
+                    Text(
+                        text = type,
+                        color = WeSpotThemeManager.colors.txtTitleColor,
+                        style = StaticTypeScale.Default.body9,
+                    )
+                }
+            }
 
-    data object Blocked : MessageItemType
-
-    data object Reported : MessageItemType
-
-    data object Ever : MessageItemType
+            Text(
+                text = name,
+                color = WeSpotThemeManager.colors.txtTitleColor,
+                style = StaticTypeScale.Default.body9,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
 }
 
 @Preview
@@ -181,43 +179,9 @@ private fun PreviewMessageItem() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             MessageItem(
-                messageItemType = MessageItemType.Normal(isFavorites = true),
                 message = Message(),
                 itemClick = { },
                 optionButtonClick = { },
-                favoritesButtonClick = { },
-            )
-
-            MessageItem(
-                messageItemType = MessageItemType.Normal(isFavorites = false),
-                message = Message(),
-                itemClick = { },
-                optionButtonClick = { },
-                favoritesButtonClick = { },
-            )
-
-            MessageItem(
-                messageItemType = MessageItemType.Reported,
-                message = Message(),
-                itemClick = { },
-                optionButtonClick = { },
-                favoritesButtonClick = { },
-            )
-
-            MessageItem(
-                messageItemType = MessageItemType.Blocked,
-                message = Message(),
-                itemClick = { },
-                optionButtonClick = { },
-                favoritesButtonClick = { },
-            )
-
-            MessageItem(
-                messageItemType = MessageItemType.Favorites,
-                message = Message(),
-                itemClick = { },
-                optionButtonClick = { },
-                favoritesButtonClick = { },
             )
         }
     }
