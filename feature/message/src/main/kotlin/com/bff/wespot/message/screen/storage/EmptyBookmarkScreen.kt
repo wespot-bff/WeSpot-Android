@@ -21,7 +21,7 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.message.R
 
 @Composable
-fun EmptyMessageScreen() {
+fun EmptyBookmarkScreen() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,6 +58,6 @@ fun EmptyMessageScreen() {
 @Composable
 fun EmptyResultScreenPreview() {
     WeSpotTheme {
-        EmptyMessageScreen()
+        EmptyBookmarkScreen()
     }
 }
