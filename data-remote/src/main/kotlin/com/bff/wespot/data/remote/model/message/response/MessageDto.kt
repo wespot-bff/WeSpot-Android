@@ -11,7 +11,6 @@ data class MessageDto(
     val receiverProfile: MessageProfileDto,
     val isExistsUnreadMessage: Boolean,
     val latestChatTime: String,
-    val isAnonymous: Boolean,
     val isMeMessageRoomOwner: Boolean,
     val isBookmarked: Boolean,
     val isBlocked: Boolean,

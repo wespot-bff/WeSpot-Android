@@ -30,7 +30,6 @@ private fun MessageDto.toMessageEntity(
     receiverProfile = receiverProfile.toMessageProfile(),
     isExistsUnreadMessage = isExistsUnreadMessage,
     latestChatTime = latestChatTime,
-    isAnonymous = isAnonymous,
     isBookmarked = isBookmarked,
     isBlocked = isBlocked,
     isEver = isEver,
