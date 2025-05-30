@@ -151,7 +151,11 @@ fun MessageStorageScreen(
                         stringResource(R.string.do_bookmark)
                     },
                     onClick = {
-                        action(StorageAction.OnBookmarkBottomSheetItemClicked)
+                        action(
+                            StorageAction.OnBookmarkBottomSheetItemClicked(
+                                fromBookmarkScreen = selectedChipIndex == BOOKMARKED_MESSAGE_INDEX,
+                            ),
+                        )
                     },
                 )
             }

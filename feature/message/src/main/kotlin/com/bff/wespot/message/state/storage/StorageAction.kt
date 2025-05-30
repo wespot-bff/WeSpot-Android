@@ -8,7 +8,7 @@ sealed class StorageAction {
     data class OnOptionButtonClicked(val message: Message) : StorageAction()
     data class OnPushNotificationNavigated(val messageId: Int) : StorageAction()
     data object OnBlockBottomSheetItemClicked : StorageAction()
-    data object OnBookmarkBottomSheetItemClicked : StorageAction()
+    data class OnBookmarkBottomSheetItemClicked(val fromBookmarkScreen: Boolean) : StorageAction()
     data object OnOptionBottomSheetClosed : StorageAction()
     data object OnBlockButtonClicked : StorageAction()
     data object OnBlockDialogClosed : StorageAction()
