@@ -49,8 +49,8 @@ class StorageViewModel @Inject constructor(
             StorageAction.OnBlockBottomSheetItemClicked -> {
                 handleBlockBottomSheetItemClicked()
             }
-            StorageAction.OnBookmarkBottomSheetItemClicked -> {
-                handleBookmarkBottomSheetItemClicked()
+            is StorageAction.OnBookmarkBottomSheetItemClicked -> {
+                handleBookmarkBottomSheetItemClicked(action.fromBookmarkScreen)
             }
             StorageAction.OnBlockButtonClicked -> {
                 handleBlockButtonClicked()
@@ -119,14 +119,20 @@ class StorageViewModel @Inject constructor(
         postSideEffect(StorageSideEffect.CloseOptionBottomSheet)
     }
 
-    private fun handleBookmarkBottomSheetItemClicked() = intent {
+    private fun handleBookmarkBottomSheetItemClicked(fromBookmarkScreen: Boolean) = intent {
         viewModelScope.launch {
             val clickedMessage = state.optionButtonClickedMessage
 
             messageStorageRepository.updateMessageBookmarkStatus(messageId = clickedMessage.id)
-            val updatedMessageList = state.messageList.map { message ->
+            val updatedMessageList = state.messageList.mapNotNull { message ->
                 if (clickedMessage.id == message.id) {
-                    message.copy(isBookmarked = message.isBookmarked.not())
+                    /** 즐겨찾기 목록에서 즐겨찾기 해제를 수행한 경우, 쪽지 목록에서 제외한다. */
+                    if (fromBookmarkScreen) {
+                        null
+                    } else {
+                        /** 메모리 상에 존재하는 쪽지 목록의 즐겨찾기 업데이트 */
+                        message.copy(isBookmarked = message.isBookmarked.not())
+                    }
                 } else {
                     message
                 }
