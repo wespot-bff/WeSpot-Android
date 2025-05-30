@@ -74,6 +74,7 @@ internal fun MessageItem(
                 contentDescription = "Message Room Arrow",
             )
 
+            /** 에버의 경우 이름만 노출한다. */
             MessageUserItem(
                 imageUrl = message.receiverProfile.iconUrl,
                 type = if (message.receiverProfile.isAnonymous) {
@@ -81,7 +82,11 @@ internal fun MessageItem(
                 } else {
                     stringResource(R.string.real_name)
                 },
-                name = message.receiverProfile.toDescription(),
+                name = if (message.isEver) {
+                    message.receiverProfile.name
+                } else {
+                    message.receiverProfile.toDescription()
+                },
                 isBookmarked = message.isBookmarked,
             )
         }
@@ -163,7 +168,7 @@ private fun MessageUserItem(
             Text(
                 text = name,
                 color = WeSpotThemeManager.colors.txtTitleColor,
-                style = StaticTypeScale.Default.body9,
+                style = StaticTypeScale.Default.body6,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
