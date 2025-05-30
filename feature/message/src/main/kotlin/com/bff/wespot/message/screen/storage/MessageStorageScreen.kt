@@ -208,7 +208,7 @@ internal fun MessageStorageContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
-            data.size,
+            count = data.size,
             key = { index -> data[index].id },
         ) { index ->
             val item = data[index]

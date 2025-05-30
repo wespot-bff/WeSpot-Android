@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8fbefbe06057ca1711436a57da914169",
+    "identityHash": "27c575ea50a90d515a566682e2e808e3",
     "entities": [
       {
         "tableName": "message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` INTEGER NOT NULL, `sender_profile` TEXT NOT NULL, `receiver_profile` TEXT NOT NULL, `is_exists_unread_message` INTEGER NOT NULL, `latest_chat_time` TEXT NOT NULL, `is_anonymous` INTEGER NOT NULL, `is_me_message_room_owner` INTEGER NOT NULL, `is_bookmarked` INTEGER NOT NULL, `is_blocked` INTEGER NOT NULL, `is_ever` INTEGER NOT NULL, `last_cursor_id` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` INTEGER NOT NULL, `sender_profile` TEXT NOT NULL, `receiver_profile` TEXT NOT NULL, `is_exists_unread_message` INTEGER NOT NULL, `latest_chat_time` TEXT NOT NULL, `is_me_message_room_owner` INTEGER NOT NULL, `is_bookmarked` INTEGER NOT NULL, `is_blocked` INTEGER NOT NULL, `is_ever` INTEGER NOT NULL, `last_cursor_id` INTEGER)",
         "fields": [
           {
             "fieldPath": "number",
@@ -42,12 +42,6 @@
             "fieldPath": "latestChatTime",
             "columnName": "latest_chat_time",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isAnonymous",
-            "columnName": "is_anonymous",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -94,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8fbefbe06057ca1711436a57da914169')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '27c575ea50a90d515a566682e2e808e3')"
     ]
   }
 }

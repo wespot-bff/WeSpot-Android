@@ -121,12 +121,12 @@ class StorageViewModel @Inject constructor(
 
     private fun handleBookmarkBottomSheetItemClicked() = intent {
         viewModelScope.launch {
-            val message = state.optionButtonClickedMessage
+            val clickedMessage = state.optionButtonClickedMessage
 
-            messageStorageRepository.updateMessageBookmarkStatus(messageId = message.id)
-            val updatedMessageList = state.messageList.map {
-                if (message.id == it.id) {
-                    message.copy(isBookmarked = it.isBookmarked.not())
+            messageStorageRepository.updateMessageBookmarkStatus(messageId = clickedMessage.id)
+            val updatedMessageList = state.messageList.map { message ->
+                if (clickedMessage.id == message.id) {
+                    message.copy(isBookmarked = message.isBookmarked.not())
                 } else {
                     message
                 }
