@@ -15,7 +15,6 @@ data class MessageEntity(
     @ColumnInfo(name = "receiver_profile") val receiverProfile: MessageProfile,
     @ColumnInfo(name = "is_exists_unread_message") val isExistsUnreadMessage: Boolean,
     @ColumnInfo(name = "latest_chat_time") val latestChatTime: String,
-    @ColumnInfo(name = "is_anonymous") val isAnonymous: Boolean,
     @ColumnInfo(name = "is_me_message_room_owner") val isMeMessageRoomOwner: Boolean,
     @ColumnInfo(name = "is_bookmarked") val isBookmarked: Boolean,
     @ColumnInfo(name = "is_blocked") val isBlocked: Boolean,
