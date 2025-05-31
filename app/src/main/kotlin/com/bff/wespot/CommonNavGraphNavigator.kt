@@ -18,16 +18,13 @@ import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
-import com.bff.wespot.message.screen.destinations.MessageEditScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.message.screen.send.EditMessageScreenArgs
-import com.bff.wespot.message.screen.send.MessageEditNavigator
+import com.bff.wespot.message.screen.send.MessageSendNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
-import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
-import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
@@ -50,7 +47,7 @@ class CommonNavGraphNavigator(
     MessageNavigator,
     ReceiverSelectionNavigator,
     MessageWriteNavigator,
-    MessageEditNavigator,
+    MessageSendNavigator,
     EntireNavigator,
     SettingNavigator,
     NotificationSettingNavigator,
@@ -71,12 +68,12 @@ class CommonNavGraphNavigator(
         navController.navigate(VotingScreenDestination within navGraph)
     }
 
-    override fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs) {
-        navController.navigate(ReceiverSelectionScreenDestination(args) within navGraph)
+    override fun navigateMessageWriteScreen() {
+        navController.navigate(MessageWriteScreenDestination within navGraph)
     }
 
-    override fun navigateMessageWriteScreen(args: MessageWriteScreenArgs) {
-        navController.navigate(MessageWriteScreenDestination(args) within navGraph)
+    override fun navigateReceiverSelectionScreen() {
+        navController.navigate(ReceiverSelectionScreenDestination within navGraph)
     }
 
     override fun popUpToMessageScreen() {
@@ -86,8 +83,8 @@ class CommonNavGraphNavigator(
         )
     }
 
-    override fun navigateMessageEditScreen(args: EditMessageScreenArgs) {
-        navController.navigate(MessageEditScreenDestination(args) within navGraph)
+    override fun navigateMessageSendScreen() {
+        navController.navigate(MessageSendScreenDestination within navGraph)
     }
 
     override fun navigateToVoteHome() {

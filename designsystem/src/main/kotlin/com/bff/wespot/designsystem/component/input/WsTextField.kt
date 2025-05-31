@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults.Container
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -60,6 +61,7 @@ fun WsTextField(
     isError: Boolean = false,
     singleLine: Boolean = false,
     readOnly: Boolean = false,
+    enabled: Boolean = true,
     focusRequester: FocusRequester = remember { FocusRequester() },
     onFocusChanged: (FocusState) -> Unit = { },
     keyBoardOption: KeyboardOptions = KeyboardOptions.Default,
@@ -116,7 +118,7 @@ fun WsTextField(
                     textFieldValueState = newTextFieldValue
                     onValueChange(newTextFieldValue.text)
                 },
-                enabled = textFieldType.isEnabled(),
+                enabled = enabled,
                 readOnly = readOnly,
                 textStyle = StaticTypeScale.Default.body4.copy(
                     color = WeSpotThemeManager.colors.txtTitleColor,
@@ -160,17 +162,17 @@ fun WsTextField(
                             null
                         },
                         singleLine = singleLine,
-                        enabled = textFieldType.isEnabled(),
+                        enabled = enabled,
                         isError = isError,
                         interactionSource = interactionSource,
                         colors = colors,
                         container = {
-                            OutlinedTextFieldDefaults.ContainerBox(
-                                textFieldType.isEnabled(),
-                                isError,
-                                interactionSource,
-                                colors,
-                                WeSpotThemeManager.shapes.small,
+                            Container(
+                                enabled = enabled,
+                                isError = isError,
+                                interactionSource = interactionSource,
+                                colors = colors,
+                                shape = WeSpotThemeManager.shapes.small,
                                 focusedBorderThickness = 1.dp,
                             )
                         },
@@ -198,8 +200,6 @@ sealed interface WsTextFieldType {
 
     fun maxHeight(): Dp = Dp.Unspecified
 
-    fun isEnabled(): Boolean = true
-
     data object Normal : WsTextFieldType {
         @Composable
         override fun trailingIcon() = null
@@ -222,8 +222,6 @@ sealed interface WsTextFieldType {
 
         @Composable
         override fun leadingIcon() = null
-
-        override fun isEnabled(): Boolean = false
     }
 
     data object Message : WsTextFieldType {

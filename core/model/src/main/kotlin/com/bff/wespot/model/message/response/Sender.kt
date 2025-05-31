@@ -1,4 +1,4 @@
-package com.bff.wespot.model.message
+package com.bff.wespot.model.message.response
 
 data class Sender(
     val id: Int,

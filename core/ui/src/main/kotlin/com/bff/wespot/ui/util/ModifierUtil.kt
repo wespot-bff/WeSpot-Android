@@ -31,6 +31,7 @@ fun Modifier.carouselTransition(pagerState: PagerState, page: Int) =
 
 fun Modifier.clickableSingle(
     enabled: Boolean = true,
+    removeInteraction: Boolean = false,
     onClickLabel: String? = null,
     role: Role? = null,
     onClick: () -> Unit,
@@ -49,7 +50,7 @@ fun Modifier.clickableSingle(
             onClickLabel = onClickLabel,
             onClick = { manager.processEvent { onClick() } },
             role = role,
-            indication = LocalIndication.current,
+            indication = if (removeInteraction) null else LocalIndication.current,
             interactionSource = remember { MutableInteractionSource() },
         )
     }
