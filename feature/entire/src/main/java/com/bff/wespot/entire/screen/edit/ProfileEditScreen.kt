@@ -179,9 +179,9 @@ fun ProfileEditScreen(
                             .clip(CircleShape),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(state.profilePath)
-                            .error(com.bff.wespot.designsystem.R.drawable.default_profile)
-                            .fallback(com.bff.wespot.designsystem.R.drawable.default_profile)
-                            .placeholder(com.bff.wespot.designsystem.R.drawable.default_profile)
+                            .error(com.bff.wespot.ui.R.drawable.default_profile)
+                            .fallback(com.bff.wespot.ui.R.drawable.default_profile)
+                            .placeholder(com.bff.wespot.ui.R.drawable.default_profile)
                             .crossfade(true)
                             .build(),
                         contentDescription = stringResource(
