@@ -36,11 +36,11 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.component.EntireListItem
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.model.user.response.Profile
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.SettingListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -95,7 +95,7 @@ internal fun EntireScreen(
                     .fillMaxSize()
                     .padding(top = 20.dp),
             ) {
-                EntireListItem(text = stringResource(R.string.contact_channel)) {
+                SettingListItem(text = stringResource(R.string.contact_channel)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
@@ -105,7 +105,7 @@ internal fun EntireScreen(
                     )
                 }
 
-                EntireListItem(text = stringResource(R.string.official_sns)) {
+                SettingListItem(text = stringResource(R.string.official_sns)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
@@ -123,7 +123,7 @@ internal fun EntireScreen(
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
-                EntireListItem(text = stringResource(R.string.leave_store_review)) {
+                SettingListItem(text = stringResource(R.string.leave_store_review)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
@@ -133,7 +133,7 @@ internal fun EntireScreen(
                     )
                 }
 
-                EntireListItem(text = stringResource(R.string.send_feedback)) {
+                SettingListItem(text = stringResource(R.string.send_feedback)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
@@ -143,7 +143,7 @@ internal fun EntireScreen(
                     )
                 }
 
-                EntireListItem(text = stringResource(R.string.participate_in_research)) {
+                SettingListItem(text = stringResource(R.string.participate_in_research)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
@@ -161,7 +161,7 @@ internal fun EntireScreen(
                     color = WeSpotThemeManager.colors.cardBackgroundColor,
                 )
 
-                EntireListItem(text = stringResource(R.string.wespot_makers)) {
+                SettingListItem(text = stringResource(R.string.wespot_makers)) {
                     activityNavigator.navigateToWebLink(
                         context = context,
                         webLink = state.webLinkMap.getOrDefault(
