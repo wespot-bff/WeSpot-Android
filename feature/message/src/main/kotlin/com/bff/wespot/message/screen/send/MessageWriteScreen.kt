@@ -33,8 +33,8 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendSideEffect
+import com.bff.wespot.message.state.send.writing.WritingAction
+import com.bff.wespot.message.state.send.writing.WritingSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
@@ -48,19 +48,14 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface MessageWriteNavigator {
     fun navigateUp()
     fun popUpToMessageScreen()
-    fun navigateMessageEditScreen(args: EditMessageScreenArgs)
+    fun navigateMessageSendScreen()
 }
 
-data class MessageWriteScreenArgs(
-    val isEditing: Boolean,
-)
-
-@Destination(navArgsDelegate = MessageWriteScreenArgs::class)
+@Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageWriteScreen(
     navigator: MessageWriteNavigator,
-    navArgs: MessageWriteScreenArgs,
     viewModel: SendViewModel,
 ) {
     var dialogState by remember { mutableStateOf(false) }
@@ -68,27 +63,26 @@ fun MessageWriteScreen(
     val focusRequester = remember { FocusRequester() }
 
     val state by viewModel.collectAsState()
-    val action = viewModel::onAction
+    val action: (WritingAction) -> Unit = viewModel::onAction
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
-        when (it) {
-            SendSideEffect.DismissExitDialog -> {
-                dialogState = false
+        if (it is WritingSideEffect) {
+            when (it) {
+                WritingSideEffect.DismissExitDialog -> {
+                    dialogState = false
+                }
+                WritingSideEffect.NavigateToMessage -> {
+                    /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
+                    keyboard?.hide()
+                    navigator.popUpToMessageScreen()
+                }
+                WritingSideEffect.NavigateUp -> navigator.navigateUp()
+                WritingSideEffect.NavigateToMessageSendScreen -> navigator.navigateMessageSendScreen()
             }
-
-            SendSideEffect.NavigateToMessage -> {
-                /** 키보드가 올라간 채로 화면 전환시, 화면이 일그러지는 것을 방지한다. */
-                keyboard?.hide()
-                navigator.popUpToMessageScreen()
-            }
-
-            SendSideEffect.NavigateUp -> navigator.navigateUp()
-
-            else -> { }
         }
     }
 
@@ -98,7 +92,7 @@ fun MessageWriteScreen(
                 title = "",
                 canNavigateBack = true,
                 navigateUp = {
-                    action(SendAction.OnTopBarNavigateButtonClicked)
+                    action(WritingAction.OnTopBarNavigateButtonClicked)
                 },
                 action = {
                     Text(
@@ -120,16 +114,10 @@ fun MessageWriteScreen(
             button = {
                 WSButton(
                     onClick = {
-                        if (state.isReservedMessage) {
-                            navigator.navigateUp()
-                        } else {
-                            navigator.navigateMessageEditScreen(EditMessageScreenArgs())
-                        }
+                        action(WritingAction.OnWriteDoneButtonClicked)
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
-                    text = stringResource(
-                        if (navArgs.isEditing) R.string.edit_done else R.string.write_done,
-                    ),
+                    text = stringResource(R.string.write_done),
                     content = { it() },
                 )
             },
@@ -149,7 +137,7 @@ fun MessageWriteScreen(
                 WsTextField(
                     value = state.messageInput,
                     onValueChange = { text ->
-                        action(SendAction.OnMessageChanged(text))
+                        action(WritingAction.OnMessageChanged(text))
                     },
                     placeholder = stringResource(R.string.message_write_text_holder),
                     isError = false,
@@ -170,6 +158,7 @@ fun MessageWriteScreen(
                         state.hasProfanity -> {
                             stringResource(com.bff.wespot.designsystem.R.string.has_profanity)
                         }
+
                         else -> ""
                     }
 
@@ -188,12 +177,11 @@ fun MessageWriteScreen(
 
     if (dialogState) {
         SendExitDialog(
-            isReservedMessage = state.isReservedMessage,
             okButtonClick = {
-                action(SendAction.OnExitDialogExitButtonClicked)
+                action(WritingAction.OnExitDialogExitButtonClicked)
             },
             cancelButtonClick = {
-                action(SendAction.OnExitDialogCancelButtonClicked)
+                action(WritingAction.OnExitDialogCancelButtonClicked)
             },
         )
     }
@@ -207,6 +195,6 @@ fun MessageWriteScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(SendAction.OnWriteScreenEntered)
+        action(WritingAction.OnWriteScreenEntered)
     }
 }

@@ -1,31 +1,31 @@
 package com.bff.wespot.data.repository.message
 
-import com.bff.wespot.data.mapper.message.toWrittenMessageDto
+import com.bff.wespot.data.mapper.message.toDto
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.domain.repository.message.MessageRepository
-import com.bff.wespot.model.message.request.WrittenMessage
+import com.bff.wespot.model.message.request.SendMessage
 import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.MessageHomeTitle
 import com.bff.wespot.model.message.response.MessageStatus
+import com.bff.wespot.model.message.response.SenderProfile
 import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
     private val messageDataSource: MessageDataSource,
 ) : MessageRepository {
-    override suspend fun postMessage(writtenMessage: WrittenMessage): Result<String> {
-        return messageDataSource.postMessage(writtenMessage.toWrittenMessageDto()).mapCatching {
-            it.toString()
+    override suspend fun postMessage(sendMessage: SendMessage): Result<Unit> =
+        messageDataSource.postMessage(sendMessage.toDto())
+
+    override suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfile>> =
+        messageDataSource.getSenderProfileList(receiverId).mapCatching { data ->
+            data.map { it.toDomain() }
         }
-    }
 
     override suspend fun getMessageStatus(): Result<MessageStatus> {
         return messageDataSource.getMessageStatus().mapCatching { messageStatusDto ->
             messageStatusDto.toMessageStatus()
         }
     }
-
-    override suspend fun editMessage(messageId: Int, writtenMessage: WrittenMessage): Result<Unit> =
-        messageDataSource.editMessage(messageId, writtenMessage.toWrittenMessageDto())
 
     override suspend fun getMessage(messageId: Int): Result<Message> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->

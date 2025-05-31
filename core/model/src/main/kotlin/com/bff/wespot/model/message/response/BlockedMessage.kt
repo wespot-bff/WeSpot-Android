@@ -1,6 +1,5 @@
 package com.bff.wespot.model.message.response
 
-import com.bff.wespot.model.message.Sender
 import com.bff.wespot.model.user.response.User
 import java.time.LocalDateTime
 

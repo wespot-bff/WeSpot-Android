@@ -20,10 +20,9 @@ data class User(
 
     fun toUserInfoWithoutSchoolName() = "${grade}학년 ${classNumber}반 $name"
 
-    fun toDescription(): String {
-        val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
-        return "$schoolName ${grade}학년 ${classNumber}반 $name"
-    }
+    fun toDescription(): String = "${toShortSchoolName()} ${grade}학년 ${classNumber}반 $name"
+
+    fun toMessageReceiverInfo() = "$name | ${toShortSchoolName()} ${grade}학년 ${classNumber}반"
 
     fun isInitialized() = this != User()
 }
