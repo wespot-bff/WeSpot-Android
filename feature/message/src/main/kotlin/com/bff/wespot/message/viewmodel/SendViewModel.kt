@@ -376,7 +376,7 @@ class SendViewModel @Inject constructor(
             ).onSuccess {
                 trackMessageSendEvent()
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(SendSideEffect.ShowToast(R.string.message_reserve_success))
+                postSideEffect(SendSideEffect.ShowToast(R.string.message_send_success))
                 postSideEffect(SendSideEffect.NavigateToMessage)
             }.onNetworkFailure { exception ->
                 postSideEffect(exception.toSideEffect())
