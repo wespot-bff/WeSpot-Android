@@ -12,8 +12,4 @@ interface MessageStorageRepository {
     suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit>
 
     suspend fun deleteMessage(messageId: Int): Result<Unit>
-
-    suspend fun blockMessage(messageId: Int): Result<Unit>
-
-    suspend fun unBlockMessage(messageId: Int): Result<Unit>
 }

@@ -26,10 +26,4 @@ class MessageStorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleteMessage(messageId: Int): Result<Unit> =
         messageStorageDataSource.deleteMessage(messageId = messageId)
-
-    override suspend fun blockMessage(messageId: Int): Result<Unit> =
-        messageStorageDataSource.blockMessage(messageId = messageId)
-
-    override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
-        messageStorageDataSource.unBlockMessage(messageId = messageId)
 }
