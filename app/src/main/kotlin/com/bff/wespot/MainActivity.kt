@@ -326,7 +326,7 @@ private fun MainTopBar(
             WSTopBar(
                 title = "",
                 navigation = {
-                    if (isTopNavigationScreen == BarType.DEFAULT) {
+                    if (isTopNavigationScreen.shouldShowMainLogo()) {
                         Image(
                             modifier = Modifier
                                 .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)

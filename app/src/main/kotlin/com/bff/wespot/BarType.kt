@@ -5,4 +5,7 @@ enum class BarType {
     ENTIRE,
     MESSAGE,
     NONE;
+
+    fun shouldShowMainLogo(): Boolean =
+        this in listOf(DEFAULT, MESSAGE)
 }
