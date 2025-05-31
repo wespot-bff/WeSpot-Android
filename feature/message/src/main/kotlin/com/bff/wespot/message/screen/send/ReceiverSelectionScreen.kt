@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -33,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -55,6 +51,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.component.WSListItem
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
@@ -341,16 +338,12 @@ fun LazyItemScope.ReceiverItem(
         backgroundColor = receiver.profileCharacter.backgroundColor,
         onClick = onClick,
         imageContent = {
-            AsyncImage(
-                modifier = Modifier.size(46.dp),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(receiver.profileCharacter.iconUrl)
-                    .crossfade(true)
-                    .build(),
+            ProfileCircleImage(
+                size = 46.dp,
+                imageUrl = receiver.profileCharacter.iconUrl,
                 contentDescription = stringResource(
                     com.bff.wespot.ui.R.string.user_character_image,
                 ),
-                contentScale = ContentScale.Crop,
             )
         },
     )

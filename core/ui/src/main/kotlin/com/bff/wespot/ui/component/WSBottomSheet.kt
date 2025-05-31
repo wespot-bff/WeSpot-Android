@@ -2,6 +2,7 @@ package com.bff.wespot.ui.component
 
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -14,10 +15,11 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WSBottomSheet(
-    closeSheet: () -> Unit,
+    scrimOpacity: Float? = null,
     sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     ),
+    closeSheet: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(
@@ -27,6 +29,9 @@ fun WSBottomSheet(
         containerColor = WeSpotThemeManager.colors.bottomSheetColor,
         dragHandle = null,
         modifier = Modifier.navigationBarsPadding(),
+        scrimColor = scrimOpacity?.let {
+            BottomSheetDefaults.ScrimColor.copy(scrimOpacity)
+        } ?: BottomSheetDefaults.ScrimColor,
     ) {
         content.invoke()
     }

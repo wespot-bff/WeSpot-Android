@@ -37,7 +37,7 @@ internal fun ProfileSelectBottomSheet(
     onProfileSelected: (SenderProfile) -> Unit,
     showToast: (ToastState) -> Unit,
 ) {
-    WSBottomSheet(closeSheet = closeSheet) {
+    WSBottomSheet(scrimOpacity = 0.65f, closeSheet = closeSheet) {
         Column(
             modifier = Modifier.padding(start = 28.dp, end = 28.dp, top = 32.dp, bottom = 40.dp),
         ) {
