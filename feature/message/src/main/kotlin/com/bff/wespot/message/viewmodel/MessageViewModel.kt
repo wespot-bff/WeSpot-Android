@@ -34,7 +34,11 @@ class MessageViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val getMessageHomeTitle: GetMessageHomeTitleUseCase,
 ) : BaseViewModel(), ContainerHost<MessageUiState, MessageSideEffect> {
-    override val container = container<MessageUiState, MessageSideEffect>(MessageUiState())
+    override val container = container<MessageUiState, MessageSideEffect>(MessageUiState()) {
+        observeProfileFlow()
+        getMessageStatus()
+        getMessageHomeTitle()
+    }
 
     private val _remainingTimeMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val remainingTimeMillis: StateFlow<Long> = _remainingTimeMillis.asStateFlow()
@@ -57,11 +61,6 @@ class MessageViewModel @Inject constructor(
 
     fun onAction(action: MessageAction) {
         when (action) {
-            MessageAction.OnMessageHomeScreenEntered -> {
-                observeProfileFlow()
-                getMessageStatus()
-                getMessageHomeTitle()
-            }
             MessageAction.OnLifecycleStart -> {
                 checkAndStartTimer()
             }
@@ -85,6 +84,8 @@ class MessageViewModel @Inject constructor(
     }
 
     private fun getMessageStatus() = intent {
+        reduce { state.copy(isLoading = true) }
+
         viewModelScope.launch {
             messageRepository.getMessageStatus()
                 .onSuccess { messageStatus ->
@@ -100,6 +101,8 @@ class MessageViewModel @Inject constructor(
                     }
                 }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
+                }.also {
+                    reduce { state.copy(isLoading = false) }
                 }
         }
     }

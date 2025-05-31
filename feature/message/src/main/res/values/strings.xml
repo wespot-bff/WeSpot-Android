@@ -71,6 +71,7 @@
     <string name="report_category_abuse">욕설/비하</string>
     <string name="report_category_advertisement">상업적 광고 및 판매</string>
     <string name="report_category_custom">직접 입력</string>
+    <string name="message_image">Message Image</string>
     <string name="receiver_profile_image">Receiver Profile Image</string>
     <string name="sender_profile_image">Sender Profile Image</string>
     <string name="edit_icon">Edit Icon</string>
