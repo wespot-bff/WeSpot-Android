@@ -30,7 +30,6 @@ interface SettingNavigator {
     fun navigateUp()
     fun navigateToNotificationSetting()
     fun navigateToAccountSetting()
-    fun navigateToBlockListScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,10 +109,6 @@ fun SettingScreen(
                 thickness = 1.dp,
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
             )
-
-            SettingListItem(text = stringResource(R.string.block_list)) {
-                navigator.navigateToBlockListScreen()
-            }
 
             SettingListItem(text = stringResource(R.string.account_setting)) {
                 navigator.navigateToAccountSetting()
