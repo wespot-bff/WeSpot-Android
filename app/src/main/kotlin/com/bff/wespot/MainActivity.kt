@@ -82,6 +82,7 @@ import com.bff.wespot.state.MainAction
 import com.bff.wespot.state.MainUiState
 import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.designsystem.component.modal.WSDialog
+import com.bff.wespot.message.screen.destinations.MessageSettingScreenDestination
 import com.bff.wespot.model.VersionUpdateDialogState
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.state.MainSideEffect
@@ -184,7 +185,6 @@ data class MainScreenNavArgs(
     val date: String,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
     navigator: Navigator,
@@ -217,67 +217,10 @@ private fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            AnimatedContent(
-                targetState = isTopNavigationScreen,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
-                },
-                label = stringResource(string.bottom_bar_animated_content_label),
-            ) { targetState ->
-                if (targetState != BarType.NONE) {
-                    WSTopBar(
-                        title = "",
-                        navigation = {
-                            if (isTopNavigationScreen == BarType.DEFAULT) {
-                                Image(
-                                    modifier = Modifier
-                                        .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
-                                        .size(width = 112.dp, height = 44.dp),
-                                    painter = painterResource(id = R.drawable.main_logo),
-                                    contentDescription = stringResource(
-                                        id = com.bff.wespot.message.R.string.wespot_logo,
-                                    ),
-                                )
-                            }
-                        },
-                        action = {
-                            if (isTopNavigationScreen == BarType.DEFAULT) {
-                                IconButton(
-                                    modifier = Modifier.padding(end = 8.dp),
-                                    onClick = {
-                                        navController.navigateToNavGraph(
-                                            navGraph = AppNavGraphs.notification,
-                                        )
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icn_alarm),
-                                        contentDescription = stringResource(
-                                            id = R.string.notification_icon,
-                                        ),
-                                    )
-                                }
-                            } else if (isTopNavigationScreen == BarType.ENTIRE) {
-                                IconButton(
-                                    modifier = Modifier.padding(end = 8.dp),
-                                    onClick = {
-                                        navController.navigate(
-                                            SettingScreenDestination within AppNavGraphs.entire,
-                                        )
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icn_settings),
-                                        contentDescription = stringResource(
-                                            id = R.string.setting_icon,
-                                        ),
-                                    )
-                                }
-                            }
-                        },
-                    )
-                }
-            }
+            MainTopBar(
+                isTopNavigationScreen = isTopNavigationScreen,
+                navController = navController,
+            )
         },
         bottomBar = {
             AnimatedContent(
@@ -363,6 +306,112 @@ private fun MainScreen(
 
     LaunchedEffect(Unit) {
         action(MainAction.OnMainScreenEntered(context.getAppVersionName()))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainTopBar(
+    isTopNavigationScreen: BarType,
+    navController: NavController,
+) {
+    AnimatedContent(
+        targetState = isTopNavigationScreen,
+        transitionSpec = {
+            fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
+        },
+        label = stringResource(string.bottom_bar_animated_content_label),
+    ) { targetState ->
+        if (targetState != BarType.NONE) {
+            WSTopBar(
+                title = "",
+                navigation = {
+                    if (isTopNavigationScreen == BarType.DEFAULT) {
+                        Image(
+                            modifier = Modifier
+                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp)
+                                .size(width = 112.dp, height = 44.dp),
+                            painter = painterResource(id = R.drawable.main_logo),
+                            contentDescription = stringResource(
+                                id = com.bff.wespot.message.R.string.wespot_logo,
+                            ),
+                        )
+                    }
+                },
+                action = {
+                    when (isTopNavigationScreen) {
+                        BarType.DEFAULT -> {
+                            IconButton(
+                                modifier = Modifier.padding(end = 8.dp),
+                                onClick = {
+                                    navController.navigateToNavGraph(
+                                        navGraph = AppNavGraphs.notification,
+                                    )
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icn_alarm),
+                                    contentDescription = stringResource(
+                                        id = R.string.notification_icon,
+                                    ),
+                                )
+                            }
+                        }
+                        BarType.ENTIRE -> {
+                            IconButton(
+                                modifier = Modifier.padding(end = 8.dp),
+                                onClick = {
+                                    navController.navigate(
+                                        SettingScreenDestination within AppNavGraphs.entire,
+                                    )
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icn_settings),
+                                    contentDescription = stringResource(
+                                        id = R.string.setting_icon,
+                                    ),
+                                )
+                            }
+                        }
+                        BarType.MESSAGE -> {
+                            Row(modifier = Modifier.padding(end = 16.dp)) {
+                                IconButton(
+                                    onClick = {
+                                        navController.navigateToNavGraph(
+                                            navGraph = AppNavGraphs.notification,
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icn_alarm),
+                                        contentDescription = stringResource(
+                                            id = R.string.notification_icon,
+                                        ),
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        navController.navigate(
+                                            MessageSettingScreenDestination within AppNavGraphs.message,
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icn_settings),
+                                        contentDescription = stringResource(
+                                            id = R.string.setting_icon,
+                                        ),
+                                    )
+                                }
+                            }
+                        }
+                        BarType.NONE -> { }
+                    }
+                },
+            )
+        }
     }
 }
 
