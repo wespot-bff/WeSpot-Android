@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +49,7 @@ import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -70,6 +70,12 @@ fun MessageHomeScreen(
             visible = state.messageStatus.shouldShowReplyBanner(),
             onBannerClick = navigateToMessageStorageScreen,
         )
+
+        /** 현재 쪽지 상태를 불러오기 전까지 로딩 애니메이션을 노춣한다. */
+        if (state.isLoading) {
+            LoadingAnimation()
+            return@Column
+        }
 
         if (state.messageStatus.countRemainingMessages > 0) {
             MessageCard(
@@ -99,10 +105,6 @@ fun MessageHomeScreen(
                 },
             )
         }
-    }
-
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnMessageHomeScreenEntered)
     }
 
     LifecycleStartEffect(Unit) {
