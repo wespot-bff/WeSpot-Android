@@ -3,6 +3,7 @@ package com.bff.wespot.data.remote.source.message
 import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDto
+import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
@@ -53,7 +54,7 @@ class MessageDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("api/v1/messages/status/me")
+                path("api/v2/messages/status")
             }
         }
 
@@ -80,6 +81,14 @@ class MessageDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v1/messages/blocked")
                 parameter("cursorId", cursorId)
+            }
+        }
+
+    override suspend fun getMessageHomeTitle(): Result<MessageHomeTitleDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v2/messages/title")
             }
         }
 }

@@ -1,6 +1,5 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.response.ReservedMessageListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
@@ -39,14 +38,6 @@ class MessageStorageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Post
                 path("api/v1/messages/$messageId/unblock")
-            }
-        }
-
-    override suspend fun getReservedMessage(): Result<ReservedMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages/scheduled")
             }
         }
 }

@@ -7,7 +7,6 @@ import com.bff.wespot.data.local.database.dao.ReceivedMessageDao
 import com.bff.wespot.data.local.model.message.ReceivedMessageEntity
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
-import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -45,11 +44,4 @@ class MessageStorageRepositoryImpl @Inject constructor(
 
     override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
         messageStorageDataSource.unBlockMessage(messageId = messageId)
-
-    override suspend fun getReservedMessage(): Result<List<Message>> =
-        messageStorageDataSource.getReservedMessage().mapCatching { list ->
-            list.messages.map {
-                it.toMessage()
-            }
-        }
 }

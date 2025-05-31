@@ -1,10 +1,12 @@
 package com.bff.wespot.message.screen
 
+import androidx.annotation.RawRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,8 +28,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -41,26 +40,23 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
-import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
-import com.bff.wespot.message.component.ReservedMessageBanner
-import com.bff.wespot.message.model.TimePeriod
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MessageHomeScreen(
     viewModel: MessageViewModel = hiltViewModel(),
-    navigateToReservedMessageScreen: () -> Unit,
-    navigateToReceiverSelectionScreen: (Boolean) -> Unit,
+    navigateToReceiverSelectionScreen: () -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
     restricted: RestrictionArg,
 ) {
@@ -70,117 +66,74 @@ fun MessageHomeScreen(
     handleSideEffect(viewModel.sideEffect)
 
     Column(modifier = Modifier.fillMaxSize()) {
-        when (state.timePeriod) {
-            TimePeriod.DAWN_TO_EVENING -> {
-                MessageCard(
-                    height = state.timePeriod.height,
-                    timePeriod = state.timePeriod,
-                    title = state.timePeriod.homeTitle(state.profile.name),
-                    buttonText = stringResource(R.string.message_card_button_text_dawn),
-                    imageRes = state.timePeriod.imageRes,
-                    onButtonClick = { },
-                    restricted = restricted,
-                )
-            }
+        ReplyMessageBanner(
+            visible = state.messageStatus.shouldShowReplyBanner(),
+            onBannerClick = navigateToMessageStorageScreen,
+        )
 
-            TimePeriod.EVENING_TO_NIGHT -> {
-                ReservedMessageBanner(
-                    paddingValues = PaddingValues(
-                        top = 20.dp,
-                        bottom = 16.dp,
-                        start = 20.dp,
-                        end = 20.dp,
-                    ),
-                    messageStatus = state.messageStatus,
-                    onBannerClick = {
-                        navigateToReservedMessageScreen()
-                    },
-                )
+        /** 현재 쪽지 상태를 불러오기 전까지 로딩 애니메이션을 노춣한다. */
+        if (state.isLoading) {
+            LoadingAnimation()
+            return@Column
+        }
 
-                MessageCard(
-                    height = state.timePeriod.height,
-                    timePeriod = state.timePeriod,
-                    title = state.timePeriod.homeTitle(state.profile.name),
-                    buttonText = if (state.messageStatus.isSendAllowed) {
-                        stringResource(R.string.message_card_button_text_evening)
-                    } else {
-                        stringResource(R.string.message_card_button_text_evening_disabled)
-                    },
-                    imageRes = state.timePeriod.imageRes,
-                    isBannerVisible = state.messageStatus.hasReservedMessages(),
-                    isButtonEnable = state.messageStatus.isSendAllowed,
-                    onButtonClick = {
-                        navigateToReceiverSelectionScreen(false)
-                    },
-                    restricted = restricted,
-                )
-
-                MessageHomeDescription(
-                    title = stringResource(R.string.message_card_description_evening),
-                )
-            }
-
-            TimePeriod.NIGHT_TO_DAWN -> {
-                ReceivedMessageBanner(
-                    visible = state.messageStatus.hasUnReadMessages(),
-                    onBannerClick = {
-                        navigateToMessageStorageScreen()
-                    },
-                )
-
-                MessageCard(
-                    height = state.timePeriod.height,
-                    timePeriod = state.timePeriod,
-                    title = state.timePeriod.homeTitle(),
-                    buttonText = stringResource(R.string.message_card_button_text_night),
-                    imageRes = state.timePeriod.imageRes,
-                    isBannerVisible = state.messageStatus.hasUnReadMessages(),
-                    restricted = restricted,
-                    onButtonClick = {
-                    },
-                )
-
-                MessageHomeDescription(
-                    title = stringResource(R.string.message_card_description_night),
-                )
-            }
+        if (state.messageStatus.countRemainingMessages > 0) {
+            MessageCard(
+                canSendMessage = !restricted.restricted,
+                title = state.homeTitle,
+                buttonText = stringResource(R.string.message_card_button_text),
+                content = {
+                    RemainingMessageCounter(state.messageStatus.countRemainingMessages)
+                },
+                imageContent = {
+                    MessageImage(state.messageStatus.countRemainingMessages)
+                },
+                onButtonClick = {
+                    navigateToReceiverSelectionScreen()
+                },
+            )
+        } else {
+            MessageCard(
+                canSendMessage = false,
+                title = stringResource(R.string.message_card_title_all_sent, state.profile.name),
+                buttonText = stringResource(R.string.message_card_button_text_disabled),
+                imageContent = {
+                    MessageLottieAnimation(R.raw.message_dawn)
+                },
+                content = {
+                    MessageTimer(viewModel)
+                },
+            )
         }
     }
 
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnMessageHomeScreenEntered)
-    }
-
     LifecycleStartEffect(Unit) {
-        action(MessageAction.StartTimeTracking)
+        action(MessageAction.OnLifecycleStart)
         onStopOrDispose {
-            action(MessageAction.CancelTimeTracking)
+            action(MessageAction.OnLifecycleStop)
         }
     }
 }
 
 @Composable
 private fun MessageCard(
-    height: Dp,
+    canSendMessage: Boolean,
     title: String,
     buttonText: String,
-    imageRes: Int,
-    timePeriod: TimePeriod,
-    restricted: RestrictionArg,
-    isBannerVisible: Boolean = false,
-    isButtonEnable: Boolean = false,
-    onButtonClick: () -> Unit,
+    imageContent: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+    onButtonClick: () -> Unit = { },
 ) {
     Box(
         modifier = Modifier
-            .height(height)
+            .height(413.dp)
             .fillMaxWidth()
             .animateContentSize()
-            .padding(start = 20.dp, end = 20.dp, top = if (isBannerVisible) 0.dp else 20.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Gray600),
     ) {
-        MessageLottieAnimation(imageRes, timePeriod)
+        imageContent()
 
         Column(
             modifier = Modifier
@@ -200,15 +153,13 @@ private fun MessageCard(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (timePeriod == TimePeriod.EVENING_TO_NIGHT) {
-                MessageTimer()
-            }
+            content()
 
             WSButton(
                 text = buttonText,
                 paddingValues = PaddingValues(vertical = 0.dp, horizontal = 20.dp),
                 buttonType = WSButtonType.Primary,
-                enabled = isButtonEnable && !restricted.restricted,
+                enabled = canSendMessage,
                 onClick = { onButtonClick() },
             ) {
                 it()
@@ -218,12 +169,12 @@ private fun MessageCard(
 }
 
 @Composable
-private fun ReceivedMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
+private fun ReplyMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
-        Box(modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)) {
+        Box(modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)) {
             WSBanner(
                 title = stringResource(R.string.received_message_banner_title),
                 subTitle = stringResource(R.string.received_message_banner_subtitle),
@@ -236,7 +187,7 @@ private fun ReceivedMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
 }
 
 @Composable
-private fun MessageTimer(viewModel: MessageViewModel = hiltViewModel()) {
+private fun MessageTimer(viewModel: MessageViewModel) {
     val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
 
     Column(
@@ -244,7 +195,7 @@ private fun MessageTimer(viewModel: MessageViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(R.string.message_timer_title),
+            text = stringResource(R.string.message_card_description_all_sent),
             style = StaticTypeScale.Default.body9,
             color = WeSpotThemeManager.colors.txtSubColor,
         )
@@ -271,21 +222,66 @@ private fun MessageTimer(viewModel: MessageViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun MessageHomeDescription(title: String) {
-    Text(
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth(),
-        text = title,
-        style = StaticTypeScale.Default.body6,
-        color = Gray200,
-        textAlign = TextAlign.Center,
-        maxLines = 1,
-    )
+private fun RemainingMessageCounter(count: Int) {
+    Column(
+        modifier = Modifier.padding(bottom = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.message_card_description_ready_to_send),
+            style = StaticTypeScale.Default.body9,
+            color = WeSpotThemeManager.colors.txtSubColor,
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(id = R.drawable.pencil),
+                contentDescription = "Pencil Image",
+            )
+
+            Text(
+                text = "${count}개",
+                style = StaticTypeScale.Default.header1.copy(
+                    fontSize = 28.textDp,
+                    lineHeight = (28 * 1.4f).textDp,
+                ),
+                color = WeSpotThemeManager.colors.txtTitleColor,
+            )
+        }
+    }
 }
 
 @Composable
-private fun MessageLottieAnimation(imageRes: Int, timePeriod: TimePeriod) {
+private fun MessageImage(
+    countRemainingMessages: Int,
+) {
+    val imageRes = if (countRemainingMessages >= 3) {
+        R.drawable.message_3
+    } else if (countRemainingMessages == 2) {
+        R.drawable.message_2
+    } else {
+        R.drawable.message_1
+    }
+
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Image(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .size(320.dp),
+            painter = painterResource(imageRes),
+            contentDescription = stringResource(R.string.message_image),
+        )
+    }
+}
+
+@Composable
+private fun MessageLottieAnimation(
+    @RawRes imageRes: Int,
+) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(imageRes))
     val progress by animateLottieCompositionAsState(composition)
 
@@ -294,18 +290,10 @@ private fun MessageLottieAnimation(imageRes: Int, timePeriod: TimePeriod) {
             modifier = Modifier
                 .padding(top = 20.dp)
                 .size(320.dp)
-                .let {
-                    if (timePeriod == TimePeriod.DAWN_TO_EVENING ||
-                        timePeriod == TimePeriod.EVENING_TO_NIGHT
-                    ) {
-                        it.paint(
-                            painter = painterResource(R.drawable.message_gradient_dawn_evening),
-                            contentScale = ContentScale.Crop,
-                        )
-                    } else {
-                        it
-                    }
-                },
+                .paint(
+                    painter = painterResource(R.drawable.message_gradient_dawn_evening),
+                    contentScale = ContentScale.Crop,
+                ),
             composition = composition,
             progress = { progress },
         )

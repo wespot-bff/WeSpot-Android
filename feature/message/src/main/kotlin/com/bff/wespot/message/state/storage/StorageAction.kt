@@ -6,8 +6,6 @@ import com.bff.wespot.model.message.response.ReceivedMessage
 import com.bff.wespot.model.message.response.SentMessage
 
 sealed class StorageAction {
-    data object StartTimeTracking : StorageAction()
-    data object CancelTimeTracking : StorageAction()
     data object OnMessageBlockButtonClicked : StorageAction()
     data object OnMessageDeleteButtonClicked : StorageAction()
     data object OnMessageReportButtonClicked : StorageAction()

@@ -1,7 +1,6 @@
 package com.bff.wespot.domain.repository.message
 
 import androidx.paging.PagingData
-import com.bff.wespot.model.message.response.Message
 import com.bff.wespot.model.message.response.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +14,4 @@ interface MessageStorageRepository {
     suspend fun blockMessage(messageId: Int): Result<Unit>
 
     suspend fun unBlockMessage(messageId: Int): Result<Unit>
-
-    suspend fun getReservedMessage(): Result<List<Message>>
 }
