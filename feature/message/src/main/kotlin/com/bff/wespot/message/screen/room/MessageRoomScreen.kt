@@ -52,6 +52,7 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.toStringWithDotSeparator
 import com.bff.wespot.message.model.MessageCardType
+import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.state.room.RoomAction
 import com.bff.wespot.message.state.room.RoomSideEffect
 import com.bff.wespot.message.viewmodel.MessageRoomViewModel
@@ -65,7 +66,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface MessageRoomNavigator {
     fun navigateUp()
-    fun navigateMessageWriteScreen()
+    fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
 }
 
 data class MessageRoomScreenArgs(
@@ -86,7 +87,13 @@ internal fun MessageRoomScreen(
     viewModel.collectSideEffect {
         when (it) {
             RoomSideEffect.NavigateToMessageWriteScreen -> {
-                navigator.navigateMessageWriteScreen()
+                navigator.navigateMessageWriteScreen(
+                    args = MessageWriteScreenArgs(
+                        isReplyContext = true,
+                        roomId = state.messageRoom.messageRoomId,
+                        receiverName = state.messageRoom.name,
+                    ),
+                )
             }
 
             RoomSideEffect.NavigateUp -> {

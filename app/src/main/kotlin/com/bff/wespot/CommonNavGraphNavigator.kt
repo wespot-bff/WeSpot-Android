@@ -27,6 +27,7 @@ import com.bff.wespot.message.screen.room.MessageRoomNavigator
 import com.bff.wespot.message.screen.room.MessageRoomScreenArgs
 import com.bff.wespot.message.screen.send.MessageSendNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
+import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
@@ -73,7 +74,7 @@ class CommonNavGraphNavigator(
     }
 
     override fun navigateMessageWriteScreen() {
-        navController.navigate(MessageWriteScreenDestination within navGraph)
+        navController.navigate(MessageWriteScreenDestination() within navGraph)
     }
 
     override fun navigateReceiverSelectionScreen() {
@@ -141,5 +142,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs) {
         navController.navigate(MessageRoomScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateMessageWriteScreen(args: MessageWriteScreenArgs) {
+        navController.navigate(MessageWriteScreenDestination(args) within navGraph)
     }
 }
