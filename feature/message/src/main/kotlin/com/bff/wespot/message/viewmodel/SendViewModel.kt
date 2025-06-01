@@ -5,6 +5,7 @@ import androidx.paging.cachedIn
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.extension.onNetworkFailure
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
@@ -13,6 +14,7 @@ import com.bff.wespot.domain.usecase.CheckProfanityUseCase
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.MESSAGE_MAX_LENGTH
 import com.bff.wespot.message.model.AnonymousProfile
+import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.state.send.MessageSendSideEffect
 import com.bff.wespot.message.state.send.MessageSendUiState
 import com.bff.wespot.message.state.send.receiver.ReceiverAction
@@ -30,6 +32,7 @@ import com.bff.wespot.model.user.response.User
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
+import com.bff.wespot.ui.model.ToastState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -114,7 +117,10 @@ class SendViewModel @Inject constructor(
      */
     fun onAction(action: WritingAction) {
         when (action) {
-            is WritingAction.OnWriteScreenEntered -> observeMessageInput()
+            is WritingAction.OnWriteScreenEntered -> {
+                observeMessageInput()
+                handleMessageWriteScreenEntered(action.args)
+            }
             is WritingAction.OnMessageChanged -> handleMessageChanged(action.content)
             WritingAction.OnWriteDoneButtonClicked -> handleWriteDoneButtonClicked()
             WritingAction.OnExitDialogCancelButtonClicked -> {
@@ -131,6 +137,12 @@ class SendViewModel @Inject constructor(
             WritingAction.OnTopBarNavigateButtonClicked -> {
                 intent {
                     postSideEffect(WritingSideEffect.NavigateUp)
+                }
+            }
+            WritingAction.OnReplyButtonClicked -> handleReplyButtonClicked()
+            WritingAction.OnReplyCancelButtonClicked -> {
+                intent {
+                    postSideEffect(WritingSideEffect.DismissReplyDialog)
                 }
             }
         }
@@ -233,6 +245,16 @@ class SendViewModel @Inject constructor(
         }
     }
 
+    private fun handleMessageWriteScreenEntered(args: MessageWriteScreenArgs) = intent {
+        reduce {
+            state.copy(
+                isReplyContext = args.isReplyContext,
+                roomId = args.roomId,
+                receiver = User().copy(name = args.receiverName),
+            )
+        }
+    }
+
     private fun hasProfanity(content: String) = intent {
         viewModelScope.launch {
             runCatching {
@@ -250,6 +272,31 @@ class SendViewModel @Inject constructor(
             state.copy(
                 messageInput = content,
             )
+        }
+    }
+
+    private fun handleReplyButtonClicked() = intent {
+        postSideEffect(WritingSideEffect.DismissReplyDialog)
+        reduce { state.copy(isLoading = true) }
+
+        messageRepository.replyMessage(
+            roomId = state.roomId,
+            content = state.messageInput,
+        ).onSuccess {
+            postSideEffect(
+                WritingSideEffect.ShowToast(
+                    toastState = ToastState(
+                        show = true,
+                        message = R.string.message_send_success,
+                        type = WSToastType.Success,
+                    ),
+                ),
+            )
+            postSideEffect(WritingSideEffect.NavigateToMessage)
+        }.onNetworkFailure {
+            postSideEffect(it.toSideEffect())
+        }.also {
+            reduce { state.copy(isLoading = false) }
         }
     }
 
@@ -293,7 +340,11 @@ class SendViewModel @Inject constructor(
     }
 
     private fun handleWriteDoneButtonClicked() = intent {
-        postSideEffect(WritingSideEffect.NavigateToMessageSendScreen)
+        if (state.isReplyContext) {
+            postSideEffect(WritingSideEffect.ShowReplyDialog)
+        } else {
+            postSideEffect(WritingSideEffect.NavigateToMessageSendScreen)
+        }
     }
 
     private fun handleSelectDoneButtonClicked() = intent {

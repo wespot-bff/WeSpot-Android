@@ -85,4 +85,8 @@
     <string name="send_reply">답장 보내기</string>
     <string name="reply_complete">답장 완료</string>
     <string name="message_type_icon">Message Type Icon</string>
+    <string name="message_reply_title">%1$s}님께 답장을 작성해 주세요\n에버가 전달해 드릴게요</string>
+    <string name="reply_message">답장 보내기</string>
+    <string name="reply_dialog_subtitle">쪽지 전송 후에는 수정이나 전송 취소가 불가하며\n남은 쪽지 개수에서 1개가 차감돼요</string>
+    <string name="reply_dialog_title">답장을 전달할게요</string>
 </resources>

@@ -28,6 +28,7 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -39,6 +40,7 @@ import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.NetworkDialog
+import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.delay
@@ -51,14 +53,23 @@ interface MessageWriteNavigator {
     fun navigateMessageSendScreen()
 }
 
-@Destination
+data class MessageWriteScreenArgs(
+    val isReplyContext: Boolean = false,
+    val roomId: Int = -1,
+    val receiverName: String = "",
+)
+
+@Destination(navArgsDelegate = MessageWriteScreenArgs::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageWriteScreen(
-    navigator: MessageWriteNavigator,
     viewModel: SendViewModel,
+    navigator: MessageWriteNavigator,
+    args: MessageWriteScreenArgs,
+    showToast: (ToastState) -> Unit,
 ) {
     var dialogState by remember { mutableStateOf(false) }
+    var showReplyDialog by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
@@ -82,6 +93,15 @@ fun MessageWriteScreen(
                 }
                 WritingSideEffect.NavigateUp -> navigator.navigateUp()
                 WritingSideEffect.NavigateToMessageSendScreen -> navigator.navigateMessageSendScreen()
+                WritingSideEffect.ShowReplyDialog -> {
+                    showReplyDialog = true
+                }
+                WritingSideEffect.DismissReplyDialog -> {
+                    showReplyDialog = false
+                }
+                is WritingSideEffect.ShowToast -> {
+                    showToast(it.toastState)
+                }
             }
         }
     }
@@ -117,7 +137,11 @@ fun MessageWriteScreen(
                         action(WritingAction.OnWriteDoneButtonClicked)
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
-                    text = stringResource(R.string.write_done),
+                    text = if (state.isReplyContext) {
+                        stringResource(R.string.reply_message)
+                    } else {
+                        stringResource(R.string.write_done)
+                    },
                     content = { it() },
                 )
             },
@@ -127,7 +151,11 @@ fun MessageWriteScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 3.dp),
-                    text = stringResource(R.string.message_write_title),
+                    text = if (state.isReplyContext) {
+                        stringResource(R.string.message_reply_title, state.receiver.name)
+                    } else {
+                        stringResource(R.string.message_write_title)
+                    },
                     style = StaticTypeScale.Default.header1,
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 )
@@ -186,6 +214,18 @@ fun MessageWriteScreen(
         )
     }
 
+    if (showReplyDialog) {
+        WSDialog(
+            title = stringResource(R.string.reply_dialog_title),
+            subTitle = stringResource(R.string.reply_dialog_subtitle),
+            okButtonText = stringResource(R.string.message_send_dialog_button_text),
+            cancelButtonText = stringResource(R.string.cancel),
+            okButtonClick = { action(WritingAction.OnReplyButtonClicked) },
+            cancelButtonClick = { action(WritingAction.OnReplyButtonClicked) },
+            onDismissRequest = { },
+        )
+    }
+
     NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(focusRequester) {
@@ -195,6 +235,6 @@ fun MessageWriteScreen(
     }
 
     LaunchedEffect(Unit) {
-        action(WritingAction.OnWriteScreenEntered)
+        action(WritingAction.OnWriteScreenEntered(args))
     }
 }

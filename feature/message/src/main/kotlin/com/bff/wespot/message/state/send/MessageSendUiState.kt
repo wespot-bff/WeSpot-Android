@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flow
  * [isInputInitialized] 검색 후 결과가 없을 때 카카오톡 친구 초대 문구를 노출한다.
  * [isSelectedContext] 보낸이를 선택한 시점에서는 위치가 변경되지 않고, 이후 시점에서는 상위에 노출한다.
  **/
-
 data class MessageSendUiState(
     val profile: Profile = Profile(),
     val nameInput: String = "",
@@ -22,6 +21,8 @@ data class MessageSendUiState(
     val receiverList: Flow<PagingData<User>> = flow { },
     val receiver: User = User(),
     val messageInput: String = "",
+    val isReplyContext: Boolean = false,
+    val roomId: Int = -1,
     val hasProfanity: Boolean = false,
     val senderProfileList: List<SenderProfile> = listOf(),
     val senderProfile: SenderProfile = SenderProfile(),
