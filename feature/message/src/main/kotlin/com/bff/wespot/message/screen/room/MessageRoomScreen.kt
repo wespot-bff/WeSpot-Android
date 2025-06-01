@@ -113,6 +113,10 @@ internal fun MessageRoomScreen(
             )
         },
     ) { innerPadding ->
+        if (state.messageRoom.messageDetails.isEmpty()) {
+            return@Scaffold
+        }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -140,22 +144,22 @@ internal fun MessageRoomScreen(
                 selectedItem = state.selectedMessageDetail,
             )
         }
+    }
 
-        if (showDeleteConfirmModal) {
-            WSDialog(
-                title = stringResource(R.string.message_delete_dialog_title),
-                subTitle = stringResource(R.string.message_delete_dialog_subtitle),
-                okButtonText = stringResource(R.string.message_delete_dialog_ok_button),
-                cancelButtonText = stringResource(id = R.string.close),
-                okButtonClick = {
-                    action(RoomAction.OnDeleteConfirmed)
-                },
-                onDismissRequest = { },
-                cancelButtonClick = {
-                    action(RoomAction.OnClosedModalButtonClicked)
-                },
-            )
-        }
+    if (showDeleteConfirmModal) {
+        WSDialog(
+            title = stringResource(R.string.message_delete_dialog_title),
+            subTitle = stringResource(R.string.message_delete_dialog_subtitle),
+            okButtonText = stringResource(R.string.message_delete_dialog_ok_button),
+            cancelButtonText = stringResource(id = R.string.close),
+            okButtonClick = {
+                action(RoomAction.OnDeleteConfirmed)
+            },
+            onDismissRequest = { },
+            cancelButtonClick = {
+                action(RoomAction.OnClosedModalButtonClicked)
+            },
+        )
     }
 }
 
