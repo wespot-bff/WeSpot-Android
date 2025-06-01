@@ -7,7 +7,6 @@ import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
-import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter

@@ -30,7 +30,7 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun getMessage(messageId: Int): Result<MessageDetail> =
         messageDataSource.getMessage(messageId).mapCatching { messageDto ->
-            messageDto.toMessageDetail()
+            messageDto.toDomain()
         }
 
     override suspend fun getMessageHomeTitle(): Result<MessageHomeTitle> =
