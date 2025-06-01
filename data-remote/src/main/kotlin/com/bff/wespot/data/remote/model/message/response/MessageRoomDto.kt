@@ -1,6 +1,5 @@
 package com.bff.wespot.data.remote.model.message.response
 
-import com.bff.wespot.data.remote.extensions.toISOLocalDateTime
 import com.bff.wespot.model.message.response.MessageRoom
 import kotlinx.serialization.Serializable
 
@@ -10,6 +9,7 @@ data class MessageRoomDto(
     val name: String,
     val thumbnail: String,
     val isBookmarked: Boolean,
+    val isReceiverAnonymous: Boolean,
     val messageDetails: List<MessageDetailDto>
 ) {
     fun toDomain(): MessageRoom = MessageRoom(
@@ -19,21 +19,4 @@ data class MessageRoomDto(
         isBookmarked = isBookmarked,
         messageDetails = messageDetails.map { it.toDomain() },
     )
-
-    @Serializable
-    data class MessageDetailDto(
-        val id: Int,
-        val createdAt: String,
-        val content: String,
-        val isReceived: Boolean,
-        val isSend: Boolean
-    ) {
-        fun toDomain(): MessageRoom.MessageDetail = MessageRoom.MessageDetail(
-            id = id,
-            createdAt = createdAt.toISOLocalDateTime(),
-            content = content,
-            isReceived = isReceived,
-            isSend = isSend,
-        )
-    }
 }
