@@ -322,12 +322,14 @@ class SendViewModel @Inject constructor(
         }
         postSideEffect(ReceiverSideEffect.DismissProfileSelectBottomSheet)
 
+        /** 선택한 프로필로 쪽지를 전송 하지 않았다면, 신규 쪽지 작성으로 이동 */
         if (senderProfile.isNeverTalkBefore()) {
             postSideEffect(ReceiverSideEffect.NavigateToMessageWriteScreen)
             return@intent
         }
 
-        // TODO 답장으로 이동
+        /** 선택한 프로필로 쪽지를 작성했었다면, 해당 쪽지 방으로 이동 */
+        postSideEffect(ReceiverSideEffect.NavigateToMessageRoomScreen(state.receiver.id))
     }
 
     private fun handleProfileBottomSheetClosed() = intent {

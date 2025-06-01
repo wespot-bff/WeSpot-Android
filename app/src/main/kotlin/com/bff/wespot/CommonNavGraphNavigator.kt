@@ -18,11 +18,13 @@ import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
+import com.bff.wespot.message.screen.destinations.MessageRoomScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.room.MessageRoomNavigator
+import com.bff.wespot.message.screen.room.MessageRoomScreenArgs
 import com.bff.wespot.message.screen.send.MessageSendNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
@@ -135,5 +137,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToEntireScreen() {
         navController.navigate(EntireScreenDestination within navGraph)
+    }
+
+    override fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs) {
+        navController.navigate(MessageRoomScreenDestination(args) within navGraph)
     }
 }
