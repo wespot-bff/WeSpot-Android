@@ -1,11 +1,13 @@
 package com.bff.wespot.data.remote.source.message
 
+import com.bff.wespot.data.remote.model.message.request.MessageReplyDto
 import com.bff.wespot.data.remote.model.message.request.SendMessageDto
 import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
+import com.bff.wespot.data.remote.model.message.response.SentMessageListDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -67,5 +69,14 @@ class MessageDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v2/messages/title")
             }
+        }
+
+    override suspend fun replyMessage(roomId: Int, reply: MessageReplyDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("/api/v2/messages/${roomId}/answer")
+            }
+            setBody(reply)
         }
 }

@@ -16,4 +16,6 @@ interface MessageRepository {
     suspend fun getMessage(messageId: Int): Result<MessageDetail>
 
     suspend fun getMessageHomeTitle(): Result<MessageHomeTitle>
+
+    suspend fun replyMessage(roomId: Int, content: String): Result<Unit>
 }

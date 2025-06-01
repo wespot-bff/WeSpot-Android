@@ -1,6 +1,7 @@
 package com.bff.wespot.data.repository.message
 
 import com.bff.wespot.data.mapper.message.toDto
+import com.bff.wespot.data.remote.model.message.request.MessageReplyDto
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.model.message.request.SendMessage
@@ -36,4 +37,7 @@ class MessageRepositoryImpl @Inject constructor(
         messageDataSource.getMessageHomeTitle().mapCatching {
             it.toMessageHomeTitle()
         }
+
+    override suspend fun replyMessage(roomId: Int, content: String): Result<Unit> =
+        messageDataSource.replyMessage(roomId, MessageReplyDto(content))
 }
