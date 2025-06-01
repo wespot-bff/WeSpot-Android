@@ -17,6 +17,7 @@ import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
+import com.bff.wespot.message.screen.room.MessageRoomScreenArgs
 import com.bff.wespot.message.screen.storage.MessageStorageScreen
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.RestrictionArg
@@ -28,6 +29,7 @@ import kotlinx.collections.immutable.persistentListOf
 interface MessageNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen()
+    fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs)
 }
 
 data class MessageScreenArgs(
@@ -84,6 +86,11 @@ internal fun MessageScreen(
                             type = navArgs.type,
                             messageId = navArgs.messageId,
                             showToast = showToast,
+                            navigateToMessageRoomScreen = {
+                                messageNavigator.navigateToMessageRoomScreen(
+                                    args = MessageRoomScreenArgs(it),
+                                )
+                            },
                         )
                     }
                 }
