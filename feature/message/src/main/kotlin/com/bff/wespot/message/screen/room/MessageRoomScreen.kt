@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -54,6 +55,7 @@ import com.bff.wespot.message.model.MessageCardType
 import com.bff.wespot.message.state.room.RoomAction
 import com.bff.wespot.message.state.room.RoomSideEffect
 import com.bff.wespot.message.viewmodel.MessageRoomViewModel
+import com.bff.wespot.model.message.response.MessageDetail
 import com.bff.wespot.model.message.response.MessageRoom
 import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.util.clickableSingle
@@ -167,26 +169,41 @@ private fun MessageRoomTopBar(
         title = "",
         titleContent = {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box {
-                    ProfileCircleImage(
-                        size = 30.dp,
-                        imageUrl = data.thumbnail,
-                        contentDescription = stringResource(id = R.string.receiver_profile_image),
-                    )
+                Box(
+                    modifier = Modifier
+                        .clip(WeSpotThemeManager.shapes.extraLarge)
+                        .background(WeSpotThemeManager.colors.bottomSheetColor)
+                        .padding(horizontal = 8.dp, vertical = 1.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (data.isBookmarked) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.bookmark),
+                                tint = WeSpotThemeManager.colors.primaryColor,
+                                contentDescription = "Bookmarked User",
+                            )
+                        }
 
-                    if (data.isBookmarked) {
-                        Image(
-                            modifier = Modifier
-                                .padding(top = 4.dp, end = 4.dp)
-                                .align(Alignment.TopEnd)
-                                .zIndex(1f),
-                            painter = painterResource(id = R.drawable.room_bookmarked),
-                            contentDescription = stringResource(R.string.message_room_bookmark),
+                        Text(
+                            text = data.getReceiverStatus(),
+                            color = WeSpotThemeManager.colors.txtTitleColor,
+                            style = StaticTypeScale.Default.body9,
                         )
                     }
                 }
+
+                ProfileCircleImage(
+                    size = 30.dp,
+                    imageUrl = data.thumbnail,
+                    contentDescription = stringResource(id = R.string.receiver_profile_image),
+                )
 
                 Text(
                     text = data.name,
@@ -291,8 +308,8 @@ private fun MessageCard(
 @Composable
 private fun MessageHorizontalList(
     messageRoom: MessageRoom,
-    selectedItem: MessageRoom.MessageDetail,
-    onItemClicked: (MessageRoom.MessageDetail) -> Unit,
+    selectedItem: MessageDetail,
+    onItemClicked: (MessageDetail) -> Unit,
 ) {
     LazyRow(
         modifier = Modifier
@@ -370,6 +387,11 @@ private fun MessageHorizontalList(
 private fun PreviewRoomScreen() {
     WeSpotTheme {
         Column {
+            MessageRoomTopBar(
+                MessageRoom(name = "jaino", isBookmarked = true),
+                { },
+            )
+
             MessageCard(
                 type = MessageCardType.SENT,
                 content = "dassasddasdasdassdasdsasasd",
@@ -383,10 +405,10 @@ private fun PreviewRoomScreen() {
             MessageHorizontalList(
                 messageRoom = MessageRoom(
                     messageDetails = listOf(
-                        MessageRoom.MessageDetail(),
+                        MessageDetail(),
                     ),
                 ),
-                selectedItem = MessageRoom.MessageDetail(),
+                selectedItem = MessageDetail(),
             ) { }
         }
     }

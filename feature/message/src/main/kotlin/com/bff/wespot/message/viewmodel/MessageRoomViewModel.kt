@@ -7,7 +7,7 @@ import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.message.state.room.RoomAction
 import com.bff.wespot.message.state.room.RoomSideEffect
 import com.bff.wespot.message.state.room.RoomUiState
-import com.bff.wespot.model.message.response.MessageRoom
+import com.bff.wespot.model.message.response.MessageDetail
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +25,7 @@ class MessageRoomViewModel @Inject constructor(
     private val repository: MessageStorageRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ContainerHost<RoomUiState, RoomSideEffect> {
-    override val container = container<RoomUiState, RoomSideEffect>(RoomUiState())
-
-    init {
+    override val container = container<RoomUiState, RoomSideEffect>(RoomUiState()) {
         getMessageRoom()
     }
 
@@ -40,8 +38,7 @@ class MessageRoomViewModel @Inject constructor(
                     reduce {
                         state.copy(
                             messageRoom = it,
-                            selectedMessageDetail = it.messageDetails.lastOrNull()
-                                ?: MessageRoom.MessageDetail(),
+                            selectedMessageDetail = it.messageDetails.lastOrNull() ?: MessageDetail(),
                         )
                     }
                 }
@@ -65,7 +62,7 @@ class MessageRoomViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageDetailSelected(messageDetail: MessageRoom.MessageDetail) = intent {
+    private fun handleMessageDetailSelected(messageDetail: MessageDetail) = intent {
         reduce {
             state.copy(selectedMessageDetail = messageDetail)
         }
