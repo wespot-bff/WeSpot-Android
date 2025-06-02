@@ -119,7 +119,9 @@ class SendViewModel @Inject constructor(
         when (action) {
             is WritingAction.OnWriteScreenEntered -> {
                 observeMessageInput()
-                handleMessageWriteScreenEntered(action.args)
+                if (action.args.isReplyContext) {
+                    handelReplyContext(action.args)
+                }
             }
             is WritingAction.OnMessageChanged -> handleMessageChanged(action.content)
             WritingAction.OnWriteDoneButtonClicked -> handleWriteDoneButtonClicked()
@@ -245,7 +247,7 @@ class SendViewModel @Inject constructor(
         }
     }
 
-    private fun handleMessageWriteScreenEntered(args: MessageWriteScreenArgs) = intent {
+    private fun handelReplyContext(args: MessageWriteScreenArgs) = intent {
         reduce {
             state.copy(
                 isReplyContext = args.isReplyContext,
