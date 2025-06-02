@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -47,7 +46,6 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Primary400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.toStringWithDotSeparator
@@ -131,7 +129,7 @@ internal fun MessageRoomScreen(
         ) {
             MessageCard(
                 type = if (state.selectedMessageDetail.isSend) MessageCardType.SENT else MessageCardType.RECEIVED,
-                content = state.selectedMessageDetail.content,
+                detail = state.selectedMessageDetail,
                 showReplyButton = state.messageRoom.showReplyButton(state.selectedMessageDetail),
                 showDeleteButton = !state.messageRoom.isSingleMessage(),
                 onReplyButtonClicked = {
@@ -232,7 +230,7 @@ private fun MessageRoomTopBar(
 @Composable
 private fun MessageCard(
     type: MessageCardType,
-    content: String,
+    detail: MessageDetail,
     showReplyButton: Boolean,
     showDeleteButton: Boolean,
     onReplyButtonClicked: () -> Unit,
@@ -301,7 +299,7 @@ private fun MessageCard(
                     .height(240.dp)
                     .fillMaxWidth()
                     .verticalScroll(scrollState),
-                text = content,
+                text = detail.content,
                 style = StaticTypeScale.Default.body4,
                 color = WeSpotThemeManager.colors.backgroundColor,
             )
@@ -311,7 +309,7 @@ private fun MessageCard(
             if (showReplyButton) {
                 WSButton(
                     text = type.buttonText,
-                    enabled = type.buttonEnabled,
+                    enabled = detail.isAbleToAnswer,
                     onClick = onReplyButtonClicked,
                     paddingValues = PaddingValues(top = 36.dp, bottom = 42.dp),
                     content = { it() },
@@ -394,39 +392,6 @@ private fun MessageHorizontalList(
             }
 
             Spacer(modifier = Modifier.width(16.dp))
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewRoomScreen() {
-    WeSpotTheme {
-        Column {
-            MessageRoomTopBar(
-                MessageRoom(name = "jaino", isBookmarked = true),
-                { },
-            )
-
-            MessageCard(
-                type = MessageCardType.SENT,
-                content = "dassasddasdasdassdasdsasasd",
-                showReplyButton = true,
-                showDeleteButton = false,
-                onReplyButtonClicked = { },
-                onDeleteButtonClicked = { },
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            MessageHorizontalList(
-                messageRoom = MessageRoom(
-                    messageDetails = listOf(
-                        MessageDetail(),
-                    ),
-                ),
-                selectedItem = MessageDetail(),
-            ) { }
         }
     }
 }

@@ -47,10 +47,4 @@ enum class MessageCardType {
             RECEIVED -> stringResource(R.string.send_reply)
             SENT -> stringResource(R.string.reply_complete)
         }
-
-    val buttonEnabled
-        get() = when (this) {
-            RECEIVED -> true
-            SENT -> false
-        }
 }
