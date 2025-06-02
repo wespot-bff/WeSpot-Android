@@ -18,5 +18,5 @@ interface MessageStorageDataSource {
 
     suspend fun unBlockMessage(messageId: Int): Result<Unit>
 
-    suspend fun getMessageRoom(receiverId: Int): Result<MessageRoomDto>
+    suspend fun getMessageRoom(roomId: Int): Result<MessageRoomDto>
 }

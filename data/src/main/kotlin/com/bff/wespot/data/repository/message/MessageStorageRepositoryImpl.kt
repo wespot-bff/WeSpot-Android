@@ -34,8 +34,8 @@ class MessageStorageRepositoryImpl @Inject constructor(
     override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
         messageStorageDataSource.unBlockMessage(messageId = messageId)
 
-    override suspend fun getMessageRoom(receivedId: Int): Result<MessageRoom> =
-        messageStorageDataSource.getMessageRoom(receivedId).mapCatching {
+    override suspend fun getMessageRoom(roomId: Int): Result<MessageRoom> =
+        messageStorageDataSource.getMessageRoom(roomId).mapCatching {
             it.toDomain()
         }
 }

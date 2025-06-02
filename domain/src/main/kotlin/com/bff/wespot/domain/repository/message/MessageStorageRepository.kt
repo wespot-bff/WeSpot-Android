@@ -18,5 +18,5 @@ interface MessageStorageRepository {
 
     suspend fun unBlockMessage(messageId: Int): Result<Unit>
 
-    suspend fun getMessageRoom(receivedId: Int): Result<MessageRoom>
+    suspend fun getMessageRoom(roomId: Int): Result<MessageRoom>
 }
