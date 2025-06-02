@@ -123,7 +123,7 @@ fun ReceiverSelectionScreen(
                 }
                 is ReceiverSideEffect.NavigateToMessageRoomScreen -> {
                     navigator.navigateToMessageRoomScreen(
-                        MessageRoomScreenArgs(it.receiverId),
+                        MessageRoomScreenArgs(it.roomId),
                     )
                 }
             }

@@ -8,4 +8,6 @@ data class MessageDetail(
     val content: String = "",
     val isReceived: Boolean = true,
     val isSend: Boolean = false,
+    val isRead: Boolean = false,
+    val isAbleToAnswer: Boolean = false,
 )

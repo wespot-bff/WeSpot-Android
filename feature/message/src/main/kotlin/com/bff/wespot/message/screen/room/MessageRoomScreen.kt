@@ -70,7 +70,7 @@ interface MessageRoomNavigator {
 }
 
 data class MessageRoomScreenArgs(
-    val receiverId: Int,
+    val roomId: Int,
 )
 
 @Destination(navArgsDelegate = MessageRoomScreenArgs::class)
@@ -120,7 +120,7 @@ internal fun MessageRoomScreen(
             )
         },
     ) { innerPadding ->
-        if (state.messageRoom.messageDetails.isEmpty()) {
+        if (state.selectedMessageDetail == null) {
             return@Scaffold
         }
 
@@ -132,11 +132,12 @@ internal fun MessageRoomScreen(
             MessageCard(
                 type = if (state.selectedMessageDetail.isSend) MessageCardType.SENT else MessageCardType.RECEIVED,
                 content = state.selectedMessageDetail.content,
-                isLastItem = state.messageRoom.isLastMessage(state.selectedMessageDetail),
-                onButtonClicked = {
+                showReplyButton = state.messageRoom.showReplyButton(state.selectedMessageDetail),
+                showDeleteButton = !state.messageRoom.isSingleMessage(),
+                onReplyButtonClicked = {
                     action(RoomAction.OnReplyButtonClicked)
                 },
-                onRemoveButtonClicked = {
+                onDeleteButtonClicked = {
                     action(RoomAction.OnDeleteButtonClicked)
                 },
             )
@@ -232,9 +233,10 @@ private fun MessageRoomTopBar(
 private fun MessageCard(
     type: MessageCardType,
     content: String,
-    isLastItem: Boolean,
-    onButtonClicked: () -> Unit,
-    onRemoveButtonClicked: () -> Unit,
+    showReplyButton: Boolean,
+    showDeleteButton: Boolean,
+    onReplyButtonClicked: () -> Unit,
+    onDeleteButtonClicked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val image = type.backgroundImage
@@ -243,21 +245,24 @@ private fun MessageCard(
         modifier = Modifier
             .padding(horizontal = 24.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .clickableSingle {
-                    onRemoveButtonClicked()
-                }
-                .padding(top = 18.dp, end = 18.dp)
-                .size(40.dp)
-                .zIndex(99f),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.close),
-                contentDescription = stringResource(id = R.string.close),
-            )
+        if (showDeleteButton) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .clickableSingle {
+                        onDeleteButtonClicked()
+                    }
+                    .padding(top = 18.dp, end = 18.dp)
+                    .size(40.dp)
+                    .zIndex(99f),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.close),
+                    tint = WeSpotThemeManager.colors.secondaryBtnColor,
+                    contentDescription = stringResource(id = R.string.close),
+                )
+            }
         }
 
         Column(
@@ -303,11 +308,11 @@ private fun MessageCard(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (isLastItem) {
+            if (showReplyButton) {
                 WSButton(
                     text = type.buttonText,
                     enabled = type.buttonEnabled,
-                    onClick = onButtonClicked,
+                    onClick = onReplyButtonClicked,
                     paddingValues = PaddingValues(top = 36.dp, bottom = 42.dp),
                     content = { it() },
                 )
@@ -334,7 +339,7 @@ private fun MessageHorizontalList(
         ) { data ->
             Box(
                 modifier = Modifier
-                    .size(width = 80.dp, height = 90.dp)
+                    .height(90.dp)
                     .background(
                         color = WeSpotThemeManager.colors.cardBackgroundColor,
                         shape = RoundedCornerShape(10.dp),
@@ -344,13 +349,13 @@ private fun MessageHorizontalList(
                     }
                     .then(
                         if (data == selectedItem) {
-                            Modifier.alpha(0.5f)
-                        } else {
                             Modifier.border(
                                 width = 1.dp,
                                 color = Primary400,
                                 shape = RoundedCornerShape(10.dp),
                             )
+                        } else {
+                            Modifier.alpha(0.5f)
                         },
                     ),
             ) {
@@ -406,9 +411,10 @@ private fun PreviewRoomScreen() {
             MessageCard(
                 type = MessageCardType.SENT,
                 content = "dassasddasdasdassdasdsasasd",
-                isLastItem = true,
-                onButtonClicked = { },
-                onRemoveButtonClicked = { },
+                showReplyButton = true,
+                showDeleteButton = false,
+                onReplyButtonClicked = { },
+                onDeleteButtonClicked = { },
             )
 
             Spacer(modifier = Modifier.height(20.dp))

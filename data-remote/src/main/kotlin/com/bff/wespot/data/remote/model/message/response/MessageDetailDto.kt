@@ -10,7 +10,9 @@ data class MessageDetailDto(
     val createdAt: String,
     val content: String,
     val isReceived: Boolean,
-    val isSend: Boolean
+    val isSend: Boolean,
+    val isRead: Boolean = false,
+    val isAbleToAnswer: Boolean = false,
 ) {
     fun toDomain(): MessageDetail = MessageDetail(
         id = id,
@@ -18,5 +20,7 @@ data class MessageDetailDto(
         content = content,
         isReceived = isReceived,
         isSend = isSend,
+        isRead = isRead,
+        isAbleToAnswer = isAbleToAnswer,
     )
 }

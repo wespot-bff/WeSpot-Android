@@ -14,5 +14,7 @@ data class MessageRoom(
         return isLastItem && this.messageDetails.size > 1
     }
 
+    fun isSingleMessage(): Boolean = messageDetails.size <= 1
+
     fun getReceiverStatus(): String = if (isReceiverAnonymous) "익명" else "실명"
 }
