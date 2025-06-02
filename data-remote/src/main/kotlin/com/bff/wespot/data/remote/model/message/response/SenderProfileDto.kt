@@ -12,6 +12,7 @@ data class SenderProfileDto(
     val recentlyTalk: String? = null,
     val myTurnToAnswer: Boolean,
     val isAnonymous: Boolean,
+    val messageRoomId: Int = -1,
 ) {
     fun toDomain() = SenderProfile(
         id = id,
@@ -20,5 +21,6 @@ data class SenderProfileDto(
         recentlyTalk = recentlyTalk?.toISOLocalDateTime(),
         myTurnToAnswer = myTurnToAnswer,
         isAnonymous = isAnonymous,
+        messageRoomId = messageRoomId,
     )
 }

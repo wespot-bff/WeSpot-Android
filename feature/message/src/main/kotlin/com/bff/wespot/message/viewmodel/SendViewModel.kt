@@ -380,7 +380,7 @@ class SendViewModel @Inject constructor(
         }
 
         /** 선택한 프로필로 쪽지를 작성했었다면, 해당 쪽지 방으로 이동 */
-        postSideEffect(ReceiverSideEffect.NavigateToMessageRoomScreen(state.receiver.id))
+        postSideEffect(ReceiverSideEffect.NavigateToMessageRoomScreen(senderProfile.messageRoomId))
     }
 
     private fun handleProfileBottomSheetClosed() = intent {
