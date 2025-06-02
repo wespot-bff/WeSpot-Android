@@ -61,6 +61,9 @@ class MessageViewModel @Inject constructor(
 
     fun onAction(action: MessageAction) {
         when (action) {
+            is MessageAction.OnTabSelected -> {
+                handleTabSelected(action.index)
+            }
             MessageAction.OnLifecycleStart -> {
                 checkAndStartTimer()
             }
@@ -80,6 +83,12 @@ class MessageViewModel @Inject constructor(
                 .collect {
                     reduce { state.copy(profile = it) }
                 }
+        }
+    }
+
+    private fun handleTabSelected(index: Int) = intent {
+        reduce {
+            state.copy(selectedTabIndex = index)
         }
     }
 
