@@ -26,20 +26,25 @@ class MessageRoomViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ContainerHost<RoomUiState, RoomSideEffect> {
     override val container = container<RoomUiState, RoomSideEffect>(RoomUiState()) {
-        getMessageRoom()
+        val roomId: Int = savedStateHandle["roomId"] ?: return@container
+        getMessageRoom(roomId)
     }
 
-    private fun getMessageRoom() = intent {
-        val receiverId: Int = savedStateHandle["receiverId"] ?: return@intent
-
+    private fun getMessageRoom(roomId: Int) = intent {
         viewModelScope.launch {
-            repository.getMessageRoom(receiverId)
+            repository.getMessageRoom(roomId)
                 .onSuccess {
+                    val lastItem = it.messageDetails.lastOrNull()
                     reduce {
                         state.copy(
                             messageRoom = it,
-                            selectedMessageDetail = it.messageDetails.lastOrNull() ?: MessageDetail(),
+                            selectedMessageDetail = lastItem,
                         )
+                    }
+
+                    /** 쪽지 방에서 마지막 아이템 조회 처리한다. */
+                    if (lastItem?.isRead == false) {
+                        updateReadStatus(lastItem.id)
                     }
                 }
                 .onNetworkFailure {
@@ -48,6 +53,24 @@ class MessageRoomViewModel @Inject constructor(
                 .onFailure {
                     Timber.d(it)
                 }
+        }
+    }
+
+    private fun updateReadStatus(messageId: Int) = intent {
+        viewModelScope.launch {
+            repository.updateMessageReadStatus(messageId)
+
+            val updatedList = state.messageRoom.messageDetails.map { message ->
+                if (message.id == messageId) {
+                    message.copy(isRead = true)
+                } else {
+                    message
+                }
+            }
+
+            reduce {
+                state.copy(messageRoom = state.messageRoom.copy(messageDetails = updatedList))
+            }
         }
     }
 
@@ -66,6 +89,10 @@ class MessageRoomViewModel @Inject constructor(
         reduce {
             state.copy(selectedMessageDetail = messageDetail)
         }
+
+        if (!messageDetail.isRead) {
+            updateReadStatus(messageId = messageDetail.id)
+        }
     }
 
     private fun handleReplyButtonClicked() = intent {
@@ -81,23 +108,34 @@ class MessageRoomViewModel @Inject constructor(
     }
 
     private fun handleDeleteConfirmed() = intent {
-        val updatedMessageDetails = state.messageRoom.messageDetails.filterNot {
-            it.id == state.selectedMessageDetail.id
+        postSideEffect(RoomSideEffect.CloseMessageDeleteConfirmModal)
+        val messageDetails = state.messageRoom.messageDetails
+        val deletedMessageId = state.selectedMessageDetail?.id
+
+        /** 삭제할 아이템이 없거나, 마지막 아이템인 경우 삭제 처리하지 않는다. */
+        if (deletedMessageId == null || state.messageRoom.isSingleMessage()) {
+            return@intent
         }
 
+        /** 쪽지 삭제 API를 호출한다. Optimistic Update */
+        viewModelScope.launch {
+            repository.deleteMessage(deletedMessageId)
+        }
+
+        /**
+         * 선택된 쪽지를 제거한 후, 쪽지 목록을 갱신하고 새로 선택될 쪽지를 선택한다.
+         * 새롭게 선택되는 쪽지는 삭제된 쪽지의 이전 쪽지이다.
+         */
+        val updatedMessages = messageDetails.filter { it.id != deletedMessageId }
+        val deletedIndex = messageDetails.indexOfFirst { it.id == deletedMessageId }
+
+        val selectedIndex = (deletedIndex - 1).coerceAtLeast(0)
+        val selectedMessageDetail = updatedMessages.getOrNull(selectedIndex)
         reduce {
             state.copy(
-                messageRoom = state.messageRoom.copy(
-                    messageDetails = updatedMessageDetails,
-                ),
+                messageRoom = state.messageRoom.copy(messageDetails = updatedMessages),
+                selectedMessageDetail = selectedMessageDetail,
             )
-        }
-
-        viewModelScope.launch {
-            repository.deleteMessage(state.selectedMessageDetail.id)
-                .onFailure {
-                    Timber.d(it)
-                }
         }
     }
 
