@@ -11,7 +11,9 @@ data class MessageRoom(
     /** 마지막 아이템이면서, 답장을 주고 받은 경우에만 노출한다. */
     fun showReplyButton(message: MessageDetail): Boolean {
         val isLastItem = messageDetails.lastOrNull()?.id == message.id
-        return isLastItem && this.messageDetails.size > 1
+        if (isLastItem.not()) return false
+
+        return if (message.isSend) messageDetails.size > 1 else true
     }
 
     fun isSingleMessage(): Boolean = messageDetails.size <= 1
