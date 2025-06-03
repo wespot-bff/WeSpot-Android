@@ -1,10 +1,10 @@
 package com.bff.wespot.data.remote.source.message
 
-import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
+import com.bff.wespot.data.remote.model.message.request.SendMessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
-import com.bff.wespot.data.remote.model.message.response.MessageIdDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
+import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
@@ -14,15 +14,23 @@ import javax.inject.Inject
 
 class MessageDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
-) : MessageDataSource {
+): MessageDataSource {
+    override suspend fun getSenderProfileList(receiverId: Int): Result<List<SenderProfileDto>> =
+        httpClient.safeRequest {
+            method = HttpMethod.Get
+            url {
+                path("api/v1/messages/receiver/$receiverId/profiles")
+            }
+        }
+
     override suspend fun postMessage(
-        writtenMessageDto: WrittenMessageDto,
-    ): Result<MessageIdDto> =
+        sendMessage: SendMessageDto,
+    ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
-                path("api/v1/messages/send")
-                setBody(writtenMessageDto)
+                path("api/v2/messages")
+                setBody(sendMessage)
             }
         }
 
@@ -31,18 +39,6 @@ class MessageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v2/messages/status")
-            }
-        }
-
-    override suspend fun editMessage(
-        messageId: Int,
-        writtenMessageDto: WrittenMessageDto
-    ): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Put
-                path("api/v1/messages/$messageId")
-                setBody(writtenMessageDto)
             }
         }
 

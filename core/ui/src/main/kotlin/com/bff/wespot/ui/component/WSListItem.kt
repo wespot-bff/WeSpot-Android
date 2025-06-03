@@ -3,7 +3,6 @@ package com.bff.wespot.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,9 +45,9 @@ fun WSListItem(
 ) {
     Box(
         modifier = modifier
+            .padding(vertical = 6.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(vertical = 8.dp)
             .clip(WeSpotThemeManager.shapes.medium)
             .border(
                 width = 1.dp,
@@ -63,7 +62,7 @@ fun WSListItem(
             .clickable { onClick.invoke() },
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 13.dp),
         ) {
             Box(
                 modifier = Modifier
@@ -83,7 +82,6 @@ fun WSListItem(
 
             Column(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = title,

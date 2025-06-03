@@ -2,16 +2,17 @@ package com.bff.wespot.data.mapper.message
 
 import com.bff.wespot.data.local.model.message.MessageEntity
 import com.bff.wespot.data.local.model.message.MessageEntityList
-import com.bff.wespot.data.remote.model.message.request.WrittenMessageDto
+import com.bff.wespot.data.remote.model.message.request.SendMessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageListDto
-import com.bff.wespot.model.message.request.WrittenMessage
+import com.bff.wespot.model.message.request.SendMessage
 
-internal fun WrittenMessage.toWrittenMessageDto(): WrittenMessageDto = WrittenMessageDto(
+internal fun SendMessage.toDto(): SendMessageDto = SendMessageDto(
     receiverId = receiverId,
     content = content,
-    senderName = senderName,
     isAnonymous = isAnonymous,
+    anonymousImageUrl = anonymousImageUrl,
+    anonymousProfileName = anonymousProfileName,
 )
 
 internal fun MessageListDto.toEntity(

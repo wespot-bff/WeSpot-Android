@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.ui.R
 
 @Composable
 fun ProfileCircleImage(
@@ -32,6 +33,9 @@ fun ProfileCircleImage(
             modifier = Modifier.size(size),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
+                .error(R.drawable.default_profile)
+                .fallback(R.drawable.default_profile)
+                .placeholder(R.drawable.default_profile)
                 .crossfade(true)
                 .build(),
             contentDescription = contentDescription,

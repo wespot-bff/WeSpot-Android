@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,55 +35,45 @@ import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.component.modal.WSDialog
-import com.bff.wespot.designsystem.component.toggle.WSSwitch
-import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.component.SendExitDialog
-import com.bff.wespot.message.state.send.SendAction
-import com.bff.wespot.message.state.send.SendSideEffect
+import com.bff.wespot.message.model.AnonymousProfile
+import com.bff.wespot.message.state.send.send.SendAction
+import com.bff.wespot.message.state.send.send.SendSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LetterCountIndicator
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
-import com.bff.wespot.ui.component.TopToast
+import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-interface MessageEditNavigator {
+interface MessageSendNavigator {
     fun navigateUp()
-    fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
-    fun navigateMessageWriteScreen(args: MessageWriteScreenArgs)
     fun popUpToMessageScreen()
 }
 
-data class EditMessageScreenArgs(
-    val isReservedMessage: Boolean = false,
-    val messageId: Int = -1,
-)
-
-@Destination(navArgsDelegate = EditMessageScreenArgs::class)
+@Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageEditScreen(
-    navigator: MessageEditNavigator,
-    navArgs: EditMessageScreenArgs,
+fun MessageSendScreen(
+    navigator: MessageSendNavigator,
     showToast: (ToastState) -> Unit,
     viewModel: SendViewModel,
 ) {
     var exitDialog by remember { mutableStateOf(false) }
-    var reserveDialog by remember { mutableStateOf(false) }
-    var timeoutDialog by remember { mutableStateOf(false) }
-    var toast by remember { mutableStateOf(false) }
+    var showSendConfirmModal by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+    var showAnonymousProfileModal by remember { mutableStateOf(false) }
 
     val state by viewModel.collectAsState()
-    val action = viewModel::onAction
+    val action: (SendAction) -> Unit = viewModel::onAction
 
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -90,34 +81,34 @@ fun MessageEditScreen(
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
-        when (it) {
-            SendSideEffect.CloseReserveDialog -> {
-                reserveDialog = false
+        if (it is SendSideEffect) {
+            when (it) {
+                SendSideEffect.CloseSendConfirmModal -> {
+                    showSendConfirmModal = false
+                }
+                SendSideEffect.NavigateToMessage -> {
+                    navigator.popUpToMessageScreen()
+                }
+                is SendSideEffect.ShowToast -> {
+                    showToast(
+                        ToastState(
+                            message = it.message,
+                            show = true,
+                            type = WSToastType.Success,
+                        ),
+                    )
+                }
+                SendSideEffect.DismissExitDialog -> {
+                    exitDialog = false
+                }
+                SendSideEffect.NavigateUp -> navigator.navigateUp()
+                SendSideEffect.ShowAnonymousProfileModal -> {
+                    showAnonymousProfileModal = true
+                }
+                SendSideEffect.DismissAnonymousProfileModal -> {
+                    showAnonymousProfileModal = false
+                }
             }
-
-            SendSideEffect.ShowTimeoutDialog -> {
-                timeoutDialog = true
-            }
-
-            SendSideEffect.NavigateToMessage -> {
-                navigator.popUpToMessageScreen()
-            }
-
-            is SendSideEffect.ShowToast -> {
-                showToast(
-                    ToastState(
-                        message = it.message,
-                        show = true,
-                        type = WSToastType.Success,
-                    ),
-                )
-            }
-
-            SendSideEffect.DismissExitDialog -> {
-                exitDialog = false
-            }
-
-            SendSideEffect.NavigateUp -> navigator.navigateUp()
         }
     }
 
@@ -125,8 +116,7 @@ fun MessageEditScreen(
         topBar = {
             WSTopBar(
                 title = "",
-                // 예약된 쪽지인 경우, action 버튼과 중복되는 동작을 수행하여, 뒤로가기 버튼은 숨김 처리한다.
-                canNavigateBack = state.isReservedMessage.not(),
+                canNavigateBack = true,
                 navigateUp = {
                     action(SendAction.OnTopBarNavigateButtonClicked)
                 },
@@ -150,40 +140,27 @@ fun MessageEditScreen(
             button = {
                 WSButton(
                     onClick = {
-                        if (state.isReservedMessage) {
-                            action(SendAction.OnEditButtonClicked(navArgs.messageId))
-                        } else {
-                            reserveDialog = true
-                        }
+                        showSendConfirmModal = true
                     },
-                    text = stringResource(
-                        if (state.isReservedMessage) R.string.edit_done else R.string.message_send,
-                    ),
+                    text = stringResource(R.string.message_send),
                     content = { it() },
                 )
             },
         ) {
             Column(modifier = Modifier.verticalScroll(scrollState)) {
-                EditField(
+                MessageProfileItem(
                     title = stringResource(R.string.receiver),
-                    value = state.selectedUser.toDescription(),
-                ) {
-                    navigator.navigateReceiverSelectionScreen(
-                        args = ReceiverSelectionScreenArgs(isEditing = true),
-                    )
-                }
+                    buttonText = state.receiver.toMessageReceiverInfo(),
+                    imageUrl = state.receiver.profileCharacter.iconUrl,
+                    contentDescription = stringResource(R.string.receiver_profile_image),
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                EditField(
+                MessageContentItem(
                     title = stringResource(R.string.message_sent_content),
-                    value = state.messageInput,
-                    isMessageContent = true,
-                ) {
-                    navigator.navigateMessageWriteScreen(
-                        args = MessageWriteScreenArgs(isEditing = true),
-                    )
-                }
+                    buttonText = state.messageInput,
+                )
 
                 Box(
                     modifier = Modifier
@@ -194,46 +171,23 @@ fun MessageEditScreen(
                     LetterCountIndicator(currentCount = state.messageInput.length, maxCount = 200)
                 }
 
-                EditField(
+                MessageProfileItem(
                     title = stringResource(R.string.sender),
-                    value = if (state.isRandomName) state.randomName else state.sender,
-                    onClicked = { toast = true },
+                    buttonText = state.senderProfile.name,
+                    imageUrl = state.senderProfile.image,
+                    contentDescription = stringResource(R.string.sender_profile_image),
+                    onClicked = {
+                        /** 새로 생성한 익명 프로필인 경우, 수정이 가능하게 한다. */
+                        if (state.senderProfile.isNeverTalkBefore()) {
+                            action(SendAction.OnSenderClicked)
+                        }
+                    },
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp, start = 30.dp, end = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.random_nickname_title),
-                            style = StaticTypeScale.Default.body1,
-                            color = WeSpotThemeManager.colors.txtTitleColor,
-                        )
-
-                        Text(
-                            text = stringResource(R.string.random_nickname_subtitle),
-                            style = StaticTypeScale.Default.body8,
-                            color = Gray400,
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    WSSwitch(checked = state.isRandomName) {
-                        action(SendAction.OnRandomNameToggled(it))
-                    }
-                }
             }
         }
 
         if (exitDialog) {
             SendExitDialog(
-                isReservedMessage = state.isReservedMessage,
                 okButtonClick = {
                     action(SendAction.OnExitDialogExitButtonClicked)
                 },
@@ -243,27 +197,30 @@ fun MessageEditScreen(
             )
         }
 
-        if (reserveDialog) {
+        if (showSendConfirmModal) {
             WSDialog(
                 title = stringResource(R.string.message_send_dialog_title),
                 subTitle = stringResource(R.string.message_send_dialog_subtitle),
                 okButtonText = stringResource(R.string.message_send_dialog_button_text),
                 cancelButtonText = stringResource(R.string.cancel),
                 okButtonClick = { action(SendAction.OnSendButtonClicked) },
-                cancelButtonClick = { reserveDialog = false },
+                cancelButtonClick = { showSendConfirmModal = false },
                 onDismissRequest = { },
             )
         }
 
-        if (timeoutDialog) {
-            WSDialog(
-                title = stringResource(R.string.timeout_dialog_title),
-                subTitle = state.messageSendFailedDialogContent,
-                okButtonText = stringResource(R.string.positive_answer),
-                cancelButtonText = stringResource(R.string.close),
-                okButtonClick = navigator::popUpToMessageScreen,
-                cancelButtonClick = { timeoutDialog = false },
-                onDismissRequest = { },
+        if (showAnonymousProfileModal) {
+            AnonymousProfileModal(
+                profile = AnonymousProfile(
+                    name = state.senderProfile.name,
+                    imageUrl = state.senderProfile.image,
+                ),
+                onProfileSelected = {
+                    action(SendAction.OnAnonymousProfileSelected(it))
+                },
+                onDismiss = {
+                    action(SendAction.OnAnonymousProfileModalDismiss)
+                },
             )
         }
 
@@ -272,27 +229,65 @@ fun MessageEditScreen(
         }
     }
 
-    TopToast(
-        message = stringResource(R.string.toast_error_name_edit),
-        toastType = WSToastType.Error,
-        showToast = toast,
-    ) {
-        toast = false
-    }
-
     NetworkDialog(context = context, networkState = networkState)
+}
 
-    LaunchedEffect(Unit) {
-        action(SendAction.OnMessageEditScreenEntered(navArgs.isReservedMessage, navArgs.messageId))
+@Composable
+private fun MessageProfileItem(
+    title: String,
+    buttonText: String,
+    imageUrl: String,
+    contentDescription: String,
+    onClicked: (() -> Unit)? = null,
+) {
+    Column {
+        Text(
+            text = title,
+            style = StaticTypeScale.Default.body4,
+            modifier = Modifier.padding(horizontal = 30.dp),
+        )
+
+        WSButton(
+            onClick = {
+                onClicked?.invoke()
+            },
+            paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
+            buttonType = WSButtonType.Tertiary,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 18.dp, end = 20.dp, top = 18.dp, bottom = 18.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ProfileCircleImage(
+                    size = 24.dp,
+                    imageUrl = imageUrl,
+                    contentDescription = contentDescription,
+                )
+
+                Text(
+                    text = buttonText,
+                    style = StaticTypeScale.Default.body4,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                )
+
+                if (onClicked != null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit),
+                        contentDescription = stringResource(R.string.edit_icon),
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun EditField(
+private fun MessageContentItem(
     title: String,
-    value: String,
-    isMessageContent: Boolean = false,
-    onClicked: () -> Unit,
+    buttonText: String,
 ) {
     val scrollState = rememberScrollState()
 
@@ -304,28 +299,19 @@ private fun EditField(
         )
 
         WSButton(
-            onClick = onClicked,
-            heightRange = if (isMessageContent) HeightRange(170.dp, 228.dp) else null,
+            onClick = { },
+            heightRange = HeightRange(170.dp, 228.dp),
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
         ) {
-            Column(
+            Text(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(18.dp)
-                    .let {
-                        if (isMessageContent) {
-                            it.verticalScroll(scrollState)
-                        } else {
-                            it
-                        }
-                    },
-            ) {
-                Text(
-                    text = value,
-                    style = StaticTypeScale.Default.body4,
-                )
-            }
+                    .verticalScroll(scrollState),
+                text = buttonText,
+                style = StaticTypeScale.Default.body4,
+            )
         }
     }
 }

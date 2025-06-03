@@ -166,7 +166,7 @@ fun SchoolScreen(
                                             contentDescription = stringResource(
                                                 id = com.bff.wespot.ui.R.string.school_icon,
                                             ),
-                                            modifier = Modifier.size(56.dp),
+                                            modifier = Modifier.size(46.dp),
                                         )
                                     },
                                     onClick = {

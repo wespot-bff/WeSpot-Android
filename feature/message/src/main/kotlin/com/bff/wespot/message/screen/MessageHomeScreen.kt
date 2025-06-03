@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +49,7 @@ import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.state.MessageAction
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
+import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -71,14 +71,22 @@ fun MessageHomeScreen(
             onBannerClick = navigateToMessageStorageScreen,
         )
 
+        /** 현재 쪽지 상태를 불러오기 전까지 로딩 애니메이션을 노춣한다. */
+        if (state.isLoading) {
+            LoadingAnimation()
+            return@Column
+        }
+
         if (state.messageStatus.countRemainingMessages > 0) {
             MessageCard(
                 canSendMessage = !restricted.restricted,
                 title = state.homeTitle,
                 buttonText = stringResource(R.string.message_card_button_text),
-                imageRes = R.raw.message_evening,
                 content = {
                     RemainingMessageCounter(state.messageStatus.countRemainingMessages)
+                },
+                imageContent = {
+                    MessageImage(state.messageStatus.countRemainingMessages)
                 },
                 onButtonClick = {
                     navigateToReceiverSelectionScreen()
@@ -89,16 +97,14 @@ fun MessageHomeScreen(
                 canSendMessage = false,
                 title = stringResource(R.string.message_card_title_all_sent, state.profile.name),
                 buttonText = stringResource(R.string.message_card_button_text_disabled),
+                imageContent = {
+                    MessageLottieAnimation(R.raw.message_dawn)
+                },
                 content = {
                     MessageTimer(viewModel)
                 },
-                imageRes = R.raw.message_dawn,
             )
         }
-    }
-
-    LaunchedEffect(Unit) {
-        action(MessageAction.OnMessageHomeScreenEntered)
     }
 
     LifecycleStartEffect(Unit) {
@@ -114,9 +120,9 @@ private fun MessageCard(
     canSendMessage: Boolean,
     title: String,
     buttonText: String,
-    @RawRes imageRes: Int,
-    onButtonClick: () -> Unit = { },
+    imageContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
+    onButtonClick: () -> Unit = { },
 ) {
     Box(
         modifier = Modifier
@@ -127,7 +133,7 @@ private fun MessageCard(
             .clip(RoundedCornerShape(18.dp))
             .background(Gray600),
     ) {
-        MessageLottieAnimation(imageRes)
+        imageContent()
 
         Column(
             modifier = Modifier
@@ -246,6 +252,29 @@ private fun RemainingMessageCounter(count: Int) {
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
         }
+    }
+}
+
+@Composable
+private fun MessageImage(
+    countRemainingMessages: Int,
+) {
+    val imageRes = if (countRemainingMessages >= 3) {
+        R.drawable.message_3
+    } else if (countRemainingMessages == 2) {
+        R.drawable.message_2
+    } else {
+        R.drawable.message_1
+    }
+
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Image(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .size(320.dp),
+            painter = painterResource(imageRes),
+            contentDescription = stringResource(R.string.message_image),
+        )
     }
 }
 

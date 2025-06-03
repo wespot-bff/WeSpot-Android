@@ -17,9 +17,7 @@ import com.bff.wespot.designsystem.component.indicator.WSHomeTabRow
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.HOME_SCREEN_INDEX
 import com.bff.wespot.message.common.STORAGE_SCREEN_INDEX
-import com.bff.wespot.message.screen.send.ReceiverSelectionScreenArgs
 import com.bff.wespot.message.screen.storage.MessageStorageScreen
-import com.bff.wespot.message.state.send.SendAction
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.model.notification.NotificationType
@@ -29,7 +27,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 interface MessageNavigator {
     fun navigateUp()
-    fun navigateReceiverSelectionScreen(args: ReceiverSelectionScreenArgs)
+    fun navigateReceiverSelectionScreen()
 }
 
 data class MessageScreenArgs(
@@ -75,9 +73,7 @@ internal fun MessageScreen(
                                 selectedTabIndex = STORAGE_SCREEN_INDEX
                             },
                             navigateToReceiverSelectionScreen = {
-                                messageNavigator.navigateReceiverSelectionScreen(
-                                    ReceiverSelectionScreenArgs(false),
-                                )
+                                messageNavigator.navigateReceiverSelectionScreen()
                             },
                             restricted = restricted,
                         )
@@ -102,7 +98,6 @@ internal fun MessageScreen(
             }
             else -> { }
         }
-
-        sendViewModel.onAction(SendAction.OnMessageScreenEntered)
+        sendViewModel.clearUiState()
     }
 }
