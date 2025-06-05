@@ -1,13 +1,15 @@
 package com.bff.wespot.domain.repository.message
 
-import androidx.paging.PagingData
-import com.bff.wespot.model.message.response.ReceivedMessage
-import kotlinx.coroutines.flow.Flow
+import com.bff.wespot.model.message.response.Message
 
 interface MessageStorageRepository {
-    fun fetchReceivedMessageStream(): Flow<PagingData<ReceivedMessage>>
+    suspend fun getMessages(): Result<List<Message>>
+
+    suspend fun getBookmarkedMessages(): Result<List<Message>>
 
     suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
+
+    suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit>
 
     suspend fun deleteMessage(messageId: Int): Result<Unit>
 

@@ -1,26 +1,15 @@
 package com.bff.wespot.message.state.storage
 
-import com.bff.wespot.message.model.MessageOptionType
-import com.bff.wespot.model.message.request.MessageType
-import com.bff.wespot.model.message.response.ReceivedMessage
-import com.bff.wespot.model.message.response.SentMessage
+import com.bff.wespot.model.message.response.Message
 
 sealed class StorageAction {
-    data object OnMessageBlockButtonClicked : StorageAction()
-    data object OnMessageDeleteButtonClicked : StorageAction()
-    data object OnMessageReportButtonClicked : StorageAction()
-    data class OnStorageChipSelected(val messageType: MessageType) : StorageAction()
-    data class OnReceivedMessageClicked(val message: ReceivedMessage) : StorageAction()
-    data class OnSentMessageClicked(val message: SentMessage) : StorageAction()
-    data class OnOptionButtonClicked(
-        val messageId: Int,
-        val messageType: MessageType,
-    ) : StorageAction()
-    data class OnOptionBottomSheetClicked(
-        val messageOptionType: MessageOptionType,
-    ) : StorageAction()
-    data class OnPushNotificationNavigated(
-        val messageId: Int,
-        val type: MessageType,
-    ) : StorageAction()
+    data class OnStorageChipSelected(val screenIndex: Int) : StorageAction()
+    data class OnMessageClicked(val message: Message) : StorageAction()
+    data class OnOptionButtonClicked(val message: Message) : StorageAction()
+    data class OnPushNotificationNavigated(val messageId: Int) : StorageAction()
+    data object OnBlockBottomSheetItemClicked : StorageAction()
+    data class OnBookmarkBottomSheetItemClicked(val fromBookmarkScreen: Boolean) : StorageAction()
+    data object OnOptionBottomSheetClosed : StorageAction()
+    data object OnBlockButtonClicked : StorageAction()
+    data object OnBlockDialogClosed : StorageAction()
 }

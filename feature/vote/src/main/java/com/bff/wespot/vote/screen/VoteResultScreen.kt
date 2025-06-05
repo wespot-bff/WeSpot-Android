@@ -78,7 +78,8 @@ import com.bff.wespot.ui.component.DotIndicators
 import com.bff.wespot.ui.component.MultiLineText
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSCarousel
-import com.bff.wespot.ui.component.WSHomeChipGroup
+import com.bff.wespot.ui.component.WSChipGroup
+import com.bff.wespot.ui.component.WSChipGroupType
 import com.bff.wespot.ui.component.saveBitmap
 import com.bff.wespot.ui.util.handleSideEffect
 import com.bff.wespot.ui.util.hexToColor
@@ -256,11 +257,11 @@ fun VoteResultScreen(
                     .fillMaxSize(),
             ) {
                 if (!state.isVoting) {
-                    WSHomeChipGroup(
-                        items = persistentListOf(
-                            stringResource(id = R.string.past_vote),
-                            stringResource(
-                                id = R.string.real_time_vote,
+                    WSChipGroup(
+                        type = WSChipGroupType.Normal(
+                            persistentListOf(
+                                stringResource(id = R.string.past_vote),
+                                stringResource(id = R.string.real_time_vote),
                             ),
                         ),
                         selectedItemIndex = voteType xor 1,

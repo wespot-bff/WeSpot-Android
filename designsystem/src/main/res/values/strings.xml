@@ -9,7 +9,6 @@
     <string name="toast_icon">Toast Icon</string>
     <string name="left_arrow">Left Arrow</string>
     <string name="right_arrow">Right Arrow</string>
-    <string name="option_button">Option Button</string>
     <string name="add">Add</string>
     <string name="textfield_trailing_icon">TextField trailing icon</string>
     <string name="textfield_leading_icon">TextField Leading icon</string>
@@ -30,8 +29,6 @@
     <string name="letter_image">Letter Image</string>
     <string name="entire">전체</string>
     <string name="invalid_message">invalid_message</string>
-    <string name="blocked_message_title">\n차단 처리된 쪽지입니다</string>
-    <string name="reported_message_title">\n신고 처리된 쪽지입니다</string>
     <string name="has_profanity">비속어가 포함되어 있어요</string>
     <string name="close">닫기</string>
     <string name="male_student">남학생</string>

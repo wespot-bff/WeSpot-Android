@@ -1,18 +1,18 @@
 package com.bff.wespot.data.local.common.serializer
 
 import androidx.room.TypeConverter
-import com.bff.wespot.model.user.response.User
+import com.bff.wespot.model.message.response.MessageProfile
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-internal class UserConverter {
+internal class MessageProfileConverter {
     @TypeConverter
-    fun fromUser(user: User): String {
-        return Json.encodeToString(user)
+    fun fromMessageProfile(profile: MessageProfile): String {
+        return Json.encodeToString(profile)
     }
 
     @TypeConverter
-    fun toUser(json: String): User {
+    fun toMessageProfile(json: String): MessageProfile {
         return Json.decodeFromString(json)
     }
 }

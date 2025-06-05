@@ -133,6 +133,7 @@ object ClientModule {
                     isLenient = true // 비표준 Json 형식 허용
                     prettyPrint = true
                     ignoreUnknownKeys = true
+                    coerceInputValues = true // 타입이 다른 값이 내려온 경우 Default 사용
                 }
             )
         }

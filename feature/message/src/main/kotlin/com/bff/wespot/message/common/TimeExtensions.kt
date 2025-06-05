@@ -11,8 +11,10 @@ internal fun Long.convertMillisToTime(): String {
     return String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
 }
 
+/** Example: "25. 02. 11" (yy. MM. dd format) */
 internal fun LocalDateTime.toStringWithDotSeparator(): String {
+    val year = String.format(Locale.getDefault(), "%02d", this.year % 100)
     val month = String.format(Locale.getDefault(), "%02d", this.monthValue)
     val day = String.format(Locale.getDefault(), "%02d", this.dayOfMonth)
-    return "${this.year}. $month. $day"
+    return "$year. $month. $day"
 }

@@ -15,14 +15,15 @@ data class User(
 
     fun toSchoolInfo() = "$schoolName ${grade}학년 ${classNumber}반"
 
-    fun toShortSchoolName(): String =
-        schoolName.replace("중학교", "중").replace("고등학교", "고")
+    fun toDescription(): String {
+        val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
+        return "$schoolName ${grade}학년 ${classNumber}반 $name"
+    }
 
-    fun toUserInfoWithoutSchoolName() = "${grade}학년 ${classNumber}반 $name"
-
-    fun toDescription(): String = "${toShortSchoolName()} ${grade}학년 ${classNumber}반 $name"
-
-    fun toMessageReceiverInfo() = "$name | ${toShortSchoolName()} ${grade}학년 ${classNumber}반"
+    fun toMessageReceiverInfo(): String {
+        val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
+        return "$name | $schoolName ${grade}학년 ${classNumber}반"
+    }
 
     fun isInitialized() = this != User()
 }

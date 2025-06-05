@@ -1,6 +1,6 @@
 package com.bff.wespot.data.repository
 
-import com.bff.wespot.data.local.database.dao.ReceivedMessageDao
+import com.bff.wespot.data.local.database.dao.MessageDao
 import com.bff.wespot.data.remote.model.ImageUploadFailedException
 import com.bff.wespot.data.remote.model.common.ProfanityDto
 import com.bff.wespot.data.remote.model.common.ReportDto
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class CommonRepositoryImpl @Inject constructor(
     private val commonDataSource: CommonDataSource,
     private val decoder: ImageDecoderDataSource,
-    private val receivedMessageDao: ReceivedMessageDao,
+    private val messageDao: MessageDao,
 ) : CommonRepository {
     override suspend fun checkProfanity(content: String): Result<Unit> =
         commonDataSource.checkProfanity(ProfanityDto(content))
@@ -26,7 +26,7 @@ class CommonRepositoryImpl @Inject constructor(
         content: String?,
     ): Result<Unit> = commonDataSource.sendReport(ReportDto(targetId, report, content)).onSuccess {
         if (report == ReportType.MESSAGE) {
-            receivedMessageDao.deleteReceivedMessage(targetId)
+            messageDao.deleteMessage(targetId)
         }
     }
 

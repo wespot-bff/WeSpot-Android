@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Notices -->
+    <string name="notice_warning">유의 사항</string>
+    <string name="notice_restriction_warning">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
+    <string name="notice_message_block">* 쪽지는 신고 즉시 차단됩니다.</string>
+
     <string name="message_card_button_text">새로운 쪽지 보내기</string>
     <string name="message_card_button_text_disabled">내일 새로운 쪽지를 작성할 수 있어요</string>
     <string name="received_message_banner_title">답장을 기다리는 쪽지가 있어요</string>
@@ -30,25 +35,15 @@
     <string name="message_sent_content">전달할 내용</string>
     <string name="message_send">쪽지 보내기</string>
     <string name="timeout_dialog_subtitle">이미 10시가 지나서 쪽지를 예약할 수 없어요\n아쉽지만 내일 다시 작성해보는 건 어떨까요?</string>
-    <string name="message_send_success">전송  완료</string>
+    <string name="positive_answer">네 알겠어요</string>
+    <string name="message_send_success">전송 완료</string>
     <string name="received_message">받은 쪽지</string>
     <string name="reserved_message">보낸 쪽지</string>
     <string name="message_screen_crossfade">Message Screen CrossFade</string>
-    <string name="message_delete_dialog_title">쪽지를 삭제하시나요?</string>
-    <string name="message_delete_dialog_subtitle">삭제한 쪽지는 절대 되돌릴 수 없어요</string>
-    <string name="message_delete_dialog_ok_button">네 삭제할래요</string>
     <string name="message_block_dialog_title">정말 차단하시나요?</string>
-    <string name="message_block_dialog_subtitle"><![CDATA[해당 친구와의 쪽지 수신 및 발신이 차단돼요\n* 차단 해제 : 전체>설정>차단 목록>차단 해제]]></string>
+    <string name="message_block_dialog_subtitle"><![CDATA[차단된 친구와의 쪽지 수신/발신이 모두 차단돼요.\n우측 상단의 설정 > 차단한 쪽지방 목록에서 차단 해제가 가능해요.]]></string>
     <string name="message_block_dialog_ok_button">네 차단할래요</string>
-    <string name="message_report_dialog_title">정말 신고하시나요?</string>
-    <string name="message_report_dialog_subtitle">허위 신고로 확인될 시 서비스 이용이 제한되며\n받은 쪽지는 신고 즉시 삭제돼요</string>
-    <string name="message_report_dialog_ok_button">네 신고할래요</string>
-    <string name="block">차단</string>
-    <string name="report_title">신고</string>
-    <string name="delete">삭제</string>
     <string name="block_done">차단 완료</string>
-    <string name="report_done">신고 완료</string>
-    <string name="delete_done">삭제 완료</string>
     <string name="message_storage_screen_crossfade">Message Storage Screen CrossFade</string>
     <string name="message_edit">수정하기</string>
     <string name="load_message_error_message">쪽지를 불러오는데 실패했어요</string>
@@ -56,21 +51,20 @@
     <string name="message_card_title_all_sent">%1$s님의 소중한 마음을\n모두 전달해 드렸어요</string>
     <string name="message_card_description_ready_to_send">오늘 보낼 수 있는 남은 쪽지</string>
     <string name="message_card_description_all_sent">새 쪽지 생성까지 남은 시간</string>
-    <string name="message_report_title">해당 쪽지를 신고하려는 이유가 궁금해요</string>
-    <string name="choice_done">선택 완료</string>
-    <string name="report_message_success">신고 접수 완료</string>
-
-    <!-- Notices -->
-    <string name="notice_warning">유의 사항</string>
-    <string name="notice_restriction_warning">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
-    <string name="notice_message_block">* 쪽지는 신고 즉시 차단됩니다.</string>
-
-    <!-- Report Categories -->
-    <string name="report_category_leakage">유출/사칭/사기</string>
-    <string name="report_category_obscenity">음란물/불건전한 만남 및 대화</string>
-    <string name="report_category_abuse">욕설/비하</string>
-    <string name="report_category_advertisement">상업적 광고 및 판매</string>
-    <string name="report_category_custom">직접 입력</string>
+    <string name="option_button">Option Button</string>
+    <string name="bookmark_button">Bookmark Button</string>
+    <string name="all">전체</string>
+    <string name="favories">즐겨찾기</string>
+    <string name="empty_message">Empty Message Main Image</string>
+    <string name="empty_message_title">아직 즐겨찾기에 추가된 쪽지가 없어요</string>
+    <string name="empty_message_content">소중한 쪽지를 놓치지 않도록\n즐겨찾기에 추가해보세요</string>
+    <string name="me">나</string>
+    <string name="anonymous">익명</string>
+    <string name="real_name">실명</string>
+    <string name="do_block">차단 하기</string>
+    <string name="undo_bookmark">즐겨찾기 해제하기</string>
+    <string name="do_bookmark">즐겨찾기 추가하기</string>
+    <string name="restrict_message_icon">Restrict Message Icon</string>
     <string name="message_image">Message Image</string>
     <string name="receiver_profile_image">Receiver Profile Image</string>
     <string name="sender_profile_image">Sender Profile Image</string>

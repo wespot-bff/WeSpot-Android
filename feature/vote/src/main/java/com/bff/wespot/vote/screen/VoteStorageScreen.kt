@@ -55,7 +55,8 @@ import com.bff.wespot.ui.component.ListBottomGradient
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.RedDot
-import com.bff.wespot.ui.component.WSHomeChipGroup
+import com.bff.wespot.ui.component.WSChipGroup
+import com.bff.wespot.ui.component.WSChipGroupType
 import com.bff.wespot.ui.util.handleSideEffect
 import com.bff.wespot.ui.util.hexToColor
 import com.bff.wespot.vote.R
@@ -125,11 +126,11 @@ fun VoteStorageScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                WSHomeChipGroup(
-                    items = persistentListOf(
-                        stringResource(id = R.string.received_vote),
-                        stringResource(
-                            id = R.string.sent_vote,
+                WSChipGroup(
+                    type = WSChipGroupType.Normal(
+                        persistentListOf(
+                            stringResource(id = R.string.received_vote),
+                            stringResource(id = R.string.sent_vote),
                         ),
                     ),
                     selectedItemIndex = selectedTab,
