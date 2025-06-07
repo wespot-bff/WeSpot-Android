@@ -8,6 +8,7 @@ package com.bff.wespot.model.message.response
  */
 data class MessageStatus(
     val isSendAllowed: Boolean = false,
+    val isReceivedAllowed: Boolean = false,
     val countRemainingMessages: Int = -1,
     val countUnReadMessages: Int = -1,
     val countUnReplayMessages: Int = -1,
