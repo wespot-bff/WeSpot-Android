@@ -1,20 +1,15 @@
 package com.bff.wespot.entire.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
 import com.bff.wespot.common.extension.onNetworkFailure
-import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
-import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.state.EntireUiState
-import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import com.bff.wespot.ui.util.KakaoLoginManager
@@ -35,9 +30,7 @@ class EntireViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authRepository: AuthRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
-    private val messageStorageRepository: MessageStorageRepository,
     private val dataStoreRepository: DataStoreRepository,
-    private val messageBlockedRepository: BasePagingRepository<BlockedMessage, Paging<BlockedMessage>>,
 ) : BaseViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
@@ -49,13 +42,10 @@ class EntireViewModel @Inject constructor(
             }
             EntireAction.OnSettingScreenEntered -> fetchWebLinkFromRemoteConfig()
             EntireAction.OnRevokeScreenEntered -> observeProfileDataFlow()
-            EntireAction.OnBlockListScreenEntered -> getBlockedMessageList()
             EntireAction.OnRevokeConfirmed -> handleRevokeConfirmed()
             EntireAction.OnRevokeButtonClicked -> handleRevoke()
             EntireAction.OnSignOutButtonClicked -> handleSignOut()
-            EntireAction.UnBlockMessage -> unblockMessage()
             EntireAction.OnInputRevokeReasonSelected -> handleInputRevokeReasonSelected()
-            is EntireAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.messageId)
             is EntireAction.OnRevokeReasonSelected -> handleRevokeReasonSelected(action.reason)
             is EntireAction.OnRevokeReasonChanged -> handleRevokeReasonChanged(action.reason)
         }
@@ -145,41 +135,6 @@ class EntireViewModel @Inject constructor(
         viewModelScope.launch {
             launch { dataStoreRepository.clear() }
             launch { profileRepository.clearProfile() }
-        }
-    }
-
-    private fun getBlockedMessageList() = intent {
-        viewModelScope.launch(coroutineDispatcher) {
-            runCatching {
-                val result = messageBlockedRepository.fetchResultStream()
-                    .cachedIn(viewModelScope)
-                reduce { state.copy(blockedMessageList = result) }
-            }
-        }
-    }
-
-    private fun handleUnBlockButtonClicked(messageId: Int) = intent {
-        reduce { state.copy(unBlockMessageId = messageId) }
-    }
-
-    private fun unblockMessage() = intent {
-        reduce { state.copy(isLoading = true) }
-
-        viewModelScope.launch {
-            messageStorageRepository.unBlockMessage(state.unBlockMessageId)
-                .onSuccess {
-                    // 해제 완료 버튼 토글을 위해, 차단 해제된 리스트에 추가
-                    if (state.unBlockList.contains(state.unBlockMessageId).not()) {
-                        val updatedList = state.unBlockList.toMutableList().apply {
-                            add(state.unBlockMessageId)
-                        }
-                        reduce { state.copy(unBlockList = updatedList, isLoading = false) }
-                    }
-                }
-                .onFailure {
-                    reduce { state.copy(isLoading = false) }
-                    Timber.e(it)
-                }
         }
     }
 
