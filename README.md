@@ -59,11 +59,13 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
     <td align="center"><a href="https://github.com/flash159483"><img src="https://avatars.githubusercontent.com/u/123813671?v=4" width="200px;" alt=""/><br /><sub><b>Jung Seungwon</b></sub></a><br /><a href="https://github.com/YAPP-Github/24th-App-Team-1-Android/commits/main?author=flash159483" title="Code">💻</a></td>
     <td align="center"><img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/885117e7-5809-4630-9f37-ede855cdc8c8" width="200px;" alt=""/><br /><sub><b>BFF BOT 1</b></sub><br /><sub><b>Made By JUCIY</b></b></sub></td>
     <td align="center"><img src="https://github.com/YAPP-Github/24th-App-Team-1-Android/assets/77484719/611fc015-8f91-4645-90c9-2ae9e86d9e7b" width="200px;" alt=""/><br /><sub><b>BFF BOT 2</b></sub><br /><sub><b>Made By JUCIY</b></b></sub></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/4d44fb75-8b9e-4ade-889f-533d00a9705b" width="200px;" alt=""/><br /></td>
   </tr>
   <tr>
     <td align="center"><code>🍻제이콥🍻</td>
     <td align="center"><code>🍩브라우니🍩</td>
     <td align="center"><code>🥕짜치는 당근🥕</td>
     <td align="center"><code>🥕당근워크👟</td>
+    <td align="center">😎<code>WeSpot Android😎</td>
   </tr>
 </table>
