@@ -139,15 +139,15 @@ class CommonNavGraphNavigator(
         navController.navigate(EntireScreenDestination within navGraph)
     }
 
-    override fun navigateToBlockedMessage() {
+    override fun navigateToBlockedMessageScreen() {
         navController.navigate(BlockedMessageScreenDestination within navGraph)
     }
 
-    override fun navigateToMessageNotificationSetting() {
+    override fun navigateToMessageNotificationSettingScreen() {
         navController.navigate(MessageNotificationSettingScreenDestination within navGraph)
     }
 
-    override fun navigateToMessageUsageSetting() {
+    override fun navigateToMessageUsageSettingScreen() {
         navController.navigate(MessageUsageSettingScreenDestination within navGraph)
     }
 }
