@@ -16,16 +16,17 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
-import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
+import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageRoomScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -75,6 +76,8 @@ object AppNavGraphs {
             MessageSendScreenDestination,
             MessageRoomScreenDestination,
             ReceiverSelectionScreenDestination,
+            MessageSettingScreenDestination,
+            BlockedMessageScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -92,7 +95,6 @@ object AppNavGraphs {
             RevokeScreenDestination,
             RevokeConfirmScreenDestination,
             ProfileEditScreenDestination,
-            BlockListScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
@@ -162,7 +164,7 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
                 when (destination.route) {
                     "entire/entire_screen" -> return BarType.ENTIRE
                     "vote/vote_home_screen" -> return BarType.DEFAULT
-                    "message/message_screen?type={type}&messageId={messageId}" -> return BarType.DEFAULT
+                    "message/message_screen?type={type}&messageId={messageId}" -> return BarType.MESSAGE
                 }
             }
             BarType.NONE

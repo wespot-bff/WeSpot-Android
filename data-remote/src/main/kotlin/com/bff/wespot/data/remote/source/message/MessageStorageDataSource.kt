@@ -14,9 +14,5 @@ interface MessageStorageDataSource {
 
     suspend fun deleteMessage(messageId: Int): Result<Unit>
 
-    suspend fun blockMessage(messageId: Int): Result<Unit>
-
-    suspend fun unBlockMessage(messageId: Int): Result<Unit>
-
     suspend fun getMessageRoom(roomId: Int): Result<MessageRoomDto>
 }

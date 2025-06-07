@@ -19,10 +19,10 @@ import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.entire.R
-import com.bff.wespot.entire.component.EntireListItem
 import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.ui.component.SettingListItem
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -30,7 +30,6 @@ interface SettingNavigator {
     fun navigateUp()
     fun navigateToNotificationSetting()
     fun navigateToAccountSetting()
-    fun navigateToBlockListScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +60,7 @@ fun SettingScreen(
                 .padding(it)
                 .padding(top = 4.dp, start = 24.dp, end = 24.dp),
         ) {
-            EntireListItem(text = stringResource(R.string.notification_setting)) {
+            SettingListItem(text = stringResource(R.string.notification_setting)) {
                 navigator.navigateToNotificationSetting()
             }
 
@@ -73,7 +72,7 @@ fun SettingScreen(
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
             )
 
-            EntireListItem(text = stringResource(R.string.privacy_policy)) {
+            SettingListItem(text = stringResource(R.string.privacy_policy)) {
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
@@ -83,7 +82,7 @@ fun SettingScreen(
                 )
             }
 
-            EntireListItem(text = stringResource(R.string.terms_of_service)) {
+            SettingListItem(text = stringResource(R.string.terms_of_service)) {
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
@@ -93,7 +92,7 @@ fun SettingScreen(
                 )
             }
 
-            EntireListItem(text = stringResource(R.string.latest_updates)) {
+            SettingListItem(text = stringResource(R.string.latest_updates)) {
                 activityNavigator.navigateToWebLink(
                     context = context,
                     webLink = state.webLinkMap.getOrDefault(
@@ -111,11 +110,7 @@ fun SettingScreen(
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
             )
 
-            EntireListItem(text = stringResource(R.string.block_list)) {
-                navigator.navigateToBlockListScreen()
-            }
-
-            EntireListItem(text = stringResource(R.string.account_setting)) {
+            SettingListItem(text = stringResource(R.string.account_setting)) {
                 navigator.navigateToAccountSetting()
             }
         }

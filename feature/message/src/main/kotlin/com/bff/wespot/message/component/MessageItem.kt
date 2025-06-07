@@ -1,6 +1,7 @@
 package com.bff.wespot.message.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -23,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.bff.wespot.designsystem.theme.Gray300
+import com.bff.wespot.designsystem.theme.Gray400
+import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -35,6 +39,7 @@ import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
 internal fun MessageItem(
+    itemType: MessageItemType,
     message: Message,
     itemClick: () -> Unit,
     optionButtonClick: () -> Unit,
@@ -82,7 +87,7 @@ internal fun MessageItem(
                 } else {
                     stringResource(R.string.real_name)
                 },
-                name = if (message.isEver) {
+                name = if (itemType == MessageItemType.Ever) {
                     message.receiverProfile.name
                 } else {
                     message.receiverProfile.toDescription()
@@ -91,24 +96,37 @@ internal fun MessageItem(
             )
         }
 
-        /** 에버 쪽지의 경우, 삭제를 막기 위해 옵션 버튼을 노출하지 않는다. */
-        if (!message.isEver) {
-            Icon(
-                modifier = Modifier
-                    .clickableSingle { optionButtonClick() }
-                    .padding(top = 14.dp, end = 16.dp)
-                    .align(Alignment.TopEnd),
-                imageVector = ImageVector.vectorResource(id = R.drawable.option),
-                tint = Gray300,
-                contentDescription = stringResource(id = R.string.option_button),
-            )
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp, end = 16.dp)
+                .align(Alignment.TopEnd),
+        ) {
+            when (itemType) {
+                MessageItemType.Normal -> {
+                    Icon(
+                        modifier = Modifier
+                            .clickableSingle { optionButtonClick() },
+                        imageVector = ImageVector.vectorResource(id = R.drawable.option),
+                        tint = Gray300,
+                        contentDescription = stringResource(id = R.string.option_button),
+                    )
+                }
+                is MessageItemType.Blocked -> {
+                    BlockStateChip(
+                        isBlocked = itemType.isBlocked,
+                        onClick = optionButtonClick,
+                    )
+                }
+                /** 에버 쪽지의 경우, 삭제를 막기 위해 옵션 버튼을 노출하지 않는다. */
+                MessageItemType.Ever -> { }
+            }
         }
 
         message.latestChatTime?.let {
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 16.dp, end = 14.dp),
+                    .padding(bottom = 16.dp, end = 16.dp),
                 text = it.toStringWithDotSeparator(),
                 style = StaticTypeScale.Default.body9,
                 color = WeSpotThemeManager.colors.txtSubColor,
@@ -166,6 +184,9 @@ private fun MessageUserItem(
             }
 
             Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 78.dp),
                 text = name,
                 color = WeSpotThemeManager.colors.txtTitleColor,
                 style = StaticTypeScale.Default.body6,
@@ -176,6 +197,50 @@ private fun MessageUserItem(
     }
 }
 
+@Composable
+private fun BlockStateChip(
+    isBlocked: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .clip(WeSpotThemeManager.shapes.extraLarge)
+            .clickable { onClick() }
+            .let {
+                if (isBlocked) {
+                    it.background(WeSpotThemeManager.colors.secondaryBtnColor)
+                } else {
+                    it.background(Gray600)
+                }
+            },
+    ) {
+        Text(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            text = stringResource(
+                id = if (isBlocked) {
+                    R.string.unblock
+                } else {
+                    R.string.unblock_done
+                },
+            ),
+            style = StaticTypeScale.Default.body9,
+            color = if (isBlocked) {
+                Color(0xFFF7F7F8)
+            } else {
+                Gray400
+            },
+        )
+    }
+}
+
+sealed interface MessageItemType {
+    data object Normal : MessageItemType
+
+    data class Blocked(val isBlocked: Boolean) : MessageItemType
+
+    data object Ever : MessageItemType
+}
+
 @Preview
 @Composable
 private fun PreviewMessageItem() {
@@ -184,6 +249,7 @@ private fun PreviewMessageItem() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             MessageItem(
+                itemType = MessageItemType.Normal,
                 message = Message(),
                 itemClick = { },
                 optionButtonClick = { },

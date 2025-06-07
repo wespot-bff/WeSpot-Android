@@ -90,4 +90,10 @@
     <string name="reply_message">답장 보내기</string>
     <string name="reply_dialog_subtitle">쪽지 전송 후에는 수정이나 전송 취소가 불가하며\n남은 쪽지 개수에서 1개가 차감돼요</string>
     <string name="reply_dialog_title">답장을 전달할게요</string>
+    <string name="message_setting">쪽지 설정</string>
+    <string name="blocked_message_title">차단한 쪽지방 목록</string>
+    <string name="message_permission_title">쪽지 수신 및 발신</string>
+    <string name="message_notification_title">쪽지 알림</string>
+    <string name="unblock">차단 해제</string>
+    <string name="unblock_done">해제 완료</string>
 </resources>

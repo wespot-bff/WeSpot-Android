@@ -3,6 +3,7 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
+import com.bff.wespot.domain.repository.message.MessageSettingRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.ALL_MESSAGE_INDEX
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StorageViewModel @Inject constructor(
     private val messageStorageRepository: MessageStorageRepository,
+    private val settingRepository: MessageSettingRepository,
 ) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(StorageUiState())
 
@@ -152,7 +154,7 @@ class StorageViewModel @Inject constructor(
         postSideEffect(StorageSideEffect.CloseBlockDialog)
 
         viewModelScope.launch {
-            messageStorageRepository.blockMessage(state.optionButtonClickedMessage.id)
+            settingRepository.updateMessageBlockStatus(state.optionButtonClickedMessage.id)
                 .onSuccess {
                     postSideEffect(
                         StorageSideEffect.ShowToast(
@@ -164,9 +166,13 @@ class StorageViewModel @Inject constructor(
                         ),
                     )
                 }
-                .onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
+        }
+
+        val updatedMessageList = state.messageList.filter {
+            it.id != state.optionButtonClickedMessage.id
+        }
+        reduce {
+            state.copy(messageList = updatedMessageList)
         }
     }
 

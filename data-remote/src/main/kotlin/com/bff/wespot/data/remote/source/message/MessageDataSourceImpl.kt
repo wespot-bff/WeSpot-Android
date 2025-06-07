@@ -2,14 +2,12 @@ package com.bff.wespot.data.remote.source.message
 
 import com.bff.wespot.data.remote.model.message.request.MessageReplyDto
 import com.bff.wespot.data.remote.model.message.request.SendMessageDto
-import com.bff.wespot.data.remote.model.message.response.BlockedMessageListDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
 import com.bff.wespot.data.remote.model.message.response.MessageStatusDto
 import com.bff.wespot.data.remote.model.message.response.SenderProfileDto
 import com.bff.wespot.network.extensions.safeRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.path
@@ -50,15 +48,6 @@ class MessageDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v1/messages/$messageId")
-            }
-        }
-
-    override suspend fun getBlockedMessage(cursorId: Int?): Result<BlockedMessageListDto> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Get
-                path("api/v1/messages/blocked")
-                parameter("cursorId", cursorId)
             }
         }
 

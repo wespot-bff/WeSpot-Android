@@ -1,4 +1,4 @@
-package com.bff.wespot.entire.component
+package com.bff.wespot.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 
 @Composable
-internal fun EntireListItem(
+fun SettingListItem(
     text: String,
     onClick: () -> Unit,
 ) {

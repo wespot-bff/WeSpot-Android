@@ -3,7 +3,6 @@ package com.bff.wespot
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
-import com.bff.wespot.entire.screen.destinations.BlockListScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
@@ -12,12 +11,12 @@ import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.entire.screen.edit.ProfileEditNavigator
 import com.bff.wespot.entire.screen.setting.AccountSettingNavigator
-import com.bff.wespot.entire.screen.setting.BlockListNavigator
 import com.bff.wespot.entire.screen.setting.NotificationSettingNavigator
 import com.bff.wespot.entire.screen.setting.RevokeConfirmNavigator
 import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
+import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageRoomScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
@@ -29,6 +28,8 @@ import com.bff.wespot.message.screen.send.MessageSendNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
+import com.bff.wespot.message.screen.setting.BlockedMessageNavigator
+import com.bff.wespot.message.screen.setting.MessageSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
@@ -58,13 +59,14 @@ class CommonNavGraphNavigator(
     AccountSettingNavigator,
     RevokeNavigator,
     RevokeConfirmNavigator,
-    BlockListNavigator,
     VotingNavigator,
     VoteResultNavigator,
     VoteStorageNavigator,
     IndividualVoteNavigator,
     ProfileEditNavigator,
-    MessageRoomNavigator {
+    MessageRoomNavigator,
+    MessageSettingNavigator,
+    BlockedMessageNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -128,10 +130,6 @@ class CommonNavGraphNavigator(
         navController.navigate(IndividualVoteScreenDestination(args) within navGraph)
     }
 
-    override fun navigateToBlockListScreen() {
-        navController.navigate(BlockListScreenDestination within navGraph)
-    }
-
     override fun navigateToProfileEditScreen() {
         navController.navigate(ProfileEditScreenDestination within navGraph)
     }
@@ -146,5 +144,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateMessageWriteScreen(args: MessageWriteScreenArgs) {
         navController.navigate(MessageWriteScreenDestination(args) within navGraph)
+    }
+
+    override fun navigateToBlockedMessage() {
+        navController.navigate(BlockedMessageScreenDestination within navGraph)
     }
 }

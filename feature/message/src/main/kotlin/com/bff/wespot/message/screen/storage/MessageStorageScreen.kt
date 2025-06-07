@@ -32,6 +32,7 @@ import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.BOOKMARKED_MESSAGE_INDEX
 import com.bff.wespot.message.component.MessageItem
+import com.bff.wespot.message.component.MessageItemType
 import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
@@ -220,6 +221,7 @@ internal fun MessageStorageContent(
 
             item.let { message ->
                 MessageItem(
+                    itemType = MessageItemType.Normal,
                     message = message,
                     itemClick = {
                         itemClick(message)

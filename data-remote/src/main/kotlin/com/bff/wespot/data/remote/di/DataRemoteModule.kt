@@ -12,6 +12,8 @@ import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSource
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageDataSource
 import com.bff.wespot.data.remote.source.message.MessageDataSourceImpl
+import com.bff.wespot.data.remote.source.message.MessageSettingDataSource
+import com.bff.wespot.data.remote.source.message.MessageSettingDataSourceImpl
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSource
 import com.bff.wespot.data.remote.source.message.MessageStorageDataSourceImpl
 import com.bff.wespot.data.remote.source.notification.NotificationDataSource
@@ -96,4 +98,10 @@ abstract class DataRemoteModule {
     abstract fun bindsOnBoardingDataSource(
         onBoardingDataSourceImpl: OnBoardingDataSourceImpl
     ): OnBoardingDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsMessageSettingDataSource(
+        messageSettingDataSourceImpl: MessageSettingDataSourceImpl
+    ): MessageSettingDataSource
 }
