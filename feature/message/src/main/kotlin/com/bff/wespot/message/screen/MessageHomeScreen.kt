@@ -21,6 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +43,7 @@ import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -47,21 +51,40 @@ import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
 import com.bff.wespot.message.state.MessageAction
+import com.bff.wespot.message.state.MessageSideEffect
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun MessageHomeScreen(
     viewModel: MessageViewModel = hiltViewModel(),
+    navigateToMessageUsageSettingScreen: () -> Unit,
     navigateToReceiverSelectionScreen: () -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
     restricted: RestrictionArg,
 ) {
+    var showMessageUsageSettingDialog by remember { mutableStateOf(false) }
+
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+
+    viewModel.collectSideEffect {
+        when (it) {
+            MessageSideEffect.ShowMessageUsageSettingDialog -> {
+                showMessageUsageSettingDialog = true
+            }
+            MessageSideEffect.DismissMessageUsageSettingDialog -> {
+                showMessageUsageSettingDialog = false
+            }
+            MessageSideEffect.NavigateToMessageUsageSettingScreen -> {
+                navigateToMessageUsageSettingScreen()
+            }
+        }
+    }
 
     handleSideEffect(viewModel.sideEffect)
 
@@ -105,6 +128,22 @@ fun MessageHomeScreen(
                 },
             )
         }
+    }
+
+    if (showMessageUsageSettingDialog) {
+        WSDialog(
+            title = stringResource(R.string.message_usage_setting_dialog_title),
+            subTitle = stringResource(R.string.mesage_usage_setting_dialog_subtitle),
+            okButtonText = stringResource(R.string.goToSetting),
+            cancelButtonText = stringResource(id = R.string.close),
+            okButtonClick = {
+                action(MessageAction.OnMessageUsageSettingConfirmed)
+            },
+            cancelButtonClick = {
+                action(MessageAction.OnMessageUsageSettingDialogDismissed)
+            },
+            onDismissRequest = {},
+        )
     }
 
     LifecycleStartEffect(Unit) {

@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -67,6 +68,17 @@ class MessageViewModel @Inject constructor(
             MessageAction.OnLifecycleStop -> {
                 checkAndCancelTimer()
             }
+            MessageAction.OnMessageUsageSettingConfirmed -> {
+                intent {
+                    postSideEffect(MessageSideEffect.DismissMessageUsageSettingDialog)
+                    postSideEffect(MessageSideEffect.NavigateToMessageUsageSettingScreen)
+                }
+            }
+            MessageAction.OnMessageUsageSettingDialogDismissed -> {
+                intent {
+                    postSideEffect(MessageSideEffect.DismissMessageUsageSettingDialog)
+                }
+            }
         }
     }
 
@@ -98,6 +110,10 @@ class MessageViewModel @Inject constructor(
 
                     reduce {
                         state.copy(messageStatus = messageStatus)
+                    }
+
+                    if (!messageStatus.isReceivedAllowed) {
+                        postSideEffect(MessageSideEffect.ShowMessageUsageSettingDialog)
                     }
                 }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())

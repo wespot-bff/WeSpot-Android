@@ -28,6 +28,7 @@ import kotlinx.collections.immutable.persistentListOf
 interface MessageNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen()
+    fun navigateToMessageUsageSettingScreen()
 }
 
 data class MessageScreenArgs(
@@ -74,6 +75,9 @@ internal fun MessageScreen(
                             },
                             navigateToReceiverSelectionScreen = {
                                 messageNavigator.navigateReceiverSelectionScreen()
+                            },
+                            navigateToMessageUsageSettingScreen = {
+                                messageNavigator.navigateToMessageUsageSettingScreen()
                             },
                             restricted = restricted,
                         )
