@@ -17,6 +17,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 interface MessageSettingNavigator {
     fun navigateUp()
     fun navigateToBlockedMessage()
+    fun navigateToMessageNotificationSetting()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,8 +45,8 @@ fun MessageSettingScreen(
                 navigator.navigateToBlockedMessage()
             }
 
-            SettingListItem(text = stringResource(R.string.message_permission_title)) {
-                // TODO
+            SettingListItem(text = stringResource(R.string.message_usage_title)) {
+                navigator.navigateToMessageNotificationSetting()
             }
 
             SettingListItem(stringResource(R.string.message_notification_title)) {

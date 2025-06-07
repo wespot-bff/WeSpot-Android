@@ -17,6 +17,7 @@ import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageNotificationSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
@@ -25,6 +26,7 @@ import com.bff.wespot.message.screen.send.MessageSendNavigator
 import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.setting.BlockedMessageNavigator
+import com.bff.wespot.message.screen.setting.MessageNotificationSettingNavigator
 import com.bff.wespot.message.screen.setting.MessageSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
@@ -61,7 +63,8 @@ class CommonNavGraphNavigator(
     IndividualVoteNavigator,
     ProfileEditNavigator,
     MessageSettingNavigator,
-    BlockedMessageNavigator {
+    BlockedMessageNavigator,
+    MessageNotificationSettingNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -135,5 +138,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToBlockedMessage() {
         navController.navigate(BlockedMessageScreenDestination within navGraph)
+    }
+
+    override fun navigateToMessageNotificationSetting() {
+        navController.navigate(MessageNotificationSettingScreenDestination within navGraph)
     }
 }
