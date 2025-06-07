@@ -56,13 +56,9 @@
     <string name="request_change_profile">개인정보 변경 신청</string>
     <string name="request_profile_edit_text">하단의 버튼을 눌러 변경 신청해 주세요</string>
     <string name="introduction_limit">20자 이내로 입력이 가능해요</string>
-    <string name="unblock">차단 해제</string>
-    <string name="unblock_done">해제 완료</string>
-    <string name="unblock_dialog_title">차단 해제하시나요?</string>
     <string name="marketing_dialog_result_content"><![CDATA[전송자 : WeSpot\n일시 : %1$s\n내용 : %2$s\n\n광고성 정보 수신 동의는 전체 탭 > 설정 > [알림 설정] 에서 변경 가능합니다.]]></string>
     <string name="marketing_notification_agree">수신 동의 처리 완료</string>
     <string name="marketing_notification_disagree">수신 거부 처리 완료</string>
-    <string name="blocked_message_load_error_message">차단된 메세지를 불러오는데 실패했어요.</string>
     <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
     <string name="request">신청</string>
     <string name="change_image">앨범에서 사진 선택</string>

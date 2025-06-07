@@ -6,6 +6,7 @@ import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
 import com.bff.wespot.data.repository.firebase.config.RemoteConfigRepositoryImpl
 import com.bff.wespot.data.repository.firebase.messaging.MessagingRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageRepositoryImpl
+import com.bff.wespot.data.repository.message.MessageSettingRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageStorageRepositoryImpl
 import com.bff.wespot.data.repository.notification.NotificationRepositoryImpl
 import com.bff.wespot.data.repository.serverDriven.OnBoardingRepositoryImpl
@@ -18,6 +19,7 @@ import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
+import com.bff.wespot.domain.repository.message.MessageSettingRepository
 import com.bff.wespot.domain.repository.message.MessageStorageRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
 import com.bff.wespot.domain.repository.serverDriven.OnBoardingRepository
@@ -104,4 +106,10 @@ abstract class DataModule {
     abstract fun bindsOnBoardingRepository(
         onBoardingRepositoryImpl: OnBoardingRepositoryImpl
     ): OnBoardingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsMessageSettingRepository(
+        messageSettingRepositoryImpl: MessageSettingRepositoryImpl,
+    ): MessageSettingRepository
 }
