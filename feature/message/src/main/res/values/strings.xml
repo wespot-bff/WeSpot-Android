@@ -83,8 +83,10 @@
     <string name="set_default_image">기본 이미지 적용</string>
     <string name="message_setting">쪽지 설정</string>
     <string name="blocked_message_title">차단한 쪽지방 목록</string>
-    <string name="message_permission_title">쪽지 수신 및 발신</string>
+    <string name="message_usage_title">쪽지 수신 및 발신</string>
     <string name="message_notification_title">쪽지 알림</string>
     <string name="unblock">차단 해제</string>
     <string name="unblock_done">해제 완료</string>
+    <string name="message_notification_setting_title">알림 받기</string>
+    <string name="message_notification_setting_subtitle">쪽지 수신 알림 및 쪽지 관련 알림</string>
 </resources>
