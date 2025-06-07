@@ -66,6 +66,6 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
     <td align="center"><code>🍩브라우니🍩</td>
     <td align="center"><code>🥕짜치는 당근🥕</td>
     <td align="center"><code>🥕당근워크👟</td>
-    <td align="center"><code>😎WeSpot Android😎</td>
+    <td align="center"><code>😎 BFF Android 😎</td>
   </tr>
 </table>
