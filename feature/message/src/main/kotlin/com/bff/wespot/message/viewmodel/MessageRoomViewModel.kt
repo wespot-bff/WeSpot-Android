@@ -59,18 +59,21 @@ class MessageRoomViewModel @Inject constructor(
     private fun updateReadStatus(messageId: Int) = intent {
         viewModelScope.launch {
             repository.updateMessageReadStatus(messageId)
+        }
 
-            val updatedList = state.messageRoom.messageDetails.map { message ->
-                if (message.id == messageId) {
-                    message.copy(isRead = true)
-                } else {
-                    message
-                }
+        val updatedList = state.messageRoom.messageDetails.map { message ->
+            if (message.id == messageId) {
+                message.copy(isRead = true)
+            } else {
+                message
             }
+        }
 
-            reduce {
-                state.copy(messageRoom = state.messageRoom.copy(messageDetails = updatedList))
-            }
+        reduce {
+            state.copy(
+                messageRoom = state.messageRoom.copy(messageDetails = updatedList),
+                selectedMessageDetail = state.selectedMessageDetail?.copy(isRead = true),
+            )
         }
     }
 
