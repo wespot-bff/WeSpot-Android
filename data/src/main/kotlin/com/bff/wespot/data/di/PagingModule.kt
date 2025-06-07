@@ -1,7 +1,6 @@
 package com.bff.wespot.data.di
 
 import com.bff.wespot.data.repository.auth.SchoolPagingRepository
-import com.bff.wespot.data.repository.message.MessageBlockedPagingRepository
 import com.bff.wespot.data.repository.notification.NotificationPagingRepository
 import com.bff.wespot.data.repository.user.UserPagingRepository
 import com.bff.wespot.data.repository.vote.VoteReceivedPagingRepository
@@ -9,7 +8,6 @@ import com.bff.wespot.data.repository.vote.VoteSentPagingRepository
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.model.auth.response.School
 import com.bff.wespot.model.common.Paging
-import com.bff.wespot.model.message.response.BlockedMessage
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.user.response.User
 import com.bff.wespot.model.vote.response.ReceivedVoteData
@@ -52,10 +50,4 @@ interface PagingModule {
     fun bindsNotificationRepository(
         notificationRepositoryImpl: NotificationPagingRepository
     ): BasePagingRepository<Notification, Paging<Notification>>
-
-    @Binds
-    @Singleton
-    fun bindsMessageBlockedRepository(
-        blockedMessageRepositoryImpl: MessageBlockedPagingRepository,
-    ): BasePagingRepository<BlockedMessage, Paging<BlockedMessage>>
 }

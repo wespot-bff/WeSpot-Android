@@ -49,20 +49,4 @@ class MessageStorageDataSourceImpl @Inject constructor(
                 path("api/v1/messages/$messageId")
             }
         }
-
-    override suspend fun blockMessage(messageId: Int): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Post
-                path("api/v1/messages/$messageId/block")
-            }
-        }
-
-    override suspend fun unBlockMessage(messageId: Int): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Post
-                path("api/v1/messages/$messageId/unblock")
-            }
-        }
 }
