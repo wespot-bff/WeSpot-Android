@@ -34,10 +34,7 @@ class StorageViewModel @Inject constructor(
     fun onAction(action: StorageAction) {
         when (action) {
             is StorageAction.OnStorageChipSelected -> {
-                when (action.screenIndex) {
-                    ALL_MESSAGE_INDEX -> getMessageList()
-                    BOOKMARKED_MESSAGE_INDEX -> getBookmarkedMessageList()
-                }
+                handleStorageChipSelected(action.screenIndex)
             }
             is StorageAction.OnPushNotificationNavigated -> {
                 // TODO Handle Push Message
@@ -63,6 +60,16 @@ class StorageViewModel @Inject constructor(
             StorageAction.OnOptionBottomSheetClosed -> {
                 handleOptionBottomSheetClosed()
             }
+        }
+    }
+
+    private fun handleStorageChipSelected(index: Int) = intent {
+        when (index) {
+            ALL_MESSAGE_INDEX -> getMessageList()
+            BOOKMARKED_MESSAGE_INDEX -> getBookmarkedMessageList()
+        }
+        reduce {
+            state.copy(selectedChipIndex = index)
         }
     }
 
