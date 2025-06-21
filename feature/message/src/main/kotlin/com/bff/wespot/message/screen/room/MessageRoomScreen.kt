@@ -59,6 +59,7 @@ import com.bff.wespot.message.viewmodel.MessageRoomViewModel
 import com.bff.wespot.model.message.response.MessageDetail
 import com.bff.wespot.model.message.response.MessageRoom
 import com.bff.wespot.ui.component.ProfileCircleImage
+import com.bff.wespot.ui.component.verticalScrollIndicator
 import com.bff.wespot.ui.util.clickableSingle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
@@ -280,11 +281,11 @@ private fun MessageCard(
                     val widthPx = size.width.toInt()
                     drawImage(image = image, dstSize = IntSize(widthPx, heightPx))
                 }
-                .padding(horizontal = 44.dp),
+                .padding(horizontal = 18.dp),
         ) {
             Box(
                 modifier = Modifier
-                    .padding(top = 44.dp)
+                    .padding(top = 44.dp, start = 26.dp)
                     .background(
                         color = type.chipBackgroundColor,
                         shape = WeSpotThemeManager.shapes.extraLarge,
@@ -304,7 +305,13 @@ private fun MessageCard(
                 modifier = Modifier
                     .height(240.dp)
                     .fillMaxWidth()
-                    .verticalScroll(scrollState),
+                    .verticalScroll(scrollState)
+                    .verticalScrollIndicator(
+                        scrollState = scrollState,
+                        width = 4.dp,
+                        paddingValues = PaddingValues(end = 4.dp),
+                    )
+                    .padding(horizontal = 26.dp),
                 text = detail.content,
                 style = StaticTypeScale.Default.body4,
                 color = WeSpotThemeManager.colors.backgroundColor,
@@ -317,7 +324,7 @@ private fun MessageCard(
                     text = type.buttonText,
                     enabled = detail.isAbleToAnswer,
                     onClick = onReplyButtonClicked,
-                    paddingValues = PaddingValues(top = 36.dp, bottom = 42.dp),
+                    paddingValues = PaddingValues(top = 36.dp, bottom = 42.dp, start = 16.dp, end = 16.dp),
                     content = { it() },
                 )
             }
