@@ -93,4 +93,5 @@
     <string name="message_usage_setting_dialog_title">쪽지를 보낼 수 없는 상태에요</string>
     <string name="mesage_usage_setting_dialog_subtitle"><![CDATA[차단된 친구와의 쪽지 수신/발신이 모두 차단돼요.\n우측 상단의 설정 > 쪽지 수신 및 발신에서 쪽지 받기 설정으로 변경이 필요해요.]]></string>
     <string name="goToSetting">설정 바로가기</string>
+    <string name="unblock_message_dialog_title">차단을 해제하시나요?</string>
 </resources>
