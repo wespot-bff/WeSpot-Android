@@ -22,7 +22,7 @@ class OnBoardingViewModel @Inject constructor(
     private val _contents = MutableStateFlow<List<OnBoarding>>(emptyList())
     val contents = _contents.asStateFlow()
 
-    private val _sideEffect = Channel<OnBoardingSideEffect>()
+    private val _sideEffect = Channel<OnBoardingSideEffect>(Channel.BUFFERED)
     val sideEffect = _sideEffect.receiveAsFlow()
 
     fun onAction(action: OnBoardingNotificationAction) {
