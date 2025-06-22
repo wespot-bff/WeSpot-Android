@@ -4,5 +4,6 @@ import com.bff.wespot.model.message.response.MessageStatus
 
 data class MessageUsageSettingUiState(
     val isLoading: Boolean = true,
-    val status: MessageStatus = MessageStatus(),
+    val initialState: MessageStatus = MessageStatus(),
+    val isUsageEnabled: Boolean = false,
 )

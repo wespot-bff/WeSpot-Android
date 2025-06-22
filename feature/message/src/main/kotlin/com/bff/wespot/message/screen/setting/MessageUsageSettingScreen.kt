@@ -56,9 +56,9 @@ fun MessageUsageSettingScreen(
             SettingSwitchItem(
                 title = stringResource(R.string.message_usage_setting),
                 subTitle = stringResource(R.string.message_usage_setting_subtitle),
-                switchValue = state.status.isReceivedAllowed,
+                switchValue = state.isUsageEnabled,
                 onSwitched = {
-                    action(MessageUsageSettingAction.OnReceivedSettingSwitched)
+                    action(MessageUsageSettingAction.OnUsageSettingSwitched)
                 },
             )
         }

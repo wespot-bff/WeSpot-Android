@@ -3,6 +3,7 @@ package com.bff.wespot.message.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.domain.repository.message.MessageRepository
+import com.bff.wespot.domain.repository.message.MessageSettingRepository
 import com.bff.wespot.message.state.setting.MessageUsageSettingAction
 import com.bff.wespot.message.state.setting.MessageUsageSettingUiState
 import com.bff.wespot.ui.base.BaseViewModel
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MessageUsageViewModel @Inject constructor(
     private val repository: MessageRepository,
+    private val settingRepository: MessageSettingRepository,
 ) : BaseViewModel(), ContainerHost<MessageUsageSettingUiState, NoneSideEffect> {
     override val container: Container<MessageUsageSettingUiState, NoneSideEffect> =
         container(MessageUsageSettingUiState()) {
@@ -28,11 +30,11 @@ class MessageUsageViewModel @Inject constructor(
 
     fun onAction(action: MessageUsageSettingAction) {
         when (action) {
-            MessageUsageSettingAction.OnReceivedSettingSwitched -> {
-                handleReceivedSettingSwitched()
+            MessageUsageSettingAction.OnUsageSettingSwitched -> {
+                handleUsageSettingSwitched()
             }
             MessageUsageSettingAction.OnLifecycleStop -> {
-                updateMessageStatus()
+                updateMessageUsageStatus()
             }
         }
     }
@@ -42,7 +44,10 @@ class MessageUsageViewModel @Inject constructor(
             repository.getMessageStatus()
                 .onSuccess {
                     reduce {
-                        state.copy(status = it)
+                        state.copy(
+                            initialState = it,
+                            isUsageEnabled = it.isReceivedAllowed,
+                        )
                     }
                 }
                 .onNetworkFailure {
@@ -56,18 +61,21 @@ class MessageUsageViewModel @Inject constructor(
         }
     }
 
-    private fun handleReceivedSettingSwitched() = intent {
-        val updatedStatus = with(state.status) {
-            copy(isReceivedAllowed = !isReceivedAllowed)
-        }
+    private fun handleUsageSettingSwitched() = intent {
         reduce {
-            state.copy(status = updatedStatus)
+            state.copy(isUsageEnabled = state.isUsageEnabled.not())
         }
     }
 
-    private fun updateMessageStatus() = intent {
+    private fun updateMessageUsageStatus() = intent {
+        if (state.initialState.isReceivedAllowed == state.isUsageEnabled) {
+            return@intent
+        }
+
         viewModelScope.launch {
-            // TODO
+            settingRepository.updateMessageUsageStatus(
+                enabled = state.isUsageEnabled,
+            )
         }
     }
 }
