@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,7 +68,6 @@ fun MessageStorageScreen(
         ),
     )
 
-    var selectedChipIndex by remember { mutableIntStateOf(0) }
     var showOptionBottomSheet by remember { mutableStateOf(false) }
     var showBlockDialog by remember { mutableStateOf(false) }
 
@@ -112,11 +110,11 @@ fun MessageStorageScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         WSChipGroup(
             type = WSChipGroupType.LeadingIcon(chipItems),
-            selectedItemIndex = selectedChipIndex,
-            onSelectedChanged = { index -> selectedChipIndex = index },
+            selectedItemIndex = state.selectedChipIndex,
+            onSelectedChanged = { index -> action(StorageAction.OnStorageChipSelected(index)) },
         )
 
-        if (selectedChipIndex == BOOKMARKED_MESSAGE_INDEX && state.showEmptyBookmarkScreen) {
+        if (state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX && state.showEmptyBookmarkScreen) {
             EmptyBookmarkScreen()
         } else {
             MessageStorageContent(
@@ -155,7 +153,7 @@ fun MessageStorageScreen(
                     onClick = {
                         action(
                             StorageAction.OnBookmarkBottomSheetItemClicked(
-                                fromBookmarkScreen = selectedChipIndex == BOOKMARKED_MESSAGE_INDEX,
+                                fromBookmarkScreen = state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX,
                             ),
                         )
                     },
@@ -196,8 +194,8 @@ fun MessageStorageScreen(
         }
     }
 
-    LaunchedEffect(selectedChipIndex) {
-        action(StorageAction.OnStorageChipSelected(selectedChipIndex))
+    LaunchedEffect(state.selectedChipIndex) {
+        action(StorageAction.OnStorageChipSelected(state.selectedChipIndex))
     }
 }
 

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,8 +47,8 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
-import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.message.state.home.MessageHomeAction
+import com.bff.wespot.message.viewmodel.MessageHomeViewModel
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
@@ -55,7 +56,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MessageHomeScreen(
-    viewModel: MessageViewModel = hiltViewModel(),
+    viewModel: MessageHomeViewModel = hiltViewModel(),
     navigateToReceiverSelectionScreen: () -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
     restricted: RestrictionArg,
@@ -107,10 +108,14 @@ fun MessageHomeScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        action(MessageHomeAction.OnScreenEntered)
+    }
+
     LifecycleStartEffect(Unit) {
-        action(MessageAction.OnLifecycleStart)
+        action(MessageHomeAction.OnLifecycleStart)
         onStopOrDispose {
-            action(MessageAction.OnLifecycleStop)
+            action(MessageHomeAction.OnLifecycleStop)
         }
     }
 }
@@ -187,7 +192,7 @@ private fun ReplyMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
 }
 
 @Composable
-private fun MessageTimer(viewModel: MessageViewModel) {
+private fun MessageTimer(viewModel: MessageHomeViewModel) {
     val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
 
     Column(
