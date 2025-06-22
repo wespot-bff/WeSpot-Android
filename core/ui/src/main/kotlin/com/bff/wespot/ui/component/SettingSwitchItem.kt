@@ -30,7 +30,7 @@ fun SettingSwitchItem(
         ) {
             Text(
                 text = title,
-                style = StaticTypeScale.Default.body2,
+                style = StaticTypeScale.Default.body1,
                 color = WeSpotThemeManager.colors.txtTitleColor,
             )
 
