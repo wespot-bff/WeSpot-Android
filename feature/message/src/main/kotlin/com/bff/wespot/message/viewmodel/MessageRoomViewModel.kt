@@ -25,12 +25,23 @@ class MessageRoomViewModel @Inject constructor(
     private val repository: MessageStorageRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ContainerHost<RoomUiState, RoomSideEffect> {
-    override val container = container<RoomUiState, RoomSideEffect>(RoomUiState()) {
-        val roomId: Int = savedStateHandle["roomId"] ?: return@container
-        getMessageRoom(roomId)
+    override val container = container<RoomUiState, RoomSideEffect>(RoomUiState())
+
+    fun onAction(action: RoomAction) = intent {
+        when (action) {
+            is RoomAction.OnScreenEntered -> getMessageRoom()
+            is RoomAction.OnMessageDetailSelected -> handleMessageDetailSelected(action.messageDetail)
+            is RoomAction.OnReplyButtonClicked -> handleReplyButtonClicked()
+            is RoomAction.OnTopBarNavigate -> handleTopBarNavigate()
+            is RoomAction.OnDeleteButtonClicked -> handleDeleteButtonClicked()
+            is RoomAction.OnDeleteConfirmed -> handleDeleteConfirmed()
+            is RoomAction.OnClosedModalButtonClicked -> handleCloseModalButtonClicked()
+        }
     }
 
-    private fun getMessageRoom(roomId: Int) = intent {
+    private fun getMessageRoom() = intent {
+        val roomId: Int = savedStateHandle["roomId"] ?: return@intent
+
         viewModelScope.launch {
             repository.getMessageRoom(roomId)
                 .onSuccess {
@@ -74,17 +85,6 @@ class MessageRoomViewModel @Inject constructor(
                 messageRoom = state.messageRoom.copy(messageDetails = updatedList),
                 selectedMessageDetail = state.selectedMessageDetail?.copy(isRead = true),
             )
-        }
-    }
-
-    fun onAction(action: RoomAction) = intent {
-        when (action) {
-            is RoomAction.OnMessageDetailSelected -> handleMessageDetailSelected(action.messageDetail)
-            is RoomAction.OnReplyButtonClicked -> handleReplyButtonClicked()
-            is RoomAction.OnTopBarNavigate -> handleTopBarNavigate()
-            is RoomAction.OnDeleteButtonClicked -> handleDeleteButtonClicked()
-            is RoomAction.OnDeleteConfirmed -> handleDeleteConfirmed()
-            is RoomAction.OnClosedModalButtonClicked -> handleCloseModalButtonClicked()
         }
     }
 

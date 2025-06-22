@@ -294,7 +294,7 @@ class SendViewModel @Inject constructor(
                     ),
                 ),
             )
-            postSideEffect(WritingSideEffect.NavigateToMessage)
+            postSideEffect(WritingSideEffect.NavigateUp)
         }.onNetworkFailure {
             postSideEffect(it.toSideEffect())
         }.also {

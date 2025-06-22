@@ -169,6 +169,10 @@ internal fun MessageRoomScreen(
             },
         )
     }
+
+    LaunchedEffect(Unit) {
+        action(RoomAction.OnScreenEntered)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
