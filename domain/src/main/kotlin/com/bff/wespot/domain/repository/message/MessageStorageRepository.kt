@@ -8,8 +8,6 @@ interface MessageStorageRepository {
 
     suspend fun getBookmarkedMessages(): Result<List<Message>>
 
-    suspend fun updateMessageReadStatus(messageId: Int): Result<Unit>
-
     suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit>
 
     suspend fun deleteMessage(messageId: Int): Result<Unit>

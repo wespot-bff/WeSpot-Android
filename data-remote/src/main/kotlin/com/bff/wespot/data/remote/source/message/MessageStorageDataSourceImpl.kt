@@ -27,14 +27,6 @@ class MessageStorageDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun updateMessageReadStatus(messageId: Int): Result<Unit> =
-        httpClient.safeRequest {
-            url {
-                method = HttpMethod.Patch
-                path("api/v2/messages/$messageId/read")
-            }
-        }
-
     override suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit> =
         httpClient.safeRequest {
             method = HttpMethod.Patch

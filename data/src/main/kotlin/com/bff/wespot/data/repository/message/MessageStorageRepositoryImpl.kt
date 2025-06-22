@@ -19,9 +19,6 @@ class MessageStorageRepositoryImpl @Inject constructor(
             messageList.map { it.toMessage() }
         }
 
-    override suspend fun updateMessageReadStatus(messageId: Int): Result<Unit> =
-        messageStorageDataSource.updateMessageReadStatus(messageId = messageId)
-
     override suspend fun updateMessageBookmarkStatus(messageId: Int): Result<Unit> =
         messageStorageDataSource.updateMessageBookmarkStatus(messageId)
 

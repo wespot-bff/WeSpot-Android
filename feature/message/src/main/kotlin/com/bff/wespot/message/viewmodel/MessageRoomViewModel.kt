@@ -52,11 +52,6 @@ class MessageRoomViewModel @Inject constructor(
                             selectedMessageDetail = lastItem,
                         )
                     }
-
-                    /** 쪽지 방에서 마지막 아이템 조회 처리한다. */
-                    if (lastItem?.isRead == false) {
-                        updateReadStatus(lastItem.id)
-                    }
                 }
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
@@ -67,34 +62,9 @@ class MessageRoomViewModel @Inject constructor(
         }
     }
 
-    private fun updateReadStatus(messageId: Int) = intent {
-        viewModelScope.launch {
-            repository.updateMessageReadStatus(messageId)
-        }
-
-        val updatedList = state.messageRoom.messageDetails.map { message ->
-            if (message.id == messageId) {
-                message.copy(isRead = true)
-            } else {
-                message
-            }
-        }
-
-        reduce {
-            state.copy(
-                messageRoom = state.messageRoom.copy(messageDetails = updatedList),
-                selectedMessageDetail = state.selectedMessageDetail?.copy(isRead = true),
-            )
-        }
-    }
-
     private fun handleMessageDetailSelected(messageDetail: MessageDetail) = intent {
         reduce {
             state.copy(selectedMessageDetail = messageDetail)
-        }
-
-        if (!messageDetail.isRead) {
-            updateReadStatus(messageId = messageDetail.id)
         }
     }
 
@@ -120,15 +90,11 @@ class MessageRoomViewModel @Inject constructor(
             return@intent
         }
 
-        /** 쪽지 삭제 API를 호출한다. Optimistic Update */
         viewModelScope.launch {
             repository.deleteMessage(deletedMessageId)
         }
 
-        /**
-         * 선택된 쪽지를 제거한 후, 쪽지 목록을 갱신하고 새로 선택될 쪽지를 선택한다.
-         * 새롭게 선택되는 쪽지는 삭제된 쪽지의 이전 쪽지이다.
-         */
+        /** 삭제 후 삭제된 쪽지의 이전 쪽지가 선택된다. */
         val updatedMessages = messageDetails.filter { it.id != deletedMessageId }
         val deletedIndex = messageDetails.indexOfFirst { it.id == deletedMessageId }
 
