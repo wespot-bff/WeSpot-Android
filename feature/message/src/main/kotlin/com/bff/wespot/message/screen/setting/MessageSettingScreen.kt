@@ -46,11 +46,11 @@ fun MessageSettingScreen(
                 navigator.navigateToBlockedMessageScreen()
             }
 
-            SettingListItem(text = stringResource(R.string.message_usage_title)) {
+            SettingListItem(text = stringResource(R.string.message_usage_setting)) {
                 navigator.navigateToMessageUsageSettingScreen()
             }
 
-            SettingListItem(stringResource(R.string.message_notification_title)) {
+            SettingListItem(stringResource(R.string.message_notification_setting)) {
                 navigator.navigateToMessageNotificationSettingScreen()
             }
         }

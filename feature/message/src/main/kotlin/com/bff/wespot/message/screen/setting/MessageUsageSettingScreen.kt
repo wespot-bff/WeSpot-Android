@@ -1,11 +1,9 @@
 package com.bff.wespot.message.screen.setting
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,8 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import com.bff.wespot.designsystem.component.header.WSTopBar
-import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
 import com.bff.wespot.message.state.setting.MessageUsageSettingAction
 import com.bff.wespot.message.viewmodel.MessageUsageViewModel
@@ -52,28 +48,19 @@ fun MessageUsageSettingScreen(
             )
         },
     ) {
-        Column(
-            modifier = Modifier.padding(it),
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .padding(start = 30.dp, end = 18.dp),
         ) {
-            Text(
-                modifier = Modifier.padding(bottom = 16.dp, start = 30.dp, end = 30.dp),
-                text = stringResource(R.string.message_notification_title),
-                style = StaticTypeScale.Default.header1,
-                color = WeSpotThemeManager.colors.txtTitleColor,
+            SettingSwitchItem(
+                title = stringResource(R.string.message_usage_setting),
+                subTitle = stringResource(R.string.message_usage_setting_subtitle),
+                switchValue = state.status.isReceivedAllowed,
+                onSwitched = {
+                    action(MessageUsageSettingAction.OnReceivedSettingSwitched)
+                },
             )
-
-            Box(
-                modifier = Modifier.padding(top = 6.dp, start = 30.dp, end = 18.dp),
-            ) {
-                SettingSwitchItem(
-                    title = stringResource(R.string.message_usage_setting_title),
-                    subTitle = stringResource(R.string.message_usage_setting_subtitle),
-                    switchValue = state.status.isReceivedAllowed,
-                    onSwitched = {
-                        action(MessageUsageSettingAction.OnReceivedSettingSwitched)
-                    },
-                )
-            }
         }
     }
 
