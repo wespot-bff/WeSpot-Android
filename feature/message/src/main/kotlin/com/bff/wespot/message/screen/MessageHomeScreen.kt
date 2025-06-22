@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,9 +51,9 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.message.R
 import com.bff.wespot.message.common.convertMillisToTime
-import com.bff.wespot.message.state.MessageAction
-import com.bff.wespot.message.state.MessageSideEffect
-import com.bff.wespot.message.viewmodel.MessageViewModel
+import com.bff.wespot.message.state.home.MessageHomeAction
+import com.bff.wespot.message.state.home.MessageHomeSideEffect
+import com.bff.wespot.message.viewmodel.MessageHomeViewModel
 import com.bff.wespot.model.common.RestrictionArg
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.util.handleSideEffect
@@ -61,7 +62,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun MessageHomeScreen(
-    viewModel: MessageViewModel = hiltViewModel(),
+    viewModel: MessageHomeViewModel = hiltViewModel(),
     navigateToMessageUsageSettingScreen: () -> Unit,
     navigateToReceiverSelectionScreen: () -> Unit,
     navigateToMessageStorageScreen: () -> Unit,
@@ -74,13 +75,13 @@ fun MessageHomeScreen(
 
     viewModel.collectSideEffect {
         when (it) {
-            MessageSideEffect.ShowMessageUsageSettingDialog -> {
+            MessageHomeSideEffect.ShowMessageUsageSettingDialog -> {
                 showMessageUsageSettingDialog = true
             }
-            MessageSideEffect.DismissMessageUsageSettingDialog -> {
+            MessageHomeSideEffect.DismissMessageUsageSettingDialog -> {
                 showMessageUsageSettingDialog = false
             }
-            MessageSideEffect.NavigateToMessageUsageSettingScreen -> {
+            MessageHomeSideEffect.NavigateToMessageUsageSettingScreen -> {
                 navigateToMessageUsageSettingScreen()
             }
         }
@@ -137,19 +138,23 @@ fun MessageHomeScreen(
             okButtonText = stringResource(R.string.goToSetting),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                action(MessageAction.OnMessageUsageSettingConfirmed)
+                action(MessageHomeAction.OnMessageUsageSettingConfirmed)
             },
             cancelButtonClick = {
-                action(MessageAction.OnMessageUsageSettingDialogDismissed)
+                action(MessageHomeAction.OnMessageUsageSettingDialogDismissed)
             },
             onDismissRequest = {},
         )
     }
 
+    LaunchedEffect(Unit) {
+        action(MessageHomeAction.OnScreenEntered)
+    }
+
     LifecycleStartEffect(Unit) {
-        action(MessageAction.OnLifecycleStart)
+        action(MessageHomeAction.OnLifecycleStart)
         onStopOrDispose {
-            action(MessageAction.OnLifecycleStop)
+            action(MessageHomeAction.OnLifecycleStop)
         }
     }
 }
@@ -226,7 +231,7 @@ private fun ReplyMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
 }
 
 @Composable
-private fun MessageTimer(viewModel: MessageViewModel) {
+private fun MessageTimer(viewModel: MessageHomeViewModel) {
     val remainingTimeMillis by viewModel.remainingTimeMillis.collectAsStateWithLifecycle()
 
     Column(
