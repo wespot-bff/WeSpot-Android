@@ -43,7 +43,10 @@ class MessageNotificationSettingViewModel @Inject constructor(
             repository.getNotificationSetting()
                 .onSuccess {
                     reduce {
-                        state.copy(notificationSetting = it)
+                        state.copy(
+                            initialSetting = it,
+                            isEnableMessageNotification = it.isEnableMessageNotification,
+                        )
                     }
                 }
                 .onNetworkFailure {
@@ -58,20 +61,21 @@ class MessageNotificationSettingViewModel @Inject constructor(
     }
 
     private fun handleNotificationSettingSwitched() = intent {
-        val updatedSetting = with(state.notificationSetting) {
-            copy(isEnableMessageNotification = !isEnableMessageNotification)
-        }
         reduce {
-            state.copy(notificationSetting = updatedSetting)
+            state.copy(isEnableMessageNotification = state.isEnableMessageNotification.not())
         }
     }
 
     private fun updateNotificationSetting() = intent {
+        if (state.isEnableMessageNotification == state.initialSetting.isEnableMessageNotification) {
+            return@intent
+        }
         viewModelScope.launch {
-            repository.updateNotificationSetting(state.notificationSetting)
-                .onFailure {
-                    Timber.e(it)
-                }
+            repository.updateNotificationSetting(
+                state.initialSetting.copy(isEnableMessageNotification = state.isEnableMessageNotification),
+            ).onFailure {
+                Timber.e(it)
+            }
         }
     }
 }

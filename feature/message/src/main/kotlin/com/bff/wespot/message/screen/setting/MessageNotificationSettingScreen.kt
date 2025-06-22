@@ -56,7 +56,7 @@ fun MessageNotificationSettingScreen(
             SettingSwitchItem(
                 title = stringResource(R.string.message_notification_setting_title),
                 subTitle = stringResource(R.string.message_notification_setting_subtitle),
-                switchValue = state.notificationSetting.isEnableMessageNotification,
+                switchValue = state.isEnableMessageNotification,
                 onSwitched = {
                     action(MessageNotificationSettingAction.OnNotificationSettingSwitched)
                 },
