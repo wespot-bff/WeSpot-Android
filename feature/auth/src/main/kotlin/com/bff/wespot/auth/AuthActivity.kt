@@ -39,6 +39,7 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
@@ -193,6 +194,7 @@ class AuthActivity : ComponentActivity() {
                         val userId = intent.getStringExtra(EXTRA_USER_ID) ?: ""
                         val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
                         val date = intent.getStringExtra(EXTRA_DATE) ?: ""
+                        val deepLink = intent.getStringExtra(EXTRA_DEEP_LINK) ?: ""
 
                         val intent = navigator.navigateToMain(
                             this@AuthActivity,
@@ -200,6 +202,7 @@ class AuthActivity : ComponentActivity() {
                             userId = Pair(EXTRA_USER_ID, userId),
                             type = Pair(EXTRA_TYPE, type),
                             date = Pair(EXTRA_DATE, date),
+                            deepLink = Pair(EXTRA_DEEP_LINK, deepLink)
                         )
                         startActivity(intent)
                     } else if (loginState == LoginState.FORCE_UPDATE) {

@@ -9,12 +9,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bff.wespot.PushNotificationService.Companion.KEY_DATE
+import com.bff.wespot.PushNotificationService.Companion.KEY_DEEP_LINK
 import com.bff.wespot.PushNotificationService.Companion.KEY_TARGET_ID
 import com.bff.wespot.PushNotificationService.Companion.KEY_TYPE
 import com.bff.wespot.PushNotificationService.Companion.KEY_USER_ID
 import com.bff.wespot.R
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
@@ -65,6 +67,7 @@ class SplashActivity : ComponentActivity() {
         val userId = intent.getStringExtra(KEY_USER_ID) ?: ""
         val type = intent.getStringExtra(KEY_TYPE) ?: ""
         val date = intent.getStringExtra(KEY_DATE) ?: ""
+        val deepLink = intent.getStringExtra(KEY_DEEP_LINK) ?: ""
 
         val intent = navigator.navigateToAuthWithExtra(
             context = this@SplashActivity,
@@ -72,6 +75,7 @@ class SplashActivity : ComponentActivity() {
             userId = Pair(EXTRA_USER_ID, userId),
             type = Pair(EXTRA_TYPE, type),
             date = Pair(EXTRA_DATE, date),
+            deepLink = Pair(EXTRA_DEEP_LINK, deepLink)
         )
         startActivity(intent)
         finish()

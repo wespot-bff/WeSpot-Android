@@ -11,6 +11,7 @@ interface Navigator {
         userId: Pair<String, String> = Pair("", ""),
         type: Pair<String, String> = Pair("", ""),
         date: Pair<String, String> = Pair("", ""),
+        deepLink: Pair<String, String> = Pair("", ""),
     ): Intent
 
     fun navigateToAuth(context: Context): Intent
@@ -21,6 +22,7 @@ interface Navigator {
         userId: Pair<String, String> = Pair("", ""),
         type: Pair<String, String> = Pair("", ""),
         date: Pair<String, String> = Pair("", ""),
+        deepLink: Pair<String, String> = Pair("", ""),
     ): Intent
 
     fun navigateToInstaStory(
