@@ -36,7 +36,6 @@ import com.bff.wespot.message.state.storage.StorageAction
 import com.bff.wespot.message.state.storage.StorageSideEffect
 import com.bff.wespot.message.viewmodel.StorageViewModel
 import com.bff.wespot.model.message.response.Message
-import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.NetworkDialog
 import com.bff.wespot.ui.component.WSBottomSheet
@@ -51,8 +50,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageStorageScreen(
-    type: NotificationType,
-    messageId: Int? = null,
     showToast: (ToastState) -> Unit,
     navigateToMessageRoomScreen: (Int) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
@@ -179,20 +176,6 @@ fun MessageStorageScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
-
-    LaunchedEffect(Unit) {
-        when (type) {
-            NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
-                action(
-                    StorageAction.OnPushNotificationNavigated(
-                        messageId = messageId ?: return@LaunchedEffect,
-                    ),
-                )
-            }
-
-            else -> { }
-        }
-    }
 
     LaunchedEffect(state.selectedChipIndex) {
         action(StorageAction.OnStorageChipSelected(state.selectedChipIndex))
