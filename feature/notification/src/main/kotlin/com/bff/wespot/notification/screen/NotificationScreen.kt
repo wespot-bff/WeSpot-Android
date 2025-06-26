@@ -1,5 +1,6 @@
 package com.bff.wespot.notification.screen
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,16 +17,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,23 +37,21 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.notification.Notification
-import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
+import com.bff.wespot.notification.state.NotificationSideEffect
 import com.bff.wespot.notification.viewmodel.NotificationViewModel
 import com.bff.wespot.ui.component.LoadingAnimation
 import com.bff.wespot.ui.component.RedDot
-import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
-import java.time.LocalTime
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 interface NotificationNavigator {
     fun navigateUp()
     fun navigateToReceiverSelectionScreen()
-    fun navigateToMessageScreen(messageId: Int, type: NotificationType)
     fun navigateToVotingScreen()
     fun navigateToVoteResultScreen(
         isNavigateFromNotification: Boolean,
@@ -68,16 +66,45 @@ interface NotificationNavigator {
 @Composable
 fun NotificationScreen(
     navigator: NotificationNavigator,
+    showToast: (ToastState) -> Unit,
     viewModel: NotificationViewModel = hiltViewModel(),
 ) {
-    var toast by remember { mutableStateOf(ToastState()) }
-
+    val context = LocalContext.current
     val state by viewModel.collectAsState()
     val pagingData = state.notificationList.collectAsLazyPagingItems()
     val action = viewModel::onActon
 
     handleSideEffect(viewModel.sideEffect)
 
+    viewModel.collectSideEffect {
+        when (it) {
+            is NotificationSideEffect.ShowToast -> {
+                showToast(it.toastState)
+            }
+            is NotificationSideEffect.NavigateByDeepLink -> {
+                val intent = Intent(Intent.ACTION_VIEW, it.deepLink.toUri())
+                context.startActivity(intent)
+            }
+            is NotificationSideEffect.NavigateToProfileEditScreen -> {
+                navigator.navigateToProfileEditScreen()
+            }
+            is NotificationSideEffect.NavigateToReceiverSelectionScreen -> {
+                navigator.navigateToReceiverSelectionScreen()
+            }
+            is NotificationSideEffect.NavigateToVotingScreen -> {
+                navigator.navigateToVotingScreen()
+            }
+            is NotificationSideEffect.NavigateToVoteStorageScreen -> {
+                navigator.navigateToVoteStorageScreen()
+            }
+            is NotificationSideEffect.NavigateToVoteResultScreen -> {
+                navigator.navigateToVoteResultScreen(
+                    isNavigateFromNotification = it.isNavigateFromNotification,
+                    isTodayVoteResult = it.isTodayVoteResult,
+                )
+            }
+        }
+    }
     Scaffold(
         topBar = {
             WSTopBar(
@@ -89,10 +116,12 @@ fun NotificationScreen(
     ) {
         when (pagingData.loadState.refresh) {
             is LoadState.Error -> {
-                toast = ToastState(
-                    show = true,
-                    message = R.string.notification_load_error_message,
-                    type = WSToastType.Error,
+                showToast(
+                    ToastState(
+                        show = true,
+                        message = R.string.notification_load_error_message,
+                        type = WSToastType.Error,
+                    ),
                 )
             }
 
@@ -116,64 +145,12 @@ fun NotificationScreen(
                                 notification = item,
                             ) {
                                 action(NotificationAction.OnNotificationClicked(item))
-
-                                when (item.type) {
-                                    NotificationType.IDLE -> {}
-
-                                    NotificationType.MESSAGE -> {
-                                        if (checkMessageSentTime()) {
-                                            if (state.isSendAllowed) {
-                                                navigator.navigateToReceiverSelectionScreen()
-                                            } else {
-                                                toast = ToastState(
-                                                    show = true,
-                                                    message = R.string.already_message_reserved,
-                                                    type = WSToastType.Error,
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
-                                        navigator.navigateToMessageScreen(
-                                            messageId = item.targetId,
-                                            type = item.type,
-                                        )
-                                    }
-
-                                    NotificationType.VOTE -> {
-                                        navigator.navigateToVotingScreen()
-                                    }
-
-                                    NotificationType.VOTE_RESULT -> {
-                                        navigator.navigateToVoteResultScreen(
-                                            isNavigateFromNotification = true,
-                                            isTodayVoteResult = item.isTodayVoteResult(),
-                                        )
-                                    }
-
-                                    NotificationType.VOTE_RECEIVED -> {
-                                        navigator.navigateToVoteStorageScreen()
-                                    }
-
-                                    NotificationType.PROFILE_UPDATE -> {
-                                        navigator.navigateToProfileEditScreen()
-                                    }
-                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    TopToast(
-        message = stringResource(toast.message),
-        toastType = toast.type,
-        showToast = toast.show,
-    ) {
-        toast = toast.copy(show = false)
     }
 
     LaunchedEffect(Unit) {
@@ -269,12 +246,4 @@ fun NotificationListItem(
             color = WeSpotThemeManager.colors.cardBackgroundColor,
         )
     }
-}
-
-internal fun checkMessageSentTime(): Boolean {
-    val currentTime = LocalTime.now()
-    val eveningStartTime = LocalTime.of(17, 0)
-    val nightStartTime = LocalTime.of(22, 0)
-
-    return currentTime >= eveningStartTime && currentTime < nightStartTime
 }

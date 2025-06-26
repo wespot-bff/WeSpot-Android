@@ -2,19 +2,24 @@ package com.bff.wespot.notification.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
 import com.bff.wespot.domain.repository.notification.NotificationRepository
 import com.bff.wespot.model.common.Paging
 import com.bff.wespot.model.notification.Notification
+import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.state.NotificationSideEffect
 import com.bff.wespot.notification.state.NotificationUiState
 import com.bff.wespot.ui.base.BaseViewModel
+import com.bff.wespot.ui.model.ToastState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
@@ -35,9 +40,9 @@ class NotificationViewModel @Inject constructor(
                 getNotificationList()
                 getMessageStatus()
             }
-            is NotificationAction.OnNotificationClicked -> handleNotificationClicked(
-                action.notification,
-            )
+            is NotificationAction.OnNotificationClicked -> {
+                handleNotificationClicked(action.notification)
+            }
         }
     }
 
@@ -52,9 +57,48 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private fun handleNotificationClicked(notification: Notification) {
+    private fun handleNotificationClicked(notification: Notification) = intent {
         if (notification.isNew) {
             updateNotificationReadStatus(notification.id)
+        }
+
+        when (notification.type) {
+            NotificationType.IDLE -> {}
+            NotificationType.MESSAGE -> {
+                if (state.isSendAllowed) {
+                    postSideEffect(NotificationSideEffect.NavigateToReceiverSelectionScreen)
+                } else {
+                    postSideEffect(
+                        NotificationSideEffect.ShowToast(
+                            ToastState(
+                                show = true,
+                                message = R.string.already_message_reserved,
+                                type = WSToastType.Error,
+                            ),
+                        ),
+                    )
+                }
+            }
+            NotificationType.MESSAGE_V2 -> {
+                postSideEffect(NotificationSideEffect.NavigateByDeepLink(notification.deepLink))
+            }
+            NotificationType.VOTE_RESULT -> {
+                postSideEffect(
+                    NotificationSideEffect.NavigateToVoteResultScreen(
+                        isNavigateFromNotification = true,
+                        isTodayVoteResult = notification.isTodayVoteResult(),
+                    ),
+                )
+            }
+            NotificationType.VOTE -> {
+                postSideEffect(NotificationSideEffect.NavigateToVotingScreen)
+            }
+            NotificationType.VOTE_RECEIVED -> {
+                postSideEffect(NotificationSideEffect.NavigateToVoteStorageScreen)
+            }
+            NotificationType.PROFILE_UPDATE -> {
+                postSideEffect(NotificationSideEffect.NavigateToProfileEditScreen)
+            }
         }
     }
 
