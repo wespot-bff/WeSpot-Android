@@ -202,7 +202,7 @@ class AuthActivity : ComponentActivity() {
                             userId = Pair(EXTRA_USER_ID, userId),
                             type = Pair(EXTRA_TYPE, type),
                             date = Pair(EXTRA_DATE, date),
-                            deepLink = Pair(EXTRA_DEEP_LINK, deepLink)
+                            deepLink = Pair(EXTRA_DEEP_LINK, deepLink),
                         )
                         startActivity(intent)
                     } else if (loginState == LoginState.FORCE_UPDATE) {

@@ -2,6 +2,7 @@ package com.bff.wespot
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -53,6 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
@@ -76,6 +78,7 @@ import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
+import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.navigation.util.EXTRA_USER_ID
@@ -161,22 +164,26 @@ class MainActivity : ComponentActivity() {
         val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
         val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
         val date = getStringExtra(EXTRA_DATE).orEmpty()
+        val deepLink = getStringExtra(EXTRA_DEEP_LINK).orEmpty()
 
         removeExtra(EXTRA_TARGET_ID)
         removeExtra(EXTRA_USER_ID)
         removeExtra(EXTRA_TYPE)
         removeExtra(EXTRA_DATE)
+        removeExtra(EXTRA_DEEP_LINK)
 
         MainScreenNavArgs(
             targetId = targetId,
             userId = userId,
             type = type,
             date = date,
+            deepLink = deepLink,
         )
     }
 }
 
 data class MainScreenNavArgs(
+    val deepLink: String,
     val type: NotificationType,
     val userId: String,
     val targetId: Int,
@@ -255,7 +262,7 @@ private fun MainScreen(
 
         if (state.isPushNotificationNavigation) {
             action(MainAction.OnNavigateByPushNotification)
-            navigateScreenFromNavArgs(navArgs, NotificationNavigatorImpl(navController))
+            navigateScreenFromNavArgs(context, navArgs, NotificationNavigatorImpl(navController))
         }
     }
 
@@ -560,6 +567,7 @@ private fun RowScope.TabItem(
 }
 
 private fun navigateScreenFromNavArgs(
+    context: Context,
     navArgs: MainScreenNavArgs,
     navigator: NotificationNavigator
 ) {
@@ -568,8 +576,9 @@ private fun navigateScreenFromNavArgs(
             navigator.navigateToReceiverSelectionScreen()
         }
 
-        NotificationType.MESSAGE_SENT, NotificationType.MESSAGE_RECEIVED -> {
-            navigator.navigateToMessageScreen(type = navArgs.type, messageId = navArgs.targetId)
+        NotificationType.MESSAGE_V2 -> {
+            val intent = Intent(Intent.ACTION_VIEW, navArgs.deepLink.toUri())
+            context.startActivity(intent)
         }
 
         NotificationType.VOTE -> {
