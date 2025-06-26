@@ -31,7 +31,7 @@ data class NotificationDto (
     val content: String,
     val isNew: Boolean,
     val isEnable: Boolean,
-    val deepLink: String,
+    val deepLink: String = "",
     val createdAt: String,
 ) {
     fun toNotification(): Notification = Notification(
