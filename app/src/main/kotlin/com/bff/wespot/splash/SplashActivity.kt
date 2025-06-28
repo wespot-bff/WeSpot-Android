@@ -8,22 +8,15 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bff.wespot.PushNotificationService.Companion.KEY_DATE
-import com.bff.wespot.PushNotificationService.Companion.KEY_DEEP_LINK
-import com.bff.wespot.PushNotificationService.Companion.KEY_TARGET_ID
-import com.bff.wespot.PushNotificationService.Companion.KEY_TYPE
-import com.bff.wespot.PushNotificationService.Companion.KEY_USER_ID
+import com.bff.wespot.PushNotificationService
 import com.bff.wespot.R
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
-import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
-import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
@@ -31,7 +24,9 @@ class SplashActivity : ComponentActivity() {
     lateinit var navigator: Navigator
 
     private val viewModel: SplashViewModel by viewModels()
-    private val isNavigateFromPushNotification by lazy { intent.getStringExtra(KEY_TYPE) != null }
+    private val isNavigateFromPushNotification by lazy {
+        intent.getStringExtra(PushNotificationService.KEY_TYPE) != null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,16 +58,12 @@ class SplashActivity : ComponentActivity() {
     }
 
     private fun navigateToAuth() {
-        val targetId = intent.getStringExtra(KEY_TARGET_ID)?.toInt() ?: -1
-        val userId = intent.getStringExtra(KEY_USER_ID) ?: ""
-        val type = intent.getStringExtra(KEY_TYPE) ?: ""
-        val date = intent.getStringExtra(KEY_DATE) ?: ""
-        val deepLink = intent.getStringExtra(KEY_DEEP_LINK) ?: ""
+        val type = intent.getStringExtra(PushNotificationService.KEY_TYPE) ?: ""
+        val date = intent.getStringExtra(PushNotificationService.KEY_DATE) ?: ""
+        val deepLink = intent.getStringExtra(PushNotificationService.KEY_DEEP_LINK) ?: ""
 
         val intent = navigator.navigateToAuthWithExtra(
             context = this@SplashActivity,
-            targetId = Pair(EXTRA_TARGET_ID, targetId),
-            userId = Pair(EXTRA_USER_ID, userId),
             type = Pair(EXTRA_TYPE, type),
             date = Pair(EXTRA_DATE, date),
             deepLink = Pair(EXTRA_DEEP_LINK, deepLink)

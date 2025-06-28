@@ -114,8 +114,6 @@ class PushNotificationService : FirebaseMessagingService() {
     companion object {
         const val KEY_DATE = "date"
         const val KEY_TYPE = "type"
-        const val KEY_USER_ID = "userId"
-        const val KEY_TARGET_ID = "targetId"
         const val KEY_DEEP_LINK = "deepLink"
     }
 }

@@ -79,9 +79,7 @@ import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
-import com.bff.wespot.navigation.util.EXTRA_TARGET_ID
 import com.bff.wespot.navigation.util.EXTRA_TYPE
-import com.bff.wespot.navigation.util.EXTRA_USER_ID
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.server.driven.onboarding.OnBoardingBottomSheet
 import com.bff.wespot.state.MainAction
@@ -160,21 +158,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
-        val targetId = getIntExtra(EXTRA_TARGET_ID, -1)
-        val userId = getStringExtra(EXTRA_USER_ID).orEmpty()
         val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
         val date = getStringExtra(EXTRA_DATE).orEmpty()
         val deepLink = getStringExtra(EXTRA_DEEP_LINK).orEmpty()
 
-        removeExtra(EXTRA_TARGET_ID)
-        removeExtra(EXTRA_USER_ID)
         removeExtra(EXTRA_TYPE)
         removeExtra(EXTRA_DATE)
         removeExtra(EXTRA_DEEP_LINK)
 
         MainScreenNavArgs(
-            targetId = targetId,
-            userId = userId,
             type = type,
             date = date,
             deepLink = deepLink,
@@ -185,8 +177,6 @@ class MainActivity : ComponentActivity() {
 data class MainScreenNavArgs(
     val deepLink: String,
     val type: NotificationType,
-    val userId: String,
-    val targetId: Int,
     val date: String,
 )
 
