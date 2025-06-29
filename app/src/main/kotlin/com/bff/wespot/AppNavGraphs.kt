@@ -23,9 +23,11 @@ import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageNotificationSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSettingScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageUsageSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -76,6 +78,8 @@ object AppNavGraphs {
             ReceiverSelectionScreenDestination,
             MessageSettingScreenDestination,
             BlockedMessageScreenDestination,
+            MessageNotificationSettingScreenDestination,
+            MessageUsageSettingScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }

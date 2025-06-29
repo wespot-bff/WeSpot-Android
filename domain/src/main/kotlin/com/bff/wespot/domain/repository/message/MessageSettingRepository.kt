@@ -6,4 +6,6 @@ interface MessageSettingRepository {
     suspend fun getBlockedMessageList(): Result<List<Message>>
 
     suspend fun updateMessageBlockStatus(messageId: Int): Result<Unit>
+
+    suspend fun updateMessageUsageStatus(enabled: Boolean): Result<Unit>
 }

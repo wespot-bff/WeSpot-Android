@@ -2,12 +2,14 @@ package com.bff.wespot.model.message.response
 
 /**
  * @property [isSendAllowed] : 현재 쪽지를 보낼 수 있는 상태
+ * @property [isReceivedAllowed] : 현재 쪽지를 수신할 수 있는 상태
  * @property [countRemainingMessages] : 남은 쪽지를 보낼 수 있는 갯수
  * @property [countUnReadMessages] : 어제와 오늘 간 아직 읽지 쪽지 갯수
  * @property [countUnReplayMessages] : 오늘 답장하지 않은 쪽지의 갯수
  */
 data class MessageStatus(
     val isSendAllowed: Boolean = false,
+    val isReceivedAllowed: Boolean = false,
     val countRemainingMessages: Int = -1,
     val countUnReadMessages: Int = -1,
     val countUnReplayMessages: Int = -1,

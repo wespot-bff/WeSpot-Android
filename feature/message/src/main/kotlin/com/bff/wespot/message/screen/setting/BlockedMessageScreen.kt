@@ -9,13 +9,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.message.R
@@ -43,12 +46,21 @@ fun BlockedMessageScreen(
     showToast: (ToastState) -> Unit,
 ) {
     val state by viewModel.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
     val action = viewModel::onAction
 
     handleSideEffect(viewModel.sideEffect)
 
     viewModel.collectSideEffect {
         when (it) {
+            is BlockedMessageSideEffect.ShowDialog -> {
+                showDialog = true
+            }
+
+            is BlockedMessageSideEffect.DismissDialog -> {
+                showDialog = false
+            }
+
             is BlockedMessageSideEffect.ShowToast -> {
                 showToast(it.toastState)
             }
@@ -92,7 +104,9 @@ fun BlockedMessageScreen(
                             message = message,
                             itemClick = { },
                             optionButtonClick = {
-                                action(BlockedMessageAction.OnUnBlockButtonClicked(item.id))
+                                if (item.isBlocked) {
+                                    action(BlockedMessageAction.OnUnBlockButtonClicked(item.id))
+                                }
                             },
                         )
                     }
@@ -101,7 +115,18 @@ fun BlockedMessageScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        action(BlockedMessageAction.OnScreenEntered)
+    if (showDialog) {
+        WSDialog(
+            title = stringResource(R.string.unblock_message_dialog_title),
+            okButtonText = stringResource(id = R.string.unblock),
+            cancelButtonText = stringResource(id = R.string.close),
+            okButtonClick = {
+                action(BlockedMessageAction.OnDialogUnBlockButtonClicked)
+            },
+            cancelButtonClick = {
+                action(BlockedMessageAction.OnDialogCancelButtonClicked)
+            },
+            onDismissRequest = {},
+        )
     }
 }
