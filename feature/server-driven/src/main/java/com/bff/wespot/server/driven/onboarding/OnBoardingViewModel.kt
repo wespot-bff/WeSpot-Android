@@ -51,6 +51,7 @@ class OnBoardingViewModel @Inject constructor(
     private fun viewedOnBoarding(category: OnBoardingCategory) {
         viewModelScope.launch {
             onBoardingRepository.viewedOnBoarding(category)
+            _contents.value = listOf()
         }
     }
 }
