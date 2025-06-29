@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.designsystem.util.lineHeight
+import com.bff.wespot.designsystem.util.textDp
 import com.bff.wespot.model.serverDriven.ButtonsComponent
 import com.bff.wespot.model.serverDriven.Paddings
 import com.bff.wespot.model.serverDriven.RichText
@@ -74,8 +75,9 @@ private fun RowScope.SingleButton(
     ) {
         Text(
             text = richText.text,
-            fontSize = richText.fontSize.sp,
+            fontSize = richText.fontSize.textDp,
             fontWeight = richText.fontWeight.toFontWeight(),
+            lineHeight = richText.fontSize.lineHeight,
             textAlign = richText.align.toTextAlign(),
             color = richText.color.toColor(),
             modifier = Modifier

@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.designsystem.theme.LINE_HEIGHT_PERCENT
 
 private fun Int.textDp(density: Density): TextUnit = with(density) {
     this@textDp.dp.toSp()
@@ -19,3 +20,6 @@ private fun Float.textDp(density: Density): TextUnit = with(density) {
 
 val Float.textDp: TextUnit
     @Composable get() = this.textDp(density = LocalDensity.current)
+
+val Int.lineHeight
+    @Composable get() = (this * LINE_HEIGHT_PERCENT).textDp
