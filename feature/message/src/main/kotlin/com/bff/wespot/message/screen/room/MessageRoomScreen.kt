@@ -339,11 +339,11 @@ private fun MessageHorizontalList(
     onItemClicked: (MessageDetail) -> Unit,
 ) {
     val listState = rememberLazyListState()
-    val lastIndex = messageRoom.messageDetails.lastIndex
 
-    LaunchedEffect(Unit) {
-        if (lastIndex >= 0) {
-            listState.scrollToItem(lastIndex)
+    LaunchedEffect(messageRoom.messageDetails.size) {
+        val selectedIndex = messageRoom.messageDetails.indexOf(selectedItem)
+        if (selectedIndex >= 0) {
+            listState.animateScrollToItem(selectedIndex)
         }
     }
 
