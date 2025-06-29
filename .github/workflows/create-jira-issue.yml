@@ -7,7 +7,8 @@ on:
       
 jobs:
   create-issue:
-    name: Create Jira issue
+    name: Create Jira issue  
+    if: ${{ github.event.issue.body && contains(github.event.issue.body, 'parentKey') && github.event.issue.body != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout develop code

@@ -17,9 +17,11 @@ import com.bff.wespot.entire.screen.setting.RevokeNavigator
 import com.bff.wespot.entire.screen.setting.SettingNavigator
 import com.bff.wespot.message.screen.MessageNavigator
 import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageNotificationSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageRoomScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageSendScreenDestination
+import com.bff.wespot.message.screen.destinations.MessageUsageSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.screen.room.MessageRoomNavigator
@@ -29,7 +31,9 @@ import com.bff.wespot.message.screen.send.MessageWriteNavigator
 import com.bff.wespot.message.screen.send.MessageWriteScreenArgs
 import com.bff.wespot.message.screen.send.ReceiverSelectionNavigator
 import com.bff.wespot.message.screen.setting.BlockedMessageNavigator
+import com.bff.wespot.message.screen.setting.MessageNotificationSettingNavigator
 import com.bff.wespot.message.screen.setting.MessageSettingNavigator
+import com.bff.wespot.message.screen.setting.MessageUsageSettingNavigator
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
@@ -66,7 +70,9 @@ class CommonNavGraphNavigator(
     ProfileEditNavigator,
     MessageRoomNavigator,
     MessageSettingNavigator,
-    BlockedMessageNavigator {
+    BlockedMessageNavigator,
+    MessageNotificationSettingNavigator,
+    MessageUsageSettingNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -138,6 +144,10 @@ class CommonNavGraphNavigator(
         navController.navigate(EntireScreenDestination within navGraph)
     }
 
+    override fun navigateToBlockedMessageScreen() {
+        navController.navigate(BlockedMessageScreenDestination within navGraph)
+    }
+
     override fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs) {
         navController.navigate(MessageRoomScreenDestination(args) within navGraph)
     }
@@ -146,7 +156,11 @@ class CommonNavGraphNavigator(
         navController.navigate(MessageWriteScreenDestination(args) within navGraph)
     }
 
-    override fun navigateToBlockedMessage() {
-        navController.navigate(BlockedMessageScreenDestination within navGraph)
+    override fun navigateToMessageNotificationSettingScreen() {
+        navController.navigate(MessageNotificationSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToMessageUsageSettingScreen() {
+        navController.navigate(MessageUsageSettingScreenDestination within navGraph)
     }
 }

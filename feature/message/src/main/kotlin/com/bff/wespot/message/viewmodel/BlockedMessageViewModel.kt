@@ -25,12 +25,26 @@ class BlockedMessageViewModel @Inject constructor(
     private val repository: MessageSettingRepository,
 ) : BaseViewModel(), ContainerHost<BlockedMessageUiState, BlockedMessageSideEffect> {
     override val container =
-        container<BlockedMessageUiState, BlockedMessageSideEffect>(BlockedMessageUiState())
+        container<BlockedMessageUiState, BlockedMessageSideEffect>(BlockedMessageUiState()) {
+            getBlockedMessageList()
+        }
 
     fun onAction(action: BlockedMessageAction) {
         when (action) {
-            BlockedMessageAction.OnScreenEntered -> getBlockedMessageList()
-            is BlockedMessageAction.OnUnBlockButtonClicked -> handleUnBlockButtonClicked(action.id)
+            is BlockedMessageAction.OnUnBlockButtonClicked -> {
+                intent {
+                    reduce {
+                        state.copy(messageId = action.id)
+                    }
+                    postSideEffect(BlockedMessageSideEffect.ShowDialog)
+                }
+            }
+            BlockedMessageAction.OnDialogUnBlockButtonClicked -> handleUnBlockButtonClicked()
+            BlockedMessageAction.OnDialogCancelButtonClicked -> {
+                intent {
+                    postSideEffect(BlockedMessageSideEffect.DismissDialog)
+                }
+            }
         }
     }
 
@@ -51,17 +65,19 @@ class BlockedMessageViewModel @Inject constructor(
         }
     }
 
-    private fun handleUnBlockButtonClicked(messageId: Int) = intent {
+    private fun handleUnBlockButtonClicked() = intent {
+        postSideEffect(BlockedMessageSideEffect.DismissDialog)
+
         /** 이미 차단 해제를 수행한 쪽지 의 경우 다시 해제 처리하지 않는다. */
-        if (state.messageList.find { it.id == messageId }?.isBlocked == false) {
+        if (state.messageList.find { it.id == state.messageId }?.isBlocked == false) {
             return@intent
         }
 
         viewModelScope.launch {
-            repository.updateMessageBlockStatus(messageId)
+            repository.updateMessageBlockStatus(state.messageId)
                 .onSuccess {
                     val updatedMessageList = state.messageList.map { message ->
-                        if (message.id == messageId) {
+                        if (message.id == state.messageId) {
                             message.copy(isBlocked = false)
                         } else {
                             message
@@ -70,7 +86,6 @@ class BlockedMessageViewModel @Inject constructor(
                     reduce {
                         state.copy(messageList = updatedMessageList)
                     }
-
                     postSideEffect(
                         BlockedMessageSideEffect.ShowToast(
                             toastState = ToastState(

@@ -92,8 +92,15 @@
     <string name="reply_dialog_title">답장을 전달할게요</string>
     <string name="message_setting">쪽지 설정</string>
     <string name="blocked_message_title">차단한 쪽지방 목록</string>
-    <string name="message_permission_title">쪽지 수신 및 발신</string>
-    <string name="message_notification_title">쪽지 알림</string>
+    <string name="message_usage_setting">쪽지 수신 및 발신</string>
+    <string name="message_notification_setting">쪽지 알림</string>
+    <string name="message_notification_setting_title">쪽지 알림 수신</string>
     <string name="unblock">차단 해제</string>
     <string name="unblock_done">해제 완료</string>
+    <string name="message_notification_setting_subtitle">설정 해제 시, 쪽지 관련 알림을 받을 수 없어요</string>
+    <string name="message_usage_setting_subtitle">설정 해제 시, 쪽지를 보내거나 받을 수 없어요</string>
+    <string name="message_usage_setting_dialog_title">쪽지를 보낼 수 없는 상태에요</string>
+    <string name="mesage_usage_setting_dialog_subtitle"><![CDATA[차단된 친구와의 쪽지 수신/발신이 모두 차단돼요.\n우측 상단의 설정 > 쪽지 수신 및 발신에서 쪽지 받기 설정으로 변경이 필요해요.]]></string>
+    <string name="goToSetting">설정 바로가기</string>
+    <string name="unblock_message_dialog_title">차단을 해제하시나요?</string>
 </resources>

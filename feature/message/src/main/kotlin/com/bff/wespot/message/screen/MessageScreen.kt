@@ -29,6 +29,7 @@ interface MessageNavigator {
     fun navigateUp()
     fun navigateReceiverSelectionScreen()
     fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs)
+    fun navigateToMessageUsageSettingScreen()
 }
 
 data class MessageScreenArgs(
@@ -77,6 +78,9 @@ internal fun MessageScreen(
                             },
                             navigateToReceiverSelectionScreen = {
                                 messageNavigator.navigateReceiverSelectionScreen()
+                            },
+                            navigateToMessageUsageSettingScreen = {
+                                messageNavigator.navigateToMessageUsageSettingScreen()
                             },
                             restricted = restricted,
                         )

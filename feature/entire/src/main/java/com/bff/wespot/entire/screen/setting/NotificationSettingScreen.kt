@@ -2,19 +2,16 @@ package com.bff.wespot.entire.screen.setting
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,15 +20,12 @@ import androidx.lifecycle.Lifecycle
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.component.modal.WSDialogType
-import com.bff.wespot.designsystem.component.toggle.WSSwitch
-import com.bff.wespot.designsystem.theme.Gray400
-import com.bff.wespot.designsystem.theme.StaticTypeScale
-import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.entire.R
 import com.bff.wespot.entire.state.notification.NotificationSettingAction
 import com.bff.wespot.entire.state.notification.NotificationSettingSideEffect
 import com.bff.wespot.entire.viewmodel.NotificationSettingViewModel
 import com.bff.wespot.ui.component.LoadingAnimation
+import com.bff.wespot.ui.component.SettingSwitchItem
 import com.bff.wespot.ui.util.OnLifecycleEvent
 import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
@@ -92,7 +86,7 @@ fun NotificationSettingScreen(
                 .padding(top = 16.dp, start = 24.dp, end = 24.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
-            NotificationSettingItem(
+            SettingSwitchItem(
                 title = stringResource(R.string.vote_notification_title),
                 subTitle = stringResource(R.string.vote_notification_subTitle),
                 switchValue = state.isEnableVoteNotification,
@@ -101,7 +95,7 @@ fun NotificationSettingScreen(
                 },
             )
 
-            NotificationSettingItem(
+            SettingSwitchItem(
                 title = stringResource(R.string.message),
                 subTitle = stringResource(R.string.message_notification_title),
                 switchValue = state.isEnableMessageNotification,
@@ -110,7 +104,7 @@ fun NotificationSettingScreen(
                 },
             )
 
-            NotificationSettingItem(
+            SettingSwitchItem(
                 title = stringResource(R.string.event_benefit),
                 subTitle = stringResource(R.string.event_benefit_notification_title),
                 switchValue = state.isEnableMarketingNotification,
@@ -169,41 +163,6 @@ fun NotificationSettingScreen(
 
     LaunchedEffect(Unit) {
         action(NotificationSettingAction.OnNotificationSettingScreenEntered)
-    }
-}
-
-@Composable
-fun NotificationSettingItem(
-    title: String,
-    subTitle: String,
-    switchValue: Boolean,
-    onSwitched: (Boolean) -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(18.dp),
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(
-                text = title,
-                style = StaticTypeScale.Default.body2,
-                color = WeSpotThemeManager.colors.txtTitleColor,
-            )
-
-            Text(
-                text = subTitle,
-                style = StaticTypeScale.Default.body8,
-                color = Gray400,
-            )
-        }
-
-        WSSwitch(
-            checked = switchValue,
-            onCheckedChange = onSwitched,
-        )
     }
 }
 
