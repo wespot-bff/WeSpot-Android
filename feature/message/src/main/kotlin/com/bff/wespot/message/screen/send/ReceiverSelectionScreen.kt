@@ -42,6 +42,7 @@ import com.bff.wespot.message.R
 import com.bff.wespot.message.component.ProfileSelectBottomSheet
 import com.bff.wespot.message.component.SendExitDialog
 import com.bff.wespot.message.model.AnonymousProfile
+import com.bff.wespot.message.screen.room.MessageRoomScreenArgs
 import com.bff.wespot.message.state.send.receiver.ReceiverAction
 import com.bff.wespot.message.state.send.receiver.ReceiverSideEffect
 import com.bff.wespot.message.viewmodel.SendViewModel
@@ -63,6 +64,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface ReceiverSelectionNavigator {
     fun navigateUp()
     fun navigateMessageWriteScreen()
+    fun navigateToMessageRoomScreen(args: MessageRoomScreenArgs)
     fun popUpToMessageScreen()
 }
 
@@ -118,6 +120,11 @@ fun ReceiverSelectionScreen(
                 }
                 ReceiverSideEffect.DismissProfileSelectBottomSheet -> {
                     showProfileSelectBottomSheet = false
+                }
+                is ReceiverSideEffect.NavigateToMessageRoomScreen -> {
+                    navigator.navigateToMessageRoomScreen(
+                        MessageRoomScreenArgs(it.roomId),
+                    )
                 }
             }
         }

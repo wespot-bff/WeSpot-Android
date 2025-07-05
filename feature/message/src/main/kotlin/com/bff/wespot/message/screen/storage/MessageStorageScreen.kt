@@ -54,6 +54,7 @@ fun MessageStorageScreen(
     type: NotificationType,
     messageId: Int? = null,
     showToast: (ToastState) -> Unit,
+    navigateToMessageRoomScreen: (Int) -> Unit,
     viewModel: StorageViewModel = hiltViewModel(),
 ) {
     val chipItems = persistentListOf(
@@ -101,7 +102,7 @@ fun MessageStorageScreen(
             }
 
             is StorageSideEffect.NavigateToMessageRoom -> {
-                // TODO Navigate to Message Room
+                navigateToMessageRoomScreen(it.message.id)
             }
         }
     }

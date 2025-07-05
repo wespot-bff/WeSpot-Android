@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.message
 
+import com.bff.wespot.data.remote.model.message.request.MessageReplyDto
 import com.bff.wespot.data.remote.model.message.request.SendMessageDto
 import com.bff.wespot.data.remote.model.message.response.MessageDetailDto
 import com.bff.wespot.data.remote.model.message.response.MessageHomeTitleDto
@@ -56,5 +57,14 @@ class MessageDataSourceImpl @Inject constructor(
                 method = HttpMethod.Get
                 path("api/v2/messages/title")
             }
+        }
+
+    override suspend fun replyMessage(roomId: Int, reply: MessageReplyDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("/api/v2/messages/${roomId}/answer")
+            }
+            setBody(reply)
         }
 }
