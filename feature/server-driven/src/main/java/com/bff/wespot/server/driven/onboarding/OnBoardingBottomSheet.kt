@@ -109,7 +109,7 @@ private fun ContentPart(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, top = 40.dp, end = 20.dp, bottom = 10.dp),
+            .padding(start = 32.dp, top = 40.dp, end = 32.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         items(components) {

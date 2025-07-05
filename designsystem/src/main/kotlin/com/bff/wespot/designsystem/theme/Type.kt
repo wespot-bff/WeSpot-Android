@@ -20,7 +20,7 @@ internal val plainTextFont = FontFamily(
     Font(R.font.pretendard_semibold, weight = FontWeight.SemiBold),
 )
 
-private const val LINE_HEIGHT_PERCENT = 1.5f
+internal const val LINE_HEIGHT_PERCENT = 1.5f
 
 @Stable
 class StaticTypeScale private constructor(
