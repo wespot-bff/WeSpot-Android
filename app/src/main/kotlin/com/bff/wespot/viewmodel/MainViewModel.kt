@@ -159,19 +159,16 @@ class MainViewModel @Inject constructor(
     }
 
     private fun trackPushNotificationClicked(data: MainScreenNavArgs) {
-        viewModelScope.launch(coroutineDispatcher) {
-            analyticsHelper.updateUserId(data.userId)
-            analyticsHelper.logEvent(
-                event = AnalyticsEvent(
-                    type = "push_notification_clicked",
-                    extras = listOf(
-                        AnalyticsEvent.Param("targetId", data.targetId.toString()),
-                        AnalyticsEvent.Param("type", data.type.name),
-                    )
+        analyticsHelper.logEvent(
+            event = AnalyticsEvent(
+                type = "push_notification_clicked",
+                extras = listOf(
+                    AnalyticsEvent.Param("type", data.type.name),
                 )
             )
-        }
+        )
     }
+
     private fun handleOnBoardingClose(category: OnBoardingCategory) = intent {
         when (category) {
             OnBoardingCategory.VOTE -> reduce { state.copy(showVoteOnBoarding = false) }

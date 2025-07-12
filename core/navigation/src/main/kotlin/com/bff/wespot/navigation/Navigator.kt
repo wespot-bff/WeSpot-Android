@@ -7,20 +7,18 @@ import android.net.Uri
 interface Navigator {
     fun navigateToMain(
         context: Context,
-        targetId: Pair<String, Int> = Pair("", 0),
-        userId: Pair<String, String> = Pair("", ""),
         type: Pair<String, String> = Pair("", ""),
         date: Pair<String, String> = Pair("", ""),
+        deepLink: Pair<String, String> = Pair("", ""),
     ): Intent
 
     fun navigateToAuth(context: Context): Intent
 
     fun navigateToAuthWithExtra(
         context: Context,
-        targetId: Pair<String, Int> = Pair("", 0),
-        userId: Pair<String, String> = Pair("", ""),
         type: Pair<String, String> = Pair("", ""),
         date: Pair<String, String> = Pair("", ""),
+        deepLink: Pair<String, String> = Pair("", ""),
     ): Intent
 
     fun navigateToInstaStory(

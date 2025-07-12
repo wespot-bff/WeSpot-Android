@@ -31,9 +31,19 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="wespot"
+                    android:host="message"
+                    android:pathPrefix="/"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".auth.AuthActivity"

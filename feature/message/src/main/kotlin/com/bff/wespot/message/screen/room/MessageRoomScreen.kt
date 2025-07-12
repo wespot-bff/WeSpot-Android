@@ -61,6 +61,7 @@ import com.bff.wespot.model.message.response.MessageRoom
 import com.bff.wespot.ui.component.ProfileCircleImage
 import com.bff.wespot.ui.component.verticalScrollIndicator
 import com.bff.wespot.ui.util.clickableSingle
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -74,7 +75,14 @@ data class MessageRoomScreenArgs(
     val roomId: Int,
 )
 
-@Destination(navArgsDelegate = MessageRoomScreenArgs::class)
+@Destination(
+    deepLinks = [
+        DeepLink(
+            uriPattern = "wespot://message/room/{roomId}",
+        ),
+    ],
+    navArgsDelegate = MessageRoomScreenArgs::class,
+)
 @Composable
 internal fun MessageRoomScreen(
     viewModel: MessageRoomViewModel = hiltViewModel(),

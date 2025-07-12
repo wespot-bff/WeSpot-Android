@@ -20,8 +20,8 @@ import com.bff.wespot.message.screen.storage.MessageStorageScreen
 import com.bff.wespot.message.viewmodel.MessageViewModel
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.RestrictionArg
-import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.ui.model.ToastState
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.collections.immutable.persistentListOf
 
@@ -32,18 +32,21 @@ interface MessageNavigator {
     fun navigateToMessageUsageSettingScreen()
 }
 
-data class MessageScreenArgs(
-    val type: NotificationType = NotificationType.IDLE,
-    val messageId: Int? = null,
+data class MessageArgs(
+    val tab: String = "",
 )
 
-@Destination(navArgsDelegate = MessageScreenArgs::class)
+@Destination(
+    deepLinks = [
+        DeepLink(uriPattern = "wespot://message/main?tab={tab}"),
+    ],
+    navArgsDelegate = MessageArgs::class,
+)
 @Composable
 internal fun MessageScreen(
     viewModel: MessageViewModel = hiltViewModel(),
     sendViewModel: SendViewModel,
     messageNavigator: MessageNavigator,
-    navArgs: MessageScreenArgs,
     showToast: (ToastState) -> Unit,
     restricted: RestrictionArg,
 ) {
@@ -88,8 +91,6 @@ internal fun MessageScreen(
 
                     STORAGE_SCREEN_INDEX -> {
                         MessageStorageScreen(
-                            type = navArgs.type,
-                            messageId = navArgs.messageId,
                             showToast = showToast,
                             navigateToMessageRoomScreen = {
                                 messageNavigator.navigateToMessageRoomScreen(
@@ -104,12 +105,6 @@ internal fun MessageScreen(
     }
 
     LaunchedEffect(Unit) {
-        when (navArgs.type) {
-            NotificationType.MESSAGE_RECEIVED, NotificationType.MESSAGE_SENT -> {
-                viewModel.updateTabIndex(STORAGE_SCREEN_INDEX)
-            }
-            else -> { }
-        }
         sendViewModel.clearUiState()
     }
 }

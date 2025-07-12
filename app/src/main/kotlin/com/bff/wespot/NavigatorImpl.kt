@@ -21,12 +21,11 @@ import javax.inject.Inject
 class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToMain(
         context: Context,
-        targetId: Pair<String, Int>,
-        userId: Pair<String, String>,
         type: Pair<String, String>,
         date: Pair<String, String>,
+        deepLink: Pair<String, String>,
     ): Intent {
-        val intent = context.buildIntent<MainActivity>(targetId, userId, type, date)
+        val intent = context.buildIntent<MainActivity>(type, date, deepLink)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return intent
     }
@@ -39,12 +38,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToAuthWithExtra(
         context: Context,
-        targetId: Pair<String, Int>,
-        userId: Pair<String, String>,
         type: Pair<String, String>,
         date: Pair<String, String>,
+        deepLink: Pair<String, String>,
     ): Intent {
-        val intent = context.buildIntent<AuthActivity>(targetId, userId, type, date)
+        val intent = context.buildIntent<AuthActivity>(type, date, deepLink)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return intent
     }

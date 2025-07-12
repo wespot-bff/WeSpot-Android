@@ -2,6 +2,8 @@ package com.bff.wespot.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -17,6 +19,10 @@ class JvmLibraryPlugin : Plugin<Project> {
                 compilerOptions {
                     jvmTarget.set(JvmTarget.JVM_17)
                 }
+            }
+
+            extensions.configure(JavaPluginExtension::class.java) {
+                toolchain.languageVersion.set(JavaLanguageVersion.of(17))
             }
         }
     }

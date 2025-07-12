@@ -2,10 +2,7 @@ package com.bff.wespot
 
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
-import com.bff.wespot.message.screen.MessageScreenArgs
-import com.bff.wespot.message.screen.destinations.MessageScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
-import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
@@ -22,17 +19,6 @@ class NotificationNavigatorImpl(private val navController: NavController): Notif
     override fun navigateToReceiverSelectionScreen() {
         navController.navigate(
             ReceiverSelectionScreenDestination() within AppNavGraphs.message
-        )
-    }
-
-    override fun navigateToMessageScreen(
-        messageId: Int,
-        type: NotificationType
-    ) {
-        navController.navigate(
-            MessageScreenDestination(
-                MessageScreenArgs(type = type, messageId = messageId),
-            ) within AppNavGraphs.message
         )
     }
 

@@ -36,9 +36,6 @@ class StorageViewModel @Inject constructor(
             is StorageAction.OnStorageChipSelected -> {
                 handleStorageChipSelected(action.screenIndex)
             }
-            is StorageAction.OnPushNotificationNavigated -> {
-                // TODO Handle Push Message
-            }
             is StorageAction.OnMessageClicked -> {
                 handleMessageClicked(action.message)
             }

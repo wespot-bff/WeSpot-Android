@@ -11,6 +11,7 @@ data class Notification(
     val content: String,
     val isNew: Boolean,
     val isEnable: Boolean,
+    val deepLink: String,
     val createdAt: LocalDateTime,
 ) {
     fun isTodayVoteResult(): Boolean =

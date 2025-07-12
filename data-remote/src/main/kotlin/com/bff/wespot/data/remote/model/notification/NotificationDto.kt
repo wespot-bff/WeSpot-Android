@@ -5,6 +5,7 @@ import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.model.notification.Notification
 import com.bff.wespot.model.notification.NotificationList
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.model.notification.NotificationType.IDLE
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
@@ -30,6 +31,7 @@ data class NotificationDto (
     val content: String,
     val isNew: Boolean,
     val isEnable: Boolean,
+    val deepLink: String = "",
     val createdAt: String,
 ) {
     fun toNotification(): Notification = Notification(
@@ -40,18 +42,11 @@ data class NotificationDto (
         content = content,
         isNew = isNew,
         isEnable = isEnable,
+        deepLink = deepLink,
         createdAt = createdAt.toISOLocalDateTime() ?: LocalDateTime.MIN,
     )
 
-    private fun String.convertToNotificationType(): NotificationType {
-        return when (this) {
-            NotificationType.MESSAGE.name -> NotificationType.MESSAGE
-            NotificationType.MESSAGE_SENT.name -> NotificationType.MESSAGE_SENT
-            NotificationType.MESSAGE_RECEIVED.name -> NotificationType.MESSAGE_RECEIVED
-            NotificationType.VOTE.name -> NotificationType.VOTE
-            NotificationType.VOTE_RESULT.name -> NotificationType.VOTE_RESULT
-            NotificationType.VOTE_RECEIVED.name -> NotificationType.VOTE_RECEIVED
-            else -> NotificationType.IDLE
-        }
-    }
+    private fun String.convertToNotificationType(): NotificationType = runCatching {
+        NotificationType.valueOf(type)
+    }.getOrDefault(IDLE)
 }

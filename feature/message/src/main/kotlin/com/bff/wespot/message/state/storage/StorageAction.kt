@@ -6,7 +6,6 @@ sealed class StorageAction {
     data class OnStorageChipSelected(val screenIndex: Int) : StorageAction()
     data class OnMessageClicked(val message: Message) : StorageAction()
     data class OnOptionButtonClicked(val message: Message) : StorageAction()
-    data class OnPushNotificationNavigated(val messageId: Int) : StorageAction()
     data object OnBlockBottomSheetItemClicked : StorageAction()
     data class OnBookmarkBottomSheetItemClicked(val fromBookmarkScreen: Boolean) : StorageAction()
     data object OnOptionBottomSheetClosed : StorageAction()
