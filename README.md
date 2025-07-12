@@ -23,7 +23,7 @@ WeSpot은 투표와 쪽지의 두 가지 기능으로 구성된 10대의 소통 
 | Architecture | MVI(Orbit), CleanArchitecture                                   |
 | Network | Ktor, Kotlin Serialization, Paging3                             |
 | Local | Protobuf DataStore, DataStorePreference, Room Database          |
-| UI | Compose, ComposeDestination                                     |
+| UI | Compose, ServerDrivenUI, ComposeDestination                                     |
 | Dependency Management | Gradle Convention Plugin(build-logic), VersionCatalogs          |
 | Dependency Injection | Dagger Hilt (KSP)                                               |
 | Lint | KtLint, DeteKt                                                  |
