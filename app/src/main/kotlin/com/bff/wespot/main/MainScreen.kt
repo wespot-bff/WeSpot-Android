@@ -46,26 +46,21 @@ import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
 import com.bff.wespot.navigation.AppNavigation
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.NotificationNavigator
 import com.bff.wespot.navigation.navigator.NotificationNavigatorImpl
-import com.bff.wespot.notification.screen.NotificationNavigator
+import com.bff.wespot.notification.PushNotificationData
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.model.ToastState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.time.LocalDate
 
-data class MainScreenNavArgs(
-    val deepLink: String,
-    val type: NotificationType,
-    val date: String,
-)
-
 @Composable
 internal fun MainScreen(
-    navigator: Navigator,
-    navArgs: MainScreenNavArgs,
-    analyticsHelper: AnalyticsHelper,
     viewModel: MainViewModel,
+    navigator: Navigator,
+    data: PushNotificationData,
+    analyticsHelper: AnalyticsHelper,
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -77,6 +72,7 @@ internal fun MainScreen(
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
+    val notificationNavigator = remember { NotificationNavigatorImpl(navController) }
 
     viewModel.collectSideEffect {
         when (it) {
@@ -84,6 +80,13 @@ internal fun MainScreen(
                 showVersionUpdateDialog = VersionUpdateDialogState(
                     show = true,
                     versionUpdateType = it.versionUpdateType,
+                )
+            }
+            is MainSideEffect.NavigateFromPushNotification -> {
+                handleNotificationSideEffect(
+                    context = context,
+                    data = it.data,
+                    navigator = notificationNavigator,
                 )
             }
         }
@@ -128,11 +131,6 @@ internal fun MainScreen(
                 showToast = { toastState -> toast = toastState },
                 restricted = state.restriction.restrictionType != RestrictionType.NONE,
             )
-        }
-
-        if (state.isPushNotificationNavigation) {
-            action(MainAction.OnNavigateByPushNotification)
-            navigateScreenFromNavArgs(context, navArgs, NotificationNavigatorImpl(navController))
         }
     }
 
@@ -180,51 +178,39 @@ internal fun MainScreen(
     )
 
     LaunchedEffect(Unit) {
-        action(
-            MainAction.OnMainScreenEntered(
-                context.packageManager.getPackageInfo(context.packageName, 0).versionName,
-            ),
-        )
+        val versinName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        action(MainAction.OnMainScreenEntered(appVersionName = versinName))
+    }
+
+    LaunchedEffect(data) {
+        if (data.type != NotificationType.IDLE) {
+            action(MainAction.OnEnteredByPushNotification(data))
+        }
     }
 }
 
-private fun navigateScreenFromNavArgs(
+fun handleNotificationSideEffect(
     context: Context,
-    navArgs: MainScreenNavArgs,
+    data: PushNotificationData,
     navigator: NotificationNavigator,
 ) {
-    when (navArgs.type) {
-        NotificationType.MESSAGE -> {
-            navigator.navigateToReceiverSelectionScreen()
-        }
-
+    when (data.type) {
+        NotificationType.MESSAGE -> navigator.navigateToReceiverSelectionScreen()
         NotificationType.MESSAGE_V2 -> {
-            val intent = Intent(Intent.ACTION_VIEW, navArgs.deepLink.toUri())
+            val intent = Intent(Intent.ACTION_VIEW, data.deepLink.toUri())
             context.startActivity(intent)
         }
-
-        NotificationType.VOTE -> {
-            navigator.navigateToVotingScreen()
-        }
-
+        NotificationType.VOTE -> navigator.navigateToVotingScreen()
         NotificationType.VOTE_RESULT -> {
-            val voteResultDate = navArgs.date.toLocalDateFromDashPattern()
+            val voteResultDate = data.date.toLocalDateFromDashPattern()
             val isTodayVoteResult = LocalDate.now().equals(voteResultDate)
             navigator.navigateToVoteResultScreen(
                 isNavigateFromNotification = false,
                 isTodayVoteResult = isTodayVoteResult,
             )
         }
-
-        NotificationType.VOTE_RECEIVED -> {
-            navigator.navigateToVoteStorageScreen()
-        }
-
-        NotificationType.PROFILE_UPDATE -> {
-            navigator.navigateToProfileEditScreen()
-        }
-
-        NotificationType.IDLE -> {
-        }
+        NotificationType.VOTE_RECEIVED -> navigator.navigateToVoteStorageScreen()
+        NotificationType.PROFILE_UPDATE -> navigator.navigateToProfileEditScreen()
+        NotificationType.IDLE -> { }
     }
 }

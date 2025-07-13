@@ -1,12 +1,11 @@
 package com.bff.wespot.main.state
 
-import com.bff.wespot.main.MainScreenNavArgs
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
+import com.bff.wespot.notification.PushNotificationData
 
 sealed class MainAction {
-    data object OnNavigateByPushNotification : MainAction()
     data class OnMainScreenEntered(val appVersionName: String) : MainAction()
-    data class OnEnteredByPushNotification(val data: MainScreenNavArgs) : MainAction()
+    data class OnEnteredByPushNotification(val data: PushNotificationData) : MainAction()
     data class OnNotificationSet(val isEnableNotification: Boolean) : MainAction()
     data class CloseOnBoarding(val category: OnBoardingCategory) : MainAction()
 }

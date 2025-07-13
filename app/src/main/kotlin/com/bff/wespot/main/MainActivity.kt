@@ -18,6 +18,7 @@ import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.notification.PushNotificationData
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -43,14 +44,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
 
-        val navArgs = getMainScreenArgsFromIntent()
-        checkEnteredFromPushNotification(navArgs)
-
         setContent {
             WeSpotTheme {
                 MainScreen(
                     navigator = navigator,
-                    navArgs = navArgs,
+                    data = getPushNotificationData(),
                     analyticsHelper = analyticsHelper,
                     viewModel = viewModel,
                 )
@@ -71,13 +69,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkEnteredFromPushNotification(data: MainScreenNavArgs) {
-        if (data.type != NotificationType.IDLE) {
-            viewModel.onAction(MainAction.OnEnteredByPushNotification(data))
-        }
-    }
-
-    private fun getMainScreenArgsFromIntent(): MainScreenNavArgs = with(intent) {
+    private fun getPushNotificationData(): PushNotificationData = with(intent) {
         val type = NotificationType.convertNotificationType(getStringExtra(EXTRA_TYPE).orEmpty())
         val date = getStringExtra(EXTRA_DATE).orEmpty()
         val deepLink = getStringExtra(EXTRA_DEEP_LINK).orEmpty()
@@ -86,7 +78,7 @@ class MainActivity : ComponentActivity() {
         removeExtra(EXTRA_DATE)
         removeExtra(EXTRA_DEEP_LINK)
 
-        MainScreenNavArgs(
+        PushNotificationData(
             type = type,
             date = date,
             deepLink = deepLink,
