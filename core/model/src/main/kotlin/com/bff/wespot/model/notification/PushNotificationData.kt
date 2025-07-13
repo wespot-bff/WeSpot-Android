@@ -1,6 +1,4 @@
-package com.bff.wespot.notification
-
-import com.bff.wespot.model.notification.NotificationType
+package com.bff.wespot.model.notification
 
 data class PushNotificationData(
     val type: NotificationType,

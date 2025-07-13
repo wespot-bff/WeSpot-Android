@@ -14,11 +14,11 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.main.state.MainAction
 import com.bff.wespot.main.viewmodel.MainViewModel
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.model.notification.PushNotificationData
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TYPE
-import com.bff.wespot.notification.PushNotificationData
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

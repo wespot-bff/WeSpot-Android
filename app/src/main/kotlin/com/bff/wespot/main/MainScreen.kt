@@ -1,7 +1,5 @@
 package com.bff.wespot.main
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -21,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.R
 import com.bff.wespot.analytic.AnalyticsHelper
@@ -29,7 +26,6 @@ import com.bff.wespot.analytic.LocalAnalyticsHelper
 import com.bff.wespot.common.checkCurrentScreen
 import com.bff.wespot.common.currentScreenAsState
 import com.bff.wespot.common.navigateToNavGraph
-import com.bff.wespot.data.remote.extensions.toLocalDateFromDashPattern
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.main.component.BottomNavigationTab
 import com.bff.wespot.main.component.MainTopBar
@@ -44,16 +40,14 @@ import com.bff.wespot.main.state.MainSideEffect
 import com.bff.wespot.main.viewmodel.MainViewModel
 import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.model.notification.PushNotificationData
 import com.bff.wespot.navigation.AppNavigation
 import com.bff.wespot.navigation.Navigator
-import com.bff.wespot.navigation.NotificationNavigator
 import com.bff.wespot.navigation.navigator.NotificationNavigatorImpl
-import com.bff.wespot.notification.PushNotificationData
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.model.ToastState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import java.time.LocalDate
 
 @Composable
 internal fun MainScreen(
@@ -72,7 +66,9 @@ internal fun MainScreen(
 
     val isTopNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.TOP)
     val isBottomNavigationScreen by navController.checkCurrentScreen(NavigationBarPosition.BOTTOM)
-    val notificationNavigator = remember { NotificationNavigatorImpl(navController) }
+    val notificationNavigator = remember(navController) {
+        NotificationNavigatorImpl(navController)
+    }
 
     viewModel.collectSideEffect {
         when (it) {
@@ -83,11 +79,7 @@ internal fun MainScreen(
                 )
             }
             is MainSideEffect.NavigateFromPushNotification -> {
-                handleNotificationSideEffect(
-                    context = context,
-                    data = it.data,
-                    navigator = notificationNavigator,
-                )
+                notificationNavigator.navigate(context, it.data)
             }
         }
     }
@@ -186,31 +178,5 @@ internal fun MainScreen(
         if (data.type != NotificationType.IDLE) {
             action(MainAction.OnEnteredByPushNotification(data))
         }
-    }
-}
-
-fun handleNotificationSideEffect(
-    context: Context,
-    data: PushNotificationData,
-    navigator: NotificationNavigator,
-) {
-    when (data.type) {
-        NotificationType.MESSAGE -> navigator.navigateToReceiverSelectionScreen()
-        NotificationType.MESSAGE_V2 -> {
-            val intent = Intent(Intent.ACTION_VIEW, data.deepLink.toUri())
-            context.startActivity(intent)
-        }
-        NotificationType.VOTE -> navigator.navigateToVotingScreen()
-        NotificationType.VOTE_RESULT -> {
-            val voteResultDate = data.date.toLocalDateFromDashPattern()
-            val isTodayVoteResult = LocalDate.now().equals(voteResultDate)
-            navigator.navigateToVoteResultScreen(
-                isNavigateFromNotification = false,
-                isTodayVoteResult = isTodayVoteResult,
-            )
-        }
-        NotificationType.VOTE_RECEIVED -> navigator.navigateToVoteStorageScreen()
-        NotificationType.PROFILE_UPDATE -> navigator.navigateToProfileEditScreen()
-        NotificationType.IDLE -> { }
     }
 }

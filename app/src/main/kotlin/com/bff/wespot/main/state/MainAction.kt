@@ -1,7 +1,7 @@
 package com.bff.wespot.main.state
 
+import com.bff.wespot.model.notification.PushNotificationData
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
-import com.bff.wespot.notification.PushNotificationData
 
 sealed class MainAction {
     data class OnMainScreenEntered(val appVersionName: String) : MainAction()

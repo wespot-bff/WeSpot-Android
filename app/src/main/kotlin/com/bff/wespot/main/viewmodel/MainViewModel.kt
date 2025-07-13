@@ -17,8 +17,8 @@ import com.bff.wespot.main.model.VersionUpdateType
 import com.bff.wespot.main.state.MainAction
 import com.bff.wespot.main.state.MainSideEffect
 import com.bff.wespot.main.state.MainUiState
+import com.bff.wespot.model.notification.PushNotificationData
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
-import com.bff.wespot.notification.PushNotificationData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.firstOrNull
@@ -95,7 +95,7 @@ class MainViewModel @Inject constructor(
     }
 
     /** RemoteConfig에서 최신 버전을 가져와 현재 앱 버전과 비교하고 적절한 업데이트 다이얼로그를 노출한다.*/
-    private suspend fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
+    private fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
         val latestVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.LATEST_VERSION)
 
         val result = versionCompare(appVersion = appVersion, compareVersion = latestVersion)
