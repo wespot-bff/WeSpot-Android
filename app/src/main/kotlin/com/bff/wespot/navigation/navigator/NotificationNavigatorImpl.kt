@@ -12,14 +12,14 @@ import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 
-class NotificationNavigatorImpl(private val navController: NavController): NotificationNavigator {
+class NotificationNavigatorImpl(private val navController: NavController) : NotificationNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
 
     override fun navigateToReceiverSelectionScreen() {
         navController.navigate(
-            ReceiverSelectionScreenDestination() within AppNavGraphs.message
+            ReceiverSelectionScreenDestination() within AppNavGraphs.message,
         )
     }
 
@@ -37,8 +37,8 @@ class NotificationNavigatorImpl(private val navController: NavController): Notif
                     isVoting = false,
                     isNavigateFromNotification = isNavigateFromNotification,
                     isTodayVoteResult = isTodayVoteResult,
-                )
-            ) within AppNavGraphs.vote
+                ),
+            ) within AppNavGraphs.vote,
         )
     }
 

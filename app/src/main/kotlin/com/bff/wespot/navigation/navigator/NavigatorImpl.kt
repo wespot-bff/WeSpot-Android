@@ -65,7 +65,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
                 ComponentName(
                     "com.kakao.talk",
                     "com.kakao.talk.activity.IntentFilterActivity",
-                )
+                ),
             )
             putExtra(Intent.EXTRA_TEXT, text)
             setType("text/plain")

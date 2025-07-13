@@ -18,17 +18,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.bff.wespot.navigation.AppNavGraphs
-import com.bff.wespot.main.model.BarType
 import com.bff.wespot.R
 import com.bff.wespot.common.navigateToNavGraph
 import com.bff.wespot.designsystem.R.drawable
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
+import com.bff.wespot.main.model.BarType
 import com.bff.wespot.message.screen.destinations.MessageSettingScreenDestination
+import com.bff.wespot.navigation.AppNavGraphs
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -2,7 +2,6 @@ package com.bff.wespot.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.main.MainScreenNavArgs
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
@@ -14,11 +13,12 @@ import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
+import com.bff.wespot.main.MainScreenNavArgs
 import com.bff.wespot.main.model.VersionUpdateType
-import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import com.bff.wespot.main.state.MainAction
 import com.bff.wespot.main.state.MainSideEffect
 import com.bff.wespot.main.state.MainUiState
+import com.bff.wespot.model.serverDriven.OnBoardingCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.firstOrNull
@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(
                 RemoteConfigKey.PLAY_STORE_URL,
             ),
-        )
+        ),
     )
 
     init {
@@ -103,7 +103,7 @@ class MainViewModel @Inject constructor(
             VersionCompareResult.MAJOR_VERSION_UPDATE -> {
                 if (isVersionMatchCachedVersion(latestVersion).not()) {
                     postSideEffect(
-                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED)
+                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED),
                     )
                 }
             }
@@ -164,8 +164,8 @@ class MainViewModel @Inject constructor(
                 type = "push_notification_clicked",
                 extras = listOf(
                     AnalyticsEvent.Param("type", data.type.name),
-                )
-            )
+                ),
+            ),
         )
     }
 

@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
     private val notificationPermissionLauncher by lazy {
         registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
+            ActivityResultContracts.RequestPermission(),
         ) { isGranted: Boolean ->
             viewModel.onAction(MainAction.OnNotificationSet(isGranted))
         }
@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasPermission = ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             ) == PackageManager.PERMISSION_GRANTED
 
             if (!hasPermission) {

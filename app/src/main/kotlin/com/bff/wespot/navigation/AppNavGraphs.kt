@@ -235,7 +235,8 @@ private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     }
 
     if (target.destination.hierarchy.any { it.route == "vote/voting_screen" } &&
-        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }
+    ) {
         return slideIntoContainer(
             AnimatedContentTransitionScope.SlideDirection.Start,
             animationSpec = spring(

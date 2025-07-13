@@ -6,12 +6,12 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
-import com.bff.wespot.main.model.BottomBarDestinations
 import com.bff.wespot.common.currentScreenAsState
-import com.bff.wespot.model.serverDriven.OnBoardingCategory
-import com.bff.wespot.server.driven.onboarding.OnBoardingBottomSheet
+import com.bff.wespot.main.model.BottomBarDestinations
 import com.bff.wespot.main.state.MainAction
 import com.bff.wespot.main.state.MainUiState
+import com.bff.wespot.model.serverDriven.OnBoardingCategory
+import com.bff.wespot.server.driven.onboarding.OnBoardingBottomSheet
 import com.bff.wespot.ui.component.WSBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,13 +37,14 @@ internal fun OnBoardingSheet(
             closeSheet = {},
             sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true,
-                confirmValueChange = { it != SheetValue.Hidden })
+                confirmValueChange = { it != SheetValue.Hidden },
+            ),
         ) {
             OnBoardingBottomSheet(
                 category = it,
                 closeOnBoarding = {
                     action(MainAction.CloseOnBoarding(it))
-                }
+                },
             )
         }
     }

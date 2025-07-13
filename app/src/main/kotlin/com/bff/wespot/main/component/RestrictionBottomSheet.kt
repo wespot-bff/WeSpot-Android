@@ -44,7 +44,7 @@ internal fun RestrictionBottomSheet(
             coroutineScope.launch {
                 bottomSheetState.hide()
             }
-        }
+        },
     ) {
         Column(
             modifier = Modifier.padding(28.dp),
@@ -62,7 +62,7 @@ internal fun RestrictionBottomSheet(
             BulletPoint(
                 text = stringResource(
                     content.body2,
-                    state.restriction.toKoreanDate()
+                    state.restriction.toKoreanDate(),
                 ),
             )
 
@@ -84,7 +84,7 @@ internal fun RestrictionBottomSheet(
                         start = 0.dp,
                         end = 0.dp,
                         top = 24.dp,
-                        bottom = 10.dp
+                        bottom = 10.dp,
                     ),
                 ) {
                     it.invoke()
@@ -131,7 +131,7 @@ internal fun RestrictionBottomSheet(
 @Composable
 private fun BulletPoint(text: String) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(
             text = "•",

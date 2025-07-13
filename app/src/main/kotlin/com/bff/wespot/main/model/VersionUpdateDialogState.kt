@@ -22,7 +22,7 @@ enum class VersionUpdateType {
     val title: String
         @Composable
         @ReadOnlyComposable
-        get() = when(this) {
+        get() = when (this) {
             USABILITY_IMPROVEMENT -> stringResource(id = R.string.update_title_usability_improvement)
             NEW_FEATURE_ADDED -> stringResource(id = R.string.update_title_new_feature_added)
         }
@@ -30,7 +30,7 @@ enum class VersionUpdateType {
     val subTitle: String
         @Composable
         @ReadOnlyComposable
-        get() = when(this) {
+        get() = when (this) {
             USABILITY_IMPROVEMENT -> stringResource(id = R.string.update_subtitle_usability_improvement)
             NEW_FEATURE_ADDED -> stringResource(id = R.string.update_subtitle_new_feature_added)
         }

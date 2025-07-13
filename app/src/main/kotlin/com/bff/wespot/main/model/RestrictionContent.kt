@@ -32,5 +32,5 @@ internal enum class RestrictionContent(
         com.bff.wespot.R.string.restriction_type3_body3,
         null,
         2,
-    );
+    ),
 }

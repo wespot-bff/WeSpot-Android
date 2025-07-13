@@ -23,10 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.navigation.compose.rememberNavController
-import com.bff.wespot.navigation.AppNavigation
-import com.bff.wespot.main.model.BarType
-import com.bff.wespot.main.model.NavigationBarPosition
-import com.bff.wespot.navigation.navigator.NotificationNavigatorImpl
 import com.bff.wespot.R
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.analytic.LocalAnalyticsHelper
@@ -39,6 +35,8 @@ import com.bff.wespot.main.component.BottomNavigationTab
 import com.bff.wespot.main.component.MainTopBar
 import com.bff.wespot.main.component.OnBoardingSheet
 import com.bff.wespot.main.component.RestrictionBottomSheet
+import com.bff.wespot.main.model.BarType
+import com.bff.wespot.main.model.NavigationBarPosition
 import com.bff.wespot.main.model.RestrictionContent
 import com.bff.wespot.main.model.VersionUpdateDialogState
 import com.bff.wespot.main.state.MainAction
@@ -46,7 +44,9 @@ import com.bff.wespot.main.state.MainSideEffect
 import com.bff.wespot.main.viewmodel.MainViewModel
 import com.bff.wespot.model.common.RestrictionType
 import com.bff.wespot.model.notification.NotificationType
+import com.bff.wespot.navigation.AppNavigation
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.navigator.NotificationNavigatorImpl
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.ui.component.TopToast
 import com.bff.wespot.ui.model.ToastState
@@ -103,7 +103,7 @@ internal fun MainScreen(
                 transitionSpec = {
                     fadeIn(animationSpec = tween()) togetherWith fadeOut(animationSpec = tween())
                 },
-                label = stringResource(R.string.top_bar_animated_content_label)
+                label = stringResource(R.string.top_bar_animated_content_label),
             ) { targetState ->
                 if (targetState == BarType.DEFAULT) {
                     val currentSelectedItem by navController.currentScreenAsState()
@@ -139,7 +139,7 @@ internal fun MainScreen(
     TopToast(
         message = stringResource(toast.message),
         toastType = toast.type,
-        showToast = toast.show
+        showToast = toast.show,
     ) {
         toast = toast.copy(show = false)
     }
@@ -182,8 +182,8 @@ internal fun MainScreen(
     LaunchedEffect(Unit) {
         action(
             MainAction.OnMainScreenEntered(
-                context.packageManager.getPackageInfo(context.packageName, 0).versionName
-            )
+                context.packageManager.getPackageInfo(context.packageName, 0).versionName,
+            ),
         )
     }
 }
@@ -191,7 +191,7 @@ internal fun MainScreen(
 private fun navigateScreenFromNavArgs(
     context: Context,
     navArgs: MainScreenNavArgs,
-    navigator: NotificationNavigator
+    navigator: NotificationNavigator,
 ) {
     when (navArgs.type) {
         NotificationType.MESSAGE -> {
@@ -212,7 +212,7 @@ private fun navigateScreenFromNavArgs(
             val isTodayVoteResult = LocalDate.now().equals(voteResultDate)
             navigator.navigateToVoteResultScreen(
                 isNavigateFromNotification = false,
-                isTodayVoteResult = isTodayVoteResult
+                isTodayVoteResult = isTodayVoteResult,
             )
         }
 

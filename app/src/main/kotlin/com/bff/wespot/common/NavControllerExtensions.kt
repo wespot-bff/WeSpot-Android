@@ -8,9 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.bff.wespot.navigation.AppNavGraphs
 import com.bff.wespot.main.model.BarType
 import com.bff.wespot.main.model.NavigationBarPosition
+import com.bff.wespot.navigation.AppNavGraphs
 import com.bff.wespot.navigation.checkDestination
 import com.bff.wespot.navigation.navGraph
 import com.ramcosta.composedestinations.navigation.navigate

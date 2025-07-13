@@ -26,7 +26,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class PushNotificationService : FirebaseMessagingService() {
-
     @Inject
     lateinit var dataStore: DataStoreRepository
 
@@ -67,7 +66,7 @@ class PushNotificationService : FirebaseMessagingService() {
             this,
             notificationId,
             intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE,
         )
 
         val title = message.notification?.title
@@ -80,7 +79,7 @@ class PushNotificationService : FirebaseMessagingService() {
                 ContextCompat.getColor(
                     applicationContext,
                     R.color.ic_launcher_background,
-                )
+                ),
             )
             .setContentTitle(title)
             .setContentText(content)
@@ -101,8 +100,8 @@ class PushNotificationService : FirebaseMessagingService() {
         analyticsHelper.logEvent(
             AnalyticsEvent(
                 type = "push_notification_received",
-                extras = paramList
-            )
+                extras = paramList,
+            ),
         )
     }
 
