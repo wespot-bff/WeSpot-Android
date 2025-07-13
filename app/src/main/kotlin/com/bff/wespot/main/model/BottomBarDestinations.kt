@@ -1,7 +1,8 @@
-package com.bff.wespot
+package com.bff.wespot.main.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.bff.wespot.navigation.AppNavGraphs
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
 internal enum class BottomBarDestinations(

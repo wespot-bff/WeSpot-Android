@@ -1,4 +1,4 @@
-package com.bff.wespot
+package com.bff.wespot.main.model
 
 enum class BarType {
     DEFAULT,

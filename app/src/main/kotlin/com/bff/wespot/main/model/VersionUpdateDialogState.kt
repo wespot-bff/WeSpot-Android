@@ -1,4 +1,4 @@
-package com.bff.wespot.model
+package com.bff.wespot.main.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable

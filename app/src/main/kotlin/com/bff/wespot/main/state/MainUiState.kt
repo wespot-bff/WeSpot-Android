@@ -1,4 +1,4 @@
-package com.bff.wespot.state
+package com.bff.wespot.main.state
 
 import com.bff.wespot.model.common.Restriction
 

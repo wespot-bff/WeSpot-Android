@@ -1,6 +1,6 @@
-package com.bff.wespot.state
+package com.bff.wespot.main.state
 
-import com.bff.wespot.MainScreenNavArgs
+import com.bff.wespot.main.MainScreenNavArgs
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
 
 sealed class MainAction {

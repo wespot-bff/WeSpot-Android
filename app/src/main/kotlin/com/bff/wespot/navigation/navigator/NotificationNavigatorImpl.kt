@@ -1,8 +1,9 @@
-package com.bff.wespot
+package com.bff.wespot.navigation.navigator
 
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
+import com.bff.wespot.navigation.AppNavGraphs
 import com.bff.wespot.notification.screen.NotificationNavigator
 import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination

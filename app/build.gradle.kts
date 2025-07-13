@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 
-
 val properties = Properties()
 properties.load(rootProject.file("local.properties").inputStream())
 

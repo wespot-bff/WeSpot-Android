@@ -1,6 +1,6 @@
 package com.bff.wespot.di
 
-import com.bff.wespot.NavigatorImpl
+import com.bff.wespot.navigation.navigator.NavigatorImpl
 import com.bff.wespot.navigation.Navigator
 import dagger.Binds
 import dagger.Module
