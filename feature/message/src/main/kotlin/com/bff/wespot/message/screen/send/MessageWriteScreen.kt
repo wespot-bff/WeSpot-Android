@@ -167,7 +167,11 @@ fun MessageWriteScreen(
                     onValueChange = { text ->
                         action(WritingAction.OnMessageChanged(text))
                     },
-                    placeholder = stringResource(R.string.message_write_text_holder),
+                    placeholder = if (state.isReplyContext) {
+                        stringResource(R.string.message_reply_placeholder)
+                    } else {
+                        stringResource(R.string.message_write_text_holder)
+                    },
                     isError = false,
                     focusRequester = focusRequester,
                     textFieldType = WsTextFieldType.Message,
