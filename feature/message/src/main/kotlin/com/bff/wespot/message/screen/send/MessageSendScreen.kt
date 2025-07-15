@@ -176,11 +176,10 @@ fun MessageSendScreen(
                     buttonText = state.senderProfile.name,
                     imageUrl = state.senderProfile.image,
                     contentDescription = stringResource(R.string.sender_profile_image),
-                    onClicked = {
-                        /** 새로 생성한 익명 프로필인 경우, 수정이 가능하게 한다. */
-                        if (state.senderProfile.isNeverTalkBefore()) {
-                            action(SendAction.OnSenderClicked)
-                        }
+                    onClicked = if (state.senderProfile.isNeverTalkBefore()) {
+                        { action(SendAction.OnSenderClicked) }
+                    } else {
+                        null
                     },
                 )
             }
