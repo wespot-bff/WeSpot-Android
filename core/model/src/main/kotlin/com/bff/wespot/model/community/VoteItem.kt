@@ -5,7 +5,7 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class VoteItem(
-    val id: String,
+    override val id: String,
     val content: VoteContent,
 ) : BaseCommunityContent {
     data class VoteContent(

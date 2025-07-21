@@ -6,7 +6,7 @@ import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class HotPostItem(
-    val id: String,
+    override val id: String,
     val content: HotPostContent,
 ) : BaseCommunityContent {
     data class HotPostContent(

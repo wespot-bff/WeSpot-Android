@@ -5,16 +5,17 @@ plugins {
 }
 
 android {
-    namespace = "com.bff.wespot.community"
+    namespace = "com.bff.wespot.community.presentation"
 }
 
 ksp {
-    arg("compose-destinations.moduleName", "community")
+    arg("compose-destinations.moduleName", "community-presentation")
     arg("compose-destinations.mode", "destinations")
 }
 
 dependencies {
     implementation(project(":core:analytics"))
+    implementation(project(":feature:community:ui-model"))
 
     implementation(libs.paging3)
     implementation(libs.bundles.orbit)

@@ -1,3 +1,5 @@
 package com.bff.wespot.model.community
 
-interface BaseCommunityContent
+interface BaseCommunityContent {
+    val id: String
+}
