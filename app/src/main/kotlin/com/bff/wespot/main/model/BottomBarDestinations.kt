@@ -11,6 +11,12 @@ internal enum class BottomBarDestinations(
     @DrawableRes val emptyIcon: Int,
     @StringRes val title: Int,
 ) {
+    Community(
+        AppNavGraphs.community,
+        com.bff.wespot.designsystem.R.drawable.community_tab,
+        com.bff.wespot.designsystem.R.drawable.community_empty,
+        com.bff.wespot.community.R.string.community
+    ),
     Vote(
         AppNavGraphs.vote,
         com.bff.wespot.designsystem.R.drawable.vote_tab,
