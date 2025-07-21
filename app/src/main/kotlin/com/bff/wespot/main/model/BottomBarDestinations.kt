@@ -15,7 +15,7 @@ internal enum class BottomBarDestinations(
         AppNavGraphs.community,
         com.bff.wespot.designsystem.R.drawable.community_tab,
         com.bff.wespot.designsystem.R.drawable.community_empty,
-        com.bff.wespot.community.R.string.community
+        com.bff.wespot.community.R.string.community,
     ),
     Vote(
         AppNavGraphs.vote,

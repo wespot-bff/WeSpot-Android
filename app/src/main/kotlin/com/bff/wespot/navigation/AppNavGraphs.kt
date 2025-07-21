@@ -62,7 +62,7 @@ object AppNavGraphs {
         override val startRoute = CommunityHomeScreenDestination routedIn this
 
         override val destinationsByRoute = listOf<DestinationSpec<*>>(
-            CommunityHomeScreenDestination
+            CommunityHomeScreenDestination,
         ).routedIn(this)
             .associateBy { it.route }
     }
