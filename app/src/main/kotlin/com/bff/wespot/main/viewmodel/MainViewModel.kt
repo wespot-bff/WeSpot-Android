@@ -1,8 +1,7 @@
-package com.bff.wespot.viewmodel
+package com.bff.wespot.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.MainScreenNavArgs
 import com.bff.wespot.analytic.AnalyticsEvent
 import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
@@ -14,11 +13,12 @@ import com.bff.wespot.domain.repository.user.UserRepository
 import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
-import com.bff.wespot.model.VersionUpdateType
+import com.bff.wespot.main.model.VersionUpdateType
+import com.bff.wespot.main.state.MainAction
+import com.bff.wespot.main.state.MainSideEffect
+import com.bff.wespot.main.state.MainUiState
+import com.bff.wespot.model.notification.PushNotificationData
 import com.bff.wespot.model.serverDriven.OnBoardingCategory
-import com.bff.wespot.state.MainAction
-import com.bff.wespot.state.MainSideEffect
-import com.bff.wespot.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.firstOrNull
@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(
                 RemoteConfigKey.PLAY_STORE_URL,
             ),
-        )
+        ),
     )
 
     init {
@@ -68,11 +68,11 @@ class MainViewModel @Inject constructor(
 
     fun onAction(action: MainAction) {
         when (action) {
-            MainAction.OnNavigateByPushNotification -> handleNavigateByPushNotification()
-            is MainAction.OnMainScreenEntered -> handleMainScreenEntered(action.appVersionName)
+            is MainAction.OnMainScreenEntered -> {
+                handleMainScreenEntered(action.appVersionName)
+            }
             is MainAction.OnEnteredByPushNotification -> {
-                handleEnteredByPushNotification()
-                trackPushNotificationClicked(action.data)
+                handleEnteredFromPushNotification(action.data)
             }
             is MainAction.OnNotificationSet -> handleNotificationSet(action.isEnableNotification)
             is MainAction.CloseOnBoarding -> handleOnBoardingClose(action.category)
@@ -95,7 +95,7 @@ class MainViewModel @Inject constructor(
     }
 
     /** RemoteConfig에서 최신 버전을 가져와 현재 앱 버전과 비교하고 적절한 업데이트 다이얼로그를 노출한다.*/
-    private suspend fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
+    private fun checkAppVersionWithLatestVersion(appVersion: String) = intent {
         val latestVersion = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.LATEST_VERSION)
 
         val result = versionCompare(appVersion = appVersion, compareVersion = latestVersion)
@@ -103,7 +103,7 @@ class MainViewModel @Inject constructor(
             VersionCompareResult.MAJOR_VERSION_UPDATE -> {
                 if (isVersionMatchCachedVersion(latestVersion).not()) {
                     postSideEffect(
-                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED)
+                        MainSideEffect.ShowVersionUpdateDialog(VersionUpdateType.NEW_FEATURE_ADDED),
                     )
                 }
             }
@@ -119,8 +119,7 @@ class MainViewModel @Inject constructor(
                 }
             }
 
-            VersionCompareResult.LATEST_VERSION, VersionCompareResult.PATCH_VERSION_UPDATE -> {
-            }
+            VersionCompareResult.LATEST_VERSION, VersionCompareResult.PATCH_VERSION_UPDATE -> {}
         }
     }
 
@@ -150,22 +149,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleEnteredByPushNotification() = intent {
-        reduce { state.copy(isPushNotificationNavigation = true) }
+    private fun handleEnteredFromPushNotification(data: PushNotificationData) = intent {
+        trackPushNotificationClicked(data)
+        postSideEffect(MainSideEffect.NavigateFromPushNotification(data))
     }
 
-    private fun handleNavigateByPushNotification() = intent {
-        reduce { state.copy(isPushNotificationNavigation = false) }
-    }
-
-    private fun trackPushNotificationClicked(data: MainScreenNavArgs) {
+    private fun trackPushNotificationClicked(data: PushNotificationData) {
         analyticsHelper.logEvent(
             event = AnalyticsEvent(
                 type = "push_notification_clicked",
                 extras = listOf(
                     AnalyticsEvent.Param("type", data.type.name),
-                )
-            )
+                ),
+            ),
         )
     }
 

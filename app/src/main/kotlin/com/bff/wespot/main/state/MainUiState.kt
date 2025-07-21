@@ -1,9 +1,8 @@
-package com.bff.wespot.state
+package com.bff.wespot.main.state
 
 import com.bff.wespot.model.common.Restriction
 
-data class MainUiState (
-    val isPushNotificationNavigation: Boolean = false,
+data class MainUiState(
     val userId: String = "",
     val restriction: Restriction = Restriction.Empty,
     val kakaoChannel: String,

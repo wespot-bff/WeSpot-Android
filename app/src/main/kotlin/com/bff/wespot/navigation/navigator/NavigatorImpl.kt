@@ -1,11 +1,13 @@
-package com.bff.wespot
+package com.bff.wespot.navigation.navigator
 
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
+import com.bff.wespot.main.MainActivity
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.buildIntent
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
@@ -63,7 +65,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
                 ComponentName(
                     "com.kakao.talk",
                     "com.kakao.talk.activity.IntentFilterActivity",
-                )
+                ),
             )
             putExtra(Intent.EXTRA_TEXT, text)
             setType("text/plain")

@@ -1,10 +1,11 @@
-package com.bff.wespot
+package com.bff.wespot.main.model
 
 enum class BarType {
     DEFAULT,
     ENTIRE,
     MESSAGE,
-    NONE;
+    NONE,
+    ;
 
     fun shouldShowMainLogo(): Boolean =
         this in listOf(DEFAULT, MESSAGE)

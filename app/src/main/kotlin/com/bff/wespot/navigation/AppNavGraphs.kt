@@ -1,4 +1,4 @@
-package com.bff.wespot
+package com.bff.wespot.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -22,6 +22,8 @@ import com.bff.wespot.entire.screen.destinations.ProfileEditScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeConfirmScreenDestination
 import com.bff.wespot.entire.screen.destinations.RevokeScreenDestination
 import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
+import com.bff.wespot.main.model.BarType
+import com.bff.wespot.main.model.NavigationBarPosition
 import com.bff.wespot.message.screen.destinations.BlockedMessageScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageNotificationSettingScreenDestination
 import com.bff.wespot.message.screen.destinations.MessageRoomScreenDestination
@@ -33,7 +35,8 @@ import com.bff.wespot.message.screen.destinations.MessageWriteScreenDestination
 import com.bff.wespot.message.screen.destinations.ReceiverSelectionScreenDestination
 import com.bff.wespot.message.viewmodel.SendViewModel
 import com.bff.wespot.model.common.RestrictionArg
-import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.navigator.CommonNavGraphNavigator
+import com.bff.wespot.navigation.navigator.NotificationNavigatorImpl
 import com.bff.wespot.notification.screen.destinations.NotificationScreenDestination
 import com.bff.wespot.ui.model.ToastState
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
@@ -232,7 +235,8 @@ private fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     }
 
     if (target.destination.hierarchy.any { it.route == "vote/voting_screen" } &&
-        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }) {
+        initial.destination.hierarchy.any { it.route == "vote/voting_screen" }
+    ) {
         return slideIntoContainer(
             AnimatedContentTransitionScope.SlideDirection.Start,
             animationSpec = spring(

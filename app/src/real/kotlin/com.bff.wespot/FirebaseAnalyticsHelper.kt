@@ -7,7 +7,7 @@ import com.google.firebase.analytics.logEvent
 import javax.inject.Inject
 
 class FirebaseAnalyticsHelper @Inject constructor(
-    private val firebaseAnalytics: FirebaseAnalytics
+    private val firebaseAnalytics: FirebaseAnalytics,
 ) : AnalyticsHelper {
     private var userId: String = ""
 

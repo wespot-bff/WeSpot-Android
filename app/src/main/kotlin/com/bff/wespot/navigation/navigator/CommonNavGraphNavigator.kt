@@ -1,4 +1,4 @@
-package com.bff.wespot
+package com.bff.wespot.navigation.navigator
 
 import androidx.navigation.NavController
 import com.bff.wespot.entire.screen.EntireNavigator

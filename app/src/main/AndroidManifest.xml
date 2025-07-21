@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
@@ -68,7 +68,7 @@
         </activity>
 
         <service
-            android:name=".PushNotificationService"
+            android:name=".notification.PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
