@@ -44,6 +44,7 @@ data class PostItems(
 
         data class FooterSection(
             val reactions: List<Reaction>,
+            val scrap: Scrap,
         ) {
             sealed class Reaction(
                 open val icon: IconType,
@@ -62,6 +63,11 @@ data class PostItems(
                     override val selected: Boolean,
                 ) : Reaction(icon, count, selected)
             }
+
+            data class Scrap(
+                val icon: IconType,
+                val selected: Boolean,
+            )
         }
     }
 }
