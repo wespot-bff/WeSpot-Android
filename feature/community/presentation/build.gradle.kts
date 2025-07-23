@@ -16,6 +16,7 @@ ksp {
 dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":feature:community:ui-model"))
+    implementation(project(":feature:server-driven"))
 
     implementation(libs.paging3)
     implementation(libs.bundles.orbit)
