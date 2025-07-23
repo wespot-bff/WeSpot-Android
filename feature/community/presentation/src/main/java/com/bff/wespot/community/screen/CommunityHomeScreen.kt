@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,22 +20,27 @@ import com.bff.wespot.community.component.FilterChip
 import com.bff.wespot.community.component.Item
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.state.CommunityAction
+import com.bff.wespot.community.state.CommunitySideEffect
 import com.bff.wespot.community.uimodel.BannerItemUiModel
 import com.bff.wespot.community.uimodel.HotPostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.VoteItemUiModel
 import com.bff.wespot.community.viewmodel.CommunityHomeViewModel
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Destination
 @Composable
 internal fun CommunityHomeScreen(
     viewModel: CommunityHomeViewModel = hiltViewModel(),
+    navigator: Navigator,
 ) {
     val uiState by viewModel.collectAsState()
     val onAction = viewModel::onAction
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -50,7 +56,11 @@ internal fun CommunityHomeScreen(
             )
         },
         floatingActionButton = {
-            CommunityFABButton()
+            CommunityFABButton(
+                onFABClicked = {
+                    onAction(CommunityAction.OnWritePostClicked)
+                },
+            )
         },
         modifier = Modifier.padding(horizontal = 20.dp),
     ) {
@@ -90,13 +100,23 @@ internal fun CommunityHomeScreen(
             }
         }
     }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is CommunitySideEffect.NavigateToWriteActivity -> {
+                context.startActivity(navigator.navigateToWriteActivity(context))
+            }
+        }
+    }
 }
 
 @Composable
-private fun CommunityFABButton() {
+private fun CommunityFABButton(
+    onFABClicked: () -> Unit,
+) {
     FloatingActionButton(
         shape = CircleShape,
-        onClick = {},
+        onClick = onFABClicked,
         containerColor = WeSpotThemeManager.colors.primaryColor,
         contentColor = WeSpotThemeManager.colors.backgroundColor,
         modifier = Modifier.size(50.dp),
