@@ -16,7 +16,7 @@ class CommunityDataSourceImpl @Inject constructor(
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Get
-                path("api/v1/community/chips")
+                path("api/v1/category")
             }
         }
 
