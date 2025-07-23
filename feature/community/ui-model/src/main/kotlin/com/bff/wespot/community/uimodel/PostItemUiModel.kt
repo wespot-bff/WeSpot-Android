@@ -45,6 +45,7 @@ data class PostItemUiModel(
 
         data class FooterSectionUiModel(
             val reactions: List<ReactionUiModel>,
+            val scrap: ScrapUiModel,
         ) {
             sealed class ReactionUiModel(
                 open val icon: IconType,
@@ -63,6 +64,11 @@ data class PostItemUiModel(
                     override val selected: Boolean,
                 ) : ReactionUiModel(icon, count, selected)
             }
+
+            data class ScrapUiModel(
+                val icon: IconType,
+                val selected: Boolean,
+            )
         }
     }
 }
@@ -119,6 +125,7 @@ private fun PostItems.PostContent.ContentSection.toUiModel() =
 private fun PostItems.PostContent.FooterSection.toUiModel() =
     PostItemUiModel.PostContentUiModel.FooterSectionUiModel(
         reactions = reactions.map { it.toUiModel() },
+        scrap = scrap.toUiModel(),
     )
 
 private fun PostItems.PostContent.FooterSection.Reaction.toUiModel() =
@@ -139,3 +146,9 @@ private fun PostItems.PostContent.FooterSection.Reaction.toUiModel() =
             )
         }
     }
+
+private fun PostItems.PostContent.FooterSection.Scrap.toUiModel() =
+    PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ScrapUiModel(
+        icon = icon,
+        selected = selected,
+    )
