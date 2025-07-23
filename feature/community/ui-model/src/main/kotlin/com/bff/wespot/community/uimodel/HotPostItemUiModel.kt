@@ -1,7 +1,7 @@
 package com.bff.wespot.community.uimodel
 
 import com.bff.wespot.model.community.HotPostItem
-import com.bff.wespot.model.serverDriven.type.ColorType
+import com.bff.wespot.model.serverDriven.type.GradationType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
@@ -23,7 +23,7 @@ data class HotPostItemUiModel(
             val headerSection: HeaderSectionUiModel,
             val infoSection: InfoSectionUiModel,
             val createdAt: RichTextType,
-            val gradation: GradationUiModel,
+            val gradation: GradationType,
         ) {
             data class HeaderSectionUiModel(
                 val profileImage: ImageType,
@@ -33,12 +33,6 @@ data class HotPostItemUiModel(
             data class InfoSectionUiModel(
                 val title: RichTextType,
                 val description: RichTextType,
-            )
-
-            data class GradationUiModel(
-                val startColor: ColorType,
-                val endColor: ColorType,
-                val angle: Int,
             )
         }
     }
@@ -65,7 +59,7 @@ private fun HotPostItem.HotPostContent.Post.toUiModel() =
         headerSection = headerSection.toUiModel(),
         infoSection = infoSection.toUiModel(),
         createdAt = createdAt,
-        gradation = gradation.toUiModel(),
+        gradation = gradation,
     )
 
 private fun HotPostItem.HotPostContent.Post.HeaderSection.toUiModel() =
@@ -78,11 +72,4 @@ private fun HotPostItem.HotPostContent.Post.InfoSection.toUiModel() =
     HotPostItemUiModel.HotPostContentUiModel.PostUiModel.InfoSectionUiModel(
         title = title,
         description = description,
-    )
-
-private fun HotPostItem.HotPostContent.Post.Gradation.toUiModel() =
-    HotPostItemUiModel.HotPostContentUiModel.PostUiModel.GradationUiModel(
-        startColor = startColor,
-        endColor = endColor,
-        angle = angle,
     )

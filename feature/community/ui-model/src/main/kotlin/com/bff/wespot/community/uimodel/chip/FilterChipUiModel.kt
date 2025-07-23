@@ -5,7 +5,7 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class FilterChipUiModel(
-    val id: String,
+    override val id: String,
     val icon: IconType,
     val text: RichTextType,
     val target: String,
