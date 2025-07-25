@@ -8,6 +8,7 @@ import android.net.Uri
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.community.detail.PostDetailActivity
+import com.bff.wespot.community.search.SearchActivity
 import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
 import com.bff.wespot.navigation.Navigator
@@ -207,5 +208,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val intent = context.buildIntent<PostDetailActivity>()
         intent.putExtra("postId", postId)
         return intent
+    }
+
+    override fun navigateToCommunitySearch(context: Context): Intent {
+        return context.buildIntent<SearchActivity>()
     }
 }

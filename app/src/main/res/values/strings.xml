@@ -18,4 +18,6 @@
     <string name="update_title_new_feature_added">새로운 버전이 업데이트 되었어요!</string>
     <string name="update_subtitle_usability_improvement">유저의 의견을 반영해서 사용성을 개선했어요\n지금 업데이트하고 더 나은 위스팟을 만나보세요</string>
     <string name="update_subtitle_new_feature_added">유저의 의견을 반영하여 신규 기능을 출시했어요\n지금 업데이트하고 새로운 위스팟을 만나보세요</string>
+    <string name="main_search">검색</string>
+    <string name="main_all">전체</string>
 </resources>
