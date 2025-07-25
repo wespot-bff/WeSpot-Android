@@ -46,4 +46,6 @@ interface Navigator {
     fun navigateToPostDetailActivity(context: Context, postId: String): Intent
 
     fun navigateToCommunitySearch(context: Context): Intent
+
+    fun navigateToCommunityAll(context: Context): Intent
 }
