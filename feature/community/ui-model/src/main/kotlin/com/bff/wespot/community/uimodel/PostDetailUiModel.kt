@@ -184,7 +184,7 @@ private fun PostDetail.PostDetailContent.InfoSection.toUiModel() =
         maxLine = maxLine,
     )
 
-private fun PostDetail.PostDetailContent.ContentSection.toUiModel(): PostDetailUiModel.PostDetailContentUiModel.ContentSectionUiModel =
+private fun PostDetail.PostDetailContent.ContentSection.toUiModel() =
     when (this) {
         is PostDetail.PostDetailContent.ContentSection.ImagesContent -> {
             this.toUiModel()
