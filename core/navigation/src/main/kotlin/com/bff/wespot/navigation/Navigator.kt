@@ -42,4 +42,6 @@ interface Navigator {
     fun navigateToWebLink(context: Context, webLink: String)
 
     fun navigateToWriteActivity(context: Context): Intent
+
+    fun navigateToPostDetailActivity(context: Context, postId: String): Intent
 }

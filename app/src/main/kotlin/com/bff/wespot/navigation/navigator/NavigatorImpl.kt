@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
+import com.bff.wespot.community.detail.PostDetailActivity
 import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
 import com.bff.wespot.navigation.Navigator
@@ -199,6 +200,12 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToWriteActivity(context: Context): Intent {
         val intent = context.buildIntent<WritePostActivity>()
+        return intent
+    }
+
+    override fun navigateToPostDetailActivity(context: Context, postId: String): Intent {
+        val intent = context.buildIntent<PostDetailActivity>()
+        intent.putExtra("postId", postId)
         return intent
     }
 }
