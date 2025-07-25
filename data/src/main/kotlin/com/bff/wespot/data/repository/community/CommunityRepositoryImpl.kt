@@ -10,7 +10,8 @@ import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityDataSource: CommunityDataSource,
-    private val communityContentPagingRepository: CommunityContentPagingRepository
+    private val communityContentPagingRepository: CommunityContentPagingRepository,
+    private val communitySearchPagingRepository: CommunitySearchPagingRepository
 ) : CommunityRepository {
     override suspend fun getCommunityChips(): Result<List<BaseChip>> =
         communityDataSource.getCommunityChips()
@@ -20,4 +21,7 @@ class CommunityRepositoryImpl @Inject constructor(
 
     override fun getCommunityContentStream(): Flow<PagingData<BaseCommunityContent>> =
         communityContentPagingRepository.fetchResultStream()
+
+    override fun getCommunitySearchStream(keyword: String): Flow<PagingData<BaseCommunityContent>> =
+        communitySearchPagingRepository.fetchResultStream(mapOf("keyword" to keyword))
 }
