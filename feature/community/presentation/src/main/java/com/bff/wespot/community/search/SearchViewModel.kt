@@ -25,13 +25,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SearchViewModel @Inject constructor(
-    private val communityRepository: CommunityRepository
+    private val communityRepository: CommunityRepository,
 ) : BaseViewModel(), ContainerHost<SearchUiState, SearchSideEffect> {
     override val container: Container<SearchUiState, SearchSideEffect> = container(
         SearchUiState(),
     )
 
-    private val _searches = MutableStateFlow("")
+    private val searches = MutableStateFlow("")
 
     fun onAction(action: SearchAction) {
         when (action) {
@@ -41,6 +41,7 @@ internal class SearchViewModel @Inject constructor(
                     postSideEffect(SearchSideEffect.NavigateToDetail(action.postId))
                 }
             }
+
             is SearchAction.MonitorUserInput -> monitorUserInput()
         }
     }
@@ -48,7 +49,7 @@ internal class SearchViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private fun monitorUserInput() {
         viewModelScope.launch(coroutineDispatcher) {
-            _searches
+            searches
                 .debounce(INPUT_DEBOUNCE_TIME)
                 .distinctUntilChanged()
                 .collect {
@@ -59,7 +60,7 @@ internal class SearchViewModel @Inject constructor(
 
     private fun handleSearchChange(text: String) = intent {
         reduce {
-            _searches.value = text
+            searches.value = text
             state.copy(
                 keyword = text,
             )
@@ -72,7 +73,7 @@ internal class SearchViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         searches = communityRepository.getCommunitySearchStream(keyword)
-                            .map { it.map { content -> content.toUiModel() } }
+                            .map { it.map { content -> content.toUiModel() } },
                     )
                 }
             }
