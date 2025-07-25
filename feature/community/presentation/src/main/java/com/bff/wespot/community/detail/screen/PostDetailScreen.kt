@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -224,7 +223,7 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
                 .clip(RoundedCornerShape(8.dp))
                 .background(
                     WeSpotThemeManager.colors.cardBackgroundColor,
-                    RoundedCornerShape(8.dp)
+                    RoundedCornerShape(8.dp),
                 ),
         ) {
             Row(
@@ -489,8 +488,8 @@ private object PostDetailPreviewData {
                 ),
                 description = RichTextType(
                     text = "React 18에서 도입된 Concurrent Features는 사용자 경험을 크게 개선할 수 있는 강력한 기능들입니다. " +
-                            "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
-                            "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
+                        "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
+                        "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
                     color = ColorType.Token("white"),
                     typography = "body6",
                 ),
