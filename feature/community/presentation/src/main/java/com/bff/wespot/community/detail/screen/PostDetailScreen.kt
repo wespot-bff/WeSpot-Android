@@ -15,12 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -106,48 +105,54 @@ internal fun PostDetailScreen(
             )
         },
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
+                .padding(paddingValues),
         ) {
-            Column {
-                HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
+            item {
+                Column {
+                    HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
 
-                Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                Column(
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                ) {
-                    uiModel.category.Item(onCategoryClick)
+                    Column(
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    ) {
+                        uiModel.category.Item(onCategoryClick)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    uiModel.headerSection.Item(onProfileClick, onNotificationClick)
+                        uiModel.headerSection.Item(onProfileClick, onNotificationClick)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    uiModel.infoSection.Item()
+                        uiModel.infoSection.Item()
 
-                    uiModel.contentSection?.let {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        it.Item()
+                        uiModel.contentSection?.let {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            it.Item()
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        uiModel.footerSection.Item(onReactionClick, onScrapClick)
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    uiModel.footerSection.Item(onReactionClick, onScrapClick)
-
-                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        thickness = 8.dp,
+                        color = Gray700,
+                    )
                 }
+            }
 
-                HorizontalDivider(
-                    thickness = 8.dp,
-                    color = Gray700,
-                )
-
-                comments.Item()
+            items(comments) {
+                it.Item()
+                if (it != comments.last()) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
             }
         }
     }
@@ -217,7 +222,10 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
-                .background(WeSpotThemeManager.colors.cardBackgroundColor, RoundedCornerShape(8.dp)),
+                .background(
+                    WeSpotThemeManager.colors.cardBackgroundColor,
+                    RoundedCornerShape(8.dp)
+                ),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -320,17 +328,6 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         ) {
             scrap.icon.Icon(modifier = Modifier.size(18.dp))
             scrap.count.Text(StaticTypeScale.Default.body6)
-        }
-    }
-}
-
-@Composable
-private fun List<PostCommentUiModel>.Item() {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        items(this@Item) {
-            it.Item()
         }
     }
 }
@@ -443,40 +440,6 @@ private fun PostCommentUiModel.Item() {
     }
 }
 
-@Preview
-@Composable
-private fun CommentsPreview() {
-    WeSpotTheme {
-        val sampleComment = listOf(
-            PostCommentUiModel(
-                isMe = true,
-                nickname = "김개발자",
-                profileImage = "https://via.placeholder.com/32",
-                message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
-                createdAt = "2024년 1월 15일 15:00",
-                likeCount = 5,
-            ),
-            PostCommentUiModel(
-                isMe = false,
-                nickname = "김개발자",
-                profileImage = "https://via.placeholder.com/32",
-                message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
-                createdAt = "2024년 1월 15일 15:00",
-                likeCount = 5,
-            ),
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(WeSpotThemeManager.colors.backgroundColor)
-                .padding(16.dp),
-        ) {
-            sampleComment.Item()
-        }
-    }
-}
-
 private object PostDetailPreviewData {
     val samplePostDetail = PostDetailUiModel(
         id = "post_detail_1",
@@ -526,8 +489,8 @@ private object PostDetailPreviewData {
                 ),
                 description = RichTextType(
                     text = "React 18에서 도입된 Concurrent Features는 사용자 경험을 크게 개선할 수 있는 강력한 기능들입니다. " +
-                        "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
-                        "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
+                            "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
+                            "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
                     color = ColorType.Token("white"),
                     typography = "body6",
                 ),
@@ -593,10 +556,28 @@ private object PostDetailPreviewData {
 @Preview(showBackground = true)
 @Composable
 private fun PostDetailScreenPreview() {
+    val sampleComment = listOf(
+        PostCommentUiModel(
+            isMe = true,
+            nickname = "김개발자",
+            profileImage = "https://via.placeholder.com/32",
+            message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
+            createdAt = "2024년 1월 15일 15:00",
+            likeCount = 5,
+        ),
+        PostCommentUiModel(
+            isMe = false,
+            nickname = "김개발자",
+            profileImage = "https://via.placeholder.com/32",
+            message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
+            createdAt = "2024년 1월 15일 15:00",
+            likeCount = 5,
+        ),
+    )
     WeSpotTheme {
         PostDetailScreen(
             uiModel = PostDetailPreviewData.samplePostDetail.content,
-            comments = emptyList(),
+            comments = sampleComment,
         )
     }
 }
