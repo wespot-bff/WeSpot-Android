@@ -10,4 +10,6 @@
     <string name="write_description_placeholder">어떤 생각을 하고 계신가요?\n학교 친구들과 함께 생각을 나눠보세요</string>
     <string name="write_category_detail_title">게시판 카테고리</string>
     <string name="write_select_category">카테고리 선택</string>
+    <string name="postdetail_report">신고</string>
+    <string name="postdetail_delete">삭제</string>
 </resources>
