@@ -12,4 +12,7 @@
     <string name="write_select_category">카테고리 선택</string>
     <string name="postdetail_report">신고</string>
     <string name="postdetail_delete">삭제</string>
+    <string name="all_post_written">작성한 글</string>
+    <string name="all_comment_written">댓글 단 글</string>
+    <string name="all_post_scraped">스크랩한 글</string>
 </resources>

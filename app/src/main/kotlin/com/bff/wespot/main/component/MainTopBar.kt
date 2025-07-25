@@ -169,7 +169,9 @@ internal fun MainTopBar(
 
                                 IconButton(
                                     onClick = {
-                                        // 전체 Activity 추가
+                                        context.startActivity(
+                                            navigator.navigateToCommunityAll(context),
+                                        )
                                     },
                                 ) {
                                     Icon(

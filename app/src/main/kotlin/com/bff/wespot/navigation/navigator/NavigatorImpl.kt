@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
+import com.bff.wespot.community.all.CommunityAllActivity
 import com.bff.wespot.community.detail.PostDetailActivity
 import com.bff.wespot.community.search.SearchActivity
 import com.bff.wespot.community.write.WritePostActivity
@@ -212,5 +213,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToCommunitySearch(context: Context): Intent {
         return context.buildIntent<SearchActivity>()
+    }
+
+    override fun navigateToCommunityAll(context: Context): Intent {
+        return context.buildIntent<CommunityAllActivity>()
     }
 }
