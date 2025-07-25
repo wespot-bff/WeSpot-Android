@@ -90,6 +90,7 @@ internal fun MainScreen(
             MainTopBar(
                 isTopNavigationScreen = isTopNavigationScreen,
                 navController = navController,
+                navigator = navigator,
             )
         },
         bottomBar = {
