@@ -45,7 +45,6 @@ fun GradationType.toBrush(): Brush {
     val startColorCompose = startColor.color()
     val endColorCompose = endColor.color()
 
-    // Convert angle to radians
     val angleRadians = Math.toRadians(angle.toDouble())
 
     val startX = (1 - cos(angleRadians)).toFloat() * 0.5f

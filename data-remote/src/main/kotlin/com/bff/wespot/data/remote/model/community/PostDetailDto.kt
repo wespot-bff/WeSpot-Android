@@ -29,7 +29,7 @@ data class PostDetailDto(
 
         @Serializable
         data class HeaderSectionDto(
-            val profileImage: String,
+            val profileImage: ImageTypeDto,
             val nickname: RichTextTypeDto,
             val createdAt: RichTextTypeDto,
             val button: ButtonDto,
@@ -120,7 +120,7 @@ private fun PostDetailDto.PostDetailContentDto.CategoryDto.toDomain() =
 
 private fun PostDetailDto.PostDetailContentDto.HeaderSectionDto.toDomain() =
     PostDetail.PostDetailContent.HeaderSection(
-        profileImage = profileImage,
+        profileImage = profileImage.url,
         nickname = nickname.toDomain(),
         createdAt = createdAt.toDomain(),
         button = button.toDomain(),

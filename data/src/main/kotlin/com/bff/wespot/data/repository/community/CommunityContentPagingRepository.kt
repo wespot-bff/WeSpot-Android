@@ -13,6 +13,9 @@ class CommunityContentPagingRepository @Inject constructor(
 ) : BasePagingRepository<BaseCommunityContent, CommunityContentPaging>() {
     override fun pagingSource(
         parameter: Map<String, String>?
-    ): BasePagingSource<BaseCommunityContent, CommunityContentPaging> =
-        CommunityContentPagingSource(communityDataSource)
+    ): BasePagingSource<BaseCommunityContent, CommunityContentPaging> {
+        val inquirySize = parameter?.get("inquiry_size")?.toIntOrNull() ?: -1
+        val target = parameter?.get("target") ?: ""
+        return CommunityContentPagingSource(communityDataSource, inquirySize, target)
+    }
 }

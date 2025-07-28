@@ -19,8 +19,16 @@ class CommunityRepositoryImpl @Inject constructor(
                 chips.map { it.toDomain() }
             }
 
-    override fun getCommunityContentStream(): Flow<PagingData<BaseCommunityContent>> =
-        communityContentPagingRepository.fetchResultStream()
+    override fun getCommunityContentStream(
+        target: String,
+        inquirySize: Int,
+    ): Flow<PagingData<BaseCommunityContent>> =
+        communityContentPagingRepository.fetchResultStream(
+            mapOf(
+                "target" to target,
+                "inquiry_size" to inquirySize.toString(),
+            )
+        )
 
     override fun getCommunitySearchStream(keyword: String): Flow<PagingData<BaseCommunityContent>> =
         communitySearchPagingRepository.fetchResultStream(mapOf("keyword" to keyword))

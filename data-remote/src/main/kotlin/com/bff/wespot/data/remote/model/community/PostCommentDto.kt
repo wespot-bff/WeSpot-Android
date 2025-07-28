@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.model.community
 
+import com.bff.wespot.data.remote.model.serverDriven.type.ImageTypeDto
 import com.bff.wespot.model.community.PostComment
 import kotlinx.serialization.Serializable
 
@@ -7,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class PostCommentDto(
     val isMe: Boolean,
     val nickname: String,
-    val profileImage: String,
+    val profileImage: ImageTypeDto,
     val message: String,
     val createdAt: String,
     val likeCount: Int,
@@ -16,7 +17,7 @@ data class PostCommentDto(
         return PostComment(
             isMe = isMe,
             nickname = nickname,
-            profileImage = profileImage,
+            profileImage = profileImage.url,
             message = message,
             createdAt = createdAt,
             likeCount = likeCount,
