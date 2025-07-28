@@ -15,4 +15,9 @@
     <string name="all_post_written">작성한 글</string>
     <string name="all_comment_written">댓글 단 글</string>
     <string name="all_post_scraped">스크랩한 글</string>
+    <string name="write_post_warning_title">게시글 작성을 중단하시나요?</string>
+    <string name="write_post_warning_subtitle">작성 중인 내용은 삭제되고 되돌릴 수 없어요</string>
+    <string name="write_post_warning_ok">네</string>
+    <string name="write_post_warning_no">아니요</string>
+    <string name="write_post_description_warning">1200자 이내로 입력해 주세요</string>
 </resources>

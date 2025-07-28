@@ -3,11 +3,13 @@ package com.bff.wespot.community.write.screen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +50,7 @@ import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
 import com.bff.wespot.designsystem.component.input.WsTextFieldType
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.Gray600
@@ -74,7 +78,7 @@ internal fun WritePostScreen(
         }
 
     var showCategoryBottomSheet by remember {
-        mutableStateOf(false)
+        mutableStateOf(uiState.selectedCategory == CategoryItem.EMPTY)
     }
 
     Scaffold(
@@ -82,19 +86,25 @@ internal fun WritePostScreen(
             WSTopBar(
                 title = stringResource(R.string.write_post),
                 action = {
-                    Icon(
-                        painter = painterResource(com.bff.wespot.designsystem.R.drawable.icn_close),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(end = 14.dp),
-                    )
+                    IconButton(
+                        onClick = {
+                            onAction(WritePostAction.ClosePage())
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(com.bff.wespot.designsystem.R.drawable.icn_close),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 },
             )
         },
         bottomBar = {
             WSButton(
-                onClick = {},
+                onClick = {
+                    onAction(WritePostAction.UploadPost)
+                },
                 text = stringResource(R.string.write_upload_post),
                 enabled = uiState.description.isNotEmpty(),
             ) {
@@ -166,12 +176,34 @@ internal fun WritePostScreen(
                     textFieldType = WsTextFieldType.Message,
                 )
             }
-            Text(
-                text = "${uiState.description.length} / 1200",
-                style = StaticTypeScale.Default.body7,
-                color = WeSpotThemeManager.colors.disableIcnColor,
-                modifier = Modifier.align(Alignment.End),
-            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+            ) {
+                if (uiState.description.length > 1200) {
+                    Text(
+                        text = stringResource(R.string.write_post_description_warning),
+                        color = WeSpotThemeManager.colors.dangerColor,
+                        style = StaticTypeScale.Default.body7,
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                Text(
+                    text = "${uiState.description.length} / 1200",
+                    style = StaticTypeScale.Default.body7,
+                    color = if (uiState.description.length > 1200) {
+                        WeSpotThemeManager.colors.dangerColor
+                    } else {
+                        WeSpotThemeManager.colors.disableIcnColor
+                    },
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
             Text(
@@ -233,6 +265,24 @@ internal fun WritePostScreen(
             },
         )
     }
+
+    if (uiState.showWarning) {
+        WSDialog(
+            title = stringResource(R.string.write_post_warning_title),
+            subTitle = stringResource(R.string.write_post_warning_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            onDismissRequest = {
+                onAction(WritePostAction.CloseDialog)
+            },
+            okButtonClick = {
+                onAction(WritePostAction.ClosePage(force = true))
+            },
+            cancelButtonClick = {
+                onAction(WritePostAction.CloseDialog)
+            },
+        )
+    }
 }
 
 @Composable
@@ -254,9 +304,9 @@ private fun ImageBox(
             contentAlignment = Alignment.Center,
         ) {
             if (imagePath.isEmpty()) {
-                Icon(
+                Image(
                     painter = rememberAsyncImagePainter(R.drawable.add),
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(24.dp),
                     contentDescription = null,
                 )
             } else {
@@ -309,6 +359,7 @@ private fun CategoryBottomSheet(
                 horizontal = 24.dp,
                 vertical = 28.dp,
             ),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             item {
                 Text(
@@ -335,7 +386,9 @@ private fun CategoryBottomSheet(
                         color = WeSpotThemeManager.colors.abledIconColor,
                     )
 
-                    LazyRow {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
                         items(
                             items = it.chips,
                             key = { it.id },
@@ -358,10 +411,12 @@ private fun CategoryBottomSheet(
                                     text = chip.text,
                                     style = StaticTypeScale.Default.body9,
                                     color = if (selected) {
-                                        Gray100
-                                    } else {
                                         Gray600
+                                    } else {
+                                        Gray100
                                     },
+                                    modifier = Modifier
+                                        .padding(horizontal = 12.dp, vertical = 5.dp),
                                 )
                             }
                         }

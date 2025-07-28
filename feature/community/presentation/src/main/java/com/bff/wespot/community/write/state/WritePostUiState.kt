@@ -9,4 +9,12 @@ data class WritePostUiState(
     val description: String = "",
     val images: List<String> = emptyList(),
     val categories: List<CategoryChips> = emptyList(),
-)
+    val isLoading: Boolean = false,
+    val showWarning: Boolean = false,
+) {
+    val haveContent
+        get() = selectedCategory != CategoryItem.EMPTY ||
+            title.isNotEmpty() ||
+            description.isNotEmpty() ||
+            images.isNotEmpty()
+}
