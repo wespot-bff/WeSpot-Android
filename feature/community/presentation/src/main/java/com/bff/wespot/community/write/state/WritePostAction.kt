@@ -8,4 +8,7 @@ sealed interface WritePostAction {
     data class OnImageChanged(val images: List<String>) : WritePostAction
     data class OnCategoryChanged(val category: CategoryItem) : WritePostAction
     data class OnImageDelete(val image: String) : WritePostAction
+    data object UploadPost : WritePostAction
+    data class ClosePage(val force: Boolean = false) : WritePostAction
+    data object CloseDialog : WritePostAction
 }

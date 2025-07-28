@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import com.bff.wespot.community.write.screen.WritePostScreen
+import com.bff.wespot.community.write.state.WritePostSideEffect
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @AndroidEntryPoint
 class WritePostActivity : ComponentActivity() {
@@ -26,6 +28,14 @@ class WritePostActivity : ComponentActivity() {
                     onAction = onAction,
                     uiState = uiState,
                 )
+            }
+
+            viewModel.collectSideEffect {
+                when (it) {
+                    WritePostSideEffect.ClosePage -> {
+                        finish()
+                    }
+                }
             }
         }
     }
