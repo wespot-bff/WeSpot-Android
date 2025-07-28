@@ -53,6 +53,7 @@ room = "2.6.1"
 splash-screen = "1.0.1"
 
 module-graph = "2.7.1"
+material = "1.10.0"
 
 [libraries]
 android-build = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
@@ -142,6 +143,7 @@ room-paging3 = { group = "androidx.room", name = "room-paging", version.ref = "r
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
 androidx-compose = [

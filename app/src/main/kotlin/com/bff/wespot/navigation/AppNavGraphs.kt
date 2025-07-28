@@ -15,6 +15,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import com.bff.wespot.community.screen.destinations.CommunityHomeScreenDestination
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
 import com.bff.wespot.entire.screen.destinations.NotificationSettingScreenDestination
@@ -55,6 +56,17 @@ import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
 object AppNavGraphs {
+    val community = object : NavGraphSpec {
+        override val route = "community"
+
+        override val startRoute = CommunityHomeScreenDestination routedIn this
+
+        override val destinationsByRoute = listOf<DestinationSpec<*>>(
+            CommunityHomeScreenDestination,
+        ).routedIn(this)
+            .associateBy { it.route }
+    }
+
     val vote = object : NavGraphSpec {
         override val route = "vote"
 
@@ -120,11 +132,12 @@ object AppNavGraphs {
     val root = object : NavGraphSpec {
         override val route = "root"
 
-        override val startRoute = vote
+        override val startRoute = community
 
         override val destinationsByRoute = emptyMap<String, DestinationSpec<*>>()
 
         override val nestedNavGraphs = listOf(
+            community,
             vote,
             message,
             entire,
@@ -134,6 +147,7 @@ object AppNavGraphs {
 }
 
 private val bottomBarScreenNames = listOf(
+    "community/community_home_screen",
     "vote/vote_home_screen",
     "message/message_screen?tab={tab}",
     "entire/entire_screen",
@@ -169,6 +183,7 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
         NavigationBarPosition.TOP -> {
             hierarchy.forEach { destination ->
                 when (destination.route) {
+                    "community/community_home_screen" -> return BarType.ENTIRE
                     "entire/entire_screen" -> return BarType.ENTIRE
                     "vote/vote_home_screen" -> return BarType.DEFAULT
                     "message/message_screen?tab={tab}" -> return BarType.MESSAGE
