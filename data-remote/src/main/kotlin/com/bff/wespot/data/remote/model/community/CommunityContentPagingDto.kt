@@ -1,17 +1,19 @@
 package com.bff.wespot.data.remote.model.community
 
 import com.bff.wespot.model.community.CommunityContentPaging
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommunityContentPagingDto(
+    @SerialName("data")
     val content: List<BaseCommunityContentDto>,
-    val lastCursorId: Int,
+    val lastCursorId: Int?,
     val hasNext: Boolean
 ) {
     fun toCommunityContentPaging() = CommunityContentPaging(
         data = content.map { it.toDomain() },
-        lastCursorId = lastCursorId,
+        lastCursorId = lastCursorId ?: -1,
         hasNext = hasNext
     )
 }

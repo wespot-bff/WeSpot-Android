@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -16,6 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.bff.wespot.community.component.FilterChip
 import com.bff.wespot.community.component.Item
 import com.bff.wespot.community.presentation.R
@@ -41,6 +42,7 @@ internal fun CommunityHomeScreen(
     val uiState by viewModel.collectAsState()
     val onAction = viewModel::onAction
     val context = LocalContext.current
+    val paging = uiState.posts.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -71,11 +73,11 @@ internal fun CommunityHomeScreen(
                 .fillMaxSize(),
         ) {
             items(
-                items = uiState.posts,
-                key = { uiModel ->
-                    uiModel.id
-                },
-            ) { post ->
+                count = paging.itemCount,
+                key = paging.itemKey(),
+            ) { index ->
+                val post = paging[index]
+
                 when (post) {
                     is PostItemUiModel -> {
                         post.content.Item(

@@ -76,7 +76,7 @@ internal fun FilterChip(
                             Text(
                                 text = it.text.text,
                                 style = it.text.typography.toTextStyle()
-                                    ?: StaticTypeScale.Default.body4,
+                                    ?: StaticTypeScale.Default.body6,
                                 color = if (selected) {
                                     WeSpotThemeManager.colors.backgroundColor
                                 } else {
