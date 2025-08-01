@@ -1,7 +1,6 @@
 package com.bff.wespot.model.community
 
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostDetail(
@@ -42,7 +41,7 @@ data class PostDetail(
 
         sealed class ContentSection {
             data class ImagesContent(
-                val content: List<ImageType>,
+                val content: List<String>,
             ) : ContentSection()
         }
 
@@ -70,7 +69,7 @@ data class PostDetail(
 
             data class Scrap(
                 val icon: IconType,
-                val count: RichTextType,
+                val selected: Boolean,
             )
         }
     }

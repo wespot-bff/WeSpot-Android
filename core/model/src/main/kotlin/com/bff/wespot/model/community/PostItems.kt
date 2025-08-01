@@ -1,7 +1,6 @@
 package com.bff.wespot.model.community
 
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostItems(
@@ -36,7 +35,7 @@ data class PostItems(
 
         sealed interface ContentSection {
             data class ImagesSection(
-                val images: List<ImageType>,
+                val images: List<String>,
             ) : ContentSection
 
             data object EmptySection : ContentSection

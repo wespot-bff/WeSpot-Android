@@ -54,8 +54,7 @@ data class PostContentDto(
         @Serializable
         @SerialName("Images")
         data class ImagesSectionDto(
-            @SerialName("content")
-            val images: List<ImageTypeDto>
+            val images: List<String>
         ) : ContentSectionDto()
     }
 
@@ -127,7 +126,7 @@ private fun PostContentDto.InfoSectionDto.toDomain() = PostItems.PostContent.Inf
 private fun PostContentDto.ContentSectionDto.toDomain(): PostItems.PostContent.ContentSection =
     when (this) {
         is PostContentDto.ContentSectionDto.ImagesSectionDto -> PostItems.PostContent.ContentSection.ImagesSection(
-            images = images.map { it.toDomain() }
+            images = images
         )
     }
 

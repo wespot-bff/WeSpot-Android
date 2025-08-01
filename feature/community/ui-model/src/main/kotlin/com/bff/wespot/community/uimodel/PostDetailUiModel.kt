@@ -3,7 +3,6 @@ package com.bff.wespot.community.uimodel
 import com.bff.wespot.model.community.PostDetail
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostDetailUiModel(
@@ -44,7 +43,11 @@ data class PostDetailUiModel(
 
         sealed interface ContentSectionUiModel {
             data class ImagesContentUiModel(
-                val content: List<ImageType>,
+                val images: List<String>,
+            ) : ContentSectionUiModel
+
+            data class SingleImageUiModel(
+                val image: String,
             ) : ContentSectionUiModel
         }
 
@@ -72,7 +75,7 @@ data class PostDetailUiModel(
 
             data class ScrapUiModel(
                 val icon: IconType,
-                val count: RichTextType,
+                val selected: Boolean,
             )
         }
     }
@@ -135,11 +138,7 @@ data class PostDetailUiModel(
                     reactions = emptyList(),
                     scrap = PostDetailContentUiModel.FooterSectionUiModel.ScrapUiModel(
                         icon = IconType(url = "", color = ColorType.Token("")),
-                        count = RichTextType(
-                            text = "",
-                            color = ColorType.Token(""),
-                            typography = "",
-                        ),
+                        selected = false,
                     ),
                 ),
             ),
@@ -192,9 +191,15 @@ private fun PostDetail.PostDetailContent.ContentSection.toUiModel() =
     }
 
 private fun PostDetail.PostDetailContent.ContentSection.ImagesContent.toUiModel() =
-    PostDetailUiModel.PostDetailContentUiModel.ContentSectionUiModel.ImagesContentUiModel(
-        content = content,
-    )
+    if (content.size == 1) {
+        PostDetailUiModel.PostDetailContentUiModel.ContentSectionUiModel.SingleImageUiModel(
+            image = content.first(),
+        )
+    } else {
+        PostDetailUiModel.PostDetailContentUiModel.ContentSectionUiModel.ImagesContentUiModel(
+            images = content,
+        )
+    }
 
 private fun PostDetail.PostDetailContent.FooterSection.toUiModel() =
     PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel(
@@ -223,5 +228,5 @@ private fun PostDetail.PostDetailContent.FooterSection.Reaction.toUiModel() = wh
 private fun PostDetail.PostDetailContent.FooterSection.Scrap.toUiModel() =
     PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ScrapUiModel(
         icon = icon,
-        count = count,
+        selected = selected,
     )

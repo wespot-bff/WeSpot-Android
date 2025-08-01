@@ -17,7 +17,6 @@ class PostDetailDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v1/post/$postId")
-                parameter("postId", postId)
             }
         }
 
