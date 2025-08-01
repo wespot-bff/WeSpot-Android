@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.detail.state.PostDetailAction
+import com.bff.wespot.community.detail.state.PostDetailUiState
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.PostCommentUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel
@@ -50,6 +52,7 @@ import com.bff.wespot.designsystem.theme.Gray300
 import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.Gray700
+import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -64,10 +67,11 @@ import com.bff.wespot.ui.util.clickableSingle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PostDetailScreen(
-    uiModel: PostDetailContentUiModel,
-    comments: List<PostCommentUiModel>,
+    uiState: PostDetailUiState,
     onAction: (PostDetailAction) -> Unit,
 ) {
+    val uiModel = uiState.detail.content
+
     Scaffold(
         topBar = {
             WSTopBar(
@@ -108,8 +112,9 @@ internal fun PostDetailScreen(
         },
         bottomBar = {
             CommentInputBox(
-                value = "",
-                onValueChanged = {},
+                value = uiState.commentInput,
+                onValueChanged = { onAction(PostDetailAction.OnCommentChange(it)) },
+                onSendClick = { onAction(PostDetailAction.OnCommentSend(uiState.commentInput)) },
             )
         },
     ) { paddingValues ->
@@ -127,7 +132,10 @@ internal fun PostDetailScreen(
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp),
                     ) {
-                        uiModel.headerSection.Item(onAction)
+                        uiModel.headerSection.Item(
+                            registered = uiState.registered,
+                            onAction = onAction,
+                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -140,7 +148,7 @@ internal fun PostDetailScreen(
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        uiModel.footerSection.Item(onAction)
+                        uiModel.footerSection.Item(onAction, uiState.isLiked, uiState.isScrapped)
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -152,9 +160,12 @@ internal fun PostDetailScreen(
                 }
             }
 
-            items(comments) {
-                it.Item()
-                if (it != comments.last()) {
+            items(uiState.comments) { comment ->
+                comment.Item(
+                    onAction = onAction,
+                    isLiked = uiState.likedComments.contains(comment.id),
+                )
+                if (comment != uiState.comments.last()) {
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
@@ -164,6 +175,7 @@ internal fun PostDetailScreen(
 
 @Composable
 private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
+    registered: Boolean,
     onAction: (PostDetailAction) -> Unit,
 ) {
     Row(
@@ -209,11 +221,24 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(start = 8.dp, end = 14.dp, top = 6.dp, bottom = 6.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 14.dp, top = 6.dp, bottom = 6.dp)
+                    .clickableSingle {
+                        onAction(PostDetailAction.OnNotificationClick)
+                    },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (button.icon.url.isNotEmpty()) {
-                    button.icon.Icon(
+                    AsyncImage(
+                        model = button.icon.url,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(
+                            if (registered) {
+                                Gray300
+                            } else {
+                                Primary300
+                            },
+                        ),
                         modifier = Modifier.size(15.dp),
                     )
                 }
@@ -286,6 +311,8 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
 @Composable
 private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
     onAction: (PostDetailAction) -> Unit,
+    isLiked: Boolean = false,
+    isScrapped: Boolean = false,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -296,6 +323,11 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             reactions.forEach { reaction ->
+                val isSelected = when (reaction) {
+                    is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> isLiked
+                    is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> reaction.selected
+                }
+
                 Row(
                     modifier = Modifier.clickableSingle {
                         val type = when (reaction) {
@@ -307,8 +339,15 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    reaction.icon.Icon(modifier = Modifier.size(18.dp))
-                    reaction.count.Text(StaticTypeScale.Default.body6)
+                    val updatedReaction = when (reaction) {
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
+                            reaction.copy(selected = isSelected)
+                        }
+
+                        else -> reaction
+                    }
+                    updatedReaction.icon.Icon(modifier = Modifier.size(18.dp))
+                    updatedReaction.count.Text(StaticTypeScale.Default.body6)
                 }
             }
         }
@@ -318,7 +357,8 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            scrap.icon.Icon(modifier = Modifier.size(18.dp))
+            val updatedScrap = scrap.copy(selected = isScrapped)
+            updatedScrap.icon.Icon(modifier = Modifier.size(18.dp))
             Text(
                 text = stringResource(R.string.post_scrap),
                 style = StaticTypeScale.Default.body7,
@@ -329,7 +369,10 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
 }
 
 @Composable
-private fun PostCommentUiModel.Item() {
+private fun PostCommentUiModel.Item(
+    onAction: (PostDetailAction) -> Unit = {},
+    isLiked: Boolean = false,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if (isMe) {
@@ -401,14 +444,17 @@ private fun PostCommentUiModel.Item() {
                     Icon(
                         painter = rememberAsyncImagePainter(R.drawable.like),
                         contentDescription = null,
-                        tint = Gray400,
-                        modifier = Modifier.size(12.dp),
+                        tint = if (isLiked) Primary300 else Gray400,
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clickableSingle { onAction(PostDetailAction.OnCommentLike(id)) },
                     )
 
                     Text(
                         text = likeCount.toString(),
                         style = StaticTypeScale.Default.body9,
-                        color = Gray400,
+                        color = if (isLiked) Primary300 else Gray400,
+                        modifier = Modifier.clickableSingle { onAction(PostDetailAction.OnCommentLike(id)) },
                     )
 
                     Text(
@@ -428,6 +474,7 @@ private fun PostCommentUiModel.Item() {
                             text = stringResource(R.string.postdetail_report),
                             style = StaticTypeScale.Default.body9,
                             color = Gray400,
+                            modifier = Modifier.clickableSingle { onAction(PostDetailAction.OnCommentReport(id)) },
                         )
                     }
                 }
@@ -440,6 +487,7 @@ private fun PostCommentUiModel.Item() {
 private fun CommentInputBox(
     value: String,
     onValueChanged: (String) -> Unit,
+    onSendClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -488,7 +536,7 @@ private fun CommentInputBox(
                 contentDescription = "",
                 modifier = Modifier
                     .size(26.dp)
-                    .clickableSingle { },
+                    .clickableSingle { onSendClick() },
             )
         }
     }
@@ -597,6 +645,7 @@ private object PostDetailPreviewData {
 private fun PostDetailScreenPreview() {
     val sampleComment = listOf(
         PostCommentUiModel(
+            id = "comment_1",
             isMe = true,
             nickname = "김개발자",
             profileImage = "https://via.placeholder.com/32",
@@ -605,6 +654,7 @@ private fun PostDetailScreenPreview() {
             likeCount = 5,
         ),
         PostCommentUiModel(
+            id = "comment_2",
             isMe = false,
             nickname = "김개발자",
             profileImage = "https://via.placeholder.com/32",
@@ -615,8 +665,10 @@ private fun PostDetailScreenPreview() {
     )
     WeSpotTheme {
         PostDetailScreen(
-            uiModel = PostDetailPreviewData.samplePostDetail.content,
-            comments = sampleComment,
+            uiState = PostDetailUiState(
+                comments = sampleComment,
+                detail = PostDetailPreviewData.samplePostDetail,
+            ),
             onAction = {},
         )
     }

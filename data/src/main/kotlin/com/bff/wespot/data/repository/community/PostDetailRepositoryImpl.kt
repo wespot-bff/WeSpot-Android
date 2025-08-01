@@ -20,4 +20,20 @@ class PostDetailRepositoryImpl @Inject constructor(
             .mapCatching {
                 it.map { it.toDomain() }
             }
+
+    override suspend fun registerNotification(postId: String): Boolean {
+        return postDetailDataSource.registerNotification(postId).isSuccess
+    }
+
+    override suspend fun sendComment(postId: Int, content: String): Boolean {
+        return postDetailDataSource.sendComment(postId, content).isSuccess
+    }
+
+    override suspend fun reportComment(commentId: String): Boolean {
+        return postDetailDataSource.reportComment(commentId).isSuccess
+    }
+
+    override suspend fun likeComment(commentId: String): Boolean {
+        return postDetailDataSource.likeComment(commentId).isSuccess
+    }
 }

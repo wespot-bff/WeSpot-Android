@@ -22,8 +22,7 @@ class PostDetailActivity : ComponentActivity() {
             val onAction = viewModel::onAction
             WeSpotTheme {
                 PostDetailScreen(
-                    uiModel = state.detail.content,
-                    comments = state.comments,
+                    uiState = state,
                     onAction = onAction,
                 )
             }
