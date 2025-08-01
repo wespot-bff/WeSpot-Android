@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostCommentDto(
+    val id: String,
     val isMe: Boolean,
     val nickname: String,
     val profileImage: ImageTypeDto,
@@ -15,6 +16,7 @@ data class PostCommentDto(
 ) {
     fun toDomain(): PostComment {
         return PostComment(
+            id = id,
             isMe = isMe,
             nickname = nickname,
             profileImage = profileImage.url,

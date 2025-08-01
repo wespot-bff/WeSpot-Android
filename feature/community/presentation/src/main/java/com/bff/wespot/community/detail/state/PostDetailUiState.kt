@@ -6,4 +6,9 @@ import com.bff.wespot.community.uimodel.PostDetailUiModel
 data class PostDetailUiState(
     val detail: PostDetailUiModel = PostDetailUiModel.Empty,
     val comments: List<PostCommentUiModel> = emptyList(),
+    val isLiked: Boolean = false,
+    val isScrapped: Boolean = false,
+    val registered: Boolean = false,
+    val commentInput: String = "",
+    val likedComments: Set<String> = emptySet(),
 )
