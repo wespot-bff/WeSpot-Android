@@ -6,6 +6,7 @@ import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.community.state.CommunityAction
 import com.bff.wespot.community.state.CommunitySideEffect
 import com.bff.wespot.community.state.CommunityUiState
+import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.chip.toUiModel
 import com.bff.wespot.community.uimodel.toUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
@@ -58,6 +59,18 @@ class CommunityHomeViewModel @Inject constructor(
             is CommunityAction.OnWritePostClicked -> {
                 postSideEffect(CommunitySideEffect.NavigateToWriteActivity)
             }
+
+            is CommunityAction.OnCommunityEnter -> {
+                onFilterChipClicked("", "")
+            }
+
+            is CommunityAction.OnReactionClick -> {
+                onReactionClick(action.id, action.reaction)
+            }
+
+            is CommunityAction.OnScrapClick -> {
+                onScrapClick(action.id)
+            }
         }
     }
 
@@ -73,6 +86,68 @@ class CommunityHomeViewModel @Inject constructor(
                 posts = paging,
                 selectedChipId = id,
             )
+        }
+    }
+
+    private fun onReactionClick(
+        postId: String,
+        reaction: PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel,
+    ) = intent {
+        when (reaction) {
+            is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
+                val isCurrentlyLiked = state.likedPosts.contains(postId)
+                reduce {
+                    state.copy(
+                        likedPosts = if (isCurrentlyLiked) {
+                            state.likedPosts - postId
+                        } else {
+                            state.likedPosts + postId
+                        },
+                    )
+                }
+
+                val result = communityRepository.onLikeClicked(postId)
+                if (!result) {
+                    reduce {
+                        state.copy(
+                            likedPosts = if (isCurrentlyLiked) {
+                                state.likedPosts + postId
+                            } else {
+                                state.likedPosts - postId
+                            },
+                        )
+                    }
+                }
+            }
+
+            is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+            }
+        }
+    }
+
+    private fun onScrapClick(postId: String) = intent {
+        val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+        reduce {
+            state.copy(
+                scrappedPosts = if (isCurrentlyScrapped) {
+                    state.scrappedPosts - postId
+                } else {
+                    state.scrappedPosts + postId
+                },
+            )
+        }
+
+        val result = communityRepository.onScrapClicked(postId)
+        if (!result) {
+            reduce {
+                state.copy(
+                    scrappedPosts = if (isCurrentlyScrapped) {
+                        state.scrappedPosts + postId
+                    } else {
+                        state.scrappedPosts - postId
+                    },
+                )
+            }
         }
     }
 }

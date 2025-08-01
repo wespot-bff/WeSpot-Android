@@ -2,6 +2,7 @@ package com.bff.wespot.community.detail
 
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
+import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.detail.state.PostDetailParams
 import com.bff.wespot.community.detail.state.PostDetailSideEffect
 import com.bff.wespot.community.detail.state.PostDetailUiState
@@ -11,6 +12,7 @@ import com.bff.wespot.domain.repository.community.PostDetailRepository
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -22,13 +24,14 @@ import javax.inject.Inject
 class PostDetailViewModel @Inject constructor(
     param: PostDetailParams,
     private val postDetailRepository: PostDetailRepository,
+    ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(), ContainerHost<PostDetailUiState, PostDetailSideEffect> {
     override val container = container<PostDetailUiState, PostDetailSideEffect>(
         PostDetailUiState(),
     )
 
     init {
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             postDetailRepository.getPostDetail(postId = param.postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
@@ -42,7 +45,7 @@ class PostDetailViewModel @Inject constructor(
                 }
         }
 
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(ioDispatcher) {
             postDetailRepository.getPostComments(param.postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
@@ -55,5 +58,8 @@ class PostDetailViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun onAction(action: PostDetailAction) {
     }
 }

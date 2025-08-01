@@ -1,5 +1,6 @@
 package com.bff.wespot.community.detail.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,14 +12,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -34,11 +38,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.PostCommentUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.Gray300
 import com.bff.wespot.designsystem.theme.Gray400
@@ -50,7 +56,6 @@ import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
@@ -61,12 +66,7 @@ import com.bff.wespot.ui.util.clickableSingle
 internal fun PostDetailScreen(
     uiModel: PostDetailContentUiModel,
     comments: List<PostCommentUiModel>,
-    onBackClick: () -> Unit = { },
-    onCategoryClick: (String) -> Unit = { },
-    onProfileClick: (String) -> Unit = { },
-    onNotificationClick: () -> Unit = { },
-    onReactionClick: (String) -> Unit = { },
-    onScrapClick: () -> Unit = { },
+    onAction: (PostDetailAction) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -74,6 +74,9 @@ internal fun PostDetailScreen(
                 titleContent = {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.clickableSingle {
+                            onAction(PostDetailAction.OnCategoryClick)
+                        },
                     ) {
                         uiModel.category.text.Text(StaticTypeScale.Default.body6)
 
@@ -85,14 +88,14 @@ internal fun PostDetailScreen(
                                     CircleShape,
                                 ),
                         ) {
-                            uiModel.category.icon.Icon()
+                            uiModel.category.icon.Icon(modifier = Modifier.size(16.dp))
                         }
                     }
                 },
                 title = "",
                 canNavigateBack = true,
                 navigateUp = {
-                    onBackClick.invoke()
+                    onAction(PostDetailAction.OnBackClick)
                 },
                 action = {
                     Icon(
@@ -101,6 +104,12 @@ internal fun PostDetailScreen(
                         modifier = Modifier.padding(end = 16.dp),
                     )
                 },
+            )
+        },
+        bottomBar = {
+            CommentInputBox(
+                value = "",
+                onValueChanged = {},
             )
         },
     ) { paddingValues ->
@@ -118,11 +127,7 @@ internal fun PostDetailScreen(
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp),
                     ) {
-                        uiModel.category.Item(onCategoryClick)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        uiModel.headerSection.Item(onProfileClick, onNotificationClick)
+                        uiModel.headerSection.Item(onAction)
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,7 +140,7 @@ internal fun PostDetailScreen(
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        uiModel.footerSection.Item(onReactionClick, onScrapClick)
+                        uiModel.footerSection.Item(onAction)
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -158,23 +163,8 @@ internal fun PostDetailScreen(
 }
 
 @Composable
-private fun PostDetailContentUiModel.CategoryUiModel.Item(
-    onCategoryClick: (String) -> Unit,
-) {
-    Row(
-        modifier = Modifier.clickableSingle { onCategoryClick(target) },
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        text.Text(StaticTypeScale.Default.badge)
-        icon.Icon(modifier = Modifier.size(16.dp))
-    }
-}
-
-@Composable
 private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
-    onProfileClick: (String) -> Unit,
-    onNotificationClick: () -> Unit,
+    onAction: (PostDetailAction) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -188,7 +178,7 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
                 modifier = Modifier
                     .size(48.dp)
                     .background(White, CircleShape)
-                    .clickableSingle { onProfileClick(profileImage) },
+                    .clickableSingle { onAction(PostDetailAction.OnProfileClick) },
             ) {
                 AsyncImage(
                     model = profileImage,
@@ -207,15 +197,6 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
                 nickname.Text(StaticTypeScale.Default.body3)
                 createdAt.Text(StaticTypeScale.Default.body8)
             }
-
-            Row(
-                modifier = Modifier.clickableSingle { onNotificationClick() },
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                button.icon.Icon(modifier = Modifier.size(16.dp))
-                button.text.Text(StaticTypeScale.Default.body7)
-            }
         }
 
         Box(
@@ -228,10 +209,14 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(start = 8.dp, end = 14.dp, top = 6.dp, bottom = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                button.icon.Icon(
-                    modifier = Modifier.size(15.dp),
-                )
+                if (button.icon.url.isNotEmpty()) {
+                    button.icon.Icon(
+                        modifier = Modifier.size(15.dp),
+                    )
+                }
 
                 button.text.Text(StaticTypeScale.Default.body9)
             }
@@ -263,20 +248,18 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(content) { image ->
+                items(images) { image ->
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
-                            .width(image.width.dp)
-                            .height(image.height.dp)
                             .background(White, RoundedCornerShape(12.dp)),
                     ) {
                         AsyncImage(
-                            model = image.url,
+                            model = image,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .width(image.width.dp)
-                                .height(image.height.dp),
+                                .widthIn(min = 200.dp, max = 226.dp)
+                                .heightIn(min = 226.dp, max = 266.dp),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                         )
@@ -284,14 +267,25 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
                 }
             }
         }
+
+        is PostDetailContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
+            AsyncImage(
+                model = image,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .fillMaxWidth()
+                    .heightIn(min = 155.dp, max = 718.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
-    onReactionClick: (String) -> Unit,
-    onScrapClick: () -> Unit,
+    onAction: (PostDetailAction) -> Unit,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -304,12 +298,11 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
             reactions.forEach { reaction ->
                 Row(
                     modifier = Modifier.clickableSingle {
-                        onReactionClick(
-                            when (reaction) {
-                                is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> "chat"
-                                is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> "like"
-                            },
-                        )
+                        val type = when (reaction) {
+                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> "chat"
+                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> "like"
+                        }
+                        onAction(PostDetailAction.OnReactionClick(type))
                     },
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -321,12 +314,16 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         }
 
         Row(
-            modifier = Modifier.clickableSingle { onScrapClick() },
+            modifier = Modifier.clickableSingle { onAction(PostDetailAction.OnScrapClick) },
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             scrap.icon.Icon(modifier = Modifier.size(18.dp))
-            scrap.count.Text(StaticTypeScale.Default.body6)
+            Text(
+                text = stringResource(R.string.post_scrap),
+                style = StaticTypeScale.Default.body7,
+                color = Gray100,
+            )
         }
     }
 }
@@ -439,6 +436,64 @@ private fun PostCommentUiModel.Item() {
     }
 }
 
+@Composable
+private fun CommentInputBox(
+    value: String,
+    onValueChanged: (String) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                vertical = 12.dp,
+                horizontal = 20.dp,
+            ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(
+                    color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(20.dp),
+                )
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChanged,
+                modifier = Modifier.weight(1f),
+                textStyle = StaticTypeScale.Default.body3.copy(
+                    color = WeSpotThemeManager.colors.txtTitleColor,
+                ),
+                decorationBox = @Composable { innerTextField ->
+                    Box {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.post_detail_comment_placeholder),
+                                style = StaticTypeScale.Default.body9,
+                                color = Gray400,
+                            )
+                        }
+                        innerTextField()
+                    }
+                },
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Image(
+                painter = rememberAsyncImagePainter(R.drawable.send_button),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(26.dp)
+                    .clickableSingle { },
+            )
+        }
+    }
+}
+
 private object PostDetailPreviewData {
     val samplePostDetail = PostDetailUiModel(
         id = "post_detail_1",
@@ -496,18 +551,7 @@ private object PostDetailPreviewData {
                 maxLine = 0,
             ),
             contentSection = PostDetailContentUiModel.ContentSectionUiModel.ImagesContentUiModel(
-                content = listOf(
-                    ImageType(
-                        url = "https://via.placeholder.com/320x200",
-                        width = 320,
-                        height = 200,
-                    ),
-                    ImageType(
-                        url = "https://via.placeholder.com/320x200",
-                        width = 320,
-                        height = 200,
-                    ),
-                ),
+                images = listOf(),
             ),
             footerSection = PostDetailContentUiModel.FooterSectionUiModel(
                 reactions = listOf(
@@ -541,11 +585,7 @@ private object PostDetailPreviewData {
                         url = "https://cdn-icons-png.flaticon.com/512/3031/3031121.png",
                         color = ColorType.Token("gray300"),
                     ),
-                    count = RichTextType(
-                        text = "12",
-                        color = ColorType.Token("gray300"),
-                        typography = "body6",
-                    ),
+                    selected = false,
                 ),
             ),
         ),
@@ -577,6 +617,7 @@ private fun PostDetailScreenPreview() {
         PostDetailScreen(
             uiModel = PostDetailPreviewData.samplePostDetail.content,
             comments = sampleComment,
+            onAction = {},
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import com.bff.wespot.community.detail.screen.PostDetailScreen
+import com.bff.wespot.designsystem.theme.WeSpotTheme
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -18,10 +19,14 @@ class PostDetailActivity : ComponentActivity() {
 
         setContent {
             val state by viewModel.collectAsState()
-            PostDetailScreen(
-                uiModel = state.detail.content,
-                comments = state.comments,
-            )
+            val onAction = viewModel::onAction
+            WeSpotTheme {
+                PostDetailScreen(
+                    uiModel = state.detail.content,
+                    comments = state.comments,
+                    onAction = onAction,
+                )
+            }
         }
     }
 }

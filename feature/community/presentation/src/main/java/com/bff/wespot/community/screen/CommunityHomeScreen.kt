@@ -9,6 +9,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -80,11 +81,47 @@ internal fun CommunityHomeScreen(
 
                 when (post) {
                     is PostItemUiModel -> {
-                        post.content.Item(
+                        val updatedContent = post.content.copy(
+                            footerSection = post.content.footerSection.copy(
+                                reactions = post.content.footerSection.reactions.map { reaction ->
+                                    when (reaction) {
+                                        is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
+                                            reaction.copy(
+                                                selected = uiState.likedPosts.contains(
+                                                    post.id,
+                                                ),
+                                            )
+                                        }
+
+                                        else -> reaction
+                                    }
+                                },
+                                scrap = post.content.footerSection.scrap.copy(
+                                    selected = uiState.scrappedPosts.contains(post.id),
+                                ),
+                            ),
+                        )
+
+                        updatedContent.Item(
                             navigateToPost = {
-                                navigator.navigateToPostDetailActivity(
+                                val intent = navigator.navigateToPostDetailActivity(
                                     context = context,
                                     postId = post.id,
+                                )
+
+                                context.startActivity(intent)
+                            },
+                            reactionClick = {
+                                onAction(
+                                    CommunityAction.OnReactionClick(
+                                        id = post.id,
+                                        reaction = it,
+                                    ),
+                                )
+                            },
+                            scrapClick = {
+                                onAction(
+                                    CommunityAction.OnScrapClick(post.id),
                                 )
                             },
                         )
@@ -116,6 +153,10 @@ internal fun CommunityHomeScreen(
                 context.startActivity(navigator.navigateToWriteActivity(context))
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        onAction(CommunityAction.OnCommunityEnter)
     }
 }
 

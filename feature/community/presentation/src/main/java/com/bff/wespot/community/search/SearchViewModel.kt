@@ -5,6 +5,7 @@ import androidx.paging.map
 import com.bff.wespot.community.search.state.SearchAction
 import com.bff.wespot.community.search.state.SearchSideEffect
 import com.bff.wespot.community.search.state.SearchUiState
+import com.bff.wespot.community.uimodel.PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel
 import com.bff.wespot.community.uimodel.toUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
 import com.bff.wespot.ui.base.BaseViewModel
@@ -43,6 +44,13 @@ internal class SearchViewModel @Inject constructor(
             }
 
             is SearchAction.MonitorUserInput -> monitorUserInput()
+            is SearchAction.OnReactionClick -> {
+                onReactionClick(action.id, action.reaction)
+            }
+
+            is SearchAction.OnScrapClick -> {
+                onScrapClick(action.id)
+            }
         }
     }
 
@@ -76,6 +84,65 @@ internal class SearchViewModel @Inject constructor(
                             .map { it.map { content -> content.toUiModel() } },
                     )
                 }
+            }
+        }
+    }
+
+    private fun onReactionClick(postId: String, reaction: ReactionUiModel) = intent {
+        when (reaction) {
+            is ReactionUiModel.LikeUiModel -> {
+                val isCurrentlyLiked = state.likedPosts.contains(postId)
+                reduce {
+                    state.copy(
+                        likedPosts = if (isCurrentlyLiked) {
+                            state.likedPosts - postId
+                        } else {
+                            state.likedPosts + postId
+                        },
+                    )
+                }
+
+                val result = communityRepository.onLikeClicked(postId)
+                if (!result) {
+                    reduce {
+                        state.copy(
+                            likedPosts = if (isCurrentlyLiked) {
+                                state.likedPosts + postId
+                            } else {
+                                state.likedPosts - postId
+                            },
+                        )
+                    }
+                }
+            }
+
+            is ReactionUiModel.ChatUiModel -> {
+            }
+        }
+    }
+
+    private fun onScrapClick(postId: String) = intent {
+        val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+        reduce {
+            state.copy(
+                scrappedPosts = if (isCurrentlyScrapped) {
+                    state.scrappedPosts - postId
+                } else {
+                    state.scrappedPosts + postId
+                },
+            )
+        }
+
+        val result = communityRepository.onScrapClicked(postId)
+        if (!result) {
+            reduce {
+                state.copy(
+                    scrappedPosts = if (isCurrentlyScrapped) {
+                        state.scrappedPosts + postId
+                    } else {
+                        state.scrappedPosts - postId
+                    },
+                )
             }
         }
     }
