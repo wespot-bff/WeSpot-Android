@@ -54,7 +54,7 @@ data class PostDetailDto(
             @Serializable
             @SerialName("Images")
             data class ImagesContentDto(
-                val content: List<ImageTypeDto>,
+                val images: List<String>,
             ) : ContentSectionDto()
         }
 
@@ -89,7 +89,7 @@ data class PostDetailDto(
             @Serializable
             data class ScrapDto(
                 val icon: IconTypeDto,
-                val count: RichTextTypeDto,
+                val selected: Boolean,
             )
         }
     }
@@ -149,7 +149,7 @@ private fun PostDetailDto.PostDetailContentDto.ContentSectionDto.toDomain(): Pos
 
 private fun PostDetailDto.PostDetailContentDto.ContentSectionDto.ImagesContentDto.toDomain() =
     PostDetail.PostDetailContent.ContentSection.ImagesContent(
-        content = content.map { it.toDomain() }
+        content = images
     )
 
 private fun PostDetailDto.PostDetailContentDto.FooterSectionDto.toDomain() =
@@ -180,6 +180,6 @@ private fun PostDetailDto.PostDetailContentDto.FooterSectionDto.ReactionDto.toDo
 private fun PostDetailDto.PostDetailContentDto.FooterSectionDto.ScrapDto.toDomain(): PostDetail.PostDetailContent.FooterSection.Scrap {
     return PostDetail.PostDetailContent.FooterSection.Scrap(
         icon = icon.toDomain(),
-        count = count.toDomain(),
+        selected = selected,
     )
 }

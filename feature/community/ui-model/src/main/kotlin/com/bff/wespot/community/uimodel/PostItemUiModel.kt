@@ -2,7 +2,6 @@ package com.bff.wespot.community.uimodel
 
 import com.bff.wespot.model.community.PostItems
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostItemUiModel(
@@ -37,7 +36,11 @@ data class PostItemUiModel(
 
         sealed interface ContentSectionUiModel {
             data class ImagesSectionUiModel(
-                val images: List<ImageType>,
+                val images: List<String>,
+            ) : ContentSectionUiModel
+
+            data class SingleImageUiModel(
+                val image: String,
             ) : ContentSectionUiModel
 
             data object EmptySectionUiModel : ContentSectionUiModel
@@ -112,9 +115,15 @@ private fun PostItems.PostContent.InfoSection.toUiModel() =
 private fun PostItems.PostContent.ContentSection.toUiModel() =
     when (this) {
         is PostItems.PostContent.ContentSection.ImagesSection -> {
-            PostItemUiModel.PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel(
-                images = images,
-            )
+            if (images.size == 1) {
+                PostItemUiModel.PostContentUiModel.ContentSectionUiModel.SingleImageUiModel(
+                    image = images.first(),
+                )
+            } else {
+                PostItemUiModel.PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel(
+                    images = images,
+                )
+            }
         }
 
         PostItems.PostContent.ContentSection.EmptySection -> {

@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,13 +34,14 @@ import coil.compose.AsyncImage
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel.PostContentUiModel
+import com.bff.wespot.designsystem.theme.Gray300
+import com.bff.wespot.designsystem.theme.Primary300
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
@@ -47,6 +50,8 @@ import com.bff.wespot.ui.util.clickableSingle
 @Composable
 internal fun PostContentUiModel.Item(
     navigateToPost: () -> Unit,
+    reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
+    scrapClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier.clickableSingle {
@@ -69,7 +74,10 @@ internal fun PostContentUiModel.Item(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        footerSection.Item()
+        footerSection.Item(
+            scrapClick = scrapClick,
+            reactionClick = reactionClick,
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
     }
@@ -155,16 +163,14 @@ private fun PostContentUiModel.ContentSectionUiModel.Item() {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .width(it.width.dp)
-                            .height(it.height.dp)
                             .background(White, RoundedCornerShape(8.dp)),
                     ) {
                         AsyncImage(
-                            model = it.url,
+                            model = it,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .width(it.width.dp)
-                                .height(it.height.dp),
+                                .widthIn(min = 200.dp, max = 226.dp)
+                                .heightIn(min = 226.dp, max = 266.dp),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                         )
@@ -173,13 +179,28 @@ private fun PostContentUiModel.ContentSectionUiModel.Item() {
             }
         }
 
+        is PostContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
+            AsyncImage(
+                model = image,
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .fillMaxWidth()
+                    .heightIn(min = 155.dp, max = 718.dp),
+                contentScale = ContentScale.Crop,
+            )
+        }
+
         is PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel -> {}
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun PostContentUiModel.FooterSectionUiModel.Item() {
+private fun PostContentUiModel.FooterSectionUiModel.Item(
+    reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
+    scrapClick: () -> Unit,
+) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -192,8 +213,22 @@ private fun PostContentUiModel.FooterSectionUiModel.Item() {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickableSingle {
+                        reactionClick.invoke(it)
+                    },
                 ) {
-                    it.icon.Icon(modifier = Modifier.size(14.dp))
+                    AsyncImage(
+                        model = it.icon.url,
+                        modifier = Modifier.size(14.dp),
+                        colorFilter = ColorFilter.tint(
+                            color = if (it.selected) {
+                                Primary300
+                            } else {
+                                Gray300
+                            },
+                        ),
+                        contentDescription = null,
+                    )
 
                     it.count.Text(StaticTypeScale.Default.badge)
                 }
@@ -202,9 +237,21 @@ private fun PostContentUiModel.FooterSectionUiModel.Item() {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickableSingle {
+                scrapClick.invoke()
+            },
         ) {
-            scrap.icon.Icon(
+            AsyncImage(
+                model = scrap.icon.url,
                 modifier = Modifier.size(14.dp),
+                colorFilter = ColorFilter.tint(
+                    color = if (scrap.selected) {
+                        Primary300
+                    } else {
+                        Gray300
+                    },
+                ),
+                contentDescription = null,
             )
 
             Text(
@@ -265,16 +312,8 @@ private object PostItemPreviewData {
             ),
             contentSection = PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel(
                 images = listOf(
-                    ImageType(
-                        url = "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-                        width = 300,
-                        height = 150,
-                    ),
-                    ImageType(
-                        url = "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-                        width = 300,
-                        height = 150,
-                    ),
+                    "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+                    "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
                 ),
             ),
             footerSection = PostContentUiModel.FooterSectionUiModel(
@@ -406,7 +445,7 @@ private object PostItemPreviewData {
 private fun PostItemPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItem.content.Item({})
+            PostItemPreviewData.samplePostItem.content.Item({}, {}, {})
         }
     }
 }
@@ -416,7 +455,7 @@ private fun PostItemPreview() {
 private fun PostItemEmptyPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItemEmpty.content.Item({})
+            PostItemPreviewData.samplePostItemEmpty.content.Item({}, {}, {})
         }
     }
 }
