@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.flow
 data class SearchUiState(
     val searches: Flow<PagingData<BaseCommunityContentUiModel>> = flow { },
     val keyword: String = "",
+    val likedPosts: Set<String> = emptySet(),
+    val scrappedPosts: Set<String> = emptySet(),
 )

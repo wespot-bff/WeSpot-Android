@@ -20,4 +20,5 @@
     <string name="write_post_warning_ok">네</string>
     <string name="write_post_warning_no">아니요</string>
     <string name="write_post_description_warning">1200자 이내로 입력해 주세요</string>
+    <string name="post_detail_comment_placeholder">익명으로 자유롭게 의견을 나눠보세요</string>
 </resources>

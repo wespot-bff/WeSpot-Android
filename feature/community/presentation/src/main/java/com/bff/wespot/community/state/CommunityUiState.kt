@@ -10,4 +10,6 @@ data class CommunityUiState(
     val filterChips: List<BaseChipUiModel> = emptyList(),
     val selectedChipId: String = "",
     val posts: Flow<PagingData<BaseCommunityContentUiModel>> = flow { },
+    val likedPosts: Set<String> = emptySet(),
+    val scrappedPosts: Set<String> = emptySet(),
 )

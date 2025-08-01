@@ -58,12 +58,42 @@ internal fun SearchScreen(
             ) {
                 when (val post = pagingData[it]) {
                     is PostItemUiModel -> {
-                        post.content.Item(
+                        val updatedContent = post.content.copy(
+                            footerSection = post.content.footerSection.copy(
+                                reactions = post.content.footerSection.reactions.map { reaction ->
+                                    when (reaction) {
+                                        is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
+                                            reaction.copy(selected = state.likedPosts.contains(post.id))
+                                        }
+                                        else -> reaction
+                                    }
+                                },
+                                scrap = post.content.footerSection.scrap.copy(
+                                    selected = state.scrappedPosts.contains(post.id),
+                                ),
+                            ),
+                        )
+
+                        updatedContent.Item(
                             navigateToPost = {
                                 action(SearchAction.NavigateToDetail(post.id))
                             },
+                            reactionClick = {
+                                action(
+                                    SearchAction.OnReactionClick(
+                                        id = post.id,
+                                        reaction = it,
+                                    ),
+                                )
+                            },
+                            scrapClick = {
+                                action(
+                                    SearchAction.OnScrapClick(post.id),
+                                )
+                            },
                         )
                     }
+
                     else -> {
                         // 지원할 필요 없음
                     }
