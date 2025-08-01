@@ -47,4 +47,32 @@ class CommunityDataSourceImpl @Inject constructor(
                 cursorId?.let { parameter("cursorId", it) }
             }
         }
+
+    override suspend fun getCommunityPostsByType(
+        menuType: String,
+        cursorId: Int?
+    ): Result<CommunityContentPagingDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/post/${menuType.lowercase()}")
+                cursorId?.let { parameter("cursorId", it) }
+            }
+        }
+
+    override suspend fun onLikeClicked(postId: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Patch
+                path("api/1/post/${postId}/like")
+            }
+        }
+
+    override suspend fun onScrapClicked(postId: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Patch
+                path("api/v1/post/${postId}/scrap")
+            }
+        }
 }

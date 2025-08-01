@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -12,20 +14,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.community.all.screen.AllPostsScreen
 import com.bff.wespot.community.all.screen.CommunityAllScreen
-import com.bff.wespot.community.all.screen.MyCommentsScreen
-import com.bff.wespot.community.all.screen.ScrapsScreen
+import com.bff.wespot.community.all.state.CommunityAllSideEffect
+import com.bff.wespot.community.all.state.MenuType
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
-import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -58,43 +59,51 @@ class CommunityAllActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "community_all_menu",
                         modifier = Modifier.padding(paddingValues),
+                        enterTransition = { fadeIn() },
+                        exitTransition = { fadeOut() },
                     ) {
                         composable("community_all_menu") {
-                            val communityAllViewModel: CommunityAllViewModel = hiltViewModel()
-                            val uiState by communityAllViewModel.collectAsState()
-
                             CommunityAllScreen(
                                 onNavigateToAllPosts = {
+                                    navController.navigate("all_posts/${MenuType.Written.name}")
                                     title = getString(R.string.all_post_written)
-                                    navController.navigate("all_posts")
                                 },
                                 onNavigateToMyComments = {
+                                    navController.navigate("all_posts/${MenuType.Commented.name}")
                                     title = getString(R.string.all_comment_written)
-                                    navController.navigate("my_comments")
                                 },
                                 onNavigateToScraps = {
+                                    navController.navigate("all_posts/${MenuType.Scrapped.name}")
                                     title = getString(R.string.all_post_scraped)
-                                    navController.navigate("scraps")
                                 },
                             )
                         }
 
-                        composable("all_posts") {
+                        composable("all_posts/{menuType}") { backStackEntry ->
+                            val menuType = MenuType.valueOf(
+                                backStackEntry.arguments?.getString("menuType")
+                                    ?: MenuType.Written.name,
+                            )
+
                             AllPostsScreen(
-                                navigateUp = navController::navigateUp,
+                                menuType = menuType,
+                                viewModel = viewModel,
                             )
                         }
+                    }
 
-                        composable("my_comments") {
-                            MyCommentsScreen(
-                                navigateUp = navController::navigateUp,
-                            )
-                        }
+                    viewModel.collectSideEffect {
+                        when (it) {
+                            is CommunityAllSideEffect.NavigateUp -> {
+                                navController.navigateUp()
+                            }
 
-                        composable("scraps") {
-                            ScrapsScreen(
-                                navigateUp = navController::navigateUp,
-                            )
+                            is CommunityAllSideEffect.NavigateToDetail -> {
+                                navigator.navigateToPostDetailActivity(
+                                    this@CommunityAllActivity,
+                                    it.id,
+                                )
+                            }
                         }
                     }
                 }
