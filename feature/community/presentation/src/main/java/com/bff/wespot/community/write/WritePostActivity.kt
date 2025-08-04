@@ -18,7 +18,6 @@ class WritePostActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val uiState by viewModel.collectAsState()
             val onAction = viewModel::onAction

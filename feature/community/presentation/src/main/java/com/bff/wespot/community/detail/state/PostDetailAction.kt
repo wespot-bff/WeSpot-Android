@@ -11,4 +11,5 @@ sealed interface PostDetailAction {
     data class OnCommentSend(val content: String) : PostDetailAction
     data class OnCommentLike(val commentId: String) : PostDetailAction
     data class OnCommentReport(val commentId: String) : PostDetailAction
+    data object OnEditPost : PostDetailAction
 }

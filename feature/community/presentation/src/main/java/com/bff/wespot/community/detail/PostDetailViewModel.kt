@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -127,33 +128,41 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCommentLike -> {
-                    val isCurrentlyLiked = state.likedComments.contains(action.commentId)
-                    reduce {
-                        state.copy(
-                            likedComments = if (isCurrentlyLiked) {
-                                state.likedComments - action.commentId
-                            } else {
-                                state.likedComments + action.commentId
-                            },
+                    val commentIndex = state.comments.indexOfFirst { it.id == action.commentId }
+                    if (commentIndex != -1) {
+                        val comment = state.comments[commentIndex]
+                        val updatedComment = comment.copy(
+                            pushedLike = !comment.pushedLike,
+                            likeCount = if (comment.pushedLike) comment.likeCount - 1 else comment.likeCount + 1,
                         )
-                    }
 
-                    val result = postDetailRepository.likeComment(action.commentId)
-                    if (!result) {
                         reduce {
                             state.copy(
-                                likedComments = if (isCurrentlyLiked) {
-                                    state.likedComments + action.commentId
-                                } else {
-                                    state.likedComments - action.commentId
+                                comments = state.comments.toMutableList().apply {
+                                    set(commentIndex, updatedComment)
                                 },
                             )
+                        }
+
+                        val result = postDetailRepository.likeComment(action.commentId)
+                        if (!result) {
+                            reduce {
+                                state.copy(
+                                    comments = state.comments.toMutableList().apply {
+                                        set(commentIndex, comment)
+                                    },
+                                )
+                            }
                         }
                     }
                 }
 
                 is PostDetailAction.OnCommentReport -> {
                     postDetailRepository.reportComment(action.commentId)
+                }
+
+                is PostDetailAction.OnEditPost -> {
+                    postSideEffect(PostDetailSideEffect.NavigateToEditPost(state.detail.content))
                 }
 
                 else -> {}
