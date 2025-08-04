@@ -15,5 +15,5 @@ fun BaseCommunityContent.toUiModel() = when (this) {
     is VoteItem -> this.toUiModel()
     is BannerItem -> this.toUiModel()
     is HotPostItem -> this.toUiModel()
-    else -> UnKnownUiModel(id)
+    else -> UnknownUiModel(id)
 }

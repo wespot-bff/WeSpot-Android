@@ -1,5 +1,5 @@
 package com.bff.wespot.community.uimodel
 
-data class UnKnownUiModel(
+data class UnknownUiModel(
     override val id: String,
 ) : BaseCommunityContentUiModel
