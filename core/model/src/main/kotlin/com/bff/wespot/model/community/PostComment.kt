@@ -8,4 +8,6 @@ data class PostComment(
     val message: String,
     val createdAt: String,
     val likeCount: Int,
+    val pushedLike: Boolean,
+    val isReported: Boolean,
 )

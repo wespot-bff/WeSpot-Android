@@ -105,7 +105,9 @@ internal fun PostDetailScreen(
                     Icon(
                         painter = rememberAsyncImagePainter(R.drawable.horizontal_3dot),
                         contentDescription = null,
-                        modifier = Modifier.padding(end = 16.dp),
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickableSingle { onAction(PostDetailAction.OnEditPost) },
                     )
                 },
             )
@@ -161,9 +163,11 @@ internal fun PostDetailScreen(
             }
 
             items(uiState.comments) { comment ->
+                Spacer(modifier = Modifier.height(24.dp))
+
                 comment.Item(
                     onAction = onAction,
-                    isLiked = uiState.likedComments.contains(comment.id),
+                    isLiked = comment.pushedLike,
                 )
                 if (comment != uiState.comments.last()) {
                     Spacer(modifier = Modifier.height(20.dp))
@@ -339,15 +343,19 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val updatedReaction = when (reaction) {
-                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                            reaction.copy(selected = isSelected)
-                        }
-
-                        else -> reaction
-                    }
-                    updatedReaction.icon.Icon(modifier = Modifier.size(18.dp))
-                    updatedReaction.count.Text(StaticTypeScale.Default.body6)
+                    AsyncImage(
+                        model = reaction.icon.url,
+                        modifier = Modifier.size(18.dp),
+                        colorFilter = ColorFilter.tint(
+                            if (isSelected) {
+                                Primary300
+                            } else {
+                                Gray300
+                            },
+                        ),
+                        contentDescription = null,
+                    )
+                    reaction.count.Text(StaticTypeScale.Default.body6)
                 }
             }
         }
@@ -357,8 +365,18 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val updatedScrap = scrap.copy(selected = isScrapped)
-            updatedScrap.icon.Icon(modifier = Modifier.size(18.dp))
+            AsyncImage(
+                model = scrap.icon.url,
+                modifier = Modifier.size(18.dp),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(
+                    if (isScrapped) {
+                        Primary300
+                    } else {
+                        Gray300
+                    },
+                ),
+            )
             Text(
                 text = stringResource(R.string.post_scrap),
                 style = StaticTypeScale.Default.body7,
@@ -454,7 +472,13 @@ private fun PostCommentUiModel.Item(
                         text = likeCount.toString(),
                         style = StaticTypeScale.Default.body9,
                         color = if (isLiked) Primary300 else Gray400,
-                        modifier = Modifier.clickableSingle { onAction(PostDetailAction.OnCommentLike(id)) },
+                        modifier = Modifier.clickableSingle {
+                            onAction(
+                                PostDetailAction.OnCommentLike(
+                                    id,
+                                ),
+                            )
+                        },
                     )
 
                     Text(
@@ -474,7 +498,13 @@ private fun PostCommentUiModel.Item(
                             text = stringResource(R.string.postdetail_report),
                             style = StaticTypeScale.Default.body9,
                             color = Gray400,
-                            modifier = Modifier.clickableSingle { onAction(PostDetailAction.OnCommentReport(id)) },
+                            modifier = Modifier.clickableSingle {
+                                onAction(
+                                    PostDetailAction.OnCommentReport(
+                                        id,
+                                    ),
+                                )
+                            },
                         )
                     }
                 }
@@ -652,6 +682,8 @@ private fun PostDetailScreenPreview() {
             message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
             createdAt = "2024년 1월 15일 15:00",
             likeCount = 5,
+            pushedLike = false,
+            isReported = false,
         ),
         PostCommentUiModel(
             id = "comment_2",
@@ -661,6 +693,8 @@ private fun PostDetailScreenPreview() {
             message = "정말 유용한 정보네요! React 18의 Concurrent Features에 대해 잘 이해하게 되었습니다.",
             createdAt = "2024년 1월 15일 15:00",
             likeCount = 5,
+            pushedLike = true,
+            isReported = true,
         ),
     )
     WeSpotTheme {

@@ -10,6 +10,8 @@ data class PostCommentUiModel(
     val message: String,
     val createdAt: String,
     val likeCount: Int,
+    val pushedLike: Boolean,
+    val isReported: Boolean,
 ) {
     companion object {
         fun PostComment.toUiModel() = PostCommentUiModel(
@@ -20,6 +22,8 @@ data class PostCommentUiModel(
             message = message,
             createdAt = createdAt,
             likeCount = likeCount,
+            pushedLike = pushedLike,
+            isReported = isReported,
         )
     }
 }

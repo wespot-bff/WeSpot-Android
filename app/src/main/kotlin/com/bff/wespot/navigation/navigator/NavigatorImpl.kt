@@ -205,6 +205,22 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
+    override fun navigateToEditPostActivity(
+        context: Context,
+        title: String,
+        description: String,
+        category: String,
+        images: List<String>,
+    ): Intent {
+        val intent = context.buildIntent<WritePostActivity>()
+        intent.putExtra("isEditing", true)
+        intent.putExtra("title", title)
+        intent.putExtra("description", description)
+        intent.putExtra("category", category)
+        intent.putStringArrayListExtra("images", ArrayList(images))
+        return intent
+    }
+
     override fun navigateToPostDetailActivity(context: Context, postId: String): Intent {
         val intent = context.buildIntent<PostDetailActivity>()
         intent.putExtra("postId", postId)

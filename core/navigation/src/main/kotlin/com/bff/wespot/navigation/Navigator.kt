@@ -43,6 +43,14 @@ interface Navigator {
 
     fun navigateToWriteActivity(context: Context): Intent
 
+    fun navigateToEditPostActivity(
+        context: Context,
+        title: String,
+        description: String,
+        category: String,
+        images: List<String>
+    ): Intent
+
     fun navigateToPostDetailActivity(context: Context, postId: String): Intent
 
     fun navigateToCommunitySearch(context: Context): Intent

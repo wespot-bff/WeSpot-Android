@@ -3,11 +3,13 @@ package com.bff.wespot.community.write
 import androidx.lifecycle.viewModelScope
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.community.write.state.WritePostAction
+import com.bff.wespot.community.write.state.WritePostParams
 import com.bff.wespot.community.write.state.WritePostSideEffect
 import com.bff.wespot.community.write.state.WritePostUiState
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.community.WritePostRepository
 import com.bff.wespot.model.community.PostInfo
+import com.bff.wespot.model.community.chip.CategoryItem
 import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
@@ -24,6 +26,7 @@ import javax.inject.Inject
 internal class WritePostViewModel @Inject constructor(
     private val writePostRepository: WritePostRepository,
     private val commonRepository: CommonRepository,
+    private val params: WritePostParams,
 ) : BaseViewModel(), ContainerHost<WritePostUiState, WritePostSideEffect> {
     override val container = container<WritePostUiState, WritePostSideEffect>(
         WritePostUiState(),
@@ -35,11 +38,25 @@ internal class WritePostViewModel @Inject constructor(
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
-                .onSuccess {
+                .onSuccess { categories ->
                     reduce {
-                        state.copy(
-                            categories = it,
-                        )
+                        val updatedState = state.copy(categories = categories)
+
+                        if (params.isEditing) {
+                            val selectedCategory = categories
+                                .flatMap { it.chips }
+                                .find { it.text == params.category }
+                                ?: CategoryItem.EMPTY
+
+                            updatedState.copy(
+                                title = params.title,
+                                description = params.description,
+                                images = params.images,
+                                selectedCategory = selectedCategory,
+                            )
+                        } else {
+                            updatedState
+                        }
                     }
                 }
         }
