@@ -57,9 +57,13 @@ internal fun HotPostContentUiModel.Item() {
                         modifier = Modifier.padding(16.dp),
                     ) {
                         it.headerSection.Item()
+
                         Spacer(modifier = Modifier.height(8.dp))
+
                         it.infoSection.Item()
+
                         Spacer(modifier = Modifier.height(12.dp))
+
                         it.createdAt.Text(StaticTypeScale.Default.body11)
                     }
                 }
