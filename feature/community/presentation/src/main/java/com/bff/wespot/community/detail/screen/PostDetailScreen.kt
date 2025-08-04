@@ -392,7 +392,9 @@ private fun PostCommentUiModel.Item(
     isLiked: Boolean = false,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         horizontalAlignment = if (isMe) {
             Alignment.End
         } else {
@@ -621,8 +623,8 @@ private object PostDetailPreviewData {
                 ),
                 description = RichTextType(
                     text = "React 18에서 도입된 Concurrent Features는 사용자 경험을 크게 개선할 수 있는 강력한 기능들입니다. " +
-                        "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
-                        "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
+                            "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
+                            "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
                     color = ColorType.Token("white"),
                     typography = "body6",
                 ),
