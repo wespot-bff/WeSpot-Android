@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
@@ -42,6 +41,7 @@ import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.ui.component.ProfileCircleImage
 
 @Composable
 internal fun PostContentUiModel.Item() {
@@ -75,20 +75,11 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item() {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(White, CircleShape),
-            ) {
-                AsyncImage(
-                    model = profileImage,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                )
-            }
+            ProfileCircleImage(
+                size = 36.dp,
+                imageUrl = profileImage,
+                contentDescription = "",
+            )
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),

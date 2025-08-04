@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.chip.BaseChipUiModel
 import com.bff.wespot.community.uimodel.chip.FilterChipUiModel
+import com.bff.wespot.designsystem.theme.Gray900
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -99,8 +100,8 @@ internal fun FilterChip(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0x00000000),
-                            Color(0xFF1B1C1E),
+                            Color.Black,
+                            Gray900,
                         ),
                         startX = 0f,
                         endX = 100f,

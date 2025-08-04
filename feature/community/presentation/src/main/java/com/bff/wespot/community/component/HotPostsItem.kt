@@ -11,21 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.bff.wespot.community.uimodel.HotPostItemUiModel
 import com.bff.wespot.community.uimodel.HotPostItemUiModel.HotPostContentUiModel
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
-import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.GradationType
 import com.bff.wespot.model.serverDriven.type.IconType
@@ -34,6 +30,7 @@ import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
 import com.bff.wespot.server.driven.type.toBrush
+import com.bff.wespot.ui.component.ProfileCircleImage
 
 @Composable
 internal fun HotPostContentUiModel.Item() {
@@ -76,19 +73,11 @@ private fun HotPostContentUiModel.PostUiModel.HeaderSectionUiModel.Item() {
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(24.dp)
-                .background(White, CircleShape),
-        ) {
-            AsyncImage(
-                model = profileImage.url,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-            )
-        }
-
+        ProfileCircleImage(
+            size = 24.dp,
+            imageUrl = profileImage.url,
+            contentDescription = "",
+        )
         nickname.Text(StaticTypeScale.Default.badge)
     }
 }
