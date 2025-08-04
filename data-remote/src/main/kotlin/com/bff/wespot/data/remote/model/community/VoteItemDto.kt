@@ -4,6 +4,7 @@ import com.bff.wespot.data.remote.model.serverDriven.type.ColorTypeDto
 import com.bff.wespot.data.remote.model.serverDriven.type.IconTypeDto
 import com.bff.wespot.data.remote.model.serverDriven.type.RichTextTypeDto
 import com.bff.wespot.model.community.VoteItem
+import com.bff.wespot.model.serverDriven.type.GradationType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -63,7 +64,7 @@ private fun VoteContentDto.ActionIconDto.toDomain() = VoteItem.VoteContent.Actio
     icon = icon.toDomain()
 )
 
-private fun VoteContentDto.GradationDto.toDomain() = VoteItem.VoteContent.Gradation(
+private fun VoteContentDto.GradationDto.toDomain() = GradationType(
     startColor = startColor.toDomain(),
     endColor = endColor.toDomain(),
     angle = angle

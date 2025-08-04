@@ -7,14 +7,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class ColorTypeDto {
     @Serializable
-    @SerialName("hex")
+    @SerialName("Hex")
     data class HexTypeDto(
+        @SerialName("value")
         val hexCode: String
     ) : ColorTypeDto()
 
     @Serializable
-    @SerialName("token")
+    @SerialName("Token")
     data class TokenTypeDto(
+        @SerialName("value")
         val token: String
     ) : ColorTypeDto()
 

@@ -2,6 +2,7 @@ package com.bff.wespot.community.uimodel
 
 import com.bff.wespot.model.community.VoteItem
 import com.bff.wespot.model.serverDriven.type.ColorType
+import com.bff.wespot.model.serverDriven.type.GradationType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
@@ -13,7 +14,7 @@ data class VoteItemUiModel(
         val badge: BadgeUiModel,
         val text: RichTextType,
         val actionIcon: ActionIconUiModel,
-        val gradation: GradationUiModel,
+        val gradation: GradationType,
     ) {
         data class BadgeUiModel(
             val backgroundColor: ColorType,
@@ -23,12 +24,6 @@ data class VoteItemUiModel(
         data class ActionIconUiModel(
             val backgroundColor: ColorType,
             val icon: IconType,
-        )
-
-        data class GradationUiModel(
-            val startColor: ColorType,
-            val endColor: ColorType,
-            val angle: Int,
         )
     }
 }
@@ -42,7 +37,7 @@ private fun VoteItem.VoteContent.toUiModel() = VoteItemUiModel.VoteContentUiMode
     badge = badge.toUiModel(),
     text = text,
     actionIcon = actionIcon.toUiModel(),
-    gradation = gradation.toUiModel(),
+    gradation = gradation,
 )
 
 private fun VoteItem.VoteContent.Badge.toUiModel() =
@@ -55,11 +50,4 @@ private fun VoteItem.VoteContent.ActionIcon.toUiModel() =
     VoteItemUiModel.VoteContentUiModel.ActionIconUiModel(
         backgroundColor = backgroundColor,
         icon = icon,
-    )
-
-private fun VoteItem.VoteContent.Gradation.toUiModel() =
-    VoteItemUiModel.VoteContentUiModel.GradationUiModel(
-        startColor = startColor,
-        endColor = endColor,
-        angle = angle,
     )
