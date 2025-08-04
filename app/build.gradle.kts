@@ -71,7 +71,8 @@ dependencies {
     implementation(project(":feature:entire"))
     implementation(project(":feature:notification"))
     implementation(project(":feature:server-driven"))
-    implementation(project(":feature:community"))
+    implementation(project(":feature:community:ui-model"))
+    implementation(project(":feature:community:presentation"))
 
     implementation(libs.splash.screen)
     implementation(platform(libs.firebase.bom))
