@@ -12,4 +12,5 @@ data class CommunityUiState(
     val posts: Flow<PagingData<BaseCommunityContentUiModel>> = flow { },
     val likedPosts: Set<String> = emptySet(),
     val scrappedPosts: Set<String> = emptySet(),
+    val isRefreshing: Boolean = false,
 )

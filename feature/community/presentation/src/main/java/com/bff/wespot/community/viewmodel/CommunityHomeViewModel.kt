@@ -7,12 +7,14 @@ import com.bff.wespot.community.state.CommunityAction
 import com.bff.wespot.community.state.CommunitySideEffect
 import com.bff.wespot.community.state.CommunityUiState
 import com.bff.wespot.community.uimodel.PostItemUiModel
+import com.bff.wespot.community.uimodel.chip.FilterChipUiModel
 import com.bff.wespot.community.uimodel.chip.toUiModel
 import com.bff.wespot.community.uimodel.toUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -70,6 +72,10 @@ class CommunityHomeViewModel @Inject constructor(
 
             is CommunityAction.OnScrapClick -> {
                 onScrapClick(action.id)
+            }
+
+            is CommunityAction.OnRefresh -> {
+                refreshPosts()
             }
         }
     }
@@ -148,6 +154,33 @@ class CommunityHomeViewModel @Inject constructor(
                     },
                 )
             }
+        }
+    }
+
+    private fun refreshPosts() = intent {
+        reduce { state.copy(isRefreshing = true) }
+
+        val selectedChip = state.filterChips.find { it.id == state.selectedChipId }
+        val target = when (selectedChip) {
+            is FilterChipUiModel -> selectedChip.target
+            else -> ""
+        }
+
+        val paging = communityRepository.getCommunityContentStream(target, 10)
+            .map {
+                it.map { content ->
+                    content.toUiModel()
+                }
+            }
+
+        reduce {
+            state.copy(posts = paging)
+        }
+
+        delay(500)
+
+        reduce {
+            state.copy(isRefreshing = false)
         }
     }
 }
