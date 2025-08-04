@@ -62,7 +62,7 @@ class PostDetailDataSourceImpl @Inject constructor(
     override suspend fun likeComment(commentId: String): Result<Unit> =
         httpClient.safeRequest {
             url {
-                method = HttpMethod.Patch
+                method = HttpMethod.Post
                 path("api/v1/post/comment/${commentId}/like")
             }
         }

@@ -63,15 +63,15 @@ class CommunityDataSourceImpl @Inject constructor(
     override suspend fun onLikeClicked(postId: String): Result<Unit> =
         httpClient.safeRequest {
             url {
-                method = HttpMethod.Patch
-                path("api/1/post/${postId}/like")
+                method = HttpMethod.Post
+                path("api/v1/post/${postId}/like")
             }
         }
 
     override suspend fun onScrapClicked(postId: String): Result<Unit> =
         httpClient.safeRequest {
             url {
-                method = HttpMethod.Patch
+                method = HttpMethod.Post
                 path("api/v1/post/${postId}/scrap")
             }
         }
