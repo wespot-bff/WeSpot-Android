@@ -46,6 +46,7 @@ internal fun FilterChip(
     filterChips: List<BaseChipUiModel>,
     onChipClicked: (id: String, target: String) -> Unit,
     onMoreClicked: () -> Unit,
+    onSameChipClicked: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         LazyRow(
@@ -68,7 +69,11 @@ internal fun FilterChip(
                                     shape = RoundedCornerShape(80.dp),
                                 )
                                 .clickableSingle {
-                                    onChipClicked(it.id, it.target)
+                                    if (selected) {
+                                        onSameChipClicked.invoke()
+                                    } else {
+                                        onChipClicked(it.id, it.target)
+                                    }
                                 },
                         ) {
                             it.icon.Icon()
@@ -226,6 +231,7 @@ private fun FilterChipDefaultPreview() {
                 filterChips = FilterChipPreviewData.sampleFilterChips,
                 onChipClicked = { _, _ -> },
                 onMoreClicked = { },
+                onSameChipClicked = {},
             )
         }
     }
@@ -243,6 +249,7 @@ private fun FilterChipSelectedPreview() {
                 filterChips = FilterChipPreviewData.sampleFilterChips,
                 onChipClicked = { _, _ -> },
                 onMoreClicked = { },
+                onSameChipClicked = {},
             )
         }
     }
@@ -258,6 +265,7 @@ private fun FilterChipWithPaddingPreview() {
                 filterChips = FilterChipPreviewData.sampleFilterChips,
                 onChipClicked = { _, _ -> },
                 onMoreClicked = { },
+                onSameChipClicked = {},
             )
         }
     }
