@@ -181,7 +181,12 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCategoryClick -> {
-                    postSideEffect(PostDetailSideEffect.OnCategoryClick(action.target))
+                    postSideEffect(
+                        PostDetailSideEffect.OnCategoryClick(
+                            action.target,
+                            action.categoryText,
+                        ),
+                    )
                 }
 
                 PostDetailAction.OnBackClick -> {

@@ -41,7 +41,12 @@ class CommunityAllViewModel @Inject constructor(
             }
 
             is CommunityAllAction.NavigateToCategory -> {
-                postSideEffect(CommunityAllSideEffect.NavigateToCategory(action.categoryId))
+                postSideEffect(
+                    CommunityAllSideEffect.NavigateToCategory(
+                        action.categoryId,
+                        action.categoryText,
+                    ),
+                )
             }
 
             is CommunityAllAction.OnScrapClick -> {

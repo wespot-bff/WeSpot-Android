@@ -51,9 +51,15 @@ internal class SearchViewModel @Inject constructor(
             is SearchAction.OnScrapClick -> {
                 onScrapClick(action.id)
             }
+
             is SearchAction.NavigateToCategory -> {
                 intent {
-                    postSideEffect(SearchSideEffect.NavigateToSearch(action.categoryId))
+                    postSideEffect(
+                        SearchSideEffect.NavigateToCategory(
+                            action.categoryId,
+                            action.categoryText,
+                        ),
+                    )
                 }
             }
         }

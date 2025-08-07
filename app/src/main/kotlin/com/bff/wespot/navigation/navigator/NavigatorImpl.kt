@@ -240,9 +240,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return context.buildIntent<CommunityAllActivity>()
     }
 
-    override fun navigateToCategoryDetail(context: Context, categoryId: String): Intent {
+    override fun navigateToCategoryDetail(context: Context, categoryId: String, categoryText: String): Intent {
         val intent = context.buildIntent<CategoryDetailActivity>()
         intent.putExtra("categoryId", categoryId)
+        intent.putExtra("categoryText", categoryText)
         return intent
     }
 }

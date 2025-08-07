@@ -72,6 +72,7 @@ class PostDetailActivity : ComponentActivity() {
                         val intent = navigator.navigateToCategoryDetail(
                             this@PostDetailActivity,
                             sideEffect.target,
+                            sideEffect.categoryText,
                         )
 
                         startActivity(intent)

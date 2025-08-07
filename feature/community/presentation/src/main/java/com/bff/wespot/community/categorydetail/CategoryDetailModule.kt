@@ -13,6 +13,7 @@ object CategoryDetailModule {
     @Provides
     fun provideCategoryParams(savedStateHandle: SavedStateHandle): CategoryDetailParams {
         val categoryId = savedStateHandle.get<String>("categoryId") ?: ""
-        return CategoryDetailParams(categoryId = categoryId)
+        val categoryText = savedStateHandle.get<String>("categoryText") ?: ""
+        return CategoryDetailParams(categoryId = categoryId, categoryText = categoryText)
     }
 }

@@ -1,6 +1,7 @@
 package com.bff.wespot.community.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +41,7 @@ internal fun SearchScreen(
             modifier = Modifier
                 .padding(it)
                 .padding(start = 20.dp, end = 20.dp, top = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             stickyHeader {
                 WsTextField(
@@ -65,6 +67,7 @@ internal fun SearchScreen(
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
                                             reaction.copy(selected = state.likedPosts.contains(post.id))
                                         }
+
                                         else -> reaction
                                     }
                                 },
@@ -86,8 +89,8 @@ internal fun SearchScreen(
                                     ),
                                 )
                             },
-                            navigateToCategory = { categoryId ->
-                                action(SearchAction.NavigateToCategory(categoryId))
+                            navigateToCategory = { categoryId, categoryText ->
+                                action(SearchAction.NavigateToCategory(categoryId, categoryText))
                             },
                             scrapClick = {
                                 action(

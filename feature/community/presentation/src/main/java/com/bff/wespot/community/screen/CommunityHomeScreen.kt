@@ -149,10 +149,11 @@ internal fun CommunityHomeScreen(
                                             ),
                                         )
                                     },
-                                    navigateToCategory = { categoryId ->
+                                    navigateToCategory = { categoryId, categoryText ->
                                         val intent = navigator.navigateToCategoryDetail(
                                             context = context,
                                             categoryId = categoryId,
+                                            categoryText = categoryText,
                                         )
                                         context.startActivity(intent)
                                     },

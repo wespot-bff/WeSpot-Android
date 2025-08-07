@@ -47,10 +47,11 @@ class SearchActivity : ComponentActivity() {
                         startActivity(intent)
                     }
 
-                    is SearchSideEffect.NavigateToSearch -> {
+                    is SearchSideEffect.NavigateToCategory -> {
                         val intent = navigator.navigateToCategoryDetail(
                             context = this@SearchActivity,
                             categoryId = it.categoryId,
+                            categoryText = it.categoryText,
                         )
                         startActivity(intent)
                     }

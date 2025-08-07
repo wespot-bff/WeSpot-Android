@@ -15,5 +15,6 @@ sealed interface SearchAction {
     ) : SearchAction
     data class NavigateToCategory(
         val categoryId: String,
+        val categoryText: String,
     ) : SearchAction
 }

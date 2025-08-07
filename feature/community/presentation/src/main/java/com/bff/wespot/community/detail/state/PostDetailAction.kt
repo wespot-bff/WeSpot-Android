@@ -2,7 +2,7 @@ package com.bff.wespot.community.detail.state
 
 sealed interface PostDetailAction {
     data object OnBackClick : PostDetailAction
-    data class OnCategoryClick(val target: String) : PostDetailAction
+    data class OnCategoryClick(val target: String, val categoryText: String) : PostDetailAction
     data object OnNotificationClick : PostDetailAction
     data class OnReactionClick(val reaction: String) : PostDetailAction
     data object OnScrapClick : PostDetailAction

@@ -51,7 +51,7 @@ import com.bff.wespot.ui.util.clickableSingle
 internal fun PostContentUiModel.Item(
     navigateToPost: () -> Unit,
     reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
-    navigateToCategory: (category: String) -> Unit,
+    navigateToCategory: (category: String, categoryText: String) -> Unit,
     scrapClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -70,7 +70,9 @@ internal fun PostContentUiModel.Item(
 
         contentSection.Item()
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (contentSection != PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel) {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         footerSection.Item(
             scrapClick = scrapClick,
@@ -85,7 +87,7 @@ internal fun PostContentUiModel.Item(
 
 @Composable
 private fun PostContentUiModel.HeaderSectionUiModel.Item(
-    navigateToCategory: (target: String) -> Unit,
+    navigateToCategory: (target: String, categoryText: String) -> Unit,
 ) {
     Column {
         Row(
@@ -112,7 +114,7 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item(
             ) {
                 Row(
                     modifier = Modifier.clickableSingle {
-                        navigateToCategory.invoke(category.target)
+                        navigateToCategory.invoke(category.target, category.text.text)
                     },
                 ) {
                     category.text.Text(StaticTypeScale.Default.badge)
@@ -451,7 +453,12 @@ private object PostItemPreviewData {
 private fun PostItemPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItem.content.Item({}, {}, {}, {})
+            PostItemPreviewData.samplePostItem.content.Item(
+                {},
+                {},
+                { _, _ -> },
+                {},
+            )
         }
     }
 }
@@ -461,7 +468,12 @@ private fun PostItemPreview() {
 private fun PostItemEmptyPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItemEmpty.content.Item({}, {}, {}, {})
+            PostItemPreviewData.samplePostItemEmpty.content.Item(
+                {},
+                {},
+                { _, _ -> },
+                {},
+            )
         }
     }
 }

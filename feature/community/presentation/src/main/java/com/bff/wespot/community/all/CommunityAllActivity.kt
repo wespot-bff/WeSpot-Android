@@ -110,6 +110,7 @@ class CommunityAllActivity : ComponentActivity() {
                                 val intent = navigator.navigateToCategoryDetail(
                                     this@CommunityAllActivity,
                                     it.categoryId,
+                                    it.categoryText,
                                 )
                                 startActivity(intent)
                             }

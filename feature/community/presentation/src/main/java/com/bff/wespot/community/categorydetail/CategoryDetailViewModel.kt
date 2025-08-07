@@ -36,7 +36,12 @@ class CategoryDetailViewModel @Inject constructor(
     private var categoryId: String = params.categoryId
 
     override val container = container<CategoryDetailUiState, CategoryDetailSideEffect>(
-        CategoryDetailUiState(),
+        CategoryDetailUiState(
+            currentCategory = CategoryItem(
+                id = params.categoryId,
+                text = params.categoryText,
+            ),
+        ),
     )
 
     fun onAction(action: CategoryDetailAction) = intent {

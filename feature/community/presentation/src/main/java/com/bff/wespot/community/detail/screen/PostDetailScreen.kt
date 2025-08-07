@@ -82,6 +82,7 @@ internal fun PostDetailScreen(
                             onAction(
                                 PostDetailAction.OnCategoryClick(
                                     uiModel.category.target,
+                                    uiModel.category.text.text,
                                 ),
                             )
                         },

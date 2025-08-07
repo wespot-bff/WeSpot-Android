@@ -1,5 +1,6 @@
 package com.bff.wespot.community.all.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ fun AllPostsScreen(
     LazyColumn(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         items(
             count = pagingItems.itemCount,
@@ -44,8 +46,13 @@ fun AllPostsScreen(
                                 reactions = item.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                                            reaction.copy(selected = uiState.likedPosts.contains(item.id))
+                                            reaction.copy(
+                                                selected = uiState.likedPosts.contains(
+                                                    item.id,
+                                                ),
+                                            )
                                         }
+
                                         else -> reaction
                                     }
                                 },
@@ -67,8 +74,13 @@ fun AllPostsScreen(
                                     ),
                                 )
                             },
-                            navigateToCategory = { categoryId ->
-                                action(CommunityAllAction.NavigateToCategory(categoryId))
+                            navigateToCategory = { categoryId, categoryText ->
+                                action(
+                                    CommunityAllAction.NavigateToCategory(
+                                        categoryId,
+                                        categoryText,
+                                    ),
+                                )
                             },
                             scrapClick = {
                                 action(

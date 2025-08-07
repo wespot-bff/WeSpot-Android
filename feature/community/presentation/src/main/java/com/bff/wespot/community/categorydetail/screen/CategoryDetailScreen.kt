@@ -140,6 +140,9 @@ internal fun CategoryScreen(
 
                     Row(
                         modifier = Modifier
+                            .clickableSingle {
+                                showCategoryBottomSheet = true
+                            }
                             .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -148,9 +151,6 @@ internal fun CategoryScreen(
                             text = uiState.currentCategory.text.ifEmpty { "카테고리 선택" },
                             style = StaticTypeScale.Default.header2,
                             color = WeSpotThemeManager.colors.txtTitleColor,
-                            modifier = Modifier.clickableSingle {
-                                showCategoryBottomSheet = true
-                            },
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -214,7 +214,7 @@ internal fun CategoryScreen(
                                     ),
                                 )
                             },
-                            navigateToCategory = { categoryId ->
+                            navigateToCategory = { categoryId, categoryText ->
                                 // Do Nothing
                             },
                             scrapClick = {
@@ -245,6 +245,10 @@ internal fun CategoryScreen(
                     else -> {
                         // TODO: Error content
                     }
+                }
+
+                if (index != paging.itemCount - 1) {
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
