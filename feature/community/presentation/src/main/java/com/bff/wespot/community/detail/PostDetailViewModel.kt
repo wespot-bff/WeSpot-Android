@@ -162,7 +162,12 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnEditPost -> {
-                    postSideEffect(PostDetailSideEffect.NavigateToEditPost(state.detail.content))
+                    postSideEffect(
+                        PostDetailSideEffect.NavigateToEditPost(
+                            state.detail.id,
+                            state.detail.content,
+                        ),
+                    )
                 }
 
                 else -> {}

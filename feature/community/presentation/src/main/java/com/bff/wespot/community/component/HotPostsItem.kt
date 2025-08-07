@@ -36,9 +36,12 @@ import com.bff.wespot.server.driven.type.Text
 import com.bff.wespot.server.driven.type.toBrush
 
 @Composable
-internal fun HotPostContentUiModel.Item() {
+internal fun HotPostContentUiModel.Item(
+    modifier: Modifier = Modifier,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),

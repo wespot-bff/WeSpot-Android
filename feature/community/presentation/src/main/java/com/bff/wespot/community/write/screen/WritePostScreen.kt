@@ -345,7 +345,7 @@ private fun ImageBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CategoryBottomSheet(
+internal fun CategoryBottomSheet(
     chips: List<CategoryChips>,
     selectedChip: CategoryItem,
     onChipClicked: (CategoryItem) -> Unit,

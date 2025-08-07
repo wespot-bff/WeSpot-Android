@@ -30,9 +30,11 @@ import com.bff.wespot.server.driven.type.color
 import com.bff.wespot.server.driven.type.toBrush
 
 @Composable
-internal fun VoteContentUiModel.Item() {
+internal fun VoteContentUiModel.Item(
+    modifier: Modifier = Modifier,
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(brush = gradation.toBrush()),
     ) {

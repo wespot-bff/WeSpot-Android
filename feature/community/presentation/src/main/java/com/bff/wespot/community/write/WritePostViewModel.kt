@@ -14,6 +14,7 @@ import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -27,6 +28,7 @@ internal class WritePostViewModel @Inject constructor(
     private val writePostRepository: WritePostRepository,
     private val commonRepository: CommonRepository,
     private val params: WritePostParams,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(), ContainerHost<WritePostUiState, WritePostSideEffect> {
     override val container = container<WritePostUiState, WritePostSideEffect>(
         WritePostUiState(),
@@ -121,11 +123,11 @@ internal class WritePostViewModel @Inject constructor(
     }
 
     private fun handlePostCreate() = intent {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             reduce { state.copy(isLoading = true) }
 
             val images = state.images
-            if (images.isEmpty()) {
+            if (images.isEmpty() || params.images == images) {
                 uploadPost(emptyList())
                 return@launch
             }
@@ -147,23 +149,23 @@ internal class WritePostViewModel @Inject constructor(
         }
 
     private fun uploadPost(urls: List<String>) = intent {
-        runCatching {
-            val result = writePostRepository.createPost(
+        viewModelScope.launch(ioDispatcher) {
+            writePostRepository.createPost(
+                postId = params.postId,
+                isEditing = params.isEditing,
                 info = PostInfo(
                     categoryId = state.selectedCategory.id,
-                    title = state.title,
+                    title = state.title.takeIf { it.isNotEmpty() },
                     description = state.description,
                     imagesRequest = urls,
                 ),
             )
-
-            if (result) {
-                postSideEffect(WritePostSideEffect.ClosePage)
-            }
-        }.onNetworkFailure {
-            postSideEffect(it.toSideEffect())
-        }.also {
-            reduce { state.copy(isLoading = false) }
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onSuccess {
+                    postSideEffect(WritePostSideEffect.ClosePage)
+                }
         }
     }
 

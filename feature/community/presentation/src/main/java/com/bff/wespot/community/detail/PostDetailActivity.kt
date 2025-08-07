@@ -41,9 +41,10 @@ class PostDetailActivity : ComponentActivity() {
                         val postData = sideEffect.postData
                         val intent = navigator.navigateToEditPostActivity(
                             context = this@PostDetailActivity,
-                            title = postData.infoSection.title.text,
+                            postId = sideEffect.id,
+                            title = postData.infoSection.title?.text,
                             description = postData.infoSection.description.text,
-                            category = postData.category.target,
+                            category = postData.category.text.text,
                             images = when (val contentSection = postData.contentSection) {
                                 is ContentSectionUiModel.ImagesContentUiModel -> contentSection.images
                                 is ContentSectionUiModel.SingleImageUiModel -> listOf(contentSection.image)

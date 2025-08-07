@@ -16,9 +16,15 @@ class WritePostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createPost(info: PostInfo): Boolean {
-        val result = dataSource.createPost(info.toDto())
-
-        return result.isSuccess
+    override suspend fun createPost(
+        postId: String,
+        info: PostInfo,
+        isEditing: Boolean
+    ): Result<Unit> {
+        return if (isEditing) {
+            dataSource.editPost(postId, info.toDto())
+        } else {
+            dataSource.createPost(info.toDto())
+        }
     }
 }

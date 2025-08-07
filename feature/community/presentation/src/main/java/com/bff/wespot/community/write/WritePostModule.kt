@@ -14,6 +14,7 @@ object WritePostModule {
     fun provideWritePostParams(
         savedStateHandle: SavedStateHandle,
     ): WritePostParams {
+        val postId = savedStateHandle.get<String>("postId") ?: ""
         val isEditing = savedStateHandle.get<Boolean>("isEditing") ?: false
         val title = savedStateHandle.get<String>("title") ?: ""
         val description = savedStateHandle.get<String>("description") ?: ""
@@ -21,6 +22,7 @@ object WritePostModule {
         val images = savedStateHandle.get<ArrayList<String>>("images")?.toList() ?: emptyList()
 
         return WritePostParams(
+            postId = postId,
             isEditing = isEditing,
             title = title,
             description = description,
