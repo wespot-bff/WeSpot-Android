@@ -3,9 +3,11 @@ package com.bff.wespot.community.detail
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import com.bff.wespot.community.detail.screen.PostDetailScreen
+import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.detail.state.PostDetailSideEffect
 import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel.ContentSectionUiModel
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -21,6 +23,14 @@ class PostDetailActivity : ComponentActivity() {
 
     @Inject
     lateinit var navigator: Navigator
+
+    private val editPostLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            viewModel.onAction(PostDetailAction.RefreshPost)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +61,19 @@ class PostDetailActivity : ComponentActivity() {
                                 else -> emptyList()
                             },
                         )
+                        editPostLauncher.launch(intent)
+                    }
+
+                    is PostDetailSideEffect.OnBackClick -> {
+                        finish()
+                    }
+
+                    is PostDetailSideEffect.OnCategoryClick -> {
+                        val intent = navigator.navigateToCategoryDetail(
+                            this@PostDetailActivity,
+                            sideEffect.target,
+                        )
+
                         startActivity(intent)
                     }
                 }

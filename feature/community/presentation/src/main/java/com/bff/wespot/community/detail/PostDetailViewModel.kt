@@ -27,15 +27,21 @@ class PostDetailViewModel @Inject constructor(
     param: PostDetailParams,
     private val postDetailRepository: PostDetailRepository,
     private val communityRepository: CommunityRepository,
-    ioDispatcher: CoroutineDispatcher,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(), ContainerHost<PostDetailUiState, PostDetailSideEffect> {
     override val container = container<PostDetailUiState, PostDetailSideEffect>(
         PostDetailUiState(),
     )
 
+    private val postId = param.postId
+
     init {
+        loadPostDetails()
+    }
+
+    private fun loadPostDetails() {
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.getPostDetail(postId = param.postId)
+            postDetailRepository.getPostDetail(postId = postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
@@ -49,7 +55,7 @@ class PostDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.getPostComments(param.postId)
+            postDetailRepository.getPostComments(postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
@@ -170,7 +176,17 @@ class PostDetailViewModel @Inject constructor(
                     )
                 }
 
-                else -> {}
+                is PostDetailAction.RefreshPost -> {
+                    loadPostDetails()
+                }
+
+                is PostDetailAction.OnCategoryClick -> {
+                    postSideEffect(PostDetailSideEffect.OnCategoryClick(action.target))
+                }
+
+                PostDetailAction.OnBackClick -> {
+                    postSideEffect(PostDetailSideEffect.OnBackClick)
+                }
             }
         }
     }

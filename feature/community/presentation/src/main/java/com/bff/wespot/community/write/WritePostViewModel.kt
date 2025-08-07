@@ -161,10 +161,16 @@ internal class WritePostViewModel @Inject constructor(
                 ),
             )
                 .onNetworkFailure {
+                    reduce { state.copy(isLoading = false) }
                     postSideEffect(it.toSideEffect())
                 }
                 .onSuccess {
-                    postSideEffect(WritePostSideEffect.ClosePage)
+                    reduce { state.copy(isLoading = false) }
+                    if (params.isEditing) {
+                        postSideEffect(WritePostSideEffect.ClosePageWithSuccess)
+                    } else {
+                        postSideEffect(WritePostSideEffect.ClosePage)
+                    }
                 }
         }
     }

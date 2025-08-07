@@ -79,7 +79,11 @@ internal fun PostDetailScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier.clickableSingle {
-                            onAction(PostDetailAction.OnCategoryClick)
+                            onAction(
+                                PostDetailAction.OnCategoryClick(
+                                    uiModel.category.target,
+                                ),
+                            )
                         },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -194,8 +198,7 @@ private fun PostDetailContentUiModel.HeaderSectionUiModel.Item(
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .background(White, CircleShape)
-                    .clickableSingle { onAction(PostDetailAction.OnProfileClick) },
+                    .background(White, CircleShape),
             ) {
                 AsyncImage(
                     model = profileImage,

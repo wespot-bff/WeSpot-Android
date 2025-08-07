@@ -35,6 +35,10 @@ class WritePostActivity : ComponentActivity() {
                     WritePostSideEffect.ClosePage -> {
                         finish()
                     }
+                    WritePostSideEffect.ClosePageWithSuccess -> {
+                        setResult(RESULT_OK)
+                        finish()
+                    }
                 }
             }
 

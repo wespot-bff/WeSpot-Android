@@ -7,4 +7,8 @@ sealed interface PostDetailSideEffect {
         val id: String,
         val postData: PostDetailUiModel.PostDetailContentUiModel,
     ) : PostDetailSideEffect
+
+    data object OnBackClick : PostDetailSideEffect
+
+    data class OnCategoryClick(val target: String) : PostDetailSideEffect
 }
