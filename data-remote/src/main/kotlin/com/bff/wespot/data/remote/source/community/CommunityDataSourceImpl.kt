@@ -60,6 +60,19 @@ class CommunityDataSourceImpl @Inject constructor(
             }
         }
 
+    override suspend fun getCategoryPosts(
+        categoryId: String,
+        cursorId: Int?
+    ): Result<CommunityContentPagingDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/post/details")
+                parameter("categoryId", categoryId)
+                cursorId?.let { parameter("cursorId", it) }
+            }
+        }
+
     override suspend fun onLikeClicked(postId: String): Result<Unit> =
         httpClient.safeRequest {
             url {

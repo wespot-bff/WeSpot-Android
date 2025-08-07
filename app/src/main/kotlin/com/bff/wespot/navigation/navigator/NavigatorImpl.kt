@@ -8,6 +8,7 @@ import android.net.Uri
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.community.all.CommunityAllActivity
+import com.bff.wespot.community.categorydetail.CategoryDetailActivity
 import com.bff.wespot.community.detail.PostDetailActivity
 import com.bff.wespot.community.search.SearchActivity
 import com.bff.wespot.community.write.WritePostActivity
@@ -207,14 +208,18 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToEditPostActivity(
         context: Context,
-        title: String,
+        postId: String,
+        title: String?,
         description: String,
         category: String,
         images: List<String>,
     ): Intent {
         val intent = context.buildIntent<WritePostActivity>()
         intent.putExtra("isEditing", true)
-        intent.putExtra("title", title)
+        intent.putExtra("postId", postId)
+        title?.let {
+            intent.putExtra("title", it)
+        }
         intent.putExtra("description", description)
         intent.putExtra("category", category)
         intent.putStringArrayListExtra("images", ArrayList(images))
@@ -233,5 +238,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToCommunityAll(context: Context): Intent {
         return context.buildIntent<CommunityAllActivity>()
+    }
+
+    override fun navigateToCategoryDetail(context: Context, categoryId: String): Intent {
+        val intent = context.buildIntent<CategoryDetailActivity>()
+        intent.putExtra("categoryId", categoryId)
+        return intent
     }
 }

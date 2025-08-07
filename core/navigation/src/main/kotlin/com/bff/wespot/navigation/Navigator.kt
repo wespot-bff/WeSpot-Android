@@ -45,7 +45,8 @@ interface Navigator {
 
     fun navigateToEditPostActivity(
         context: Context,
-        title: String,
+        postId: String,
+        title: String?,
         description: String,
         category: String,
         images: List<String>
@@ -56,4 +57,6 @@ interface Navigator {
     fun navigateToCommunitySearch(context: Context): Intent
 
     fun navigateToCommunityAll(context: Context): Intent
+
+    fun navigateToCategoryDetail(context: Context, categoryId: String): Intent
 }

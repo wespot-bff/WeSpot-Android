@@ -5,6 +5,7 @@ import com.bff.wespot.community.uimodel.PostItemUiModel
 sealed interface CommunityAllAction {
     data class LoadPostsByMenuType(val menu: String) : CommunityAllAction
     data class NavigateToDetail(val id: String) : CommunityAllAction
+    data class NavigateToCategory(val categoryId: String) : CommunityAllAction
     data object NavigateUp : CommunityAllAction
     data class OnReactionClick(
         val id: String,

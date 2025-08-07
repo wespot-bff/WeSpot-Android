@@ -21,6 +21,11 @@ interface CommunityDataSource {
         cursorId: Int?
     ): Result<CommunityContentPagingDto>
 
+    suspend fun getCategoryPosts(
+        categoryId: String,
+        cursorId: Int?
+    ): Result<CommunityContentPagingDto>
+
     suspend fun onLikeClicked(postId: String): Result<Unit>
 
     suspend fun onScrapClicked(postId: String): Result<Unit>

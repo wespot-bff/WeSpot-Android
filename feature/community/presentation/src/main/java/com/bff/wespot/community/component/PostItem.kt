@@ -51,18 +51,16 @@ import com.bff.wespot.ui.util.clickableSingle
 internal fun PostContentUiModel.Item(
     navigateToPost: () -> Unit,
     reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
+    navigateToCategory: (category: String) -> Unit,
     scrapClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.clickableSingle {
+        modifier = modifier.clickableSingle {
             navigateToPost.invoke()
         },
     ) {
-        HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        headerSection.Item()
+        headerSection.Item(navigateToCategory = navigateToCategory)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -80,11 +78,15 @@ internal fun PostContentUiModel.Item(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
     }
 }
 
 @Composable
-private fun PostContentUiModel.HeaderSectionUiModel.Item() {
+private fun PostContentUiModel.HeaderSectionUiModel.Item(
+    navigateToCategory: (target: String) -> Unit,
+) {
     Column {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -108,7 +110,11 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item() {
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Row {
+                Row(
+                    modifier = Modifier.clickableSingle {
+                        navigateToCategory.invoke(category.target)
+                    },
+                ) {
                     category.text.Text(StaticTypeScale.Default.badge)
 
                     category.icon.Icon(
@@ -134,7 +140,7 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item() {
 @Composable
 private fun PostContentUiModel.InfoSectionUiModel.Item() {
     Column {
-        title.Text(
+        title?.Text(
             textStyle = StaticTypeScale.Default.body4,
             maxLines = 1,
         )
@@ -445,7 +451,7 @@ private object PostItemPreviewData {
 private fun PostItemPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItem.content.Item({}, {}, {})
+            PostItemPreviewData.samplePostItem.content.Item({}, {}, {}, {})
         }
     }
 }
@@ -455,7 +461,7 @@ private fun PostItemPreview() {
 private fun PostItemEmptyPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItemEmpty.content.Item({}, {}, {})
+            PostItemPreviewData.samplePostItemEmpty.content.Item({}, {}, {}, {})
         }
     }
 }

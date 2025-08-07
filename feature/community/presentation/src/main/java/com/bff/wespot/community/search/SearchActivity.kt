@@ -46,6 +46,14 @@ class SearchActivity : ComponentActivity() {
 
                         startActivity(intent)
                     }
+
+                    is SearchSideEffect.NavigateToSearch -> {
+                        val intent = navigator.navigateToCategoryDetail(
+                            context = this@SearchActivity,
+                            categoryId = it.categoryId,
+                        )
+                        startActivity(intent)
+                    }
                 }
             }
 

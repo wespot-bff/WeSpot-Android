@@ -99,10 +99,19 @@ class CommunityAllActivity : ComponentActivity() {
                             }
 
                             is CommunityAllSideEffect.NavigateToDetail -> {
-                                navigator.navigateToPostDetailActivity(
+                                val intent = navigator.navigateToPostDetailActivity(
                                     this@CommunityAllActivity,
                                     it.id,
                                 )
+                                startActivity(intent)
+                            }
+
+                            is CommunityAllSideEffect.NavigateToCategory -> {
+                                val intent = navigator.navigateToCategoryDetail(
+                                    this@CommunityAllActivity,
+                                    it.categoryId,
+                                )
+                                startActivity(intent)
                             }
                         }
                     }

@@ -67,6 +67,9 @@ fun AllPostsScreen(
                                     ),
                                 )
                             },
+                            navigateToCategory = { categoryId ->
+                                action(CommunityAllAction.NavigateToCategory(categoryId))
+                            },
                             scrapClick = {
                                 action(
                                     CommunityAllAction.OnScrapClick(item.id),

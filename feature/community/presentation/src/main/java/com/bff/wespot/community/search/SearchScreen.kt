@@ -86,6 +86,9 @@ internal fun SearchScreen(
                                     ),
                                 )
                             },
+                            navigateToCategory = { categoryId ->
+                                action(SearchAction.NavigateToCategory(categoryId))
+                            },
                             scrapClick = {
                                 action(
                                     SearchAction.OnScrapClick(post.id),

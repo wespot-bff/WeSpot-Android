@@ -1,5 +1,6 @@
 package com.bff.wespot.community.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -100,6 +101,7 @@ internal fun CommunityHomeScreen(
                         .padding(top = 24.dp)
                         .fillMaxSize(),
                     state = lazyColumnState,
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
                     items(
                         count = paging.itemCount,
@@ -146,6 +148,13 @@ internal fun CommunityHomeScreen(
                                                 reaction = it,
                                             ),
                                         )
+                                    },
+                                    navigateToCategory = { categoryId ->
+                                        val intent = navigator.navigateToCategoryDetail(
+                                            context = context,
+                                            categoryId = categoryId,
+                                        )
+                                        context.startActivity(intent)
                                     },
                                     scrapClick = {
                                         onAction(
