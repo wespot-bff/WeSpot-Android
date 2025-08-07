@@ -36,7 +36,7 @@ data class PostDetailUiModel(
         }
 
         data class InfoSectionUiModel(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val maxLine: Int,
         )

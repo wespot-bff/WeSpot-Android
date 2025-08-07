@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImageUrlDto(
     val url: String,
-    val imageUrl: String
+    val imageName: String
 )

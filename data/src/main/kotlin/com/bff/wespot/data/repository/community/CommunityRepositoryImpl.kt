@@ -12,7 +12,8 @@ class CommunityRepositoryImpl @Inject constructor(
     private val communityDataSource: CommunityDataSource,
     private val communityContentPagingRepository: CommunityContentPagingRepository,
     private val communitySearchPagingRepository: CommunitySearchPagingRepository,
-    private val communityAllPostsPagingRepository: CommunityAllPostsPagingRepository
+    private val communityAllPostsPagingRepository: CommunityAllPostsPagingRepository,
+    private val categoryPostsPagingRepository: CategoryPostsPagingRepository
 ) : CommunityRepository {
     override suspend fun getCommunityChips(): Result<List<BaseChip>> =
         communityDataSource.getCommunityChips()
@@ -36,6 +37,9 @@ class CommunityRepositoryImpl @Inject constructor(
 
     override fun getCommunityAllPostsStream(menuType: String): Flow<PagingData<BaseCommunityContent>> =
         communityAllPostsPagingRepository.fetchResultStream(mapOf("menuType" to menuType))
+
+    override fun getCategoryPostsStream(categoryId: String): Flow<PagingData<BaseCommunityContent>> =
+        categoryPostsPagingRepository.fetchResultStream(mapOf("categoryId" to categoryId))
 
     override suspend fun onLikeClicked(postId: String): Boolean {
         return communityDataSource.onLikeClicked(postId).isSuccess

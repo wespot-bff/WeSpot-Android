@@ -44,7 +44,7 @@ data class PostDetailDto(
 
         @Serializable
         data class InfoSectionDto(
-            val title: RichTextTypeDto,
+            val title: RichTextTypeDto?,
             val description: RichTextTypeDto,
             val maxLine: Int,
         )
@@ -135,7 +135,7 @@ private fun PostDetailDto.PostDetailContentDto.HeaderSectionDto.ButtonDto.toDoma
 
 private fun PostDetailDto.PostDetailContentDto.InfoSectionDto.toDomain() =
     PostDetail.PostDetailContent.InfoSection(
-        title = title.toDomain(),
+        title = title?.toDomain(),
         description = description.toDomain(),
         maxLine = maxLine,
     )

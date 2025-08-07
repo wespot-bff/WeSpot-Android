@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostInfoDto(
     val categoryId: String,
-    val title: String,
+    val title: String?,
     val description: String,
     val imagesRequest: List<String>,
 )
