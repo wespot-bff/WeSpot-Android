@@ -24,7 +24,8 @@ class CommunityDataSourceImpl @Inject constructor(
     override suspend fun getCommunityContent(
         target: String,
         inquirySize: Int,
-        cursorId: Int?
+        cursorId: Int?,
+        countOfPostsViewed: Int?
     ): Result<CommunityContentPagingDto> =
         httpClient.safeRequest {
             url {
@@ -33,6 +34,7 @@ class CommunityDataSourceImpl @Inject constructor(
                 cursorId?.let { parameter("cursorId", it) }
                 parameter("inquirySize", inquirySize)
                 parameter("majorCategoryName", target)
+                countOfPostsViewed?.let { parameter("countOfPostsViewed", it) }
             }
         }
 

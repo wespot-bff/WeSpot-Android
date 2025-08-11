@@ -9,7 +9,8 @@ interface CommunityDataSource {
     suspend fun getCommunityContent(
         target: String,
         inquirySize: Int,
-        cursorId: Int?
+        cursorId: Int?,
+        countOfPostsViewed: Int? = null
     ): Result<CommunityContentPagingDto>
 
     suspend fun getCommunitySearchContent(

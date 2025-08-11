@@ -10,9 +10,21 @@ class CommunityContentPagingSource(
     private val inquirySize: Int,
     private val target: String,
 ) : BasePagingSource<BaseCommunityContent, CommunityContentPaging>() {
+    
+    companion object {
+        private var globalItemsViewed: Int = 0
+    }
+    
     override suspend fun fetchItems(cursorId: Int?): CommunityContentPaging {
-        val response = communityDataSource.getCommunityContent(target, inquirySize, cursorId)
+
+        val response = communityDataSource.getCommunityContent(
+            target = target,
+            inquirySize = inquirySize,
+            cursorId = cursorId,
+            countOfPostsViewed = globalItemsViewed
+        )
         val data = response.getOrThrow()
+        globalItemsViewed += data.content.size
         return data.toCommunityContentPaging()
     }
 }
