@@ -188,8 +188,19 @@ internal fun CategoryScreen(
                                 reactions = post.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is ReactionUiModel.LikeUiModel -> {
+                                            val isLiked = uiState.likedPosts.contains(post.id)
+                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val wasLikedBefore = reaction.selected
+
+                                            val newCount = when {
+                                                isLiked && !wasLikedBefore -> currentCount + 1
+                                                !isLiked && wasLikedBefore -> currentCount - 1
+                                                else -> currentCount
+                                            }
+
                                             reaction.copy(
-                                                selected = uiState.likedPosts.contains(post.id),
+                                                selected = isLiked,
+                                                count = reaction.count.copy(text = newCount.toString()),
                                             )
                                         }
 
