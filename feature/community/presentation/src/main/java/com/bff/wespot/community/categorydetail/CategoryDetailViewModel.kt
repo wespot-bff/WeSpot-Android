@@ -70,17 +70,32 @@ class CategoryDetailViewModel @Inject constructor(
                 loadCategories()
                 loadCategoryPosts()
             }
+
+            is CategoryDetailAction.OnFABClicked -> {
+                onFABClicked()
+            }
         }
     }
 
     private fun loadCategoryPosts() = intent {
         viewModelScope.launch(ioDispatcher) {
-            val paging = communityRepository.getCategoryPostsStream(categoryId)
-                .map {
-                    it.map { content ->
-                        content.toUiModel()
+            val paging = communityRepository.getCategoryPostsStreamWithImages(
+                categoryId = categoryId,
+                onImagesLoaded = { background, thumbnail ->
+                    intent {
+                        reduce {
+                            state.copy(
+                                backgroundImage = background,
+                                thumbnailImage = thumbnail,
+                            )
+                        }
                     }
+                },
+            ).map {
+                it.map { content ->
+                    content.toUiModel()
                 }
+            }
 
             reduce {
                 state.copy(posts = paging)
@@ -181,5 +196,9 @@ class CategoryDetailViewModel @Inject constructor(
 
             loadCategoryPosts()
         }
+    }
+
+    private fun onFABClicked() = intent {
+        postSideEffect(CategoryDetailSideEffect.NavigateToCreate(state.currentCategory))
     }
 }

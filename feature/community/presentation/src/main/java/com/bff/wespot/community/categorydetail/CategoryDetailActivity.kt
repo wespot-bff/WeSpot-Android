@@ -56,8 +56,17 @@ class CategoryDetailActivity : ComponentActivity() {
                             )
                             startActivity(intent)
                         }
+
                         is CategoryDetailSideEffect.NavigateBack -> {
                             finish()
+                        }
+
+                        is CategoryDetailSideEffect.NavigateToCreate -> {
+                            val intent = navigator.navigateToWriteActivity(
+                                context = this,
+                                category = sideEffect.category.text,
+                            )
+                            startActivity(intent)
                         }
                     }
                 }

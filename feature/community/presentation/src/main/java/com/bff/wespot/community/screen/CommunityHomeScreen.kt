@@ -116,8 +116,10 @@ internal fun CommunityHomeScreen(
                                         reactions = post.content.footerSection.reactions.map { reaction ->
                                             when (reaction) {
                                                 is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                                                    val isLiked = uiState.likedPosts.contains(post.id)
-                                                    val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                                    val isLiked =
+                                                        uiState.likedPosts.contains(post.id)
+                                                    val currentCount =
+                                                        reaction.count.text.toIntOrNull() ?: 0
                                                     val wasLikedBefore = reaction.selected
 
                                                     val newCount = when {
@@ -217,15 +219,16 @@ internal fun CommunityHomeScreen(
 }
 
 @Composable
-private fun CommunityFABButton(
+internal fun CommunityFABButton(
     onFABClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FloatingActionButton(
         shape = CircleShape,
         onClick = onFABClicked,
         containerColor = WeSpotThemeManager.colors.primaryColor,
         contentColor = WeSpotThemeManager.colors.backgroundColor,
-        modifier = Modifier.size(50.dp),
+        modifier = modifier.size(50.dp),
     ) {
         Icon(
             painter = painterResource(id = R.drawable.post_article),

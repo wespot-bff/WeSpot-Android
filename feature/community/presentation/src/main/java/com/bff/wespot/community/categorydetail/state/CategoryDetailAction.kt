@@ -17,4 +17,6 @@ sealed interface CategoryDetailAction {
     ) : CategoryDetailAction
 
     data object LoadData : CategoryDetailAction
+
+    data object OnFABClicked : CategoryDetailAction
 }

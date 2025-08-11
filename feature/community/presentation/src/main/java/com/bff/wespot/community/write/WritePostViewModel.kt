@@ -44,21 +44,17 @@ internal class WritePostViewModel @Inject constructor(
                     reduce {
                         val updatedState = state.copy(categories = categories)
 
-                        if (params.isEditing) {
-                            val selectedCategory = categories
-                                .flatMap { it.chips }
-                                .find { it.text == params.category }
-                                ?: CategoryItem.EMPTY
+                        val selectedCategory = categories
+                            .flatMap { it.chips }
+                            .find { it.text == params.category }
+                            ?: CategoryItem.EMPTY
 
-                            updatedState.copy(
-                                title = params.title,
-                                description = params.description,
-                                images = params.images,
-                                selectedCategory = selectedCategory,
-                            )
-                        } else {
-                            updatedState
-                        }
+                        updatedState.copy(
+                            title = params.title,
+                            description = params.description,
+                            images = params.images,
+                            selectedCategory = selectedCategory,
+                        )
                     }
                 }
         }

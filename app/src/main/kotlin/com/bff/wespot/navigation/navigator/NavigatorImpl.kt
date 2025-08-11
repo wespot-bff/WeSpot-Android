@@ -201,8 +201,14 @@ class NavigatorImpl @Inject constructor() : Navigator {
             ),
         )
 
-    override fun navigateToWriteActivity(context: Context): Intent {
+    override fun navigateToWriteActivity(
+        context: Context,
+        category: String?,
+    ): Intent {
         val intent = context.buildIntent<WritePostActivity>()
+        category?.let {
+            intent.putExtra("category", category)
+        }
         return intent
     }
 
@@ -240,7 +246,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return context.buildIntent<CommunityAllActivity>()
     }
 
-    override fun navigateToCategoryDetail(context: Context, categoryId: String, categoryText: String): Intent {
+    override fun navigateToCategoryDetail(
+        context: Context,
+        categoryId: String,
+        categoryText: String,
+    ): Intent {
         val intent = context.buildIntent<CategoryDetailActivity>()
         intent.putExtra("categoryId", categoryId)
         intent.putExtra("categoryText", categoryText)
