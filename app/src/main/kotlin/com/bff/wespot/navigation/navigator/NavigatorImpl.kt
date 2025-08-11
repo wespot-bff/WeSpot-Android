@@ -232,9 +232,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
-    override fun navigateToPostDetailActivity(context: Context, postId: String): Intent {
+    override fun navigateToPostDetailActivity(context: Context, postId: String, scrollToComments: Boolean): Intent {
         val intent = context.buildIntent<PostDetailActivity>()
         intent.putExtra("postId", postId)
+        intent.putExtra("scrollToComments", scrollToComments)
         return intent
     }
 

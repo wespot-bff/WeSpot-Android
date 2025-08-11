@@ -62,6 +62,17 @@ internal class SearchViewModel @Inject constructor(
                     )
                 }
             }
+
+            is SearchAction.NavigateToDetailComments -> {
+                intent {
+                    postSideEffect(
+                        SearchSideEffect.NavigateToDetail(
+                            action.postId,
+                            true,
+                        ),
+                    )
+                }
+            }
         }
     }
 

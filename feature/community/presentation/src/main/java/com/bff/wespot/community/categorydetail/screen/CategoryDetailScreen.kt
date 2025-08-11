@@ -67,7 +67,6 @@ internal fun CategoryScreen(
     uiState: CategoryDetailUiState,
     paging: LazyPagingItems<BaseCommunityContentUiModel>,
     onAction: (CategoryDetailAction) -> Unit,
-    navigateToPost: (String) -> Unit,
 ) {
     val lazyColumnState = rememberLazyListState()
     val density = LocalDensity.current
@@ -222,13 +221,13 @@ internal fun CategoryScreen(
 
                         updatedContent.Item(
                             navigateToPost = {
-                                navigateToPost(post.id)
+                                onAction(CategoryDetailAction.NavigateToDetail(post.id))
                             },
-                            reactionClick = {
+                            reactionClick = { reaction ->
                                 onAction(
                                     CategoryDetailAction.OnReactionClick(
                                         id = post.id,
-                                        reaction = it,
+                                        reaction = reaction,
                                     ),
                                 )
                             },

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -29,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +73,7 @@ internal fun PostDetailScreen(
     onAction: (PostDetailAction) -> Unit,
 ) {
     val uiModel = uiState.detail.content
+    val lazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -130,6 +133,7 @@ internal fun PostDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
+            state = lazyListState,
         ) {
             item {
                 Column {
@@ -180,6 +184,10 @@ internal fun PostDetailScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(uiState.scrollToComments) {
+        lazyListState.animateScrollToItem(1)
     }
 }
 
@@ -709,6 +717,7 @@ private fun PostDetailScreenPreview() {
             uiState = PostDetailUiState(
                 comments = sampleComment,
                 detail = PostDetailPreviewData.samplePostDetail,
+                scrollToComments = false,
             ),
             onAction = {},
         )

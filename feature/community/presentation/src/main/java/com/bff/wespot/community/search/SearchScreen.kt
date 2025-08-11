@@ -97,13 +97,22 @@ internal fun SearchScreen(
                             navigateToPost = {
                                 action(SearchAction.NavigateToDetail(post.id))
                             },
-                            reactionClick = {
-                                action(
-                                    SearchAction.OnReactionClick(
-                                        id = post.id,
-                                        reaction = it,
-                                    ),
-                                )
+                            reactionClick = { reaction ->
+                                when (reaction) {
+                                    is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                                        // Navigate to PostDetail comment section
+                                        action(SearchAction.NavigateToDetailComments(post.id))
+                                    }
+                                    else -> {
+                                        // Handle other reactions (like)
+                                        action(
+                                            SearchAction.OnReactionClick(
+                                                id = post.id,
+                                                reaction = reaction,
+                                            ),
+                                        )
+                                    }
+                                }
                             },
                             navigateToCategory = { categoryId, categoryText ->
                                 action(SearchAction.NavigateToCategory(categoryId, categoryText))

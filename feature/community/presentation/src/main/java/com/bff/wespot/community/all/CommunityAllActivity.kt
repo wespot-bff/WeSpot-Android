@@ -102,6 +102,7 @@ class CommunityAllActivity : ComponentActivity() {
                                 val intent = navigator.navigateToPostDetailActivity(
                                     this@CommunityAllActivity,
                                     it.id,
+                                    it.navigateToComment,
                                 )
                                 startActivity(intent)
                             }

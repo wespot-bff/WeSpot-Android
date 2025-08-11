@@ -17,6 +17,6 @@ data class CategoryDetailsPagingDto(
         lastCursorId = lastCursorId ?: -1,
         hasNext = hasNext,
         background = background.toDomain(),
-        thumbnail = background.toDomain(),
+        thumbnail = thumbnail.toDomain(),
     )
 }

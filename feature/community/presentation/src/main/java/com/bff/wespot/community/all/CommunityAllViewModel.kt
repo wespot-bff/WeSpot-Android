@@ -56,6 +56,9 @@ class CommunityAllViewModel @Inject constructor(
             is CommunityAllAction.OnReactionClick -> {
                 onReactionClick(action.reaction, action.id)
             }
+            is CommunityAllAction.NavigateToDetailComments -> {
+                postSideEffect(CommunityAllSideEffect.NavigateToDetail(action.id, true))
+            }
         }
     }
 

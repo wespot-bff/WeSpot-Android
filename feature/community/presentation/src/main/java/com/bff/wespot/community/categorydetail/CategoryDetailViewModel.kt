@@ -74,6 +74,10 @@ class CategoryDetailViewModel @Inject constructor(
             is CategoryDetailAction.OnFABClicked -> {
                 onFABClicked()
             }
+
+            is CategoryDetailAction.NavigateToDetail -> {
+                postSideEffect(CategoryDetailSideEffect.NavigateToPostDetail(action.postId))
+            }
         }
     }
 
@@ -133,6 +137,10 @@ class CategoryDetailViewModel @Inject constructor(
                             )
                         }
                     }
+                }
+
+                is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                    postSideEffect(CategoryDetailSideEffect.NavigateToPostDetail(postId, true))
                 }
 
                 else -> {}

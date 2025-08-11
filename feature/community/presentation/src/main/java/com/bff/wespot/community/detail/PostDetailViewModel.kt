@@ -30,7 +30,7 @@ class PostDetailViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(), ContainerHost<PostDetailUiState, PostDetailSideEffect> {
     override val container = container<PostDetailUiState, PostDetailSideEffect>(
-        PostDetailUiState(),
+        PostDetailUiState(scrollToComments = param.scrollToComment),
     )
 
     private val postId = param.postId

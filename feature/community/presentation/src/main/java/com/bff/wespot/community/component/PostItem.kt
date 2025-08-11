@@ -56,7 +56,7 @@ import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
 internal fun PostContentUiModel.Item(
-    navigateToPost: () -> Unit,
+    navigateToPost: (navigateToComment: Boolean) -> Unit,
     reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
     navigateToCategory: (category: String, categoryText: String) -> Unit,
     scrapClick: () -> Unit,
@@ -64,7 +64,7 @@ internal fun PostContentUiModel.Item(
 ) {
     Column(
         modifier = modifier.clickableSingle {
-            navigateToPost.invoke()
+            navigateToPost.invoke(false)
         },
     ) {
         headerSection.Item(navigateToCategory = navigateToCategory)

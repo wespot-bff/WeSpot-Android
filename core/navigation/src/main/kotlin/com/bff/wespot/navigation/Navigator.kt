@@ -52,7 +52,7 @@ interface Navigator {
         images: List<String>
     ): Intent
 
-    fun navigateToPostDetailActivity(context: Context, postId: String): Intent
+    fun navigateToPostDetailActivity(context: Context, postId: String, scrollToComments: Boolean = false): Intent
 
     fun navigateToCommunitySearch(context: Context): Intent
 

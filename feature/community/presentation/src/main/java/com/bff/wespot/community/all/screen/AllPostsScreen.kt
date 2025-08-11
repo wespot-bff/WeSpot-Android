@@ -78,13 +78,22 @@ fun AllPostsScreen(
                             navigateToPost = {
                                 action(CommunityAllAction.NavigateToDetail(item.id))
                             },
-                            reactionClick = {
-                                action(
-                                    CommunityAllAction.OnReactionClick(
-                                        id = item.id,
-                                        reaction = it,
-                                    ),
-                                )
+                            reactionClick = { reaction ->
+                                when (reaction) {
+                                    is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                                        // Navigate to PostDetail comment section
+                                        action(CommunityAllAction.NavigateToDetailComments(item.id))
+                                    }
+                                    else -> {
+                                        // Handle other reactions (like)
+                                        action(
+                                            CommunityAllAction.OnReactionClick(
+                                                id = item.id,
+                                                reaction = reaction,
+                                            ),
+                                        )
+                                    }
+                                }
                             },
                             navigateToCategory = { categoryId, categoryText ->
                                 action(

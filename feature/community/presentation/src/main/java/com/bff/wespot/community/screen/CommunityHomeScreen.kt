@@ -154,13 +154,26 @@ internal fun CommunityHomeScreen(
 
                                         context.startActivity(intent)
                                     },
-                                    reactionClick = {
-                                        onAction(
-                                            CommunityAction.OnReactionClick(
-                                                id = post.id,
-                                                reaction = it,
-                                            ),
-                                        )
+                                    reactionClick = { reaction ->
+                                        when (reaction) {
+                                            is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                                                val intent = navigator.navigateToPostDetailActivity(
+                                                    context = context,
+                                                    postId = post.id,
+                                                    scrollToComments = true,
+                                                )
+                                                context.startActivity(intent)
+                                            }
+
+                                            else -> {
+                                                onAction(
+                                                    CommunityAction.OnReactionClick(
+                                                        id = post.id,
+                                                        reaction = reaction,
+                                                    ),
+                                                )
+                                            }
+                                        }
                                     },
                                     navigateToCategory = { categoryId, categoryText ->
                                         val intent = navigator.navigateToCategoryDetail(

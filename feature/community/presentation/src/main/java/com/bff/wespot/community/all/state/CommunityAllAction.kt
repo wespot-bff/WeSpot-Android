@@ -19,4 +19,6 @@ sealed interface CommunityAllAction {
     data class OnScrapClick(
         val id: String,
     ) : CommunityAllAction
+
+    data class NavigateToDetailComments(val id: String) : CommunityAllAction
 }

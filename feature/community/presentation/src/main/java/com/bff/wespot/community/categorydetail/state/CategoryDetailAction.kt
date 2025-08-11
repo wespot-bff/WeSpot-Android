@@ -8,9 +8,11 @@ sealed interface CategoryDetailAction {
         val id: String,
         val reaction: PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel,
     ) : CategoryDetailAction
+
     data class OnScrapClick(
         val id: String,
     ) : CategoryDetailAction
+
     data object OnRefresh : CategoryDetailAction
     data class OnCategoryChange(
         val categoryId: String,
@@ -19,4 +21,6 @@ sealed interface CategoryDetailAction {
     data object LoadData : CategoryDetailAction
 
     data object OnFABClicked : CategoryDetailAction
+
+    data class NavigateToDetail(val postId: String) : CategoryDetailAction
 }

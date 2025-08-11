@@ -17,4 +17,5 @@ sealed interface SearchAction {
         val categoryId: String,
         val categoryText: String,
     ) : SearchAction
+    data class NavigateToDetailComments(val postId: String) : SearchAction
 }

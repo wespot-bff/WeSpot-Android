@@ -10,4 +10,5 @@ data class PostDetailUiState(
     val isScrapped: Boolean = false,
     val registered: Boolean = false,
     val commentInput: String = "",
+    val scrollToComments: Boolean,
 )
