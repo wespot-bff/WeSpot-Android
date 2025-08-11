@@ -15,4 +15,5 @@ sealed interface CommunityAction {
         val id: String,
     ) : CommunityAction
     data object OnRefresh : CommunityAction
+    data object CloseCategorySheet : CommunityAction
 }

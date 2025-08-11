@@ -1,6 +1,7 @@
 package com.bff.wespot.community.component
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,12 +23,17 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -45,6 +51,7 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.server.driven.type.toTextStyle
 import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
@@ -68,9 +75,17 @@ internal fun PostContentUiModel.Item(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        contentSection.Item()
+        var hasContent by remember {
+            mutableStateOf(contentSection != PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel)
+        }
 
-        if (contentSection != PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel) {
+        contentSection.Item(
+            onContentVisibilityChanged = { isVisible ->
+                hasContent = isVisible
+            },
+        )
+
+        if (hasContent) {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
@@ -141,7 +156,19 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item(
 
 @Composable
 private fun PostContentUiModel.InfoSectionUiModel.Item() {
-    Column {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    val textMeasurer = rememberTextMeasurer()
+    val lineCount = textMeasurer.measure(
+        text = description.text,
+        style = description.typography.toTextStyle() ?: StaticTypeScale.Default.body6,
+    ).lineCount
+
+    Column(
+        modifier = Modifier.animateContentSize(),
+    ) {
         title?.Text(
             textStyle = StaticTypeScale.Default.body4,
             maxLines = 1,
@@ -149,57 +176,96 @@ private fun PostContentUiModel.InfoSectionUiModel.Item() {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        description.Text(StaticTypeScale.Default.body6)
+        description.Text(
+            textStyle = StaticTypeScale.Default.body6,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        seeMore.Text(
-            textStyle = StaticTypeScale.Default.body6,
-            maxLines = 1,
-        )
+        if (lineCount > 5 && !isExpanded) {
+            seeMore.Text(
+                textStyle = StaticTypeScale.Default.body6,
+                maxLines = 1,
+                modifier = Modifier.clickableSingle {
+                    isExpanded = !isExpanded
+                },
+            )
+        }
     }
 }
 
 @Composable
-private fun PostContentUiModel.ContentSectionUiModel.Item() {
+private fun PostContentUiModel.ContentSectionUiModel.Item(
+    onContentVisibilityChanged: (Boolean) -> Unit = {},
+) {
     when (this) {
         is PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel -> {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(images) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(White, RoundedCornerShape(8.dp)),
-                    ) {
-                        AsyncImage(
-                            model = it,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .widthIn(min = 200.dp, max = 226.dp)
-                                .heightIn(min = 226.dp, max = 266.dp),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
+            val validImages = remember(images) { mutableStateOf(images.toMutableList()) }
+
+            if (validImages.value.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(validImages.value) { imageUrl ->
+                        var isImageVisible by remember { mutableStateOf(true) }
+
+                        if (isImageVisible) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(White, RoundedCornerShape(8.dp)),
+                            ) {
+                                AsyncImage(
+                                    model = imageUrl,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .widthIn(min = 200.dp, max = 226.dp)
+                                        .heightIn(min = 226.dp, max = 266.dp),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    onError = {
+                                        isImageVisible = false
+                                        validImages.value.remove(imageUrl)
+                                        if (validImages.value.isEmpty()) {
+                                            onContentVisibilityChanged(false)
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
                 }
+            } else {
+                onContentVisibilityChanged(false)
             }
         }
 
         is PostContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
-            AsyncImage(
-                model = image,
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .fillMaxWidth()
-                    .heightIn(min = 155.dp, max = 718.dp),
-                contentScale = ContentScale.Crop,
-            )
+            var isImageVisible by remember { mutableStateOf(true) }
+
+            if (isImageVisible) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .fillMaxWidth()
+                        .heightIn(min = 155.dp, max = 718.dp),
+                    contentScale = ContentScale.Crop,
+                    onError = {
+                        isImageVisible = false
+                        onContentVisibilityChanged(false)
+                    },
+                )
+            } else {
+                onContentVisibilityChanged(false)
+            }
         }
 
-        is PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel -> {}
+        is PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel -> {
+            onContentVisibilityChanged(false)
+        }
     }
 }
 
@@ -238,7 +304,9 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
                         contentDescription = null,
                     )
 
-                    it.count.Text(StaticTypeScale.Default.badge)
+                    if (it.count.text.toIntOrNull() != 0) {
+                        it.count.Text(StaticTypeScale.Default.badge)
+                    }
                 }
             }
         }

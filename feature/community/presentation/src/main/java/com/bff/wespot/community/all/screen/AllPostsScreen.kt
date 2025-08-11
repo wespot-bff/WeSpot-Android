@@ -1,6 +1,7 @@
 package com.bff.wespot.community.all.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ fun AllPostsScreen(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
+        contentPadding = PaddingValues(bottom = 86.dp),
     ) {
         items(
             count = pagingItems.itemCount,
@@ -47,7 +49,8 @@ fun AllPostsScreen(
                                     when (reaction) {
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
                                             val isLiked = uiState.likedPosts.contains(item.id)
-                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val currentCount =
+                                                reaction.count.text.toIntOrNull() ?: 0
                                             val wasLikedBefore = reaction.selected
 
                                             val newCount = when {

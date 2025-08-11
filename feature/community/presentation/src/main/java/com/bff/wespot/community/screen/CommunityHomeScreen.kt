@@ -2,6 +2,7 @@ package com.bff.wespot.community.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,6 +38,7 @@ import com.bff.wespot.community.uimodel.HotPostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.VoteItemUiModel
 import com.bff.wespot.community.viewmodel.CommunityHomeViewModel
+import com.bff.wespot.community.write.screen.CategoryBottomSheet
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
@@ -102,6 +104,7 @@ internal fun CommunityHomeScreen(
                         .fillMaxSize(),
                     state = lazyColumnState,
                     verticalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(bottom = 86.dp),
                 ) {
                     items(
                         count = paging.itemCount,
@@ -203,6 +206,17 @@ internal fun CommunityHomeScreen(
                 }
             }
         }
+    }
+
+    if (uiState.showCategoryBottomSheet) {
+        CategoryBottomSheet(
+            chips = uiState.categories,
+            onChipClicked = {},
+            closeSheet = {
+                onAction(CommunityAction.CloseCategorySheet)
+            },
+            selectedChip = uiState.selectedChip,
+        )
     }
 
     viewModel.collectSideEffect {
