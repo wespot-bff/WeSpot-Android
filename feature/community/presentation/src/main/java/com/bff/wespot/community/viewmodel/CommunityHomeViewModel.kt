@@ -11,11 +11,9 @@ import com.bff.wespot.community.uimodel.chip.FilterChipUiModel
 import com.bff.wespot.community.uimodel.chip.toUiModel
 import com.bff.wespot.community.uimodel.toUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
-import com.bff.wespot.domain.repository.community.WritePostRepository
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -29,8 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CommunityHomeViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
-    private val writePostRepository: WritePostRepository,
-    private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(), ContainerHost<CommunityUiState, CommunitySideEffect> {
     override val container = container<CommunityUiState, CommunitySideEffect>(
         CommunityUiState(),
@@ -62,15 +58,14 @@ class CommunityHomeViewModel @Inject constructor(
             }
 
             is CommunityAction.OnMoreClicked -> {
-                onMoreClicked()
             }
+
             is CommunityAction.OnWritePostClicked -> {
                 postSideEffect(CommunitySideEffect.NavigateToWriteActivity)
             }
 
             is CommunityAction.OnCommunityEnter -> {
                 onFilterChipClicked("", "")
-                loadCategories()
             }
 
             is CommunityAction.OnReactionClick -> {
@@ -83,12 +78,6 @@ class CommunityHomeViewModel @Inject constructor(
 
             is CommunityAction.OnRefresh -> {
                 refreshPosts()
-            }
-
-            is CommunityAction.CloseCategorySheet -> {
-                reduce {
-                    state.copy(showCategoryBottomSheet = false)
-                }
             }
         }
     }
@@ -194,26 +183,6 @@ class CommunityHomeViewModel @Inject constructor(
 
         reduce {
             state.copy(isRefreshing = false)
-        }
-    }
-
-    private fun onMoreClicked() = intent {
-        reduce {
-            state.copy(showCategoryBottomSheet = true)
-        }
-    }
-
-    private fun loadCategories() = intent {
-        viewModelScope.launch(ioDispatcher) {
-            writePostRepository.getCategories()
-                .onNetworkFailure {
-                    postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
-                    reduce {
-                        state.copy(categories = it)
-                    }
-                }
         }
     }
 }

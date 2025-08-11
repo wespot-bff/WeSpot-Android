@@ -24,6 +24,9 @@ class CommunityContentPagingSource(
             countOfPostsViewed = globalItemsViewed
         )
         val data = response.getOrThrow()
+        if (cursorId == null) {
+            globalItemsViewed = 0
+        }
         globalItemsViewed += data.content.size
         return data.toCommunityContentPaging()
     }

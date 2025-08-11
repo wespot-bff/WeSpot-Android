@@ -38,7 +38,6 @@ import com.bff.wespot.community.uimodel.HotPostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.VoteItemUiModel
 import com.bff.wespot.community.viewmodel.CommunityHomeViewModel
-import com.bff.wespot.community.write.screen.CategoryBottomSheet
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.annotation.Destination
@@ -206,17 +205,6 @@ internal fun CommunityHomeScreen(
                 }
             }
         }
-    }
-
-    if (uiState.showCategoryBottomSheet) {
-        CategoryBottomSheet(
-            chips = uiState.categories,
-            onChipClicked = {},
-            closeSheet = {
-                onAction(CommunityAction.CloseCategorySheet)
-            },
-            selectedChip = uiState.selectedChip,
-        )
     }
 
     viewModel.collectSideEffect {

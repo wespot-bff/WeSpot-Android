@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,6 @@ import com.bff.wespot.designsystem.theme.Gray900
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
-import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
@@ -54,7 +54,7 @@ internal fun FilterChip(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(end = 70.dp),
+            contentPadding = PaddingValues(end = 65.dp),
         ) {
             items(filterChips) {
                 val selected = selectedId == it.id
@@ -107,7 +107,7 @@ internal fun FilterChip(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            White,
+                            Color.Transparent,
                             Gray900,
                         ),
                         startX = 0f,
