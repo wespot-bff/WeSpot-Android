@@ -45,12 +45,17 @@ import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+interface CommunityNavigator {
+    fun navigateToVote()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 internal fun CommunityHomeScreen(
     viewModel: CommunityHomeViewModel = hiltViewModel(),
     navigator: Navigator,
+    communityNavigator: CommunityNavigator,
 ) {
     val uiState by viewModel.collectAsState()
     val onAction = viewModel::onAction
@@ -200,7 +205,11 @@ internal fun CommunityHomeScreen(
                             }
 
                             is VoteItemUiModel -> {
-                                post.content.Item()
+                                post.content.Item(
+                                    onClick = {
+                                        communityNavigator.navigateToVote()
+                                    },
+                                )
                             }
 
                             else -> {
