@@ -36,4 +36,13 @@ class PostDetailRepositoryImpl @Inject constructor(
     override suspend fun likeComment(commentId: String): Boolean {
         return postDetailDataSource.likeComment(commentId).isSuccess
     }
+    
+    override suspend fun deleteComment(commentId: String): Result<Unit> =
+        postDetailDataSource.deleteComment(commentId)
+    
+    override suspend fun deletePost(postId: String): Result<Unit> =
+        postDetailDataSource.deletePost(postId)
+    
+    override suspend fun blockPost(postId: String): Result<Unit> =
+        postDetailDataSource.blockPost(postId)
 }

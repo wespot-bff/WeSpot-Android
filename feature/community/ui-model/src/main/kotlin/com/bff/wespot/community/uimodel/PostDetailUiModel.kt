@@ -7,6 +7,7 @@ import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostDetailUiModel(
     val id: String,
+    val isMyPost: Boolean,
     val content: PostDetailContentUiModel,
 ) {
     data class PostDetailContentUiModel(
@@ -83,11 +84,13 @@ data class PostDetailUiModel(
     companion object {
         fun PostDetail.toUiModel() = PostDetailUiModel(
             id = id,
+            isMyPost = isMyPost,
             content = content.toUiModel(),
         )
 
         val Empty = PostDetailUiModel(
             id = "",
+            isMyPost = false,
             content = PostDetailContentUiModel(
                 category = PostDetailContentUiModel.CategoryUiModel(
                     text = RichTextType(

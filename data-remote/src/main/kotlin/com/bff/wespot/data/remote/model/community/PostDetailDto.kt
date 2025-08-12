@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostDetailDto(
     val id: String,
+    val isMyPost: Boolean,
     val content: PostDetailContentDto,
 ) {
     @Serializable
@@ -97,6 +98,7 @@ data class PostDetailDto(
     fun toDomain(): PostDetail {
         return PostDetail(
             id = id,
+            isMyPost = isMyPost,
             content = content.toDomain(),
         )
     }

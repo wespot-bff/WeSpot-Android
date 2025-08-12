@@ -6,6 +6,7 @@ import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.detail.state.PostDetailParams
 import com.bff.wespot.community.detail.state.PostDetailSideEffect
 import com.bff.wespot.community.detail.state.PostDetailUiState
+import com.bff.wespot.community.detail.state.PostDetailUiState.SheetItem.SheetType
 import com.bff.wespot.community.uimodel.PostCommentUiModel.Companion.toUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.Companion.toUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
@@ -73,48 +74,15 @@ class PostDetailViewModel @Inject constructor(
         intent {
             when (action) {
                 is PostDetailAction.OnReactionClick -> {
-                    when (action.reaction) {
-                        "like" -> {
-                            val currentLiked = state.isLiked
-                            reduce {
-                                state.copy(isLiked = !currentLiked)
-                            }
-
-                            val result = communityRepository.onLikeClicked(state.detail.id)
-                            if (!result) {
-                                reduce {
-                                    state.copy(isLiked = currentLiked)
-                                }
-                            }
-                        }
-                    }
+                    onReactionClicked(action.reaction)
                 }
 
                 is PostDetailAction.OnScrapClick -> {
-                    val currentScrapped = state.isScrapped
-                    reduce {
-                        state.copy(isScrapped = !currentScrapped)
-                    }
-
-                    val result = communityRepository.onScrapClicked(state.detail.id)
-                    if (!result) {
-                        reduce {
-                            state.copy(isScrapped = currentScrapped)
-                        }
-                    }
+                    onScrapClicked()
                 }
 
                 is PostDetailAction.OnNotificationClick -> {
-                    val registered = state.registered
-                    reduce {
-                        state.copy(registered = !registered)
-                    }
-                    val result = postDetailRepository.registerNotification(state.detail.id)
-                    if (!result) {
-                        reduce {
-                            state.copy(registered = registered)
-                        }
-                    }
+                    onNotificationClicked()
                 }
 
                 is PostDetailAction.OnCommentChange -> {
@@ -124,56 +92,19 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCommentSend -> {
-                    val postId = state.detail.id.toIntOrNull() ?: return@intent
-                    val result = postDetailRepository.sendComment(postId, action.content)
-                    if (result) {
-                        reduce {
-                            state.copy(commentInput = "")
-                        }
-                    }
+                    onCommentSend(action.content)
                 }
 
                 is PostDetailAction.OnCommentLike -> {
-                    val commentIndex = state.comments.indexOfFirst { it.id == action.commentId }
-                    if (commentIndex != -1) {
-                        val comment = state.comments[commentIndex]
-                        val updatedComment = comment.copy(
-                            pushedLike = !comment.pushedLike,
-                            likeCount = if (comment.pushedLike) comment.likeCount - 1 else comment.likeCount + 1,
-                        )
-
-                        reduce {
-                            state.copy(
-                                comments = state.comments.toMutableList().apply {
-                                    set(commentIndex, updatedComment)
-                                },
-                            )
-                        }
-
-                        val result = postDetailRepository.likeComment(action.commentId)
-                        if (!result) {
-                            reduce {
-                                state.copy(
-                                    comments = state.comments.toMutableList().apply {
-                                        set(commentIndex, comment)
-                                    },
-                                )
-                            }
-                        }
-                    }
+                    onCommentLike(action.commentId)
                 }
 
                 is PostDetailAction.OnCommentReport -> {
                     postDetailRepository.reportComment(action.commentId)
                 }
 
-                is PostDetailAction.OnEditPost -> {
-                    postSideEffect(
-                        PostDetailSideEffect.NavigateToEditPost(
-                            state.detail.id,
-                            state.detail.content,
-                        ),
-                    )
+                is PostDetailAction.OnCommentDelete -> {
+                    onCommentDelete(action.commentId)
                 }
 
                 is PostDetailAction.RefreshPost -> {
@@ -189,10 +120,218 @@ class PostDetailViewModel @Inject constructor(
                     )
                 }
 
-                PostDetailAction.OnBackClick -> {
+                is PostDetailAction.OnBackClick -> {
                     postSideEffect(PostDetailSideEffect.OnBackClick)
                 }
+
+                is PostDetailAction.OnSheetItemClicked -> {
+                    onSheetItemClicked(action.option)
+                }
+
+                is PostDetailAction.OnMoreOptionClicked -> {
+                    reduce {
+                        state.copy(showPostOptionsBottomSheet = true)
+                    }
+                }
+
+                is PostDetailAction.OnDismissPostOptions -> {
+                    reduce {
+                        state.copy(showPostOptionsBottomSheet = false)
+                    }
+                }
+
+                is PostDetailAction.OnDismissDeleteDialog -> {
+                    reduce {
+                        state.copy(showDeleteDialog = false)
+                    }
+                }
+
+                is PostDetailAction.OnConfirmDelete -> {
+                    onConfirmDelete()
+                }
+
+                is PostDetailAction.OnDismissBlockDialog -> {
+                    reduce {
+                        state.copy(showBlockDialog = false)
+                    }
+                }
+
+                is PostDetailAction.OnConfirmBlock -> {
+                    onConfirmBlock()
+                }
             }
+        }
+    }
+
+    private fun onReactionClicked(reaction: String) = intent {
+        when (reaction) {
+            "like" -> {
+                val currentLiked = state.isLiked
+                reduce {
+                    state.copy(isLiked = !currentLiked)
+                }
+
+                val result = communityRepository.onLikeClicked(state.detail.id)
+                if (!result) {
+                    reduce {
+                        state.copy(isLiked = currentLiked)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onScrapClicked() = intent {
+        val currentScrapped = state.isScrapped
+        reduce {
+            state.copy(isScrapped = !currentScrapped)
+        }
+
+        val result = communityRepository.onScrapClicked(state.detail.id)
+        if (!result) {
+            reduce {
+                state.copy(isScrapped = currentScrapped)
+            }
+        }
+    }
+
+    private fun onNotificationClicked() = intent {
+        val registered = state.registered
+        reduce {
+            state.copy(registered = !registered)
+        }
+        val result = postDetailRepository.registerNotification(state.detail.id)
+        if (!result) {
+            reduce {
+                state.copy(registered = registered)
+            }
+        }
+    }
+
+    private fun onCommentSend(content: String) = intent {
+        val postId = state.detail.id.toIntOrNull() ?: return@intent
+        val result = postDetailRepository.sendComment(postId, content)
+        if (result) {
+            reduce {
+                state.copy(commentInput = "")
+            }
+        }
+    }
+
+    private fun onCommentLike(commentId: String) = intent {
+        val commentIndex = state.comments.indexOfFirst { it.id == commentId }
+        if (commentIndex != -1) {
+            val comment = state.comments[commentIndex]
+            val updatedComment = comment.copy(
+                pushedLike = !comment.pushedLike,
+                likeCount = if (comment.pushedLike) comment.likeCount - 1 else comment.likeCount + 1,
+            )
+
+            reduce {
+                state.copy(
+                    comments = state.comments.toMutableList().apply {
+                        set(commentIndex, updatedComment)
+                    },
+                )
+            }
+
+            val result = postDetailRepository.likeComment(commentId)
+            if (!result) {
+                reduce {
+                    state.copy(
+                        comments = state.comments.toMutableList().apply {
+                            set(commentIndex, comment)
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    private fun onSheetItemClicked(item: SheetType) = intent {
+        when (item) {
+            SheetType.EDIT -> {
+                reduce {
+                    state.copy(showPostOptionsBottomSheet = false)
+                }
+                postSideEffect(
+                    PostDetailSideEffect.NavigateToEditPost(
+                        state.detail.id,
+                        state.detail.content,
+                    ),
+                )
+            }
+
+            SheetType.DELETE -> {
+                reduce {
+                    state.copy(
+                        showPostOptionsBottomSheet = false,
+                        showDeleteDialog = true,
+                    )
+                }
+            }
+
+            SheetType.REPORT -> {
+                reduce {
+                    state.copy(showPostOptionsBottomSheet = false)
+                }
+                postSideEffect(PostDetailSideEffect.NavigateToReportScreen)
+            }
+
+            SheetType.BLOCK -> {
+                reduce {
+                    state.copy(
+                        showPostOptionsBottomSheet = false,
+                        showBlockDialog = true,
+                    )
+                }
+            }
+        }
+    }
+
+    private fun onConfirmDelete() = intent {
+        reduce {
+            state.copy(showDeleteDialog = false)
+        }
+
+        viewModelScope.launch(ioDispatcher) {
+            postDetailRepository.deletePost(postId)
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onSuccess {
+                    postSideEffect(PostDetailSideEffect.OnPostDeletedOrBlocked)
+                }
+        }
+    }
+
+    private fun onCommentDelete(commentId: String) = intent {
+        viewModelScope.launch(ioDispatcher) {
+            postDetailRepository.deleteComment(commentId)
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onSuccess {
+                    reduce {
+                        state.copy(comments = state.comments.filter { it.id != commentId })
+                    }
+                }
+        }
+    }
+
+    private fun onConfirmBlock() = intent {
+        reduce {
+            state.copy(showBlockDialog = false)
+        }
+
+        viewModelScope.launch(ioDispatcher) {
+            postDetailRepository.blockPost(postId)
+                .onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }
+                .onSuccess {
+                    postSideEffect(PostDetailSideEffect.OnPostDeletedOrBlocked)
+                }
         }
     }
 }

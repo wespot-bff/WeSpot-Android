@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,8 +36,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +52,7 @@ import com.bff.wespot.community.uimodel.PostCommentUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.Gray300
@@ -64,6 +69,7 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.util.clickableSingle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,7 +103,7 @@ internal fun PostDetailScreen(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .background(
-                                    WeSpotThemeManager.colors.cardBackgroundColor,
+                                    Gray600,
                                     CircleShape,
                                 ),
                         ) {
@@ -116,7 +122,8 @@ internal fun PostDetailScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 16.dp)
-                            .clickableSingle { onAction(PostDetailAction.OnEditPost) },
+                            .clickableSingle { onAction(PostDetailAction.OnMoreOptionClicked) }
+                            .size(40.dp),
                     )
                 },
             )
@@ -137,8 +144,6 @@ internal fun PostDetailScreen(
         ) {
             item {
                 Column {
-                    HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Column(
@@ -188,6 +193,37 @@ internal fun PostDetailScreen(
 
     LaunchedEffect(uiState.scrollToComments) {
         lazyListState.animateScrollToItem(1)
+    }
+
+    if (uiState.showPostOptionsBottomSheet) {
+        PostOptionsBottomSheet(
+            sheetItems = uiState.getSheetList(),
+            onAction = onAction,
+        )
+    }
+
+    if (uiState.showDeleteDialog) {
+        WSDialog(
+            title = stringResource(R.string.delete_dialog_title),
+            subTitle = stringResource(R.string.delete_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmDelete) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissDeleteDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissDeleteDialog) },
+        )
+    }
+
+    if (uiState.showBlockDialog) {
+        WSDialog(
+            title = stringResource(R.string.block_dialog_title),
+            subTitle = stringResource(R.string.block_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmBlock) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissBlockDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissBlockDialog) },
+        )
     }
 }
 
@@ -416,6 +452,7 @@ private fun PostCommentUiModel.Item(
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.8f),
         ) {
             if (!isMe) {
                 Box(
@@ -448,12 +485,22 @@ private fun PostCommentUiModel.Item(
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = if (isMe) {
+                        Arrangement.End
+                    } else {
+                        Arrangement.Start
+                    },
                 ) {
+                    val corner = RoundedCornerShape(
+                        topEnd = if (isMe) 0.dp else 16.dp,
+                        topStart = if (isMe) 16.dp else 0.dp,
+                        bottomEnd = 16.dp,
+                        bottomStart = 16.dp,
+                    )
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Gray600, RoundedCornerShape(16.dp)),
+                            .clip(corner)
+                            .background(Gray600, corner),
                     ) {
                         Text(
                             text = message,
@@ -507,6 +554,9 @@ private fun PostCommentUiModel.Item(
                             text = stringResource(R.string.postdetail_delete),
                             style = StaticTypeScale.Default.body9,
                             color = Gray400,
+                            modifier = Modifier.clickableSingle {
+                                onAction(PostDetailAction.OnCommentDelete(id))
+                            },
                         )
                     } else {
                         Text(
@@ -541,11 +591,13 @@ private fun CommentInputBox(
                 vertical = 12.dp,
                 horizontal = 20.dp,
             ),
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
+                .height(IntrinsicSize.Min)
                 .background(
                     color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
@@ -556,12 +608,17 @@ private fun CommentInputBox(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChanged,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 textStyle = StaticTypeScale.Default.body3.copy(
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 ),
                 decorationBox = @Composable { innerTextField ->
-                    Box {
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
                         if (value.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.post_detail_comment_placeholder),
@@ -587,9 +644,63 @@ private fun CommentInputBox(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PostOptionsBottomSheet(
+    sheetItems: List<PostDetailUiState.SheetItem>,
+    onAction: (PostDetailAction) -> Unit,
+) {
+    WSBottomSheet(closeSheet = { onAction(PostDetailAction.OnDismissPostOptions) }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 28.dp),
+        ) {
+            sheetItems.forEachIndexed { index, item ->
+                PostOptionItem(
+                    text = item.text,
+                    textColor = WeSpotThemeManager.colors.txtTitleColor,
+                    onClick = {
+                        onAction(PostDetailAction.OnSheetItemClicked(item.type))
+                    },
+                )
+
+                if (index < sheetItems.lastIndex) {
+                    HorizontalDivider(
+                        color = Color(0xFF4F5157),
+                        modifier = Modifier.padding(vertical = 8.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PostOptionItem(
+    text: String,
+    textColor: Color = WeSpotThemeManager.colors.txtTitleColor,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickableSingle { onClick() }
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = StaticTypeScale.Default.body3,
+            color = textColor,
+        )
+    }
+}
+
 private object PostDetailPreviewData {
     val samplePostDetail = PostDetailUiModel(
         id = "post_detail_1",
+        isMyPost = false,
         content = PostDetailContentUiModel(
             category = PostDetailContentUiModel.CategoryUiModel(
                 text = RichTextType(

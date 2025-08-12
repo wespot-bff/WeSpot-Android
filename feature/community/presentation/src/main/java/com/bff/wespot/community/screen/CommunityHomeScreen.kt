@@ -1,5 +1,7 @@
 package com.bff.wespot.community.screen
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -63,6 +65,17 @@ internal fun CommunityHomeScreen(
     val paging = uiState.posts.collectAsLazyPagingItems()
     val lazyColumnState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    val postDetailLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val shouldRefresh = result.data?.getBooleanExtra("refresh", false) ?: false
+            if (shouldRefresh) {
+                onAction(CommunityAction.OnRefresh)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -157,7 +170,7 @@ internal fun CommunityHomeScreen(
                                             postId = post.id,
                                         )
 
-                                        context.startActivity(intent)
+                                        postDetailLauncher.launch(intent)
                                     },
                                     reactionClick = { reaction ->
                                         when (reaction) {
@@ -167,7 +180,7 @@ internal fun CommunityHomeScreen(
                                                     postId = post.id,
                                                     scrollToComments = true,
                                                 )
-                                                context.startActivity(intent)
+                                                postDetailLauncher.launch(intent)
                                             }
 
                                             else -> {

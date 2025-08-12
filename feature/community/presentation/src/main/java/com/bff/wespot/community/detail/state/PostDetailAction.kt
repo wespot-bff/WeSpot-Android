@@ -10,6 +10,19 @@ sealed interface PostDetailAction {
     data class OnCommentSend(val content: String) : PostDetailAction
     data class OnCommentLike(val commentId: String) : PostDetailAction
     data class OnCommentReport(val commentId: String) : PostDetailAction
-    data object OnEditPost : PostDetailAction
+    data class OnCommentDelete(val commentId: String) : PostDetailAction
     data object RefreshPost : PostDetailAction
+
+    // Bottom sheet actions
+    data object OnMoreOptionClicked : PostDetailAction
+    data object OnDismissPostOptions : PostDetailAction
+    data class OnSheetItemClicked(
+        val option: PostDetailUiState.SheetItem.SheetType,
+    ) : PostDetailAction
+
+    // Dialog actions
+    data object OnDismissDeleteDialog : PostDetailAction
+    data object OnConfirmDelete : PostDetailAction
+    data object OnDismissBlockDialog : PostDetailAction
+    data object OnConfirmBlock : PostDetailAction
 }

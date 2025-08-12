@@ -225,20 +225,21 @@ internal fun WritePostScreen(
                 contentPadding = PaddingValues(top = 12.dp, end = 14.dp),
             ) {
                 item {
-                    ImageBox(
-                        imagePath = "",
-                        onBoxClick = {
-                            if (uiState.images.size == 3) return@ImageBox
-                            pickImage.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.SingleMimeType(
-                                        "image/*",
+                    if (uiState.images.size <= 3) {
+                        ImageBox(
+                            imagePath = "",
+                            onBoxClick = {
+                                pickImage.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                                            "image/*",
+                                        ),
                                     ),
-                                ),
-                            )
-                        },
-                        onCloseClick = {},
-                    )
+                                )
+                            },
+                            onCloseClick = {},
+                        )
+                    }
                 }
 
                 items(uiState.images) {

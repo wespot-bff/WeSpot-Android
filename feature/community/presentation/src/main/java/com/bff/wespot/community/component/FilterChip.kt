@@ -50,7 +50,11 @@ internal fun FilterChip(
     onMoreClicked: () -> Unit,
     onSameChipClicked: () -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+    ) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
