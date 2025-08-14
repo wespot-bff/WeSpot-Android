@@ -104,9 +104,11 @@ internal fun PostDetailScreen(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .background(
-                                    Gray600,
+                                    Gray400,
                                     CircleShape,
-                                ),
+                                )
+                                .size(18.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
                             uiModel.category.icon.Icon(modifier = Modifier.size(16.dp))
                         }
@@ -170,6 +172,7 @@ internal fun PostDetailScreen(
                             onAction,
                             uiState.isLiked,
                             uiState.likeCount,
+                            uiState.commentCount,
                             uiState.isScrapped,
                         )
 
@@ -372,6 +375,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
     onAction: (PostDetailAction) -> Unit,
     isLiked: Boolean = false,
     likeCount: Int = 0,
+    commentCount: Int = 0,
     isScrapped: Boolean = false,
 ) {
     FlowRow(
@@ -409,8 +413,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     )
                     val displayCount = when (reaction) {
                         is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> likeCount
-                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> reaction.count.text.toIntOrNull()
-                            ?: 0
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> commentCount
                     }
                     if (displayCount != 0) {
                         Text(

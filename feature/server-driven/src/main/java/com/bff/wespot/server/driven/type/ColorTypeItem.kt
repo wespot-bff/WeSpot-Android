@@ -1,7 +1,6 @@
 package com.bff.wespot.server.driven.type
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
@@ -24,8 +23,6 @@ import com.bff.wespot.designsystem.theme.Primary500
 import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.GradationType
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun ColorType.color(): Color {
@@ -45,18 +42,7 @@ fun GradationType.toBrush(): Brush {
     val startColorCompose = startColor.color()
     val endColorCompose = endColor.color()
 
-    val angleRadians = Math.toRadians(angle.toDouble())
-
-    val startX = (1 - cos(angleRadians)).toFloat() * 0.5f
-    val startY = (1 + sin(angleRadians)).toFloat() * 0.5f
-    val endX = (1 + cos(angleRadians)).toFloat() * 0.5f
-    val endY = (1 - sin(angleRadians)).toFloat() * 0.5f
-
-    return Brush.linearGradient(
-        colors = listOf(startColorCompose, endColorCompose),
-        start = Offset(startX, startY),
-        end = Offset(endX, endY),
-    )
+    return Brush.linearGradient(colors = listOf(startColorCompose, endColorCompose))
 }
 
 @Composable

@@ -54,13 +54,18 @@ class PostDetailViewModel @Inject constructor(
                         val likeReaction = postDetail.content.footerSection.reactions
                             .filterIsInstance<PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel>()
                             .firstOrNull()
+                        val chatReaction = postDetail.content.footerSection.reactions
+                            .filterIsInstance<PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel>()
+                            .firstOrNull()
                         val initialLikeCount = likeReaction?.count?.text?.toIntOrNull() ?: 0
+                        val initialCommentCount = chatReaction?.count?.text?.toIntOrNull() ?: 0
                         val isLiked = likeReaction?.selected ?: false
 
                         reduce {
                             state.copy(
                                 detail = postDetail,
                                 likeCount = initialLikeCount,
+                                commentCount = initialCommentCount,
                                 isLiked = isLiked,
                             )
                         }
@@ -239,10 +244,27 @@ class PostDetailViewModel @Inject constructor(
 
     private fun onCommentSend(content: String) = intent {
         val postId = state.detail.id.toIntOrNull() ?: return@intent
-        val result = postDetailRepository.sendComment(postId, content)
-        if (result) {
-            reduce {
-                state.copy(commentInput = "")
+
+        viewModelScope.launch(ioDispatcher) {
+            val result = postDetailRepository.sendComment(postId, content)
+            if (result) {
+                intent {
+                    reduce {
+                        state.copy(commentInput = "")
+                    }
+                }
+
+                postDetailRepository.getPostComments(state.detail.id)
+                    .onSuccess { comments ->
+                        intent {
+                            reduce {
+                                state.copy(
+                                    comments = comments.map { it.toUiModel() },
+                                    commentCount = comments.size,
+                                )
+                            }
+                        }
+                    }
             }
         }
     }
@@ -342,7 +364,10 @@ class PostDetailViewModel @Inject constructor(
                 }
                 .onSuccess {
                     reduce {
-                        state.copy(comments = state.comments.filter { it.id != commentId })
+                        state.copy(
+                            comments = state.comments.filter { it.id != commentId },
+                            commentCount = (state.commentCount - 1).coerceAtLeast(0),
+                        )
                     }
                 }
         }

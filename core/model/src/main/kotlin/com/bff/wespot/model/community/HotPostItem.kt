@@ -30,7 +30,7 @@ data class HotPostItem(
             )
 
             data class InfoSection(
-                val title: RichTextType,
+                val title: RichTextType?,
                 val description: RichTextType,
             )
         }

@@ -18,7 +18,7 @@ class PostDetailRepositoryImpl @Inject constructor(
     override suspend fun getPostComments(postId: String): Result<List<PostComment>> =
         postDetailDataSource.getPostComments(postId)
             .mapCatching {
-                it.mapIndexed { id, comment -> comment.toDomain(id.toString()) }
+                it.map { comment -> comment.toDomain() }
             }
 
     override suspend fun registerNotification(postId: String): Boolean {
