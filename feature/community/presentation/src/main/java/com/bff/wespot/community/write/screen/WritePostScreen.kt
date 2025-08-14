@@ -225,7 +225,7 @@ internal fun WritePostScreen(
                 contentPadding = PaddingValues(top = 12.dp, end = 14.dp),
             ) {
                 item {
-                    if (uiState.images.size <= 3) {
+                    if (uiState.images.size < 3) {
                         ImageBox(
                             imagePath = "",
                             onBoxClick = {

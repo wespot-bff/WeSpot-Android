@@ -69,6 +69,7 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.server.driven.type.color
 import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.util.clickableSingle
 
@@ -165,7 +166,12 @@ internal fun PostDetailScreen(
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        uiModel.footerSection.Item(onAction, uiState.isLiked, uiState.isScrapped)
+                        uiModel.footerSection.Item(
+                            onAction,
+                            uiState.isLiked,
+                            uiState.likeCount,
+                            uiState.isScrapped,
+                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -365,6 +371,7 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
 private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
     onAction: (PostDetailAction) -> Unit,
     isLiked: Boolean = false,
+    likeCount: Int = 0,
     isScrapped: Boolean = false,
 ) {
     FlowRow(
@@ -383,11 +390,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
 
                 Row(
                     modifier = Modifier.clickableSingle {
-                        val type = when (reaction) {
-                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> "chat"
-                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> "like"
-                        }
-                        onAction(PostDetailAction.OnReactionClick(type))
+                        onAction(PostDetailAction.OnReactionClick(reaction))
                     },
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -404,7 +407,18 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                         ),
                         contentDescription = null,
                     )
-                    reaction.count.Text(StaticTypeScale.Default.body6)
+                    val displayCount = when (reaction) {
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> likeCount
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> reaction.count.text.toIntOrNull()
+                            ?: 0
+                    }
+                    if (displayCount != 0) {
+                        Text(
+                            text = displayCount.toString(),
+                            style = StaticTypeScale.Default.body6,
+                            color = reaction.count.color.color(),
+                        )
+                    }
                 }
             }
         }

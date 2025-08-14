@@ -81,11 +81,9 @@ fun AllPostsScreen(
                             reactionClick = { reaction ->
                                 when (reaction) {
                                     is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
-                                        // Navigate to PostDetail comment section
                                         action(CommunityAllAction.NavigateToDetailComments(item.id))
                                     }
                                     else -> {
-                                        // Handle other reactions (like)
                                         action(
                                             CommunityAllAction.OnReactionClick(
                                                 id = item.id,

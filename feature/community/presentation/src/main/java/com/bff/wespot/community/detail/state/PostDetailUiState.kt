@@ -10,6 +10,7 @@ data class PostDetailUiState(
     val detail: PostDetailUiModel = PostDetailUiModel.Empty,
     val comments: List<PostCommentUiModel> = emptyList(),
     val isLiked: Boolean = false,
+    val likeCount: Int = 0,
     val isScrapped: Boolean = false,
     val registered: Boolean = false,
     val commentInput: String = "",

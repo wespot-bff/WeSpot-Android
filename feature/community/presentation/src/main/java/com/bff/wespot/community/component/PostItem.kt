@@ -127,16 +127,18 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item(
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Row(
-                    modifier = Modifier.clickableSingle {
-                        navigateToCategory.invoke(category.target, category.text.text)
-                    },
-                ) {
-                    category.text.Text(StaticTypeScale.Default.badge)
+                category?.let { category ->
+                    Row(
+                        modifier = Modifier.clickableSingle {
+                            navigateToCategory.invoke(category.target, category.text.text)
+                        },
+                    ) {
+                        category.text.Text(StaticTypeScale.Default.badge)
 
-                    category.icon.Icon(
-                        modifier = Modifier.size(16.dp),
-                    )
+                        category.icon.Icon(
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
                 }
 
                 Row(

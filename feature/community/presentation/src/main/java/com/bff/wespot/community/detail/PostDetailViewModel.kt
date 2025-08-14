@@ -8,7 +8,9 @@ import com.bff.wespot.community.detail.state.PostDetailSideEffect
 import com.bff.wespot.community.detail.state.PostDetailUiState
 import com.bff.wespot.community.detail.state.PostDetailUiState.SheetItem.SheetType
 import com.bff.wespot.community.uimodel.PostCommentUiModel.Companion.toUiModel
+import com.bff.wespot.community.uimodel.PostDetailUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.Companion.toUiModel
+import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
 import com.bff.wespot.domain.repository.community.PostDetailRepository
 import com.bff.wespot.ui.base.BaseViewModel
@@ -48,8 +50,19 @@ class PostDetailViewModel @Inject constructor(
                 }
                 .onSuccess {
                     intent {
+                        val postDetail = it.toUiModel()
+                        val likeReaction = postDetail.content.footerSection.reactions
+                            .filterIsInstance<PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel>()
+                            .firstOrNull()
+                        val initialLikeCount = likeReaction?.count?.text?.toIntOrNull() ?: 0
+                        val isLiked = likeReaction?.selected ?: false
+
                         reduce {
-                            state.copy(detail = it.toUiModel())
+                            state.copy(
+                                detail = postDetail,
+                                likeCount = initialLikeCount,
+                                isLiked = isLiked,
+                            )
                         }
                     }
                 }
@@ -163,23 +176,39 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onReactionClicked(reaction: String) = intent {
-        when (reaction) {
-            "like" -> {
-                val currentLiked = state.isLiked
-                reduce {
-                    state.copy(isLiked = !currentLiked)
+    private fun onReactionClicked(
+        reaction: ReactionUiModel,
+    ) =
+        intent {
+            when (reaction) {
+                is ReactionUiModel.LikeUiModel -> {
+                    val currentLiked = state.isLiked
+                    val currentCount = state.likeCount
+                    val newLiked = !currentLiked
+                    val newCount = if (newLiked) currentCount + 1 else currentCount - 1
+
+                    reduce {
+                        state.copy(
+                            isLiked = newLiked,
+                            likeCount = newCount,
+                        )
+                    }
+
+                    val result = communityRepository.onLikeClicked(state.detail.id)
+                    if (!result) {
+                        reduce {
+                            state.copy(
+                                isLiked = currentLiked,
+                                likeCount = currentCount,
+                            )
+                        }
+                    }
                 }
 
-                val result = communityRepository.onLikeClicked(state.detail.id)
-                if (!result) {
-                    reduce {
-                        state.copy(isLiked = currentLiked)
-                    }
+                is ReactionUiModel.ChatUiModel -> {
                 }
             }
         }
-    }
 
     private fun onScrapClicked() = intent {
         val currentScrapped = state.isScrapped
