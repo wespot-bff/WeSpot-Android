@@ -31,7 +31,7 @@ data class HotPostItemUiModel(
             )
 
             data class InfoSectionUiModel(
-                val title: RichTextType,
+                val title: RichTextType?,
                 val description: RichTextType,
             )
         }

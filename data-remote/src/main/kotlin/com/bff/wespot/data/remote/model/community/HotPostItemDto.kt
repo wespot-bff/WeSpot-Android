@@ -47,7 +47,7 @@ data class HotPostContentDto(
 
         @Serializable
         data class InfoSectionDto(
-            val title: RichTextTypeDto,
+            val title: RichTextTypeDto?,
             val description: RichTextTypeDto
         )
 
@@ -85,7 +85,7 @@ private fun HotPostContentDto.PostDto.HeaderSectionDto.toDomain() =
 
 private fun HotPostContentDto.PostDto.InfoSectionDto.toDomain() =
     HotPostItem.HotPostContent.Post.InfoSection(
-        title = title.toDomain(),
+        title = title?.toDomain(),
         description = description.toDomain()
     )
 

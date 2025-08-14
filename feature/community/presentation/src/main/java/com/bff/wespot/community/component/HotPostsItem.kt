@@ -99,13 +99,13 @@ private fun HotPostContentUiModel.PostUiModel.HeaderSectionUiModel.Item() {
 @Composable
 private fun HotPostContentUiModel.PostUiModel.InfoSectionUiModel.Item() {
     Column {
-        title.Text(
+        title?.Text(
             textStyle = StaticTypeScale.Default.body5,
             maxLines = 1,
         )
         description.Text(
             textStyle = StaticTypeScale.Default.body7,
-            maxLines = if (title.text.isNotEmpty()) {
+            maxLines = if (title?.text != null) {
                 1
             } else {
                 2
