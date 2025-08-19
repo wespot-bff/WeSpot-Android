@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.chip.BaseChipUiModel
 import com.bff.wespot.community.uimodel.chip.FilterChipUiModel
+import com.bff.wespot.designsystem.theme.Gray200
+import com.bff.wespot.designsystem.theme.Gray700
 import com.bff.wespot.designsystem.theme.Gray900
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
@@ -81,9 +83,9 @@ internal fun FilterChip(
                             modifier = Modifier
                                 .background(
                                     color = if (selected) {
-                                        WeSpotThemeManager.colors.abledIconColor
+                                        Gray200
                                     } else {
-                                        WeSpotThemeManager.colors.disableIcnColor
+                                        Gray700
                                     },
                                     shape = RoundedCornerShape(80.dp),
                                 )

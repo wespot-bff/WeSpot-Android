@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -132,11 +134,12 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item(
                         modifier = Modifier.clickableSingle {
                             navigateToCategory.invoke(category.target, category.text.text)
                         },
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         category.text.Text(StaticTypeScale.Default.badge)
 
                         category.icon.Icon(
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(10.dp),
                         )
                     }
                 }
@@ -282,20 +285,24 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
         verticalArrangement = Arrangement.Center,
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             reactions.forEach {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickableSingle {
-                        reactionClick.invoke(it)
-                    },
+                    modifier = Modifier
+                        .clickableSingle {
+                            reactionClick.invoke(it)
+                        }
+                        .fillMaxHeight(),
                 ) {
                     AsyncImage(
                         model = it.icon.url,
-                        modifier = Modifier.size(14.dp),
+                        modifier = Modifier.size(20.dp),
                         colorFilter = ColorFilter.tint(
                             color = if (it.selected) {
                                 Primary300
@@ -321,7 +328,7 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
         ) {
             AsyncImage(
                 model = scrap.icon.url,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(
                     color = if (scrap.selected) {
                         Primary300

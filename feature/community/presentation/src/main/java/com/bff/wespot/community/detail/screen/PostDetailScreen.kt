@@ -183,18 +183,18 @@ internal fun PostDetailScreen(
                         thickness = 8.dp,
                         color = Gray700,
                     )
+
+                    Spacer(Modifier.height(24.dp))
                 }
             }
 
             items(uiState.comments) { comment ->
-                Spacer(modifier = Modifier.height(24.dp))
-
                 comment.Item(
                     onAction = onAction,
                     isLiked = comment.pushedLike,
                 )
                 if (comment != uiState.comments.last()) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
@@ -383,7 +383,9 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         verticalArrangement = Arrangement.Center,
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             reactions.forEach { reaction ->
@@ -393,15 +395,17 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                 }
 
                 Row(
-                    modifier = Modifier.clickableSingle {
-                        onAction(PostDetailAction.OnReactionClick(reaction))
-                    },
+                    modifier = Modifier
+                        .clickableSingle {
+                            onAction(PostDetailAction.OnReactionClick(reaction))
+                        }
+                        .fillMaxHeight(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AsyncImage(
                         model = reaction.icon.url,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(20.dp),
                         colorFilter = ColorFilter.tint(
                             if (isSelected) {
                                 Primary300
@@ -433,7 +437,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         ) {
             AsyncImage(
                 model = scrap.icon.url,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(20.dp),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     if (isScrapped) {

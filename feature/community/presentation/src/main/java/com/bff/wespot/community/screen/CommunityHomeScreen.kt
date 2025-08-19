@@ -102,7 +102,6 @@ internal fun CommunityHomeScreen(
                 },
             )
         },
-        modifier = Modifier.padding(horizontal = 20.dp),
     ) {
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
@@ -118,6 +117,7 @@ internal fun CommunityHomeScreen(
                 LazyColumn(
                     modifier = Modifier
                         .padding(top = 24.dp)
+                        .padding(horizontal = 20.dp)
                         .fillMaxSize(),
                     state = lazyColumnState,
                     verticalArrangement = Arrangement.spacedBy(24.dp),
