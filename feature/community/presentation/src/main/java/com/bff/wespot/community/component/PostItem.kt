@@ -135,6 +135,7 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item(
                             navigateToCategory.invoke(category.target, category.text.text)
                         },
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         category.text.Text(StaticTypeScale.Default.badge)
 
