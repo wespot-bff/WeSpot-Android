@@ -34,4 +34,8 @@
     <string name="post_caution_description">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
     <string name="report_description">*신고 누적 시 신고를 받은 유저의 이용이 제한돼요</string>
     <string name="report_custom_placeholder">직접 입력</string>
+    <string name="community_error_description">커뮤니티 오류</string>
+    <string name="community_error_title">인터넷 연결이 불안정해요</string>
+    <string name="community_error_message">연결 상태를 확인하고 다시 시도해주세요</string>
+    <string name="retry">다시 시도하기</string>
 </resources>
