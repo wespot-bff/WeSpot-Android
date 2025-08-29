@@ -10,6 +10,7 @@ import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.community.all.CommunityAllActivity
 import com.bff.wespot.community.categorydetail.CategoryDetailActivity
 import com.bff.wespot.community.detail.PostDetailActivity
+import com.bff.wespot.community.report.CommunityReportActivity
 import com.bff.wespot.community.search.SearchActivity
 import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
@@ -255,6 +256,17 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val intent = context.buildIntent<CategoryDetailActivity>()
         intent.putExtra("categoryId", categoryId)
         intent.putExtra("categoryText", categoryText)
+        return intent
+    }
+
+    override fun navigateToCommunityReport(
+        context: Context,
+        targetId: String,
+        reportType: String,
+    ): Intent {
+        val intent = context.buildIntent<CommunityReportActivity>()
+        intent.putExtra("targetId", targetId)
+        intent.putExtra("reportType", reportType)
         return intent
     }
 }

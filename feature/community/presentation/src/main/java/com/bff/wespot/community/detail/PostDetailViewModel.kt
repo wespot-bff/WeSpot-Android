@@ -118,7 +118,7 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCommentReport -> {
-                    postDetailRepository.reportComment(action.commentId)
+                    postSideEffect(PostDetailSideEffect.NavigateToCommentReportScreen(action.commentId))
                 }
 
                 is PostDetailAction.OnCommentDelete -> {
@@ -326,7 +326,7 @@ class PostDetailViewModel @Inject constructor(
                 reduce {
                     state.copy(showPostOptionsBottomSheet = false)
                 }
-                postSideEffect(PostDetailSideEffect.NavigateToReportScreen)
+                postSideEffect(PostDetailSideEffect.NavigateToPostReportScreen(state.detail.id))
             }
 
             SheetType.BLOCK -> {

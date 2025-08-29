@@ -189,7 +189,7 @@ private fun cursorColor(isError: Boolean): State<Color> {
     return rememberUpdatedState(if (isError) color.errorCursorColor else color.cursorColor)
 }
 
-sealed interface WsTextFieldType {
+interface WsTextFieldType {
     @Composable
     fun trailingIcon(): Painter?
 

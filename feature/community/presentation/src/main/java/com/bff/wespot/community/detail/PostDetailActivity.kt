@@ -87,8 +87,22 @@ class PostDetailActivity : ComponentActivity() {
                         startActivity(intent)
                     }
 
-                    is PostDetailSideEffect.NavigateToReportScreen -> {
-                        // TODO
+                    is PostDetailSideEffect.NavigateToPostReportScreen -> {
+                        val intent = navigator.navigateToCommunityReport(
+                            context = this@PostDetailActivity,
+                            targetId = sideEffect.postId,
+                            reportType = "POST",
+                        )
+                        startActivity(intent)
+                    }
+
+                    is PostDetailSideEffect.NavigateToCommentReportScreen -> {
+                        val intent = navigator.navigateToCommunityReport(
+                            context = this@PostDetailActivity,
+                            targetId = sideEffect.commentId,
+                            reportType = "COMMENT",
+                        )
+                        startActivity(intent)
                     }
                 }
             }
