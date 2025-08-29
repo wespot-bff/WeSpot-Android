@@ -33,6 +33,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -146,6 +150,10 @@ internal fun PostDetailScreen(
             state = lazyListState,
         ) {
             item {
+                var hasContent by remember {
+                    mutableStateOf(uiModel.contentSection != null)
+                }
+
                 Column {
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -163,7 +171,11 @@ internal fun PostDetailScreen(
 
                         uiModel.contentSection?.let {
                             Spacer(modifier = Modifier.height(24.dp))
-                            it.Item()
+                            it.Item(
+                                onContentVisibilityChanged = { isVisible ->
+                                    hasContent = isVisible
+                                },
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -329,42 +341,69 @@ private fun PostDetailContentUiModel.InfoSectionUiModel.Item() {
 }
 
 @Composable
-private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
+private fun PostDetailContentUiModel.ContentSectionUiModel.Item(
+    onContentVisibilityChanged: (Boolean) -> Unit = {},
+) {
     when (this) {
         is PostDetailContentUiModel.ContentSectionUiModel.ImagesContentUiModel -> {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(images) { image ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(White, RoundedCornerShape(12.dp)),
-                    ) {
-                        AsyncImage(
-                            model = image,
+            val validImages by remember(images) { mutableStateOf(images.toMutableList()) }
+
+            if (validImages.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(images) { image ->
+                        var isImageVisible by remember { mutableStateOf(true) }
+
+                        Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .widthIn(min = 200.dp, max = 226.dp)
-                                .heightIn(min = 226.dp, max = 266.dp),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
+                                .background(White, RoundedCornerShape(12.dp)),
+                        ) {
+                            AsyncImage(
+                                model = image,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .widthIn(min = 200.dp, max = 226.dp)
+                                    .heightIn(min = 226.dp, max = 266.dp),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                onError = {
+                                    isImageVisible = false
+                                    validImages.remove(image)
+                                    if (validImages.isEmpty()) {
+                                        onContentVisibilityChanged(false)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
+            } else {
+                onContentVisibilityChanged(false)
             }
         }
 
         is PostDetailContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
-            AsyncImage(
-                model = image,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .fillMaxWidth()
-                    .heightIn(min = 155.dp, max = 718.dp),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-            )
+            var isImageVisible by remember { mutableStateOf(true) }
+
+            if (isImageVisible) {
+                AsyncImage(
+                    model = image,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .fillMaxWidth()
+                        .heightIn(min = 155.dp, max = 718.dp),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    onError = {
+                        isImageVisible = false
+                        onContentVisibilityChanged(false)
+                    },
+                )
+            } else {
+                onContentVisibilityChanged(false)
+            }
         }
     }
 }

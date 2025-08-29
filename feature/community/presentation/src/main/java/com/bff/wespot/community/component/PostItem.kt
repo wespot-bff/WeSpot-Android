@@ -207,13 +207,13 @@ private fun PostContentUiModel.ContentSectionUiModel.Item(
 ) {
     when (this) {
         is PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel -> {
-            val validImages = remember(images) { mutableStateOf(images.toMutableList()) }
+            val validImages by remember(images) { mutableStateOf(images.toMutableList()) }
 
-            if (validImages.value.isNotEmpty()) {
+            if (validImages.isNotEmpty()) {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(validImages.value) { imageUrl ->
+                    items(validImages) { imageUrl ->
                         var isImageVisible by remember { mutableStateOf(true) }
 
                         if (isImageVisible) {
@@ -232,8 +232,8 @@ private fun PostContentUiModel.ContentSectionUiModel.Item(
                                     contentScale = ContentScale.Crop,
                                     onError = {
                                         isImageVisible = false
-                                        validImages.value.remove(imageUrl)
-                                        if (validImages.value.isEmpty()) {
+                                        validImages.remove(imageUrl)
+                                        if (validImages.isEmpty()) {
                                             onContentVisibilityChanged(false)
                                         }
                                     },
