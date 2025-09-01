@@ -13,7 +13,7 @@ sealed class SideEffect {
         private const val DEFAULT_TOAST_MESSAGE = "알 수 없는 에러가 발생하였습니다."
 
         fun NetworkException.toSideEffect(): SideEffect =
-            when (this.viewType) {
+            when (this.view) {
                 NetworkExceptionViewType.TOAST -> ShowToast(this.detail)
                 NetworkExceptionViewType.DIALOG -> ShowDialog(this.detail)
                 NetworkExceptionViewType.REDIRECT -> Redirect
