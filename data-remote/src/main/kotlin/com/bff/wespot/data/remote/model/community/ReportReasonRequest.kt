@@ -4,5 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReportReasonRequest(
-    val reportReasonIds: List<Long>
+    val reportReasonRequests: List<ReportReasonItem>
+)
+
+@Serializable
+data class ReportReasonItem(
+    val reportReasonId: Long,
+    val customReason: String? = null
 )

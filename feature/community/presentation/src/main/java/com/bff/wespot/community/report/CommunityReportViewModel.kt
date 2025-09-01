@@ -100,24 +100,29 @@ class CommunityReportViewModel @Inject constructor(
     private fun submitReport() {
         intent {
             val reasonIds = state.selectedReasonIds
-            val hasCustomReport = state.customReportText.isNotEmpty()
+            val customReason = state.customReportText.ifEmpty { null }
 
-            if (reasonIds.isEmpty() && !hasCustomReport) return@intent
+            if (reasonIds.isEmpty() && customReason == null) return@intent
 
             reduce { state.copy(isSubmitting = true) }
 
             viewModelScope.launch(ioDispatcher) {
                 val reasonIdsAsLong = reasonIds.map { it.toLong() }
+                val customReasonId = state.reportReasons.lastOrNull()?.id?.toLong()
 
                 val result = when (reportType) {
                     ReportType.POST -> communityReportRepository.reportPost(
                         targetId,
                         reasonIdsAsLong,
+                        customReason,
+                        customReasonId,
                     )
 
                     ReportType.COMMENT -> communityReportRepository.reportComment(
                         targetId,
                         reasonIdsAsLong,
+                        customReason,
+                        customReasonId,
                     )
                 }
 

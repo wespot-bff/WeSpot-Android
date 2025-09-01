@@ -4,6 +4,17 @@ import com.bff.wespot.model.community.ReportReason
 
 interface CommunityReportRepository {
     suspend fun getReportReasons(): Result<List<ReportReason>>
-    suspend fun reportPost(postId: String, reasonIds: List<Long>): Result<Unit>
-    suspend fun reportComment(commentId: String, reasonIds: List<Long>): Result<Unit>
+    suspend fun reportPost(
+        postId: String,
+        reasonIds: List<Long>,
+        customReason: String? = null,
+        customReasonId: Long? = null,
+    ): Result<Unit>
+
+    suspend fun reportComment(
+        commentId: String,
+        reasonIds: List<Long>,
+        customReason: String? = null,
+        customReasonId: Long? = null,
+    ): Result<Unit>
 }

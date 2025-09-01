@@ -14,9 +14,9 @@ class CommunityReportRepositoryImpl @Inject constructor(
                 reasons.map { it.toDomain() }
             }
 
-    override suspend fun reportPost(postId: String, reasonIds: List<Long>): Result<Unit> =
-        communityReportDataSource.reportPost(postId, reasonIds)
+    override suspend fun reportPost(postId: String, reasonIds: List<Long>, customReason: String?, customReasonId: Long?): Result<Unit> =
+        communityReportDataSource.reportPost(postId, reasonIds, customReason, customReasonId)
 
-    override suspend fun reportComment(commentId: String, reasonIds: List<Long>): Result<Unit> =
-        communityReportDataSource.reportComment(commentId, reasonIds)
+    override suspend fun reportComment(commentId: String, reasonIds: List<Long>, customReason: String?, customReasonId: Long?): Result<Unit> =
+        communityReportDataSource.reportComment(commentId, reasonIds, customReason, customReasonId)
 }

@@ -11,6 +11,7 @@ import com.bff.wespot.community.report.screen.CommunityReportScreen
 import com.bff.wespot.community.report.state.CommunityReportAction
 import com.bff.wespot.community.report.state.CommunityReportSideEffect
 import com.bff.wespot.designsystem.theme.WeSpotTheme
+import com.bff.wespot.ui.util.handleSideEffect
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -36,6 +37,8 @@ class CommunityReportActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 onAction(CommunityReportAction.LoadReportReasons)
             }
+
+            handleSideEffect(viewModel.sideEffect)
 
             viewModel.collectSideEffect { sideEffect ->
                 when (sideEffect) {
