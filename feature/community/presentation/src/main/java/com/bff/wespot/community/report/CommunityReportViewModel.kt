@@ -48,6 +48,16 @@ class CommunityReportViewModel @Inject constructor(
                 }
 
                 is CommunityReportAction.OnCustomTextChanged -> {
+                    val currentIds = state.selectedReasonIds.toMutableList()
+
+                    if (action.text.isEmpty()) {
+                        currentIds.remove(action.reasonId)
+                    } else {
+                        if (!currentIds.contains(action.reasonId)) {
+                            currentIds.add(action.reasonId)
+                        }
+                    }
+
                     reduce {
                         state.copy(
                             customReportTexts = if (action.text.isEmpty()) {
@@ -55,6 +65,7 @@ class CommunityReportViewModel @Inject constructor(
                             } else {
                                 state.customReportTexts + (action.reasonId to action.text)
                             },
+                            selectedReasonIds = currentIds,
                         )
                     }
                 }
@@ -121,14 +132,12 @@ class CommunityReportViewModel @Inject constructor(
                     reasonIds.forEach { reasonId ->
                         if (reasonId in editableReasonIds) {
                             val customText = customReportTexts[reasonId]
-                            if (!customText.isNullOrEmpty()) {
-                                add(
-                                    ReportReasonItem(
-                                        reportReasonId = reasonId.toLong(),
-                                        customReason = customText,
-                                    ),
-                                )
-                            }
+                            add(
+                                ReportReasonItem(
+                                    reportReasonId = reasonId.toLong(),
+                                    customReason = customText?.takeIf { it.isNotEmpty() },
+                                ),
+                            )
                         } else {
                             add(
                                 ReportReasonItem(
