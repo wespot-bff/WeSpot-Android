@@ -155,6 +155,11 @@ class SendViewModel @Inject constructor(
      */
     fun onAction(action: SendAction) {
         when (action) {
+            SendAction.OnMessageContentClick -> {
+                intent {
+                    postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
+                }
+            }
             is SendAction.OnSendButtonClicked -> handleMessageSend()
             SendAction.OnSenderClicked -> handleSenderClicked()
             SendAction.OnExitDialogCancelButtonClicked -> {

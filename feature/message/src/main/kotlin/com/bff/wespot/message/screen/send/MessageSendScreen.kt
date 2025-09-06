@@ -57,6 +57,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 interface MessageSendNavigator {
     fun navigateUp()
     fun popUpToMessageScreen()
+    fun popUpToMessageWriteScreen()
 }
 
 @Destination
@@ -83,6 +84,9 @@ fun MessageSendScreen(
     viewModel.collectSideEffect {
         if (it is SendSideEffect) {
             when (it) {
+                SendSideEffect.NavigateToMessageWriteScreen -> {
+                    navigator.popUpToMessageWriteScreen()
+                }
                 SendSideEffect.CloseSendConfirmModal -> {
                     showSendConfirmModal = false
                 }
@@ -160,6 +164,9 @@ fun MessageSendScreen(
                 MessageContentItem(
                     title = stringResource(R.string.message_sent_content),
                     buttonText = state.messageInput,
+                    onClick = {
+                        action(SendAction.OnMessageContentClick)
+                    },
                 )
 
                 Box(
@@ -287,6 +294,7 @@ private fun MessageProfileItem(
 private fun MessageContentItem(
     title: String,
     buttonText: String,
+    onClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -298,7 +306,7 @@ private fun MessageContentItem(
         )
 
         WSButton(
-            onClick = { },
+            onClick = onClick,
             heightRange = HeightRange(170.dp, 228.dp),
             paddingValues = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp),
             buttonType = WSButtonType.Tertiary,
