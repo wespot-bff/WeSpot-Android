@@ -4,7 +4,7 @@ on:
     types:
       - opened
       - reopened
-      - synchronized
+      - synchronize
 
 env:
   CACHE_VERSION: 1 # Increment this to invalidate the cache.
