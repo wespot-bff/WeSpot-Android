@@ -104,4 +104,7 @@
     <string name="goToSetting">설정 바로가기</string>
     <string name="unblock_message_dialog_title">차단을 해제하시나요?</string>
     <string name="message_reply_placeholder">답장을 작성해 주세요</string>
+    <string name="message_reply_notice_modal_title">잠깐! 쪽지는 답장을 포함하여\n하루에 총 3개만 보낼 수 있어요</string>
+    <string name="message_reply_notice_modal_subtitle">답장하기를 통한 쪽지 전송 시에도\n보낼 수 있는 남은 쪽지 개수에서 차감돼요</string>
+    <string name="message_reply_notice_modal_ok_button">네 확인했어요</string>
 </resources>

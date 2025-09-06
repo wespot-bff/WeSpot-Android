@@ -36,6 +36,16 @@ class MessageRoomViewModel @Inject constructor(
             is RoomAction.OnDeleteButtonClicked -> handleDeleteButtonClicked()
             is RoomAction.OnDeleteConfirmed -> handleDeleteConfirmed()
             is RoomAction.OnClosedModalButtonClicked -> handleCloseModalButtonClicked()
+            RoomAction.OnNoticeModalOkButtonClicked -> {
+                intent {
+                    postSideEffect(RoomSideEffect.NavigateToMessageWriteScreen)
+                }
+            }
+            RoomAction.OnNoticeModalCloseButtonClicked -> {
+                intent {
+                    postSideEffect(RoomSideEffect.CloseReplyNoticeModal)
+                }
+            }
         }
     }
 
@@ -69,6 +79,10 @@ class MessageRoomViewModel @Inject constructor(
     }
 
     private fun handleReplyButtonClicked() = intent {
+        if (state.messageRoom.isFirstReplyContext()) {
+            postSideEffect(RoomSideEffect.ShowReplyNoticeModal)
+            return@intent
+        }
         postSideEffect(RoomSideEffect.NavigateToMessageWriteScreen)
     }
 
