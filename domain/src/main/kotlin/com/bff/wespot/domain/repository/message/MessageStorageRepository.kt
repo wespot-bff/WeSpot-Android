@@ -13,4 +13,6 @@ interface MessageStorageRepository {
     suspend fun deleteMessage(messageId: Int): Result<Unit>
 
     suspend fun getMessageRoom(roomId: Int): Result<MessageRoom>
+
+    suspend fun hasSentReply(): Result<Boolean>
 }

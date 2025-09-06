@@ -5,5 +5,6 @@ import com.bff.wespot.model.message.response.MessageRoom
 
 data class RoomUiState(
     val messageRoom: MessageRoom = MessageRoom(),
+    val hasSentReply: Boolean = false,
     val selectedMessageDetail: MessageDetail? = null,
 )

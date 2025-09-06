@@ -29,7 +29,7 @@ class MessageRoomViewModel @Inject constructor(
 
     fun onAction(action: RoomAction) = intent {
         when (action) {
-            is RoomAction.OnScreenEntered -> getMessageRoom()
+            is RoomAction.OnScreenEntered -> handleScreenEntered()
             is RoomAction.OnMessageDetailSelected -> handleMessageDetailSelected(action.messageDetail)
             is RoomAction.OnReplyButtonClicked -> handleReplyButtonClicked()
             is RoomAction.OnTopBarNavigate -> handleTopBarNavigate()
@@ -49,7 +49,7 @@ class MessageRoomViewModel @Inject constructor(
         }
     }
 
-    private fun getMessageRoom() = intent {
+    private fun handleScreenEntered() = intent {
         val roomId: Int = savedStateHandle["roomId"] ?: return@intent
 
         viewModelScope.launch {
@@ -69,6 +69,13 @@ class MessageRoomViewModel @Inject constructor(
                 .onFailure {
                     Timber.d(it)
                 }
+
+            launch {
+                repository.hasSentReply()
+                    .onSuccess {
+                        reduce { state.copy(hasSentReply = it) }
+                    }
+            }
         }
     }
 
@@ -79,7 +86,7 @@ class MessageRoomViewModel @Inject constructor(
     }
 
     private fun handleReplyButtonClicked() = intent {
-        if (state.messageRoom.isFirstReplyContext()) {
+        if (state.hasSentReply) {
             postSideEffect(RoomSideEffect.ShowReplyNoticeModal)
             return@intent
         }
