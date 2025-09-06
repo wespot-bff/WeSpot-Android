@@ -8,6 +8,7 @@ import com.bff.wespot.community.report.state.CommunityReportSideEffect
 import com.bff.wespot.community.report.state.CommunityReportUiState
 import com.bff.wespot.community.report.state.ReportType
 import com.bff.wespot.domain.repository.community.CommunityReportRepository
+import com.bff.wespot.model.community.ReportReasonItem
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +50,11 @@ class CommunityReportViewModel @Inject constructor(
                 is CommunityReportAction.OnCustomTextChanged -> {
                     reduce {
                         state.copy(
-                            customReportText = action.text,
+                            customReportTexts = if (action.text.isEmpty()) {
+                                state.customReportTexts - action.reasonId
+                            } else {
+                                state.customReportTexts + (action.reasonId to action.text)
+                            },
                         )
                     }
                 }
@@ -100,29 +105,50 @@ class CommunityReportViewModel @Inject constructor(
     private fun submitReport() {
         intent {
             val reasonIds = state.selectedReasonIds
-            val customReason = state.customReportText.ifEmpty { null }
+            val customReportTexts = state.customReportTexts
 
-            if (reasonIds.isEmpty() && customReason == null) return@intent
+            if (reasonIds.isEmpty() && customReportTexts.isEmpty()) return@intent
 
             reduce { state.copy(isSubmitting = true) }
 
             viewModelScope.launch(ioDispatcher) {
-                val reasonIdsAsLong = reasonIds.map { it.toLong() }
-                val customReasonId = state.reportReasons.lastOrNull()?.id?.toLong()
+                val editableReasonIds = state.reportReasons
+                    .filter { it.isReasonEditable }
+                    .map { it.id }
+                    .toSet()
+
+                val reportItems = buildList {
+                    reasonIds.forEach { reasonId ->
+                        if (reasonId in editableReasonIds) {
+                            val customText = customReportTexts[reasonId]
+                            if (!customText.isNullOrEmpty()) {
+                                add(
+                                    ReportReasonItem(
+                                        reportReasonId = reasonId.toLong(),
+                                        customReason = customText,
+                                    ),
+                                )
+                            }
+                        } else {
+                            add(
+                                ReportReasonItem(
+                                    reportReasonId = reasonId.toLong(),
+                                    customReason = null,
+                                ),
+                            )
+                        }
+                    }
+                }
 
                 val result = when (reportType) {
                     ReportType.POST -> communityReportRepository.reportPost(
                         targetId,
-                        reasonIdsAsLong,
-                        customReason,
-                        customReasonId,
+                        reportItems,
                     )
 
                     ReportType.COMMENT -> communityReportRepository.reportComment(
                         targetId,
-                        reasonIdsAsLong,
-                        customReason,
-                        customReasonId,
+                        reportItems,
                     )
                 }
 

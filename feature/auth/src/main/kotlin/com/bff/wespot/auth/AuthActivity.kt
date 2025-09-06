@@ -187,7 +187,7 @@ class AuthActivity : ComponentActivity() {
         content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
                 return if (::loginState.isInitialized) {
-                    if (loginState == LoginState.LOGIN_SUCCESS) {
+                    if (loginState != LoginState.LOGIN_SUCCESS) {
                         val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
                         val date = intent.getStringExtra(EXTRA_DATE) ?: ""
                         val deepLink = intent.getStringExtra(EXTRA_DEEP_LINK) ?: ""

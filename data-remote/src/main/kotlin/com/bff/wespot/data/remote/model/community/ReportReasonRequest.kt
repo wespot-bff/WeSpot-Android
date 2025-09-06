@@ -10,5 +10,5 @@ data class ReportReasonRequest(
 @Serializable
 data class ReportReasonItem(
     val reportReasonId: Long,
-    val customReason: String? = null
+    val customReason: String? = null,
 )

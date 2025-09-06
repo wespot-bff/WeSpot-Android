@@ -25,57 +25,39 @@ class CommunityReportDataSourceImpl @Inject constructor(
 
     override suspend fun reportPost(
         postId: String,
-        reasonIds: List<Long>,
-        customReason: String?,
-        customReasonId: Long?
+        reportItems: List<com.bff.wespot.model.community.ReportReasonItem>,
     ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/post/$postId/report")
                 contentType(ContentType.Application.Json)
-                val reportItems = buildList {
-                    addAll(
-                        reasonIds.map {
-                            ReportReasonItem(
-                                reportReasonId = it,
-                                customReason = null
-                            )
-                        }
+                val dtoItems = reportItems.map {
+                    ReportReasonItem(
+                        reportReasonId = it.reportReasonId,
+                        customReason = it.customReason
                     )
-                    if (!customReason.isNullOrEmpty() && customReasonId != null) {
-                        add(ReportReasonItem(reportReasonId = customReasonId, customReason = customReason))
-                    }
                 }
-                setBody(ReportReasonRequest(reportReasonRequests = reportItems))
+                setBody(ReportReasonRequest(reportReasonRequests = dtoItems))
             }
         }
 
     override suspend fun reportComment(
         commentId: String,
-        reasonIds: List<Long>,
-        customReason: String?,
-        customReasonId: Long?
+        reportItems: List<com.bff.wespot.model.community.ReportReasonItem>,
     ): Result<Unit> =
         httpClient.safeRequest {
             url {
                 method = HttpMethod.Post
                 path("api/v1/post/comment/$commentId/report")
                 contentType(ContentType.Application.Json)
-                val reportItems = buildList {
-                    addAll(
-                        reasonIds.map {
-                            ReportReasonItem(
-                                reportReasonId = it,
-                                customReason = null
-                            )
-                        }
+                val dtoItems = reportItems.map {
+                    ReportReasonItem(
+                        reportReasonId = it.reportReasonId,
+                        customReason = it.customReason
                     )
-                    if (!customReason.isNullOrEmpty() && customReasonId != null) {
-                        add(ReportReasonItem(reportReasonId = customReasonId, customReason = customReason))
-                    }
                 }
-                setBody(ReportReasonRequest(reportReasonRequests = reportItems))
+                setBody(ReportReasonRequest(reportReasonRequests = dtoItems))
             }
         }
 }

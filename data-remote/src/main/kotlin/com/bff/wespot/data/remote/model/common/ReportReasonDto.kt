@@ -6,10 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReportReasonDto(
     val id: Int,
-    val reason: String
+    val reason: String,
+    val isReasonEditable: Boolean = false
 ) {
     fun toDomain(): ReportReason = ReportReason(
         id = id,
-        reason = reason
+        reason = reason,
+        isReasonEditable = isReasonEditable
     )
 }

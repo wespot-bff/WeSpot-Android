@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -81,7 +81,7 @@ fun CommunityReportScreen(
         },
         bottomBar = {
             val hasSelectedReasons = uiState.selectedReasonIds.isNotEmpty()
-            val hasCustomReport = uiState.customReportText.isNotEmpty()
+            val hasCustomReport = uiState.customReportTexts.isNotEmpty()
             val canSubmit = (hasSelectedReasons || hasCustomReport) && !uiState.isSubmitting
 
             WSButton(
@@ -166,20 +166,20 @@ fun CommunityReportScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.padding(vertical = 26.dp, horizontal = 20.dp),
                         ) {
-                            itemsIndexed(uiState.reportReasons) { index, reason ->
-                                val isLastItem = index == uiState.reportReasons.size - 1
-
-                                if (isLastItem) {
+                            items(uiState.reportReasons) { reason ->
+                                if (reason.isReasonEditable) {
                                     CustomReportReasonItem(
+                                        reasonId = reason.id,
                                         placeholder = reason.reason,
-                                        value = uiState.customReportText,
+                                        value = uiState.customReportTexts[reason.id] ?: "",
                                         onValueChange = { text ->
-                                            onAction(CommunityReportAction.OnCustomTextChanged(text))
+                                            onAction(CommunityReportAction.OnCustomTextChanged(reason.id, text))
                                         },
                                         focusRequester = focusRequester,
                                         onSelect = {
-                                            if (uiState.customReportText.isNotEmpty()) {
-                                                onAction(CommunityReportAction.OnCustomTextChanged(""))
+                                            val currentText = uiState.customReportTexts[reason.id] ?: ""
+                                            if (currentText.isNotEmpty()) {
+                                                onAction(CommunityReportAction.OnCustomTextChanged(reason.id, ""))
                                             }
                                         },
                                     )
@@ -255,6 +255,7 @@ private fun ReportReasonItem(
 
 @Composable
 private fun CustomReportReasonItem(
+    reasonId: Int,
     placeholder: String,
     value: String,
     onValueChange: (String) -> Unit,
