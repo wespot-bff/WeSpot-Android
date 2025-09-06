@@ -111,7 +111,7 @@ fun MessageStorageScreen(
             onSelectedChanged = { index -> action(StorageAction.OnStorageChipSelected(index)) },
         )
 
-        if (state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX && state.showEmptyBookmarkScreen) {
+        if (state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX && state.hasNoBookmarkedMessages()) {
             EmptyBookmarkScreen()
         } else {
             MessageStorageContent(

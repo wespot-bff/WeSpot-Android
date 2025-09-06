@@ -94,10 +94,7 @@ class StorageViewModel @Inject constructor(
             messageStorageRepository.getBookmarkedMessages()
                 .onSuccess {
                     reduce {
-                        state.copy(
-                            messageList = it,
-                            showEmptyBookmarkScreen = it.isEmpty(),
-                        )
+                        state.copy(messageList = it)
                     }
                 }
                 .onNetworkFailure {

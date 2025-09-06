@@ -7,5 +7,6 @@ data class StorageUiState(
     val messageList: List<Message> = listOf(),
     val optionButtonClickedMessage: Message = Message(),
     val isLoading: Boolean = false,
-    val showEmptyBookmarkScreen: Boolean = false,
-)
+) {
+    fun hasNoBookmarkedMessages() = messageList.count { it.isBookmarked } == 0
+}
