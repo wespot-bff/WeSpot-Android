@@ -145,7 +145,7 @@ internal fun MessageRoomScreen(
             MessageCard(
                 type = if (state.selectedMessageDetail.isSend) MessageCardType.SENT else MessageCardType.RECEIVED,
                 detail = state.selectedMessageDetail,
-                showReplyButton = state.messageRoom.showReplyButton(state.selectedMessageDetail),
+                showReplyButton = state.messageRoom.isLastReceivedMessage(state.selectedMessageDetail),
                 showDeleteButton = !state.messageRoom.isSingleMessage(),
                 onReplyButtonClicked = {
                     action(RoomAction.OnReplyButtonClicked)
