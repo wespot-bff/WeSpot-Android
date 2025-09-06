@@ -34,9 +34,11 @@ import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
 import com.bff.wespot.server.driven.type.toBrush
+import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
 internal fun HotPostContentUiModel.Item(
+    navigateToPost: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -57,7 +59,10 @@ internal fun HotPostContentUiModel.Item(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(it.gradation.toBrush(), RoundedCornerShape(16.dp)),
+                        .background(it.gradation.toBrush(), RoundedCornerShape(16.dp))
+                        .clickableSingle {
+                            navigateToPost.invoke(it.targetId)
+                        },
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -165,6 +170,7 @@ private object HotPostItemPreviewData {
                         endColor = ColorType.Token("primary500"),
                         angle = 45,
                     ),
+                    targetId = "1",
                 ),
                 HotPostContentUiModel.PostUiModel(
                     headerSection = HotPostContentUiModel.PostUiModel.HeaderSectionUiModel(
@@ -201,6 +207,7 @@ private object HotPostItemPreviewData {
                         endColor = ColorType.Token("gray700"),
                         angle = 135,
                     ),
+                    targetId = "1",
                 ),
                 HotPostContentUiModel.PostUiModel(
                     headerSection = HotPostContentUiModel.PostUiModel.HeaderSectionUiModel(
@@ -237,6 +244,7 @@ private object HotPostItemPreviewData {
                         endColor = ColorType.Token("primary300"),
                         angle = 90,
                     ),
+                    targetId = "1",
                 ),
             ),
         ),
@@ -248,7 +256,7 @@ private object HotPostItemPreviewData {
 private fun HotPostItemPreview() {
     WeSpotTheme {
         Surface {
-            HotPostItemPreviewData.sampleHotPostItem.content.Item()
+            HotPostItemPreviewData.sampleHotPostItem.content.Item({})
         }
     }
 }
@@ -261,7 +269,7 @@ private fun HotPostItemWithPaddingPreview() {
             Column(
                 modifier = Modifier.padding(16.dp),
             ) {
-                HotPostItemPreviewData.sampleHotPostItem.content.Item()
+                HotPostItemPreviewData.sampleHotPostItem.content.Item({})
             }
         }
     }

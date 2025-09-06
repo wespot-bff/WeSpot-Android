@@ -20,6 +20,7 @@ data class HotPostItemUiModel(
         )
 
         data class PostUiModel(
+            val targetId: String,
             val headerSection: HeaderSectionUiModel,
             val infoSection: InfoSectionUiModel,
             val createdAt: RichTextType,
@@ -56,6 +57,7 @@ private fun HotPostItem.HotPostContent.Title.toUiModel() =
 
 private fun HotPostItem.HotPostContent.Post.toUiModel() =
     HotPostItemUiModel.HotPostContentUiModel.PostUiModel(
+        targetId = targetId,
         headerSection = headerSection.toUiModel(),
         infoSection = infoSection.toUiModel(),
         createdAt = createdAt,

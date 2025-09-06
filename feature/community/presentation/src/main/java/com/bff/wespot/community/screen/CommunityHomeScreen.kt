@@ -296,7 +296,16 @@ private fun CommunityFeed(
                 }
 
                 is HotPostItemUiModel -> {
-                    post.content.Item()
+                    post.content.Item(
+                        navigateToPost = {
+                            val intent = navigator.navigateToPostDetailActivity(
+                                context = context,
+                                postId = it,
+                            )
+
+                            postDetailLauncher.launch(intent)
+                        },
+                    )
                 }
 
                 is VoteItemUiModel -> {
