@@ -183,7 +183,7 @@ fun MessageSendScreen(
                     buttonText = state.senderProfile.name,
                     imageUrl = state.senderProfile.image,
                     contentDescription = stringResource(R.string.sender_profile_image),
-                    onClicked = if (state.senderProfile.isNeverTalkBefore()) {
+                    onClicked = if (state.senderProfile.isAnonymous) {
                         { action(SendAction.OnSenderClicked) }
                     } else {
                         null
