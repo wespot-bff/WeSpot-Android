@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class WeSpotApplication : Application() {
-
     @Inject
     lateinit var crashlytics: FirebaseCrashlytics
 

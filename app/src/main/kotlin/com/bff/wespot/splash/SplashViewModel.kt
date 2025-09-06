@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val dataSource: RemoteConfigRepository
+    private val dataSource: RemoteConfigRepository,
 ) : ViewModel() {
     private val _start = MutableStateFlow(false)
     val start = _start.asStateFlow()

@@ -37,6 +37,7 @@ import com.bff.wespot.designsystem.theme.Gray400
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.model.notification.Notification
+import com.bff.wespot.navigation.NotificationNavigator
 import com.bff.wespot.notification.R
 import com.bff.wespot.notification.state.NotificationAction
 import com.bff.wespot.notification.state.NotificationSideEffect
@@ -48,18 +49,6 @@ import com.bff.wespot.ui.util.handleSideEffect
 import com.ramcosta.composedestinations.annotation.Destination
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-
-interface NotificationNavigator {
-    fun navigateUp()
-    fun navigateToReceiverSelectionScreen()
-    fun navigateToVotingScreen()
-    fun navigateToVoteResultScreen(
-        isNavigateFromNotification: Boolean,
-        isTodayVoteResult: Boolean,
-    )
-    fun navigateToVoteStorageScreen()
-    fun navigateToProfileEditScreen()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination

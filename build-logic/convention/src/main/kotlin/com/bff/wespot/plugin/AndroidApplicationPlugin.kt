@@ -2,6 +2,7 @@ package com.bff.wespot.plugin
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.bff.wespot.plugin.configure.configureKotlinAndroid
+import com.bff.wespot.plugin.configure.configureKtLint
 import com.bff.wespot.plugin.configure.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,10 +19,12 @@ class AndroidApplicationPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
+                apply("org.jlleitschuh.gradle.ktlint")
             }
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
+                configureKtLint()
 
                 defaultConfig {
                     versionCode = libs.findVersion("versionCode").get().requiredVersion.toInt()

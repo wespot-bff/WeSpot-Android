@@ -8,12 +8,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bff.wespot.PushNotificationService
 import com.bff.wespot.R
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
 import com.bff.wespot.navigation.util.EXTRA_TYPE
+import com.bff.wespot.notification.PushNotificationService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -66,7 +66,7 @@ class SplashActivity : ComponentActivity() {
             context = this@SplashActivity,
             type = Pair(EXTRA_TYPE, type),
             date = Pair(EXTRA_DATE, date),
-            deepLink = Pair(EXTRA_DEEP_LINK, deepLink)
+            deepLink = Pair(EXTRA_DEEP_LINK, deepLink),
         )
         startActivity(intent)
         finish()

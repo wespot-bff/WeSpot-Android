@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 
-
 val properties = Properties()
 properties.load(rootProject.file("local.properties").inputStream())
 
@@ -72,6 +71,8 @@ dependencies {
     implementation(project(":feature:entire"))
     implementation(project(":feature:notification"))
     implementation(project(":feature:server-driven"))
+    implementation(project(":feature:community:ui-model"))
+    implementation(project(":feature:community:presentation"))
 
     implementation(libs.splash.screen)
     implementation(platform(libs.firebase.bom))

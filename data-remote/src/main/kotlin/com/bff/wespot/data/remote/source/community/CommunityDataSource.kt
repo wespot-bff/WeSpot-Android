@@ -1,0 +1,9 @@
+package com.bff.wespot.data.remote.source.community
+
+import com.bff.wespot.data.remote.model.community.CommunityContentPagingDto
+import com.bff.wespot.data.remote.model.community.chip.BaseChipDto
+
+interface CommunityDataSource {
+    suspend fun getCommunityChips(): Result<List<BaseChipDto>>
+    suspend fun getCommunityContent(cursorId: Int?): Result<CommunityContentPagingDto>
+}
