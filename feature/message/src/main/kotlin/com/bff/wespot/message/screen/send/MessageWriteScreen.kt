@@ -225,7 +225,7 @@ fun MessageWriteScreen(
             okButtonText = stringResource(R.string.message_send_dialog_button_text),
             cancelButtonText = stringResource(R.string.cancel),
             okButtonClick = { action(WritingAction.OnReplyButtonClicked) },
-            cancelButtonClick = { action(WritingAction.OnReplyButtonClicked) },
+            cancelButtonClick = { action(WritingAction.OnReplyCancelButtonClicked) },
             onDismissRequest = { },
         )
     }
