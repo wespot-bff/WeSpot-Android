@@ -107,6 +107,7 @@ class SendViewModel @Inject constructor(
             ReceiverAction.OnAnonymousProfileModalDismiss -> {
                 intent {
                     postSideEffect(ReceiverSideEffect.DismissAnonymousProfileModal)
+                    postSideEffect(ReceiverSideEffect.ShowProfileSelectBottomSheet)
                 }
             }
         }
