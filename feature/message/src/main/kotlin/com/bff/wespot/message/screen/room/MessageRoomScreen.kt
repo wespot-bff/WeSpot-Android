@@ -418,7 +418,7 @@ private fun MessageHorizontalList(
                             id = if (data.isSend) {
                                 R.drawable.sent
                             } else {
-                                R.drawable.receive
+                                R.drawable.received
                             },
                         ),
                         contentDescription = stringResource(R.string.message_type_icon),
