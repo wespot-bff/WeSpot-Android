@@ -378,8 +378,6 @@ internal fun CategoryBottomSheet(
                     style = StaticTypeScale.Default.body1,
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
             items(
@@ -467,7 +465,7 @@ private object WritePostPreviewData {
         selectedCategory = CategoryItem(id = "1", text = "개발"),
         title = "React 18 새로운 기능들",
         description = "React 18에서 추가된 Concurrent Features에 대해 알아봅시다. Suspense, " +
-            "useTransition, useDeferredValue 등 새로운 기능들을 실제 예제와 함께 설명해드리겠습니다.",
+                "useTransition, useDeferredValue 등 새로운 기능들을 실제 예제와 함께 설명해드리겠습니다.",
         images = listOf(
             "https://via.placeholder.com/300x200",
             "https://via.placeholder.com/300x200",
