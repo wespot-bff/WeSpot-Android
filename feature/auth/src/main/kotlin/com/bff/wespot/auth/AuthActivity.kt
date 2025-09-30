@@ -214,4 +214,4 @@ class AuthActivity : ComponentActivity() {
 }
 
 private fun getAppVersionName(context: Context): String =
-    context.packageManager.getPackageInfo(context.packageName, 0).versionName
+    context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
