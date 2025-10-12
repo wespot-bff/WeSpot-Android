@@ -35,6 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.params.AnalyticsArea
+import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthUiState
@@ -60,6 +66,7 @@ fun EditScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -160,10 +167,21 @@ fun EditScreen(
                 state = state,
                 navigator = navigator,
             ) {
+                analyticsHelper.logClickAction(
+                    name = "click_join_complete_sign_up",
+                    service = AnalyticsService.SIGNUP,
+                    screen = "edit",
+                    area = AnalyticsArea.BOTTOM_SHEET,
+                )
                 action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
         }
     }
+
+    TrackScreenViewEvent(
+        name = "view_join_edit_profile",
+        service = AnalyticsService.SIGNUP,
+    )
 }
 
 @Composable

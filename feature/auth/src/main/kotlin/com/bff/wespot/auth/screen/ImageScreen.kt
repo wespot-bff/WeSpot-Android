@@ -31,6 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.params.AnalyticsArea
+import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -52,6 +59,7 @@ internal fun ImageScreen(
 ) {
     val action = viewModel::onAction
     val uiState by viewModel.collectAsState()
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val context = LocalContext.current
     var error by remember {
         mutableStateOf(false)
@@ -184,6 +192,15 @@ internal fun ImageScreen(
         WSButton(
             enabled = error.not() && uiState.hasProfanity.not(),
             onClick = {
+                analyticsHelper.logClickAction(
+                    name = "click_join_set_profile_complete",
+                    service = AnalyticsService.SIGNUP,
+                    screen = "profile",
+                    area = AnalyticsArea.BOTTOM,
+                    extras = listOf(
+                        AnalyticsEvent.Param("introduce_contents", uiState.introduction),
+                    )
+                )
                 action(AuthAction.UploadImage)
             },
             text = stringResource(id = R.string.next),
@@ -195,4 +212,9 @@ internal fun ImageScreen(
     LaunchedEffect(Unit) {
         action(AuthAction.OnStartImageScreen)
     }
+
+    TrackScreenViewEvent(
+        name = "view_join_set_profile",
+        service = AnalyticsService.SIGNUP,
+    )
 }

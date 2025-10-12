@@ -5,53 +5,60 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.bff.wespot.analytics.AnalyticsEvent.Param
 import com.bff.wespot.analytics.AnalyticsEvent.ParamKeys
-import com.bff.wespot.analytics.AnalyticsEvent.Types
-import java.text.SimpleDateFormat
+import com.bff.wespot.analytics.params.AnalyticsArea
+import com.bff.wespot.analytics.params.AnalyticsService
 
 val LocalAnalyticsHelper = staticCompositionLocalOf<AnalyticsHelper> {
     NoOpAnalyticsHelper()
 }
 
-fun AnalyticsHelper.logScreenView(screenName: String, startTime: String, id: String?) {
-    val param = mutableListOf(
-        Param(ParamKeys.SCREEN_NAME, screenName),
-        Param("start_time", startTime),
-    )
-
-    id?.let {
-        param.add(Param("userId", id))
+fun AnalyticsHelper.logScreenView(
+    name: String,
+    service: AnalyticsService,
+    version: String = "v1",
+    extras: List<Param> = emptyList(),
+) {
+    val params = buildList {
+        addAll(extras)
+        add(Param(ParamKeys.SERVICE_NAME, service.value))
+        add(Param(ParamKeys.VERSION, version))
     }
 
-    logEvent(
-        AnalyticsEvent(
-            type = Types.SCREEN_VIEW,
-            extras = param,
-        ),
-    )
+    logEvent(AnalyticsEvent(name, params))
 }
 
-fun AnalyticsHelper.buttonClick(screenName: String, buttonId: String) {
-    logEvent(
-        AnalyticsEvent(
-            type = Types.BUTTON_CLICK,
-            extras = listOf(
-                Param(ParamKeys.SCREEN_NAME, screenName),
-                Param(ParamKeys.BUTTON_ID, buttonId),
-            ),
-        ),
-    )
+fun AnalyticsHelper.logClickAction(
+    name: String,
+    service: AnalyticsService,
+    screen: String,
+    area: AnalyticsArea,
+    version: String = "v1",
+    extras: List<Param> = listOf(),
+) {
+    val params = buildList {
+        addAll(extras)
+        add(Param(ParamKeys.SERVICE_NAME, service.value))
+        add(Param(ParamKeys.SCREEN_NAME, screen))
+        add(Param(ParamKeys.AREA, area.value))
+        add(Param(ParamKeys.VERSION, version))
+    }
+
+    logEvent(AnalyticsEvent(name, params))
 }
 
 @Composable
 fun TrackScreenViewEvent(
-    screenName: String,
-    id: String? = null,
+    name: String,
+    service: AnalyticsService,
+    version: String = "v1",
+    extras: List<Param> = emptyList(),
     analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current,
 ) = DisposableEffect(Unit) {
-    val time = System.currentTimeMillis()
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
-    val startTime = dateFormat.format(time)
-    analyticsHelper.logScreenView(screenName, startTime, id)
+    analyticsHelper.logScreenView(
+        name = name,
+        service = service,
+        version = version,
+        extras = extras,
+    )
     onDispose {}
 }
