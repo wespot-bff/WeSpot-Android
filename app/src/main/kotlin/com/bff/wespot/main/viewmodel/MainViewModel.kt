@@ -2,6 +2,7 @@ package com.bff.wespot.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
 import com.bff.wespot.common.util.AppVersionUtils.versionCompare
 import com.bff.wespot.domain.repository.CommonRepository
@@ -79,7 +80,7 @@ class MainViewModel @Inject constructor(
 
     private fun handleMainScreenEntered(appVersion: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            saveUserProfile()
+            setUserProfile()
 
             checkAppVersionWithLatestVersion(appVersion)
 
@@ -92,11 +93,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserProfile() {
+    private fun setUserProfile() {
         viewModelScope.launch {
             userRepository.getProfile().mapCatching { profile ->
                 profileRepository.setProfile(profile)
-                analyticsHelper
+                analyticsHelper.updateUserId(profile.id.toString())
             }
         }
     }
