@@ -1,4 +1,4 @@
-package com.bff.wespot.analytic
+package com.bff.wespot.analytics
 
 class NoOpAnalyticsHelper : AnalyticsHelper {
     override fun logEvent(event: AnalyticsEvent) = Unit

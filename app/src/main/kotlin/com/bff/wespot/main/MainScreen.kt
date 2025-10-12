@@ -21,8 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.bff.wespot.R
-import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.common.checkCurrentScreen
 import com.bff.wespot.common.currentScreenAsState
 import com.bff.wespot.common.navigateToNavGraph

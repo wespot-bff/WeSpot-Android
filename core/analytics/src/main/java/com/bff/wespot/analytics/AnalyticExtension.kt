@@ -1,11 +1,11 @@
-package com.bff.wespot.analytic
+package com.bff.wespot.analytics
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.bff.wespot.analytic.AnalyticsEvent.Param
-import com.bff.wespot.analytic.AnalyticsEvent.ParamKeys
-import com.bff.wespot.analytic.AnalyticsEvent.Types
+import com.bff.wespot.analytics.AnalyticsEvent.Param
+import com.bff.wespot.analytics.AnalyticsEvent.ParamKeys
+import com.bff.wespot.analytics.AnalyticsEvent.Types
 import java.text.SimpleDateFormat
 
 val LocalAnalyticsHelper = staticCompositionLocalOf<AnalyticsHelper> {

@@ -1,4 +1,4 @@
-package com.bff.wespot.analytic
+package com.bff.wespot.analytics
 
 interface AnalyticsHelper {
     fun logEvent(event: AnalyticsEvent)

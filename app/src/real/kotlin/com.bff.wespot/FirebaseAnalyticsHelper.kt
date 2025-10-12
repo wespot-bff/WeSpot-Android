@@ -1,7 +1,7 @@
 package com.bff.wespot
 
-import com.bff.wespot.analytic.AnalyticsEvent
-import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import javax.inject.Inject

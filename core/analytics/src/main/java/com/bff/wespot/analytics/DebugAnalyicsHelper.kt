@@ -1,4 +1,4 @@
-package com.bff.wespot.analytic
+package com.bff.wespot.analytics
 
 import timber.log.Timber
 import javax.inject.Inject

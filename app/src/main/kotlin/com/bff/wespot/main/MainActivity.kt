@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.main.state.MainAction
 import com.bff.wespot.main.viewmodel.MainViewModel
