@@ -8,8 +8,6 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.bff.wespot.R
-import com.bff.wespot.analytic.AnalyticsEvent
-import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.CHANNEL_ID
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.util.DataStoreKey.PUSH_TOKEN
@@ -33,9 +31,6 @@ class PushNotificationService : FirebaseMessagingService() {
     lateinit var coroutineDispatcher: CoroutineDispatcher
     private val coroutineScope by lazy { CoroutineScope(coroutineDispatcher) }
 
-    @Inject
-    lateinit var analyticsHelper: AnalyticsHelper
-
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         coroutineScope.launch {
@@ -47,7 +42,6 @@ class PushNotificationService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         if (message.data.isNotEmpty() || message.notification != null) {
             sendNotification(message)
-            trackPushNotification(message)
         }
     }
 
@@ -90,19 +84,6 @@ class PushNotificationService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
 
         notificationManager.notify(notificationId, notificationBuilder.build())
-    }
-
-    private fun trackPushNotification(message: RemoteMessage) {
-        val paramList = message.data.map { (key, value) ->
-            AnalyticsEvent.Param(key, value.toString())
-        }
-
-        analyticsHelper.logEvent(
-            AnalyticsEvent(
-                type = "push_notification_received",
-                extras = paramList,
-            ),
-        )
     }
 
     override fun onDestroy() {
