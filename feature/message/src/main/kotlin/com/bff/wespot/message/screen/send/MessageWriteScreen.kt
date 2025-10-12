@@ -167,7 +167,11 @@ fun MessageWriteScreen(
                     onValueChange = { text ->
                         action(WritingAction.OnMessageChanged(text))
                     },
-                    placeholder = stringResource(R.string.message_write_text_holder),
+                    placeholder = if (state.isReplyContext) {
+                        stringResource(R.string.message_reply_placeholder)
+                    } else {
+                        stringResource(R.string.message_write_text_holder)
+                    },
                     isError = false,
                     focusRequester = focusRequester,
                     textFieldType = WsTextFieldType.Message,
@@ -221,7 +225,7 @@ fun MessageWriteScreen(
             okButtonText = stringResource(R.string.message_send_dialog_button_text),
             cancelButtonText = stringResource(R.string.cancel),
             okButtonClick = { action(WritingAction.OnReplyButtonClicked) },
-            cancelButtonClick = { action(WritingAction.OnReplyButtonClicked) },
+            cancelButtonClick = { action(WritingAction.OnReplyCancelButtonClicked) },
             onDismissRequest = { },
         )
     }
