@@ -3,7 +3,7 @@ package com.bff.wespot.server.driven.type
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.bff.wespot.model.serverDriven.type.IconType
 
 @Composable

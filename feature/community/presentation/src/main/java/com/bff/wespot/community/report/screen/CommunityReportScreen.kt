@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.report.state.CommunityReportAction
 import com.bff.wespot.community.report.state.CommunityReportUiState
@@ -173,13 +173,24 @@ fun CommunityReportScreen(
                                         placeholder = reason.reason,
                                         value = uiState.customReportTexts[reason.id] ?: "",
                                         onValueChange = { text ->
-                                            onAction(CommunityReportAction.OnCustomTextChanged(reason.id, text))
+                                            onAction(
+                                                CommunityReportAction.OnCustomTextChanged(
+                                                    reason.id,
+                                                    text,
+                                                ),
+                                            )
                                         },
                                         focusRequester = focusRequester,
                                         onSelect = {
-                                            val currentText = uiState.customReportTexts[reason.id] ?: ""
+                                            val currentText =
+                                                uiState.customReportTexts[reason.id] ?: ""
                                             if (currentText.isNotEmpty()) {
-                                                onAction(CommunityReportAction.OnCustomTextChanged(reason.id, ""))
+                                                onAction(
+                                                    CommunityReportAction.OnCustomTextChanged(
+                                                        reason.id,
+                                                        "",
+                                                    ),
+                                                )
                                             }
                                         },
                                     )
