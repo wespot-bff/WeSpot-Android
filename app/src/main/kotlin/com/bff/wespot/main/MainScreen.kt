@@ -81,6 +81,11 @@ internal fun MainScreen(
             is MainSideEffect.NavigateFromPushNotification -> {
                 notificationNavigator.navigate(context, it.data)
             }
+
+            is MainSideEffect.NavigateToAnnouncementPolicy -> {
+                val intent = navigator.navigateToAnnouncePolicy(context)
+                context.startActivity(intent)
+            }
         }
     }
 

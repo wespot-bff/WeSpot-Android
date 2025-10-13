@@ -16,4 +16,5 @@ fun ProfilePreference.toProfile(): Profile = Profile(
         this.profileCharacter.iconUrl,
         this.profileCharacter.backgroundColor,
     ),
+    needToAnnounceAboutPolicy = this.needToAnnounceAboutPolicy,
 )

@@ -16,6 +16,7 @@ import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.buildIntent
+import com.bff.wespot.policy.AnnouncementPolicyActivity
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.share.WebSharerClient
@@ -240,13 +241,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
-    override fun navigateToCommunitySearch(context: Context): Intent {
-        return context.buildIntent<SearchActivity>()
-    }
+    override fun navigateToCommunitySearch(context: Context): Intent = context.buildIntent<SearchActivity>()
 
-    override fun navigateToCommunityAll(context: Context): Intent {
-        return context.buildIntent<CommunityAllActivity>()
-    }
+    override fun navigateToCommunityAll(context: Context): Intent = context.buildIntent<CommunityAllActivity>()
 
     override fun navigateToCategoryDetail(
         context: Context,
@@ -267,6 +264,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
         val intent = context.buildIntent<CommunityReportActivity>()
         intent.putExtra("targetId", targetId)
         intent.putExtra("reportType", reportType)
+        return intent
+    }
+
+    override fun navigateToAnnouncePolicy(context: Context): Intent {
+        val intent = context.buildIntent<AnnouncementPolicyActivity>()
         return intent
     }
 }

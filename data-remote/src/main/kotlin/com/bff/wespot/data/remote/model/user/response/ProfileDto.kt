@@ -4,7 +4,7 @@ import com.bff.wespot.model.user.response.Profile
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProfileDto (
+data class ProfileDto(
     val id: Int,
     val name: String,
     val schoolName: String,
@@ -12,7 +12,8 @@ data class ProfileDto (
     val classNumber: Int,
     val gender: String,
     val introduction: String,
-    val profile: ProfileCharacterDto
+    val profile: ProfileCharacterDto,
+    val needToAnnounceAboutPolicy: Boolean,
 ) {
     fun toProfile(): Profile = Profile(
         id = id,
@@ -22,6 +23,7 @@ data class ProfileDto (
         classNumber = classNumber,
         gender = gender,
         introduction = introduction,
-        profileCharacter = profile.toProfileCharacter()
+        profileCharacter = profile.toProfileCharacter(),
+        needToAnnounceAboutPolicy = needToAnnounceAboutPolicy,
     )
 }

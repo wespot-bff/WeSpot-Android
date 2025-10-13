@@ -61,4 +61,6 @@ interface Navigator {
     fun navigateToCategoryDetail(context: Context, categoryId: String, categoryText: String): Intent
     
     fun navigateToCommunityReport(context: Context, targetId: String, reportType: String): Intent
+
+    fun navigateToAnnouncePolicy(context: Context): Intent
 }

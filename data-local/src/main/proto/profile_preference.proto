@@ -12,6 +12,7 @@ message ProfilePreference {
     string gender = 6;
     string introduction = 7;
     ProfileCharacterPreference profileCharacter = 8;
+    bool needToAnnounceAboutPolicy = 9;
 }
 
 message ProfileCharacterPreference {

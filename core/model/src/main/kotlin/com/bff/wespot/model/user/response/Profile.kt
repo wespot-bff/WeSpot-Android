@@ -9,8 +9,9 @@ data class Profile(
     val gender: String,
     val introduction: String,
     val profileCharacter: ProfileCharacter,
+    val needToAnnounceAboutPolicy: Boolean,
 ) {
-    constructor() : this(-1, "", "", -1, -1, "", "", ProfileCharacter())
+    constructor() : this(-1, "", "", -1, -1, "", "", ProfileCharacter(), false)
 
     fun toDescription(): String {
         val schoolName = schoolName.replace("중학교", "중").replace("고등학교", "고")
