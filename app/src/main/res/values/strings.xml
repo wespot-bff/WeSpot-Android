@@ -20,4 +20,16 @@
     <string name="update_subtitle_new_feature_added">유저의 의견을 반영하여 신규 기능을 출시했어요\n지금 업데이트하고 새로운 위스팟을 만나보세요</string>
     <string name="main_search">검색</string>
     <string name="main_all">전체</string>
+    <string name="policy_title">서비스 이용 약관 및 정책 업데이트 안내</string>
+    <string name="announcement_intro">안녕하세요. WeSpot 팀입니다.\n WeSpot 서비스를 이용해 주시는 회원분들께 감사드리며, WeSpot의 서비스 약관 및 개인정보처리 방침이 개정될 예정임을 안내해 드립니다.\n\n 개정된 내용은 2025년 10월 14일에 공시되어 21일부터 효력이 발생하므로 서비스 이용에 참고해 주시기 바랍니다.\n\n 내용의 전문을 살펴볼 수 있는 링크를 함께 공유드립니다.\n\n</string>
+    <string name="announcement_terms_link">서비스 이용약관\n</string>
+    <string name="announcement_privacy_link">개인정보처리방침\n</string>
+    <string name="announcement_community_link">WeSpot (커뮤니티) 이용규칙</string>
+    <string name="announcement_middle">\n\n개정되는 내용이 적용되기 전까지 별도의 거부 의사가 없으면 개정 내용에 동의한 것으로 간주합니다. 또한 탈퇴 이후 15일 내에 재로그인을 통해 탈퇴를 철회하여 서비스를 계속 사용 시에도 개정 내용에 동의한 것으로 간주합니다. \n\n개정 내용에 대해 궁금한 점이 있으시다면 언제든</string>
+    <string name="announcement_email">\nwespot.official.app@gmail.com</string>
+    <string name="announcement_outro"> 을 통해 말씀해 주세요. \n\n감사합니다. \n\nWeSpot 팀 드림</string>
+    <string name="announcement_terms_url">https://gregarious-salesman-74d.notion.site/2814250111d280588025c88cd75886b8</string>
+    <string name="announcement_privacy_url">https://gregarious-salesman-74d.notion.site/2814250111d280a1ae1ff838befc7052</string>
+    <string name="announcement_community_url">https://gregarious-salesman-74d.notion.site/WeSpot-2814250111d280528ecde3f5bb2ce7e0</string>
+    <string name="revoke_account">회원 탈퇴하기</string>
 </resources>
