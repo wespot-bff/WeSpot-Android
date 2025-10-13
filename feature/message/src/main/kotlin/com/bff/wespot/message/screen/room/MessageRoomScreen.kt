@@ -264,8 +264,7 @@ private fun MessageCard(
                     .align(Alignment.TopEnd)
                     .clickableSingle {
                         onDeleteButtonClicked()
-                    }
-                    .padding(top = 18.dp, end = 18.dp)
+                    }.padding(top = 18.dp, end = 18.dp)
                     .size(40.dp)
                     .zIndex(99f),
                 contentAlignment = Alignment.Center,
@@ -283,13 +282,13 @@ private fun MessageCard(
                 .height(height = 464.dp)
                 .fillMaxWidth()
                 .drawBehind {
-                    val heightPx = 464.dp
+                    val heightPx = 464
+                        .dp
                         .toPx()
                         .toInt()
                     val widthPx = size.width.toInt()
                     drawImage(image = image, dstSize = IntSize(widthPx, heightPx))
-                }
-                .padding(horizontal = 18.dp),
+                }.padding(horizontal = 18.dp),
         ) {
             Box(
                 modifier = Modifier
@@ -318,8 +317,7 @@ private fun MessageCard(
                         scrollState = scrollState,
                         width = 4.dp,
                         paddingValues = PaddingValues(end = 4.dp),
-                    )
-                    .padding(horizontal = 26.dp),
+                    ).padding(horizontal = 26.dp),
                 text = detail.content,
                 style = StaticTypeScale.Default.body4,
                 color = WeSpotThemeManager.colors.backgroundColor,
@@ -372,11 +370,9 @@ private fun MessageHorizontalList(
                     .background(
                         color = WeSpotThemeManager.colors.cardBackgroundColor,
                         shape = RoundedCornerShape(10.dp),
-                    )
-                    .clickableSingle {
+                    ).clickableSingle {
                         onItemClicked(data)
-                    }
-                    .then(
+                    }.then(
                         if (data == selectedItem) {
                             Modifier.border(
                                 width = 1.dp,

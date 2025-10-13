@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.wespot.android.library)
     alias(libs.plugins.wespot.android.hilt)
-    "kotlinx-serialization"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

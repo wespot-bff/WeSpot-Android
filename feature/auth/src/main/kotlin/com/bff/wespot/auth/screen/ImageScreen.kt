@@ -93,7 +93,8 @@ internal fun ImageScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context)
+                    model = ImageRequest
+                        .Builder(context)
                         .data(uiState.imagePath)
                         .error(R.drawable.default_character)
                         .placeholder(R.drawable.default_character)
@@ -108,8 +109,7 @@ internal fun ImageScreen(
                                     ),
                                 ),
                             )
-                        }
-                        .clip(CircleShape)
+                        }.clip(CircleShape)
                         .size(110.dp),
                     contentScale = ContentScale.Crop,
                 )

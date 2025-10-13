@@ -87,8 +87,7 @@ fun RevokeScreen(
                         .background(
                             color = WeSpotThemeManager.colors.modalColor,
                             shape = RoundedCornerShape(20.dp),
-                        )
-                        .padding(vertical = 24.dp, horizontal = 20.dp),
+                        ).padding(vertical = 24.dp, horizontal = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

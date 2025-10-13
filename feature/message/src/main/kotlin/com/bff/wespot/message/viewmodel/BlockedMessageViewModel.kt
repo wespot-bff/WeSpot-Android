@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BlockedMessageViewModel @Inject constructor(
     private val repository: MessageSettingRepository,
-) : BaseViewModel(), ContainerHost<BlockedMessageUiState, BlockedMessageSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<BlockedMessageUiState, BlockedMessageSideEffect> {
     override val container =
         container<BlockedMessageUiState, BlockedMessageSideEffect>(BlockedMessageUiState()) {
             getBlockedMessageList()
@@ -52,7 +53,8 @@ class BlockedMessageViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            repository.getBlockedMessageList()
+            repository
+                .getBlockedMessageList()
                 .onSuccess {
                     reduce {
                         state.copy(messageList = it)
@@ -74,7 +76,8 @@ class BlockedMessageViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            repository.updateMessageBlockStatus(state.messageId)
+            repository
+                .updateMessageBlockStatus(state.messageId)
                 .onSuccess {
                     val updatedMessageList = state.messageList.map { message ->
                         if (message.id == state.messageId) {

@@ -158,8 +158,7 @@ fun VoteResultScreen(
                             }
                         }
                     }
-                }
-                .zIndex(1f)
+                }.zIndex(1f)
                 .padding(top = 180.dp),
         ) {
             val composition by rememberLottieComposition(
@@ -274,7 +273,9 @@ fun VoteResultScreen(
                     WSCarousel(pagerState = pagerState) { page ->
                         VoteResultItem(
                             result = state.voteResults.voteResults[page],
-                            empty = state.voteResults.voteResults[page].results.isEmpty(),
+                            empty = state.voteResults.voteResults[page]
+                                .results
+                                .isEmpty(),
                         )
                     }
                 }
@@ -541,7 +542,8 @@ private fun RankCard(
                     },
                 )
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest
+                        .Builder(LocalContext.current)
                         .data(user.profile.iconUrl)
                         .allowHardware(false)
                         .build(),

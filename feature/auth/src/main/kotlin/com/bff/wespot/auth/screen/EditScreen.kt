@@ -244,7 +244,8 @@ private fun ConfirmBottomSheetContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(context)
+                model = ImageRequest
+                    .Builder(context)
                     .data(imagePath)
                     .error(R.drawable.default_character)
                     .placeholder(R.drawable.default_character)
@@ -471,8 +472,7 @@ private fun TermRow(
             .clip(RoundedCornerShape(8.dp))
             .clickableSingle {
                 navigateToWebLink.invoke()
-            }
-            .padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
+            }.padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
     ) {
         Icon(
             painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),

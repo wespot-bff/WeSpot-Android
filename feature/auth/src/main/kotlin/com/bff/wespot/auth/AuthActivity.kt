@@ -185,29 +185,27 @@ class AuthActivity : ComponentActivity() {
 
         val content: View = findViewById(android.R.id.content)
         content.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                return if (::loginState.isInitialized) {
-                    if (loginState == LoginState.LOGIN_SUCCESS) {
-                        val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
-                        val date = intent.getStringExtra(EXTRA_DATE) ?: ""
-                        val deepLink = intent.getStringExtra(EXTRA_DEEP_LINK) ?: ""
+            override fun onPreDraw(): Boolean = if (::loginState.isInitialized) {
+                if (loginState == LoginState.LOGIN_SUCCESS) {
+                    val type = intent.getStringExtra(EXTRA_TYPE) ?: ""
+                    val date = intent.getStringExtra(EXTRA_DATE) ?: ""
+                    val deepLink = intent.getStringExtra(EXTRA_DEEP_LINK) ?: ""
 
-                        val intent = navigator.navigateToMain(
-                            this@AuthActivity,
-                            type = Pair(EXTRA_TYPE, type),
-                            date = Pair(EXTRA_DATE, date),
-                            deepLink = Pair(EXTRA_DEEP_LINK, deepLink),
-                        )
-                        startActivity(intent)
-                    } else if (loginState == LoginState.FORCE_UPDATE) {
-                        showVersionUpdateDialog()
-                    }
-
-                    content.viewTreeObserver.removeOnPreDrawListener(this)
-                    true
-                } else {
-                    false
+                    val intent = navigator.navigateToMain(
+                        this@AuthActivity,
+                        type = Pair(EXTRA_TYPE, type),
+                        date = Pair(EXTRA_DATE, date),
+                        deepLink = Pair(EXTRA_DEEP_LINK, deepLink),
+                    )
+                    startActivity(intent)
+                } else if (loginState == LoginState.FORCE_UPDATE) {
+                    showVersionUpdateDialog()
                 }
+
+                content.viewTreeObserver.removeOnPreDrawListener(this)
+                true
+            } else {
+                false
             }
         })
     }

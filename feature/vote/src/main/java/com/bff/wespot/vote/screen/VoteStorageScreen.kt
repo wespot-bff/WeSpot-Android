@@ -382,7 +382,8 @@ private fun VoteItem(
                             contentAlignment = Alignment.Center,
                         ) {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
                                     .data(profileCharacter.iconUrl)
                                     .build(),
                                 contentDescription = stringResource(

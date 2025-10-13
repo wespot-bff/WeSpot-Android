@@ -155,8 +155,7 @@ fun ReceiverSelectionScreen(
                     indication = null,
                     interactionSource = interactionSource,
                     onClick = { keyboard?.hide() },
-                )
-                .padding(it),
+                ).padding(it),
             showGradient = true,
             button = {
                 WSButton(
@@ -211,8 +210,7 @@ fun ReceiverSelectionScreen(
                                         start = Offset(0f, size.height),
                                         end = Offset(size.width, size.height),
                                     )
-                                }
-                                .clickable {
+                                }.clickable {
                                     if (state.kakaoContent != KakaoContent.EMPTY) {
                                         activityNavigator.navigateToKakao(
                                             context = context,

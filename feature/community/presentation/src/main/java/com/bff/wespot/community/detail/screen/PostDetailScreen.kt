@@ -426,8 +426,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     modifier = Modifier
                         .clickableSingle {
                             onAction(PostDetailAction.OnReactionClick(reaction))
-                        }
-                        .fillMaxHeight(),
+                        }.fillMaxHeight(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -650,8 +649,7 @@ private fun CommentInputBox(
                 .background(
                     color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
-                )
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                ).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(

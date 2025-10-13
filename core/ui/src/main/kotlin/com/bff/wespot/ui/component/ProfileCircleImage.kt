@@ -35,7 +35,8 @@ fun ProfileCircleImage(
     ) {
         AsyncImage(
             modifier = Modifier.size(size),
-            model = ImageRequest.Builder(LocalContext.current)
+            model = ImageRequest
+                .Builder(LocalContext.current)
                 .data(imageUrl)
                 .error(R.drawable.default_profile)
                 .fallback(R.drawable.default_profile)

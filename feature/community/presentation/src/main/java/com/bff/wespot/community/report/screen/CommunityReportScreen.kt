@@ -220,12 +220,10 @@ fun CommunityReportScreen(
 @Composable
 private fun toggleCheckIcon(
     checked: Boolean,
-): Painter {
-    return if (checked) {
-        rememberAsyncImagePainter(model = R.drawable.checked)
-    } else {
-        rememberAsyncImagePainter(model = R.drawable.unchecked)
-    }
+): Painter = if (checked) {
+    rememberAsyncImagePainter(model = R.drawable.checked)
+} else {
+    rememberAsyncImagePainter(model = R.drawable.unchecked)
 }
 
 @Composable
@@ -240,8 +238,7 @@ private fun ReportReasonItem(
             .background(
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
                 shape = RoundedCornerShape(size = 12.dp),
-            )
-            .clickable {
+            ).clickable {
                 onSelect.invoke()
             },
     ) {
@@ -282,8 +279,7 @@ private fun CustomReportReasonItem(
             .background(
                 color = colors.cardBackgroundColor,
                 shape = RoundedCornerShape(size = 12.dp),
-            )
-            .then(
+            ).then(
                 if (isFocused) {
                     Modifier.border(
                         width = 1.dp,
@@ -293,8 +289,7 @@ private fun CustomReportReasonItem(
                 } else {
                     Modifier
                 },
-            )
-            .clickable(
+            ).clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
             ) {

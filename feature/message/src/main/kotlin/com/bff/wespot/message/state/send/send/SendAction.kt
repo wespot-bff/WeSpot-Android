@@ -8,6 +8,8 @@ sealed interface SendAction {
     data object OnExitDialogExitButtonClicked : SendAction
     data object OnExitDialogCancelButtonClicked : SendAction
     data object OnTopBarNavigateButtonClicked : SendAction
-    data class OnAnonymousProfileSelected(val profile: AnonymousProfile) : SendAction
+    data class OnAnonymousProfileSelected(
+        val profile: AnonymousProfile,
+    ) : SendAction
     data object OnAnonymousProfileModalDismiss : SendAction
 }

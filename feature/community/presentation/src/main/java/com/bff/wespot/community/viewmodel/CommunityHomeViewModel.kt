@@ -27,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CommunityHomeViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
-) : BaseViewModel(), ContainerHost<CommunityUiState, CommunitySideEffect> {
+) : BaseViewModel(),
+    ContainerHost<CommunityUiState, CommunitySideEffect> {
     override val container = container<CommunityUiState, CommunitySideEffect>(
         CommunityUiState(),
     )
@@ -35,11 +36,11 @@ class CommunityHomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             intent {
-                communityRepository.getCommunityChips()
+                communityRepository
+                    .getCommunityChips()
                     .onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onSuccess {
+                    }.onSuccess {
                         reduce {
                             state.copy(
                                 filterChips = it.map { it.toUiModel() },
@@ -83,7 +84,8 @@ class CommunityHomeViewModel @Inject constructor(
     }
 
     private fun onFilterChipClicked(id: String, target: String, inquirySize: Int = 10) = intent {
-        val paging = communityRepository.getCommunityContentStream(target, inquirySize)
+        val paging = communityRepository
+            .getCommunityContentStream(target, inquirySize)
             .map {
                 it.map { content ->
                     content.toUiModel()
@@ -168,7 +170,8 @@ class CommunityHomeViewModel @Inject constructor(
             else -> ""
         }
 
-        val paging = communityRepository.getCommunityContentStream(target, 10)
+        val paging = communityRepository
+            .getCommunityContentStream(target, 10)
             .map {
                 it.map { content ->
                     content.toUiModel()

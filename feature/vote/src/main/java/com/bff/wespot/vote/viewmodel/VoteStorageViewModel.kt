@@ -25,7 +25,8 @@ import javax.inject.Inject
 class VoteStorageViewModel @Inject constructor(
     private val receivedRepository: BasePagingRepository<ReceivedVoteData, Paging<ReceivedVoteData>>,
     private val sentRepository: BasePagingRepository<SentVoteData, Paging<SentVoteData>>,
-) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(StorageUiState())
 
     fun onAction(action: StorageAction) {
@@ -49,7 +50,8 @@ class VoteStorageViewModel @Inject constructor(
             runCatching {
                 reduce {
                     state.copy(
-                        receivedVotes = receivedRepository.fetchResultStream()
+                        receivedVotes = receivedRepository
+                            .fetchResultStream()
                             .cachedIn(viewModelScope),
                         isLoading = false,
                     )

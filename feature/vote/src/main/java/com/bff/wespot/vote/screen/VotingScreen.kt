@@ -284,7 +284,8 @@ private fun VotingProgressScreen(
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest
+                    .Builder(LocalContext.current)
                     .data(state.currentVote.voteUser.profile.iconUrl)
                     .build(),
                 contentDescription = stringResource(R.string.male),

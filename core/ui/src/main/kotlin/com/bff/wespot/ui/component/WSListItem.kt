@@ -58,8 +58,7 @@ fun WSListItem(
                     WeSpotThemeManager.colors.cardBackgroundColor
                 },
                 shape = WeSpotThemeManager.shapes.medium,
-            )
-            .background(WeSpotThemeManager.colors.cardBackgroundColor)
+            ).background(WeSpotThemeManager.colors.cardBackgroundColor)
             .clickable { onClick.invoke() },
     ) {
         Row(
@@ -132,7 +131,8 @@ private fun SchoolListItemPreview() {
                         backgroundColor = "#FF5733",
                         imageContent = {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
                                     .data("https://avatars.githubusercontent.com/u/89840550?v=4")
                                     .crossfade(true)
                                     .build(),

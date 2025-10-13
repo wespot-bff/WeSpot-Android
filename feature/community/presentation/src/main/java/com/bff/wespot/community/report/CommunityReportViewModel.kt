@@ -26,7 +26,8 @@ class CommunityReportViewModel @Inject constructor(
     param: CommunityReportParams,
     private val communityReportRepository: CommunityReportRepository,
     private val ioDispatcher: CoroutineDispatcher,
-) : BaseViewModel(), ContainerHost<CommunityReportUiState, CommunityReportSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<CommunityReportUiState, CommunityReportSideEffect> {
     override val container = container<CommunityReportUiState, CommunityReportSideEffect>(
         CommunityReportUiState(),
     )
@@ -90,11 +91,11 @@ class CommunityReportViewModel @Inject constructor(
             reduce { state.copy(isLoading = true) }
 
             viewModelScope.launch(ioDispatcher) {
-                communityReportRepository.getReportReasons()
+                communityReportRepository
+                    .getReportReasons()
                     .onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onSuccess { reasons ->
+                    }.onSuccess { reasons ->
                         intent {
                             reduce {
                                 state.copy(
@@ -103,8 +104,7 @@ class CommunityReportViewModel @Inject constructor(
                                 )
                             }
                         }
-                    }
-                    .onFailure {
+                    }.onFailure {
                         intent {
                             reduce { state.copy(isLoading = false) }
                         }
@@ -164,14 +164,12 @@ class CommunityReportViewModel @Inject constructor(
                 result
                     .onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onSuccess {
+                    }.onSuccess {
                         intent {
                             reduce { state.copy(isSubmitting = false) }
                             postSideEffect(CommunityReportSideEffect.OnReportSuccess)
                         }
-                    }
-                    .onFailure {
+                    }.onFailure {
                         intent {
                             reduce { state.copy(isSubmitting = false) }
                         }

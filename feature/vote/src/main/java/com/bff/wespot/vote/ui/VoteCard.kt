@@ -145,7 +145,8 @@ internal fun VoteCard(
                     )
                 } else {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
+                        model = ImageRequest
+                            .Builder(LocalContext.current)
                             .data(result.user.profile.iconUrl)
                             .allowHardware(false)
                             .build(),

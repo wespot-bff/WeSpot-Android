@@ -48,7 +48,8 @@ class AuthViewModel @Inject constructor(
     private val pagingRepository: BasePagingRepository<School, Paging<School>>,
     private val commonRepository: CommonRepository,
     remoteConfigRepository: RemoteConfigRepository,
-) : BaseViewModel(), ContainerHost<AuthUiState, AuthSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<AuthUiState, AuthSideEffect> {
     override val container = container<AuthUiState, AuthSideEffect>(
         AuthUiState(
             playStoreLink =

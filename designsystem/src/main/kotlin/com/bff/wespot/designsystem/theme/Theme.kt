@@ -106,9 +106,7 @@ object WeSpotThemeManager {
 
     var customTheme by mutableStateOf(CustomTheme.DARK)
 
-    fun isSystemInDarkTheme(): Boolean {
-        return customTheme == CustomTheme.DARK
-    }
+    fun isSystemInDarkTheme(): Boolean = customTheme == CustomTheme.DARK
 }
 
 @Composable

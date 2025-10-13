@@ -30,7 +30,8 @@ class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val notificationListRepository: BasePagingRepository<Notification, Paging<Notification>>,
     private val messageRepository: MessageRepository,
-) : BaseViewModel(), ContainerHost<NotificationUiState, NotificationSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<NotificationUiState, NotificationSideEffect> {
     override val container =
         container<NotificationUiState, NotificationSideEffect>(NotificationUiState())
 
@@ -104,11 +105,11 @@ class NotificationViewModel @Inject constructor(
 
     private fun getMessageStatus() = intent {
         viewModelScope.launch {
-            messageRepository.getMessageStatus()
+            messageRepository
+                .getMessageStatus()
                 .onSuccess {
                     reduce { state.copy(isSendAllowed = it.isSendAllowed) }
-                }
-                .onFailure { exception ->
+                }.onFailure { exception ->
                     Timber.d(exception)
                 }
         }
@@ -116,11 +117,11 @@ class NotificationViewModel @Inject constructor(
 
     private fun updateNotificationReadStatus(id: Int) = intent {
         viewModelScope.launch {
-            notificationRepository.updateNotificationReadStatus(id)
+            notificationRepository
+                .updateNotificationReadStatus(id)
                 .onSuccess {
                     getNotificationList()
-                }
-                .onFailure {
+                }.onFailure {
                     Timber.e(it)
                 }
         }

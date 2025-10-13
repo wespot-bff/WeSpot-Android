@@ -190,7 +190,8 @@ fun ProfileContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
+            model = ImageRequest
+                .Builder(LocalContext.current)
                 .data(profile.profileCharacter.iconUrl)
                 .crossfade(true)
                 .build(),

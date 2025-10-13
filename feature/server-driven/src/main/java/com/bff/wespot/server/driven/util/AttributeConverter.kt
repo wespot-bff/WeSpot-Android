@@ -22,15 +22,11 @@ internal fun String.toTextAlign(): TextAlign =
         else -> TextAlign.Justify
     }
 
-internal fun String.toColor(): Color {
-    return Color(android.graphics.Color.parseColor(this))
-}
+internal fun String.toColor(): Color = Color(android.graphics.Color.parseColor(this))
 
-internal fun Paddings.toPaddingValues(): PaddingValues {
-    return PaddingValues(
-        start = start.dp,
-        top = top.dp,
-        end = end.dp,
-        bottom = bottom.dp,
-    )
-}
+internal fun Paddings.toPaddingValues(): PaddingValues = PaddingValues(
+    start = start.dp,
+    top = top.dp,
+    end = end.dp,
+    bottom = bottom.dp,
+)

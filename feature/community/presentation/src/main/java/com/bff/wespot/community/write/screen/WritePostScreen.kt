@@ -132,8 +132,7 @@ internal fun WritePostScreen(
                             .background(
                                 WeSpotThemeManager.colors.cardBackgroundColor,
                                 RoundedCornerShape(12.dp),
-                            )
-                            .clip(RoundedCornerShape(12.dp))
+                            ).clip(RoundedCornerShape(12.dp))
                             .heightIn(min = 56.dp)
                             .fillMaxWidth(0.5f),
                         contentAlignment = Alignment.CenterStart,

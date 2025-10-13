@@ -22,5 +22,7 @@ sealed interface CategoryDetailAction {
 
     data object OnFABClicked : CategoryDetailAction
 
-    data class NavigateToDetail(val postId: String) : CategoryDetailAction
+    data class NavigateToDetail(
+        val postId: String,
+    ) : CategoryDetailAction
 }
