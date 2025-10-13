@@ -10,4 +10,5 @@ sealed class AnnouncementPolicyAction {
     data object OnConfirmRevokeClicked : AnnouncementPolicyAction()
     data object OnDialogDismissed : AnnouncementPolicyAction()
     data object OnFinalRevokeClicked : AnnouncementPolicyAction()
+    data object OnAgreeClicked : AnnouncementPolicyAction()
 }

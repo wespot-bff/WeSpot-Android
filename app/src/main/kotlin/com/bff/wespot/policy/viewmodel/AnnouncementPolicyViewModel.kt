@@ -46,6 +46,7 @@ class AnnouncementPolicyViewModel @Inject constructor(
             AnnouncementPolicyAction.OnConfirmRevokeClicked -> handleConfirmRevokeClicked()
             AnnouncementPolicyAction.OnDialogDismissed -> handleDialogDismissed()
             AnnouncementPolicyAction.OnFinalRevokeClicked -> handleFinalRevoke()
+            AnnouncementPolicyAction.OnAgreeClicked -> handleAgreeClicked()
         }
     }
 
@@ -112,6 +113,25 @@ class AnnouncementPolicyViewModel @Inject constructor(
                     clearCachedData()
                     postSideEffect(AnnouncementPolicySideEffect.NavigateToAuth)
                 }.onNetworkFailure {
+                    postSideEffect(it.toSideEffect())
+                }.onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    Timber.e(it)
+                }
+        }
+    }
+
+    private fun handleAgreeClicked() = intent {
+        reduce { state.copy(isLoading = true) }
+
+        viewModelScope.launch(coroutineDispatcher) {
+            authRepository
+                .agreeToPolicy()
+                .onSuccess {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(AnnouncementPolicySideEffect.FinishActivity)
+                }.onNetworkFailure {
+                    reduce { state.copy(isLoading = false) }
                     postSideEffect(it.toSideEffect())
                 }.onFailure {
                     reduce { state.copy(isLoading = false) }

@@ -12,4 +12,5 @@ interface AuthDataSource {
     suspend fun signUp(signUp: SignUpDto): Result<AuthTokenDto>
     suspend fun revoke(revokeReasonList: RevokeReasonListDto): Result<Unit>
     suspend fun signOut(): Result<Unit>
+    suspend fun agreeToPolicy(): Result<Unit>
 }

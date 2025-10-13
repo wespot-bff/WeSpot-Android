@@ -68,4 +68,13 @@ class AuthDataSourceImpl @Inject constructor(
                 path("api/v1/auth/logout")
             }
         }
+
+    override suspend fun agreeToPolicy(): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                // TODO: Add proper endpoint when API is ready
+                path("")
+            }
+        }
 }

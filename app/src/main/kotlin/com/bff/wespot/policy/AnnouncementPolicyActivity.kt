@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -77,17 +79,22 @@ class AnnouncementPolicyActivity : ComponentActivity() {
                     },
                     bottomBar = {
                         WSButton(
+                            text = stringResource(R.string.agree),
                             onClick = {
+                                action(AnnouncementPolicyAction.OnAgreeClicked)
                             },
                         ) {
+                            it()
                         }
                     },
+                    modifier = Modifier.padding(bottom = 16.dp),
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Column(
                             modifier = Modifier
                                 .padding(it)
-                                .padding(horizontal = 20.dp),
+                                .padding(horizontal = 20.dp)
+                                .verticalScroll(state = rememberScrollState()),
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Text(
@@ -125,7 +132,8 @@ class AnnouncementPolicyActivity : ComponentActivity() {
                                     .fillMaxWidth()
                                     .clickableSingle {
                                         action(AnnouncementPolicyAction.OnRevokeClicked)
-                                    }.padding(vertical = 16.dp),
+                                    }
+                                    .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
@@ -167,8 +175,15 @@ class AnnouncementPolicyActivity : ComponentActivity() {
                 when (it) {
                     AnnouncementPolicySideEffect.NavigateToAuth -> {
                         val intent = navigator.navigateToAuth(this@AnnouncementPolicyActivity)
-                        intent.putExtra(EXTRA_TOAST_MESSAGE, getString(com.bff.wespot.entire.R.string.revoke_done))
+                        intent.putExtra(
+                            EXTRA_TOAST_MESSAGE,
+                            getString(com.bff.wespot.entire.R.string.revoke_done),
+                        )
                         startActivity(intent)
+                        finish()
+                    }
+
+                    AnnouncementPolicySideEffect.FinishActivity -> {
                         finish()
                     }
                 }

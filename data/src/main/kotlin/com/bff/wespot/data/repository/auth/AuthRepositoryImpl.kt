@@ -63,4 +63,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut(): Result<Unit> = authDataSource.signOut()
+
+    override suspend fun agreeToPolicy(): Result<Unit> = authDataSource.agreeToPolicy()
 }
