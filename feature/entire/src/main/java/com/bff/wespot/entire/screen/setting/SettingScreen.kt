@@ -92,6 +92,16 @@ fun SettingScreen(
                 )
             }
 
+            SettingListItem(text = stringResource(R.string.community_policy)) {
+                activityNavigator.navigateToWebLink(
+                    context = context,
+                    webLink = state.webLinkMap.getOrDefault(
+                        RemoteConfigKey.COMMUNITY_POLICY_URL,
+                        context.getString(R.string.community_policy_url),
+                    ),
+                )
+            }
+
             SettingListItem(text = stringResource(R.string.latest_updates)) {
                 activityNavigator.navigateToWebLink(
                     context = context,
@@ -101,14 +111,6 @@ fun SettingScreen(
                     ),
                 )
             }
-
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                thickness = 1.dp,
-                color = WeSpotThemeManager.colors.cardBackgroundColor,
-            )
 
             SettingListItem(text = stringResource(R.string.account_setting)) {
                 navigator.navigateToAccountSetting()
