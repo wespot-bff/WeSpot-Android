@@ -8,6 +8,8 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.community.CommunityDataSource
 import com.bff.wespot.data.remote.source.community.CommunityDataSourceImpl
+import com.bff.wespot.data.remote.source.community.WritePostDataSource
+import com.bff.wespot.data.remote.source.community.WritePostDataSourceImpl
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSource
 import com.bff.wespot.data.remote.source.firebase.config.RemoteConfigDataSourceImpl
 import com.bff.wespot.data.remote.source.firebase.messaging.MessagingDataSource
@@ -112,4 +114,10 @@ abstract class DataRemoteModule {
     abstract fun bindsCommunityDataSource(
         communityDataSourceImpl: CommunityDataSourceImpl
     ): CommunityDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsWritePostDataSource(
+        writePostDataSourceImpl: WritePostDataSourceImpl
+    ): WritePostDataSource
 }

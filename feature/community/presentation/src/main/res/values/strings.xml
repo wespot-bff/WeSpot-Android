@@ -2,4 +2,12 @@
 <resources>
     <string name="community">커뮤니티</string>
     <string name="post_scrap">스크랩</string>
+    <string name="write_post">게시글 작성</string>
+    <string name="write_upload_image">(선택) 사진 올리기</string>
+    <string name="write_upload_limit">사진은 3장까지 올릴 수 있어요</string>
+    <string name="write_upload_post">게시하기</string>
+    <string name="write_title_placeholder">(선택) 제목을 입력해주세요</string>
+    <string name="write_description_placeholder">어떤 생각을 하고 계신가요?\n학교 친구들과 함께 생각을 나눠보세요</string>
+    <string name="write_category_detail_title">게시판 카테고리</string>
+    <string name="write_select_category">카테고리 선택</string>
 </resources>
