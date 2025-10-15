@@ -9,5 +9,7 @@ sealed interface CategoryDetailSideEffect {
         val navigateToComment: Boolean = false,
     ) : CategoryDetailSideEffect
 
-    data class NavigateToCreate(val category: CategoryItem) : CategoryDetailSideEffect
+    data class NavigateToCreate(
+        val category: CategoryItem,
+    ) : CategoryDetailSideEffect
 }

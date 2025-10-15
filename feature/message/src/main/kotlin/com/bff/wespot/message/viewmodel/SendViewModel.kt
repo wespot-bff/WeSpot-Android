@@ -57,7 +57,8 @@ class SendViewModel @Inject constructor(
     private val userListRepository: BasePagingRepository<User, Paging<User>>,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     private val analyticsHelper: AnalyticsHelper,
-) : BaseViewModel(), ContainerHost<MessageSendUiState, MessageSendSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<MessageSendUiState, MessageSendSideEffect> {
     override val container = container<MessageSendUiState, MessageSendSideEffect>(MessageSendUiState())
 
     private val receiverInput: MutableStateFlow<String> = MutableStateFlow("")
@@ -227,7 +228,8 @@ class SendViewModel @Inject constructor(
     private fun getUserList(name: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
             runCatching {
-                val result = userListRepository.fetchResultStream(mapOf("name" to name))
+                val result = userListRepository
+                    .fetchResultStream(mapOf("name" to name))
                     .cachedIn(viewModelScope)
                 reduce { state.copy(receiverList = result) }
             }
@@ -281,25 +283,26 @@ class SendViewModel @Inject constructor(
         postSideEffect(WritingSideEffect.DismissReplyDialog)
         reduce { state.copy(isLoading = true) }
 
-        messageRepository.replyMessage(
-            roomId = state.roomId,
-            content = state.messageInput,
-        ).onSuccess {
-            postSideEffect(
-                WritingSideEffect.ShowToast(
-                    toastState = ToastState(
-                        show = true,
-                        message = R.string.message_send_success,
-                        type = WSToastType.Success,
+        messageRepository
+            .replyMessage(
+                roomId = state.roomId,
+                content = state.messageInput,
+            ).onSuccess {
+                postSideEffect(
+                    WritingSideEffect.ShowToast(
+                        toastState = ToastState(
+                            show = true,
+                            message = R.string.message_send_success,
+                            type = WSToastType.Success,
+                        ),
                     ),
-                ),
-            )
-            postSideEffect(WritingSideEffect.NavigateUp)
-        }.onNetworkFailure {
-            postSideEffect(it.toSideEffect())
-        }.also {
-            reduce { state.copy(isLoading = false) }
-        }
+                )
+                postSideEffect(WritingSideEffect.NavigateUp)
+            }.onNetworkFailure {
+                postSideEffect(it.toSideEffect())
+            }.also {
+                reduce { state.copy(isLoading = false) }
+            }
     }
 
     private fun getProfile() = intent {
@@ -316,14 +319,13 @@ class SendViewModel @Inject constructor(
 
     private fun getKakaoContent() = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            commonRepository.getKakaoContent(KakaoSharingType.FIND.name)
+            commonRepository
+                .getKakaoContent(KakaoSharingType.FIND.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     Timber.e(it)
                 }
         }
@@ -353,17 +355,16 @@ class SendViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            messageRepository.getSenderProfileList(state.receiver.id)
+            messageRepository
+                .getSenderProfileList(state.receiver.id)
                 .onSuccess {
                     reduce {
                         state.copy(senderProfileList = it)
                     }
                     postSideEffect(ReceiverSideEffect.ShowProfileSelectBottomSheet)
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .also {
+                }.also {
                     reduce { state.copy(isLoading = false) }
                 }
         }
@@ -420,24 +421,25 @@ class SendViewModel @Inject constructor(
                     }
             }
 
-            messageRepository.postMessage(
-                SendMessage(
-                    receiverId = state.receiver.id,
-                    content = state.messageInput,
-                    isAnonymous = state.senderProfile.isAnonymous,
-                    anonymousImageUrl = imageUrl,
-                    anonymousProfileName = state.senderProfile.name,
-                ),
-            ).onSuccess {
-                trackMessageSendEvent()
-                reduce { state.copy(isLoading = false) }
-                postSideEffect(SendSideEffect.ShowToast(R.string.message_send_success))
-                postSideEffect(SendSideEffect.NavigateToMessage)
-            }.onNetworkFailure { exception ->
-                postSideEffect(exception.toSideEffect())
-            }.onFailure {
-                reduce { state.copy(isLoading = false) }
-            }
+            messageRepository
+                .postMessage(
+                    SendMessage(
+                        receiverId = state.receiver.id,
+                        content = state.messageInput,
+                        isAnonymous = state.senderProfile.isAnonymous,
+                        anonymousImageUrl = imageUrl,
+                        anonymousProfileName = state.senderProfile.name,
+                    ),
+                ).onSuccess {
+                    trackMessageSendEvent()
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(SendSideEffect.ShowToast(R.string.message_send_success))
+                    postSideEffect(SendSideEffect.NavigateToMessage)
+                }.onNetworkFailure { exception ->
+                    postSideEffect(exception.toSideEffect())
+                }.onFailure {
+                    reduce { state.copy(isLoading = false) }
+                }
         }
     }
 

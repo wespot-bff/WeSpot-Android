@@ -25,15 +25,13 @@ import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.GradationType
 
 @Composable
-fun ColorType.color(): Color {
-    return when (this) {
-        is ColorType.Hex -> {
-            Color(hexCode.toColorInt())
-        }
+fun ColorType.color(): Color = when (this) {
+    is ColorType.Hex -> {
+        Color(hexCode.toColorInt())
+    }
 
-        is ColorType.Token -> {
-            token.toDesignSystemColor()
-        }
+    is ColorType.Token -> {
+        token.toDesignSystemColor()
     }
 }
 
@@ -46,27 +44,25 @@ fun GradationType.toBrush(): Brush {
 }
 
 @Composable
-private fun String.toDesignSystemColor(): Color {
-    return when (this.lowercase()) {
-        "primary100" -> Primary100
-        "primary200" -> Primary200
-        "primary300" -> Primary300
-        "primary400" -> Primary400
-        "primary500" -> Primary500
+private fun String.toDesignSystemColor(): Color = when (this.lowercase()) {
+    "primary100" -> Primary100
+    "primary200" -> Primary200
+    "primary300" -> Primary300
+    "primary400" -> Primary400
+    "primary500" -> Primary500
 
-        "white" -> White
-        "gray100" -> Gray100
-        "gray200" -> Gray200
-        "gray300" -> Gray300
-        "gray400" -> Gray400
-        "gray500" -> Gray500
-        "gray600" -> Gray600
-        "gray700" -> Gray700
-        "gray800" -> Gray800
-        "gray900" -> Gray900
+    "white" -> White
+    "gray100" -> Gray100
+    "gray200" -> Gray200
+    "gray300" -> Gray300
+    "gray400" -> Gray400
+    "gray500" -> Gray500
+    "gray600" -> Gray600
+    "gray700" -> Gray700
+    "gray800" -> Gray800
+    "gray900" -> Gray900
 
-        "destructive" -> Destructive
-        "positive" -> Positive
-        else -> Gray900
-    }
+    "destructive" -> Destructive
+    "positive" -> Positive
+    else -> Gray900
 }

@@ -3,8 +3,12 @@ package com.bff.wespot.community.all.state
 import com.bff.wespot.community.uimodel.PostItemUiModel
 
 sealed interface CommunityAllAction {
-    data class LoadPostsByMenuType(val menu: String) : CommunityAllAction
-    data class NavigateToDetail(val id: String) : CommunityAllAction
+    data class LoadPostsByMenuType(
+        val menu: String,
+    ) : CommunityAllAction
+    data class NavigateToDetail(
+        val id: String,
+    ) : CommunityAllAction
     data class NavigateToCategory(
         val categoryId: String,
         val categoryText: String,
@@ -20,5 +24,7 @@ sealed interface CommunityAllAction {
         val id: String,
     ) : CommunityAllAction
 
-    data class NavigateToDetailComments(val id: String) : CommunityAllAction
+    data class NavigateToDetailComments(
+        val id: String,
+    ) : CommunityAllAction
 }

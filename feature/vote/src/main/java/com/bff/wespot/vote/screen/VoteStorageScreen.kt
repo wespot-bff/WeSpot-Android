@@ -40,8 +40,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.bff.wespot.common.util.timeDifference
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -382,7 +382,8 @@ private fun VoteItem(
                             contentAlignment = Alignment.Center,
                         ) {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
                                     .data(profileCharacter.iconUrl)
                                     .build(),
                                 contentDescription = stringResource(

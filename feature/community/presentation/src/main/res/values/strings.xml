@@ -29,4 +29,13 @@
     <string name="write_post_warning_no">아니요</string>
     <string name="write_post_description_warning">1200자 이내로 입력해 주세요</string>
     <string name="post_detail_comment_placeholder">익명으로 자유롭게 의견을 나눠보세요</string>
+    <string name="report_select_reason">신고 사유를 선택해주세요</string>
+    <string name="report_caution">유의사항</string>
+    <string name="post_caution_description">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
+    <string name="report_description">*신고 누적 시 신고를 받은 유저의 이용이 제한돼요</string>
+    <string name="report_custom_placeholder">직접 입력</string>
+    <string name="community_error_description">커뮤니티 오류</string>
+    <string name="community_error_title">인터넷 연결이 불안정해요</string>
+    <string name="community_error_message">연결 상태를 확인하고 다시 시도해주세요</string>
+    <string name="retry">다시 시도하기</string>
 </resources>

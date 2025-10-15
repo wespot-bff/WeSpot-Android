@@ -42,8 +42,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.write.state.WritePostAction
 import com.bff.wespot.community.write.state.WritePostUiState
@@ -132,8 +132,7 @@ internal fun WritePostScreen(
                             .background(
                                 WeSpotThemeManager.colors.cardBackgroundColor,
                                 RoundedCornerShape(12.dp),
-                            )
-                            .clip(RoundedCornerShape(12.dp))
+                            ).clip(RoundedCornerShape(12.dp))
                             .heightIn(min = 56.dp)
                             .fillMaxWidth(0.5f),
                         contentAlignment = Alignment.CenterStart,
@@ -378,8 +377,6 @@ internal fun CategoryBottomSheet(
                     style = StaticTypeScale.Default.body1,
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
             items(

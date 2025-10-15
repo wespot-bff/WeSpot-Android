@@ -19,6 +19,7 @@ data class HotPostItem(
         )
 
         data class Post(
+            val targetId: String,
             val headerSection: HeaderSection,
             val infoSection: InfoSection,
             val createdAt: RichTextType,

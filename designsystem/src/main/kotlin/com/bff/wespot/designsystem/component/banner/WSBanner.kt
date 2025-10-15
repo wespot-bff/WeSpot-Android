@@ -179,8 +179,7 @@ fun WSBanner(
                 } else {
                     it
                 }
-            }
-            .background(bannerType.backgroundColor())
+            }.background(bannerType.backgroundColor())
             .clickable { onBannerClick() },
     ) {
         Row(

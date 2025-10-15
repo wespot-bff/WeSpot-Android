@@ -83,23 +83,24 @@ class CategoryDetailViewModel @Inject constructor(
 
     private fun loadCategoryPosts() = intent {
         viewModelScope.launch(ioDispatcher) {
-            val paging = communityRepository.getCategoryPostsStreamWithImages(
-                categoryId = categoryId,
-                onImagesLoaded = { background, thumbnail ->
-                    intent {
-                        reduce {
-                            state.copy(
-                                backgroundImage = background,
-                                thumbnailImage = thumbnail,
-                            )
+            val paging = communityRepository
+                .getCategoryPostsStreamWithImages(
+                    categoryId = categoryId,
+                    onImagesLoaded = { background, thumbnail ->
+                        intent {
+                            reduce {
+                                state.copy(
+                                    backgroundImage = background,
+                                    thumbnailImage = thumbnail,
+                                )
+                            }
                         }
+                    },
+                ).map {
+                    it.map { content ->
+                        content.toUiModel()
                     }
-                },
-            ).map {
-                it.map { content ->
-                    content.toUiModel()
                 }
-            }
 
             reduce {
                 state.copy(posts = paging)
@@ -178,11 +179,11 @@ class CategoryDetailViewModel @Inject constructor(
 
     private fun loadCategories() = intent {
         viewModelScope.launch(ioDispatcher) {
-            writePostRepository.getCategories()
+            writePostRepository
+                .getCategories()
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     reduce {
                         state.copy(categories = it)
                     }

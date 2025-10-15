@@ -6,14 +6,18 @@ import com.bff.wespot.model.exception.NetworkExceptionViewType
 sealed class SideEffect {
     data object Consumed : SideEffect()
     data object Redirect : SideEffect()
-    data class ShowToast(val message: String) : SideEffect()
-    data class ShowDialog(val message: String) : SideEffect()
+    data class ShowToast(
+        val message: String,
+    ) : SideEffect()
+    data class ShowDialog(
+        val message: String,
+    ) : SideEffect()
 
     companion object {
         private const val DEFAULT_TOAST_MESSAGE = "알 수 없는 에러가 발생하였습니다."
 
         fun NetworkException.toSideEffect(): SideEffect =
-            when (this.viewType) {
+            when (this.view) {
                 NetworkExceptionViewType.TOAST -> ShowToast(this.detail)
                 NetworkExceptionViewType.DIALOG -> ShowDialog(this.detail)
                 NetworkExceptionViewType.REDIRECT -> Redirect

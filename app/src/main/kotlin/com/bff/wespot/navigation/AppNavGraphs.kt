@@ -194,12 +194,10 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
     }
 }
 
-fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavigator {
-    return CommonNavGraphNavigator(
-        navBackStackEntry.destination.navGraph(),
-        navController,
-    )
-}
+fun DestinationScopeWithNoDependencies<*>.currentNavigator(): CommonNavGraphNavigator = CommonNavGraphNavigator(
+    navBackStackEntry.destination.navGraph(),
+    navController,
+)
 
 fun DestinationScopeWithNoDependencies<*>.notificationNavigator(): NotificationNavigatorImpl =
     NotificationNavigatorImpl(navController)

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -73,6 +74,7 @@ internal fun FilterChip(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 20.dp),
         ) {
             items(filterChips) {
                 val selected = selectedId == it.id
@@ -88,8 +90,7 @@ internal fun FilterChip(
                                         Gray700
                                     },
                                     shape = RoundedCornerShape(80.dp),
-                                )
-                                .clickableSingle {
+                                ).clickableSingle {
                                     if (selected) {
                                         onSameChipClicked.invoke()
                                     } else {
@@ -132,8 +133,7 @@ internal fun FilterChip(
                             startX = 0f,
                             endX = 100f,
                         ),
-                    )
-                    .width(70.dp),
+                    ).width(70.dp),
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Box(
@@ -142,8 +142,7 @@ internal fun FilterChip(
                         .background(
                             color = WeSpotThemeManager.colors.cardBackgroundColor,
                             shape = CircleShape,
-                        )
-                        .size(30.dp)
+                        ).size(30.dp)
                         .clickableSingle {
                             onMoreClicked.invoke()
                         },
