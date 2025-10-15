@@ -78,7 +78,14 @@ internal fun CommunityHomeScreen(
             ) { post ->
                 when (post) {
                     is PostItemUiModel -> {
-                        post.content.Item()
+                        post.content.Item(
+                            navigateToPost = {
+                                navigator.navigateToPostDetailActivity(
+                                    context = context,
+                                    postId = post.id,
+                                )
+                            },
+                        )
                     }
 
                     is BannerItemUiModel -> {

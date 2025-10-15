@@ -42,10 +42,17 @@ import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
-internal fun PostContentUiModel.Item() {
-    Column {
+internal fun PostContentUiModel.Item(
+    navigateToPost: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.clickableSingle {
+            navigateToPost.invoke()
+        },
+    ) {
         HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -399,7 +406,7 @@ private object PostItemPreviewData {
 private fun PostItemPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItem.content.Item()
+            PostItemPreviewData.samplePostItem.content.Item({})
         }
     }
 }
@@ -409,7 +416,7 @@ private fun PostItemPreview() {
 private fun PostItemEmptyPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItemEmpty.content.Item()
+            PostItemPreviewData.samplePostItemEmpty.content.Item({})
         }
     }
 }
