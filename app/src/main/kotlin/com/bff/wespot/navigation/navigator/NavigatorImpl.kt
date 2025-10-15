@@ -240,13 +240,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
-    override fun navigateToCommunitySearch(context: Context): Intent {
-        return context.buildIntent<SearchActivity>()
-    }
+    override fun navigateToCommunitySearch(context: Context): Intent = context.buildIntent<SearchActivity>()
 
-    override fun navigateToCommunityAll(context: Context): Intent {
-        return context.buildIntent<CommunityAllActivity>()
-    }
+    override fun navigateToCommunityAll(context: Context): Intent = context.buildIntent<CommunityAllActivity>()
 
     override fun navigateToCategoryDetail(
         context: Context,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,9 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,14 +56,6 @@ internal fun FilterChip(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val isAtEnd by remember {
-        derivedStateOf {
-            val layoutInfo = lazyListState.layoutInfo
-            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val totalItemsCount = layoutInfo.totalItemsCount
-            lastVisibleItemIndex >= totalItemsCount - 1
-        }
-    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,6 +65,7 @@ internal fun FilterChip(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = 20.dp),
+            state = lazyListState,
         ) {
             items(filterChips) {
                 val selected = selectedId == it.id
@@ -90,7 +81,8 @@ internal fun FilterChip(
                                         Gray700
                                     },
                                     shape = RoundedCornerShape(80.dp),
-                                ).clickableSingle {
+                                )
+                                .clickableSingle {
                                     if (selected) {
                                         onSameChipClicked.invoke()
                                     } else {
@@ -118,7 +110,7 @@ internal fun FilterChip(
             }
         }
 
-        if (!isAtEnd) {
+        if (!lazyListState.isScrolledToTheEnd()) {
             Box(
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
@@ -133,7 +125,8 @@ internal fun FilterChip(
                             startX = 0f,
                             endX = 100f,
                         ),
-                    ).width(70.dp),
+                    )
+                    .width(70.dp),
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Box(
@@ -142,7 +135,8 @@ internal fun FilterChip(
                         .background(
                             color = WeSpotThemeManager.colors.cardBackgroundColor,
                             shape = CircleShape,
-                        ).size(30.dp)
+                        )
+                        .size(30.dp)
                         .clickableSingle {
                             onMoreClicked.invoke()
                         },
@@ -159,6 +153,9 @@ internal fun FilterChip(
         }
     }
 }
+
+private fun LazyListState.isScrolledToTheEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+
 
 private object FilterChipPreviewData {
     val sampleFilterChips = listOf(

@@ -71,7 +71,8 @@ class MessageRoomViewModel @Inject constructor(
                 }
 
             launch {
-                repository.hasSentReply()
+                repository
+                    .hasSentReply()
                     .onSuccess {
                         reduce { state.copy(hasSentReply = it) }
                     }
