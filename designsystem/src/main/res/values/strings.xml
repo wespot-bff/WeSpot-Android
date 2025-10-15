@@ -27,7 +27,7 @@
     <string name="letter_sender">From.</string>
     <string name="letter_opened">읽음</string>
     <string name="letter_image">Letter Image</string>
-    <string name="entire">전체</string>
+    <string name="entire">MY</string>
     <string name="invalid_message">invalid_message</string>
     <string name="has_profanity">비속어가 포함되어 있어요</string>
     <string name="close">닫기</string>
