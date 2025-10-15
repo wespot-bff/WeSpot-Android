@@ -12,6 +12,14 @@
     <string name="write_select_category">카테고리 선택</string>
     <string name="postdetail_report">신고</string>
     <string name="postdetail_delete">삭제</string>
+    <string name="bottomsheet_report">신고하기</string>
+    <string name="bottomsheet_block">차단하기</string>
+    <string name="bottomsheet_delete">삭제하기</string>
+    <string name="bottomsheet_edit">편집하기</string>
+    <string name="delete_dialog_title">게시글을 삭제할까요?</string>
+    <string name="delete_dialog_subtitle">삭제한 게시글은 되돌릴 수 없어요.</string>
+    <string name="block_dialog_title">해당 유저를 차단할까요?</string>
+    <string name="block_dialog_subtitle">해당 유저가 작성한 게시글이 보이지 않도록 숨겨드릴게요. 다만, 차단 해제는 불가해요.</string>
     <string name="all_post_written">작성한 글</string>
     <string name="all_comment_written">댓글 단 글</string>
     <string name="all_post_scraped">스크랩한 글</string>
@@ -21,4 +29,13 @@
     <string name="write_post_warning_no">아니요</string>
     <string name="write_post_description_warning">1200자 이내로 입력해 주세요</string>
     <string name="post_detail_comment_placeholder">익명으로 자유롭게 의견을 나눠보세요</string>
+    <string name="report_select_reason">신고 사유를 선택해주세요</string>
+    <string name="report_caution">유의사항</string>
+    <string name="post_caution_description">허위 신고로 확인될 시 서비스 이용이 제한돼요</string>
+    <string name="report_description">*신고 누적 시 신고를 받은 유저의 이용이 제한돼요</string>
+    <string name="report_custom_placeholder">직접 입력</string>
+    <string name="community_error_description">커뮤니티 오류</string>
+    <string name="community_error_title">인터넷 연결이 불안정해요</string>
+    <string name="community_error_message">연결 상태를 확인하고 다시 시도해주세요</string>
+    <string name="retry">다시 시도하기</string>
 </resources>

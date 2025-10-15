@@ -34,6 +34,7 @@ data class HotPostContentDto(
 
     @Serializable
     data class PostDto(
+        val targetId: String,
         val headerSection: HeaderSectionDto,
         val infoSection: InfoSectionDto,
         val createdAt: RichTextTypeDto,
@@ -47,7 +48,7 @@ data class HotPostContentDto(
 
         @Serializable
         data class InfoSectionDto(
-            val title: RichTextTypeDto,
+            val title: RichTextTypeDto?,
             val description: RichTextTypeDto
         )
 
@@ -74,7 +75,8 @@ private fun HotPostContentDto.PostDto.toDomain() = HotPostItem.HotPostContent.Po
     headerSection = headerSection.toDomain(),
     infoSection = infoSection.toDomain(),
     createdAt = createdAt.toDomain(),
-    gradation = gradation.toDomain()
+    gradation = gradation.toDomain(),
+    targetId = targetId,
 )
 
 private fun HotPostContentDto.PostDto.HeaderSectionDto.toDomain() =
@@ -85,7 +87,7 @@ private fun HotPostContentDto.PostDto.HeaderSectionDto.toDomain() =
 
 private fun HotPostContentDto.PostDto.InfoSectionDto.toDomain() =
     HotPostItem.HotPostContent.Post.InfoSection(
-        title = title.toDomain(),
+        title = title?.toDomain(),
         description = description.toDomain()
     )
 

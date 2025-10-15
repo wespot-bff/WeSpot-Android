@@ -161,8 +161,7 @@ fun NotificationListItem(
                 } else {
                     it
                 }
-            }
-            .padding(horizontal = 20.dp),
+            }.padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         Row(

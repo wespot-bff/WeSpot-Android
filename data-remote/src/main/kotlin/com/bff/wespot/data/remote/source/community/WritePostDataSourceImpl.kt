@@ -28,4 +28,13 @@ class WritePostDataSourceImpl @Inject constructor(
                 setBody(info)
             }
         }
+
+    override suspend fun editPost(postId: String, info: PostInfoDto): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Put
+                path("api/v1/post/$postId")
+                setBody(info)
+            }
+        }
 }

@@ -28,7 +28,8 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor(
     private val messageStorageRepository: MessageStorageRepository,
     private val settingRepository: MessageSettingRepository,
-) : BaseViewModel(), ContainerHost<StorageUiState, StorageSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<StorageUiState, StorageSideEffect> {
     override val container = container<StorageUiState, StorageSideEffect>(StorageUiState())
 
     fun onAction(action: StorageAction) {
@@ -73,16 +74,15 @@ class StorageViewModel @Inject constructor(
     private fun getMessageList() = intent {
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
-            messageStorageRepository.getMessages()
+            messageStorageRepository
+                .getMessages()
                 .onSuccess {
                     reduce {
                         state.copy(messageList = it)
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .also {
+                }.also {
                     reduce { state.copy(isLoading = false) }
                 }
         }
@@ -91,16 +91,15 @@ class StorageViewModel @Inject constructor(
     private fun getBookmarkedMessageList() = intent {
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch {
-            messageStorageRepository.getBookmarkedMessages()
+            messageStorageRepository
+                .getBookmarkedMessages()
                 .onSuccess {
                     reduce {
                         state.copy(messageList = it)
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .also {
+                }.also {
                     reduce { state.copy(isLoading = false) }
                 }
         }
@@ -155,7 +154,8 @@ class StorageViewModel @Inject constructor(
         postSideEffect(StorageSideEffect.CloseBlockDialog)
 
         viewModelScope.launch {
-            settingRepository.updateMessageBlockStatus(state.optionButtonClickedMessage.id)
+            settingRepository
+                .updateMessageBlockStatus(state.optionButtonClickedMessage.id)
                 .onSuccess {
                     postSideEffect(
                         StorageSideEffect.ShowToast(

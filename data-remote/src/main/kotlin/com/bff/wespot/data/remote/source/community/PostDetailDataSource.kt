@@ -13,4 +13,8 @@ interface PostDetailDataSource {
     suspend fun reportComment(commentId: String): Result<Unit>
 
     suspend fun likeComment(commentId: String): Result<Unit>
+    
+    suspend fun deleteComment(commentId: String): Result<Unit>
+    suspend fun deletePost(postId: String): Result<Unit>
+    suspend fun blockPost(postId: String): Result<Unit>
 }

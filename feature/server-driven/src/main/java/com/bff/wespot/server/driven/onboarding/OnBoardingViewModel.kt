@@ -34,15 +34,15 @@ class OnBoardingViewModel @Inject constructor(
 
     private fun getOnBoarding(category: OnBoardingCategory) {
         viewModelScope.launch {
-            onBoardingRepository.getOnBoarding(category)
+            onBoardingRepository
+                .getOnBoarding(category)
                 .onSuccess {
                     if (it.isEmpty()) {
                         _sideEffect.send(OnBoardingSideEffect.CloseOnBoarding)
                         return@launch
                     }
                     _contents.value = it
-                }
-                .onFailure {
+                }.onFailure {
                     _sideEffect.send(OnBoardingSideEffect.CloseOnBoarding)
                 }
         }

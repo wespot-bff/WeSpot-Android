@@ -1,6 +1,6 @@
 package com.bff.wespot.data.repository.community
 
-import com.bff.wespot.data.mapper.community.toDto
+import com.bff.wespot.data.remote.model.community.toDto
 import com.bff.wespot.data.remote.source.community.WritePostDataSource
 import com.bff.wespot.domain.repository.community.WritePostRepository
 import com.bff.wespot.model.community.PostInfo
@@ -16,9 +16,15 @@ class WritePostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createPost(info: PostInfo): Boolean {
-        val result = dataSource.createPost(info.toDto())
-
-        return result.isSuccess
+    override suspend fun createPost(
+        postId: String,
+        info: PostInfo,
+        isEditing: Boolean
+    ): Result<Unit> {
+        return if (isEditing) {
+            dataSource.editPost(postId, info.toDto())
+        } else {
+            dataSource.createPost(info.toDto())
+        }
     }
 }

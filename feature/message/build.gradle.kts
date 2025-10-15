@@ -20,8 +20,6 @@ dependencies {
     implementation(libs.junit)
     implementation(libs.androidx.junit)
     implementation(libs.lottie)
-    implementation(libs.coil.core)
-    implementation(libs.coil.compose)
     implementation(libs.paging3)
     implementation(libs.timber)
 }

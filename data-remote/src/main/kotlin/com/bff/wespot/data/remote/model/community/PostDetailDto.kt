@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostDetailDto(
     val id: String,
+    val isMyPost: Boolean,
     val content: PostDetailContentDto,
 ) {
     @Serializable
@@ -44,7 +45,7 @@ data class PostDetailDto(
 
         @Serializable
         data class InfoSectionDto(
-            val title: RichTextTypeDto,
+            val title: RichTextTypeDto?,
             val description: RichTextTypeDto,
             val maxLine: Int,
         )
@@ -97,6 +98,7 @@ data class PostDetailDto(
     fun toDomain(): PostDetail {
         return PostDetail(
             id = id,
+            isMyPost = isMyPost,
             content = content.toDomain(),
         )
     }
@@ -135,7 +137,7 @@ private fun PostDetailDto.PostDetailContentDto.HeaderSectionDto.ButtonDto.toDoma
 
 private fun PostDetailDto.PostDetailContentDto.InfoSectionDto.toDomain() =
     PostDetail.PostDetailContent.InfoSection(
-        title = title.toDomain(),
+        title = title?.toDomain(),
         description = description.toDomain(),
         maxLine = maxLine,
     )

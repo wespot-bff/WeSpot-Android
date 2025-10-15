@@ -42,8 +42,18 @@ class SearchActivity : ComponentActivity() {
                         val intent = navigator.navigateToPostDetailActivity(
                             this@SearchActivity,
                             it.postId,
+                            it.navigateToComment,
                         )
 
+                        startActivity(intent)
+                    }
+
+                    is SearchSideEffect.NavigateToCategory -> {
+                        val intent = navigator.navigateToCategoryDetail(
+                            context = this@SearchActivity,
+                            categoryId = it.categoryId,
+                            categoryText = it.categoryText,
+                        )
                         startActivity(intent)
                     }
                 }

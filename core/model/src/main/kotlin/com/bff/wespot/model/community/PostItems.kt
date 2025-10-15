@@ -17,7 +17,7 @@ data class PostItems(
             val profileImage: String,
             val nickname: RichTextType,
             val createdAt: RichTextType,
-            val category: Category,
+            val category: Category?,
         ) {
             data class Category(
                 val text: RichTextType,
@@ -27,7 +27,7 @@ data class PostItems(
         }
 
         data class InfoSection(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val seeMore: RichTextType,
             val maxLine: Int,

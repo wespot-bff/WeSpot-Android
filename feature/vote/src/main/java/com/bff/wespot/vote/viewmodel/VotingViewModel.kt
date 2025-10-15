@@ -33,7 +33,8 @@ class VotingViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val userRepository: UserRepository,
-) : BaseViewModel(), ContainerHost<VotingUiState, VotingSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<VotingUiState, VotingSideEffect> {
     override val container = container<VotingUiState, VotingSideEffect>(
         VotingUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
@@ -63,7 +64,8 @@ class VotingViewModel @Inject constructor(
         }
         viewModelScope.launch(coroutineDispatcher) {
             try {
-                voteRepository.getVoteQuestions()
+                voteRepository
+                    .getVoteQuestions()
                     .onSuccess {
                         val profile = userRepository.getProfile().getOrDefault(Profile())
                         reduce {
@@ -89,11 +91,9 @@ class VotingViewModel @Inject constructor(
                                 loading = false,
                             )
                         }
-                    }
-                    .onNetworkFailure {
+                    }.onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onFailure {
+                    }.onFailure {
                         Timber.e(it)
                         reduce {
                             state.copy(loading = false, voteItems = emptyList())
@@ -167,11 +167,11 @@ class VotingViewModel @Inject constructor(
 
     private fun sendReport(userId: Int) = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            commonRepository.sendReport(ReportType.VOTE, userId)
+            commonRepository
+                .sendReport(ReportType.VOTE, userId)
                 .onSuccess {
                     postSideEffect(VotingSideEffect.ShowToast("제보 접수 완료"))
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
                 }
         }

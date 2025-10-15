@@ -24,7 +24,8 @@ object ConfigModule {
     @Singleton
     fun provideRemoteConfig(): FirebaseRemoteConfig {
         val remoteConfig = FirebaseRemoteConfig.getInstance().apply {
-            val configSettings = FirebaseRemoteConfigSettings.Builder()
+            val configSettings = FirebaseRemoteConfigSettings
+                .Builder()
                 .setMinimumFetchIntervalInSeconds(3600)
                 .build()
             setConfigSettingsAsync(configSettings)
@@ -38,9 +39,7 @@ object ConfigModule {
     @Singleton
     fun provideNetworkStateChecker(
         @ApplicationContext context: Context,
-    ): NetworkStateChecker {
-        return NetworkStateChecker(context)
-    }
+    ): NetworkStateChecker = NetworkStateChecker(context)
 
     @Provides
     @Singleton
