@@ -33,8 +33,8 @@ class NotificationSettingViewModel @Inject constructor(
             NotificationSettingAction.OnNotificationSettingScreenEntered -> {
                 handleScreenEntered()
             }
-            NotificationSettingAction.OnCommunityNotificationSwitched -> {
-                handleCommunityNotificationSwitched()
+            NotificationSettingAction.OnPostNotificationSwitched -> {
+                handlePostNotificationSwitched()
             }
             is NotificationSettingAction.OnVoteNotificationSwitched -> {
                 handleVoteNotificationSwitched()
@@ -70,6 +70,7 @@ class NotificationSettingViewModel @Inject constructor(
                         state.copy(
                             isLoading = false,
                             initialNotificationSetting = setting,
+                            isEnablePostNotification = setting.isEnablePostNotification,
                             isEnableVoteNotification = setting.isEnableVoteNotification,
                             isEnableMessageNotification = setting.isEnableMessageNotification,
                             isEnableMarketingNotification = setting.isEnableMarketingNotification,
@@ -83,8 +84,8 @@ class NotificationSettingViewModel @Inject constructor(
         }
     }
 
-    private fun handleCommunityNotificationSwitched() = intent {
-        reduce { state.copy(isEnableCommunityNotification = state.isEnableCommunityNotification.not()) }
+    private fun handlePostNotificationSwitched() = intent {
+        reduce { state.copy(isEnablePostNotification = state.isEnablePostNotification.not()) }
     }
 
     private fun handleVoteNotificationSwitched() = intent {
@@ -117,6 +118,7 @@ class NotificationSettingViewModel @Inject constructor(
 
     private fun postNotificationSetting() = intent {
         val updatedNotificationSetting = NotificationSetting(
+            isEnablePostNotification = state.isEnablePostNotification,
             isEnableVoteNotification = state.isEnableVoteNotification,
             isEnableMessageNotification = state.isEnableMessageNotification,
             isEnableMarketingNotification = state.isEnableMarketingNotification,

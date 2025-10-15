@@ -87,11 +87,11 @@ fun NotificationSettingScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
             SettingSwitchItem(
-                title = stringResource(R.string.community_notification_title),
-                subTitle = stringResource(R.string.community_notification_subtitle),
-                switchValue = state.isEnableCommunityNotification,
+                title = stringResource(R.string.post_notification_title),
+                subTitle = stringResource(R.string.post_notification_subtitle),
+                switchValue = state.isEnablePostNotification,
                 onSwitched = {
-                    action(NotificationSettingAction.OnCommunityNotificationSwitched)
+                    action(NotificationSettingAction.OnPostNotificationSwitched)
                 },
             )
 

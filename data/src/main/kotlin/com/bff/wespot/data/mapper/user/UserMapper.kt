@@ -6,6 +6,7 @@ import com.bff.wespot.data.remote.model.user.response.ProfileCharacterDto
 import com.bff.wespot.model.user.response.ProfileCharacter
 
 internal fun NotificationSetting.toNotificationSettingDto() = NotificationSettingDto(
+    isEnablePostNotification = isEnablePostNotification,
     isEnableVoteNotification = isEnableVoteNotification,
     isEnableMessageNotification = isEnableMessageNotification,
     isEnableMarketingNotification = isEnableMarketingNotification,
