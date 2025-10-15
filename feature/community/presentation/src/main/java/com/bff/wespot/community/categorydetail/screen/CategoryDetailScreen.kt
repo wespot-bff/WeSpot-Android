@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.view.WindowInsetsControllerCompat
@@ -147,7 +148,8 @@ internal fun CategoryScreen(
                         modifier = Modifier
                             .clickableSingle {
                                 showCategoryBottomSheet = true
-                            }.padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
+                            }
+                            .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
@@ -273,8 +275,8 @@ internal fun CategoryScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
-                .statusBarsPadding()
-                .background(topbarColor),
+                .background(topbarColor)
+                .statusBarsPadding(),
         ) {
             Row(
                 modifier = Modifier
@@ -282,8 +284,7 @@ internal fun CategoryScreen(
                     .height(60.dp)
                     .padding(start = 8.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
+                ) {
                 IconButton(
                     onClick = { onAction(CategoryDetailAction.OnBackClick) },
                 ) {
@@ -301,20 +302,11 @@ internal fun CategoryScreen(
                     text = uiState.currentCategory.text,
                     color = WeSpotThemeManager.colors.txtTitleColor.copy(alpha = topBarAlpha),
                     style = StaticTypeScale.Default.header2,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
                 )
 
-                IconButton(
-                    onClick = { /* TODO: Add search functionality */ },
-                ) {
-                    Icon(
-                        painter = rememberAsyncImagePainter(
-                            com.bff.wespot.designsystem.R.drawable.search,
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = if (topBarAlpha < 0.5f) Color.White else WeSpotThemeManager.colors.txtTitleColor,
-                    )
-                }
+                Spacer(modifier = Modifier.size(48.dp))
             }
         }
 
