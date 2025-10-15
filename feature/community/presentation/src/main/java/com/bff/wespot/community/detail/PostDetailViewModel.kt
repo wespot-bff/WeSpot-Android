@@ -67,48 +67,15 @@ class PostDetailViewModel @Inject constructor(
         intent {
             when (action) {
                 is PostDetailAction.OnReactionClick -> {
-                    when (action.reaction) {
-                        "like" -> {
-                            val currentLiked = state.isLiked
-                            reduce {
-                                state.copy(isLiked = !currentLiked)
-                            }
-
-                            val result = communityRepository.onLikeClicked(state.detail.id)
-                            if (!result) {
-                                reduce {
-                                    state.copy(isLiked = currentLiked)
-                                }
-                            }
-                        }
-                    }
+                    onReactionClick(action)
                 }
 
                 is PostDetailAction.OnScrapClick -> {
-                    val currentScrapped = state.isScrapped
-                    reduce {
-                        state.copy(isScrapped = !currentScrapped)
-                    }
-
-                    val result = communityRepository.onScrapClicked(state.detail.id)
-                    if (!result) {
-                        reduce {
-                            state.copy(isScrapped = currentScrapped)
-                        }
-                    }
+                    onScrapClick()
                 }
 
                 is PostDetailAction.OnNotificationClick -> {
-                    val registered = state.registered
-                    reduce {
-                        state.copy(registered = !registered)
-                    }
-                    val result = postDetailRepository.registerNotification(state.detail.id)
-                    if (!result) {
-                        reduce {
-                            state.copy(registered = registered)
-                        }
-                    }
+                    onNotificationClick()
                 }
 
                 is PostDetailAction.OnCommentChange -> {
@@ -118,43 +85,11 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCommentSend -> {
-                    val postId = state.detail.id.toIntOrNull() ?: return@intent
-                    val result = postDetailRepository.sendComment(postId, action.content)
-                    if (result) {
-                        reduce {
-                            state.copy(commentInput = "")
-                        }
-                    }
+                    onCommentSend(action)
                 }
 
                 is PostDetailAction.OnCommentLike -> {
-                    val commentIndex = state.comments.indexOfFirst { it.id == action.commentId }
-                    if (commentIndex != -1) {
-                        val comment = state.comments[commentIndex]
-                        val updatedComment = comment.copy(
-                            pushedLike = !comment.pushedLike,
-                            likeCount = if (comment.pushedLike) comment.likeCount - 1 else comment.likeCount + 1,
-                        )
-
-                        reduce {
-                            state.copy(
-                                comments = state.comments.toMutableList().apply {
-                                    set(commentIndex, updatedComment)
-                                },
-                            )
-                        }
-
-                        val result = postDetailRepository.likeComment(action.commentId)
-                        if (!result) {
-                            reduce {
-                                state.copy(
-                                    comments = state.comments.toMutableList().apply {
-                                        set(commentIndex, comment)
-                                    },
-                                )
-                            }
-                        }
-                    }
+                    onCommentLike(action)
                 }
 
                 is PostDetailAction.OnCommentReport -> {
@@ -166,6 +101,91 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun onReactionClick(action: PostDetailAction.OnReactionClick) = intent {
+        when (action.reaction) {
+            "like" -> {
+                val currentLiked = state.isLiked
+                reduce {
+                    state.copy(isLiked = !currentLiked)
+                }
+
+                val result = communityRepository.onLikeClicked(state.detail.id)
+                if (!result) {
+                    reduce {
+                        state.copy(isLiked = currentLiked)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onScrapClick() = intent {
+        val currentScrapped = state.isScrapped
+        reduce {
+            state.copy(isScrapped = !currentScrapped)
+        }
+
+        val result = communityRepository.onScrapClicked(state.detail.id)
+        if (!result) {
+            reduce {
+                state.copy(isScrapped = currentScrapped)
+            }
+        }
+    }
+
+    private fun onNotificationClick() = intent {
+        val registered = state.registered
+        reduce {
+            state.copy(registered = !registered)
+        }
+        val result = postDetailRepository.registerNotification(state.detail.id)
+        if (!result) {
+            reduce {
+                state.copy(registered = registered)
+            }
+        }
+    }
+
+    private fun onCommentSend(action: PostDetailAction.OnCommentSend) = intent {
+        val postId = state.detail.id.toIntOrNull() ?: return@intent
+        val result = postDetailRepository.sendComment(postId, action.content)
+        if (result) {
+            reduce {
+                state.copy(commentInput = "")
+            }
+        }
+    }
+
+    private fun onCommentLike(action: PostDetailAction.OnCommentLike) = intent {
+        val commentIndex = state.comments.indexOfFirst { it.id == action.commentId }
+        if (commentIndex != -1) {
+            val comment = state.comments[commentIndex]
+            val updatedComment = comment.copy(
+                pushedLike = !comment.pushedLike,
+                likeCount = if (comment.pushedLike) comment.likeCount - 1 else comment.likeCount + 1,
+            )
+
+            reduce {
+                state.copy(
+                    comments = state.comments.toMutableList().apply {
+                        set(commentIndex, updatedComment)
+                    },
+                )
+            }
+
+            val result = postDetailRepository.likeComment(action.commentId)
+            if (!result) {
+                reduce {
+                    state.copy(
+                        comments = state.comments.toMutableList().apply {
+                            set(commentIndex, comment)
+                        },
+                    )
+                }
             }
         }
     }

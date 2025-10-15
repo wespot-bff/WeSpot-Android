@@ -1,6 +1,6 @@
 package com.bff.wespot.data.repository.community
 
-import com.bff.wespot.data.remote.model.community.toDto
+import com.bff.wespot.data.mapper.community.toDto
 import com.bff.wespot.data.remote.source.community.WritePostDataSource
 import com.bff.wespot.domain.repository.community.WritePostRepository
 import com.bff.wespot.model.community.PostInfo

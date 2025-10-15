@@ -10,10 +10,3 @@ data class PostInfoDto(
     val description: String,
     val imagesRequest: List<String>,
 )
-
-fun PostInfo.toDto() = PostInfoDto(
-    categoryId = categoryId,
-    title = title,
-    description = description,
-    imagesRequest = imagesRequest,
-)
