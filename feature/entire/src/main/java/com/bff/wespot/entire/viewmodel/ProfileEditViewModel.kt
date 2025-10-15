@@ -38,7 +38,8 @@ class ProfileEditViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val checkProfanityUseCase: CheckProfanityUseCase,
     remoteConfigRepository: RemoteConfigRepository,
-) : BaseViewModel(), ContainerHost<ProfileEditUiState, ProfileEditSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<ProfileEditUiState, ProfileEditSideEffect> {
     override val container = container<ProfileEditUiState, ProfileEditSideEffect>(
         ProfileEditUiState(
             profileChangeGoogleFormUrl =
@@ -101,8 +102,7 @@ class ProfileEditViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .catch { exception ->
                     Timber.e(exception)
-                }
-                .collect {
+                }.collect {
                     reduce { state.copy(profile = it, profilePath = it.profileCharacter.iconUrl) }
                 }
         }
@@ -159,11 +159,9 @@ class ProfileEditViewModel @Inject constructor(
             uploadProfileImage(profilePath)
                 .onSuccess {
                     updateProfile(it)
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     reduce { state.copy(isLoading = false) }
                     Timber.e(it)
                 }

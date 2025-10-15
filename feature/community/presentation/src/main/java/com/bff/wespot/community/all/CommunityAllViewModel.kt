@@ -24,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CommunityAllViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
-) : BaseViewModel(), ContainerHost<CommunityAllUiState, CommunityAllSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<CommunityAllUiState, CommunityAllSideEffect> {
     override val container: Container<CommunityAllUiState, CommunityAllSideEffect> = container(
         CommunityAllUiState(),
     )
@@ -40,12 +41,24 @@ class CommunityAllViewModel @Inject constructor(
                 postSideEffect(CommunityAllSideEffect.NavigateUp)
             }
 
+            is CommunityAllAction.NavigateToCategory -> {
+                postSideEffect(
+                    CommunityAllSideEffect.NavigateToCategory(
+                        action.categoryId,
+                        action.categoryText,
+                    ),
+                )
+            }
+
             is CommunityAllAction.OnScrapClick -> {
                 onScrapClick(action.id)
             }
 
             is CommunityAllAction.OnReactionClick -> {
                 onReactionClick(action.reaction, action.id)
+            }
+            is CommunityAllAction.NavigateToDetailComments -> {
+                postSideEffect(CommunityAllSideEffect.NavigateToDetail(action.id, true))
             }
         }
     }

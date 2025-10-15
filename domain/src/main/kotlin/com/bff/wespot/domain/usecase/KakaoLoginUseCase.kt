@@ -19,7 +19,8 @@ class KakaoLoginUseCase @Inject constructor(
         val token = messagingRepository.getFcmToken()
         dataStoreRepository.saveString(DataStoreKey.PUSH_TOKEN, token)
 
-        return authRepository.signIn(signIn)
+        return authRepository
+            .signIn(signIn)
             .map {
                 when (it) {
                     is AuthToken -> {

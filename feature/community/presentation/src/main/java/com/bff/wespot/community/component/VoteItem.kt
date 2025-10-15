@@ -1,6 +1,7 @@
 package com.bff.wespot.community.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,15 @@ import com.bff.wespot.server.driven.type.color
 import com.bff.wespot.server.driven.type.toBrush
 
 @Composable
-internal fun VoteContentUiModel.Item() {
+internal fun VoteContentUiModel.Item(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(brush = gradation.toBrush()),
+            .background(brush = gradation.toBrush())
+            .clickable { onClick() },
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

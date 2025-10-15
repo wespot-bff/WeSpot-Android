@@ -18,7 +18,7 @@ data class PostItemUiModel(
             val profileImage: String,
             val nickname: RichTextType,
             val createdAt: RichTextType,
-            val category: CategoryUiModel,
+            val category: CategoryUiModel?,
         ) {
             data class CategoryUiModel(
                 val text: RichTextType,
@@ -28,7 +28,7 @@ data class PostItemUiModel(
         }
 
         data class InfoSectionUiModel(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val seeMore: RichTextType,
             val maxLine: Int,
@@ -94,7 +94,7 @@ private fun PostItems.PostContent.HeaderSection.toUiModel() =
         profileImage = profileImage,
         nickname = nickname,
         createdAt = createdAt,
-        category = category.toUiModel(),
+        category = category?.toUiModel(),
     )
 
 private fun PostItems.PostContent.HeaderSection.Category.toUiModel() =

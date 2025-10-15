@@ -5,6 +5,7 @@ import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostDetail(
     val id: String,
+    val isMyPost: Boolean,
     val content: PostDetailContent,
 ) {
     data class PostDetailContent(
@@ -34,7 +35,7 @@ data class PostDetail(
         }
 
         data class InfoSection(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val maxLine: Int,
         )

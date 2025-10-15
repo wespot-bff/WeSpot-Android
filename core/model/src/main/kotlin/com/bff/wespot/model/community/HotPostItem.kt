@@ -19,6 +19,7 @@ data class HotPostItem(
         )
 
         data class Post(
+            val targetId: String,
             val headerSection: HeaderSection,
             val infoSection: InfoSection,
             val createdAt: RichTextType,
@@ -30,7 +31,7 @@ data class HotPostItem(
             )
 
             data class InfoSection(
-                val title: RichTextType,
+                val title: RichTextType?,
                 val description: RichTextType,
             )
         }

@@ -14,8 +14,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.coil.core)
-    implementation(libs.coil.compose)
     implementation(libs.timber)
     implementation(libs.lottie)
     implementation(libs.kakao.sdk)

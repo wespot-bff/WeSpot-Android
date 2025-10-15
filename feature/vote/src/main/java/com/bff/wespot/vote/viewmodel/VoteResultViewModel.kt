@@ -29,7 +29,8 @@ class VoteResultViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val dataStoreRepository: DataStoreRepository,
     private val commonRepository: CommonRepository,
-) : BaseViewModel(), ContainerHost<ResultUiState, ResultSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<ResultUiState, ResultSideEffect> {
     override val container = container<ResultUiState, ResultSideEffect>(
         ResultUiState(
             isVoting = savedStateHandle["isVoting"] ?: false,
@@ -52,14 +53,13 @@ class VoteResultViewModel @Inject constructor(
             val previous = state.voteResults
             reduce { state.copy(isLoading = true, voteResults = VoteResults(emptyList())) }
             try {
-                voteRepository.getVoteResults(date)
+                voteRepository
+                    .getVoteResults(date)
                     .onSuccess {
                         reduce { state.copy(voteResults = it, isLoading = false) }
-                    }
-                    .onNetworkFailure {
+                    }.onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onFailure {
+                    }.onFailure {
                         reduce { state.copy(isLoading = false, voteResults = previous) }
                         Timber.e(it)
                     }
@@ -92,14 +92,13 @@ class VoteResultViewModel @Inject constructor(
 
     private fun getKakaoContent() = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            commonRepository.getKakaoContent(KakaoSharingType.TELL.name)
+            commonRepository
+                .getKakaoContent(KakaoSharingType.TELL.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     Timber.e(it)
                 }
         }

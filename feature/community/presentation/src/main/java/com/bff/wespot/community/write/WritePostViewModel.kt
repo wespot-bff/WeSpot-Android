@@ -14,6 +14,7 @@ import com.bff.wespot.model.exception.NetworkException
 import com.bff.wespot.ui.base.BaseViewModel
 import com.bff.wespot.ui.model.SideEffect.Companion.toSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -27,36 +28,34 @@ internal class WritePostViewModel @Inject constructor(
     private val writePostRepository: WritePostRepository,
     private val commonRepository: CommonRepository,
     private val params: WritePostParams,
-) : BaseViewModel(), ContainerHost<WritePostUiState, WritePostSideEffect> {
+    private val ioDispatcher: CoroutineDispatcher,
+) : BaseViewModel(),
+    ContainerHost<WritePostUiState, WritePostSideEffect> {
     override val container = container<WritePostUiState, WritePostSideEffect>(
         WritePostUiState(),
     )
 
     init {
         intent {
-            writePostRepository.getCategories()
+            writePostRepository
+                .getCategories()
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess { categories ->
+                }.onSuccess { categories ->
                     reduce {
                         val updatedState = state.copy(categories = categories)
 
-                        if (params.isEditing) {
-                            val selectedCategory = categories
-                                .flatMap { it.chips }
-                                .find { it.text == params.category }
-                                ?: CategoryItem.EMPTY
+                        val selectedCategory = categories
+                            .flatMap { it.chips }
+                            .find { it.text == params.category }
+                            ?: CategoryItem.EMPTY
 
-                            updatedState.copy(
-                                title = params.title,
-                                description = params.description,
-                                images = params.images,
-                                selectedCategory = selectedCategory,
-                            )
-                        } else {
-                            updatedState
-                        }
+                        updatedState.copy(
+                            title = params.title,
+                            description = params.description,
+                            images = params.images,
+                            selectedCategory = selectedCategory,
+                        )
                     }
                 }
         }
@@ -121,11 +120,11 @@ internal class WritePostViewModel @Inject constructor(
     }
 
     private fun handlePostCreate() = intent {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             reduce { state.copy(isLoading = true) }
 
             val images = state.images
-            if (images.isEmpty()) {
+            if (images.isEmpty() || params.images == images) {
                 uploadPost(emptyList())
                 return@launch
             }
@@ -147,23 +146,28 @@ internal class WritePostViewModel @Inject constructor(
         }
 
     private fun uploadPost(urls: List<String>) = intent {
-        runCatching {
-            val result = writePostRepository.createPost(
-                info = PostInfo(
-                    categoryId = state.selectedCategory.id,
-                    title = state.title,
-                    description = state.description,
-                    imagesRequest = urls,
-                ),
-            )
-
-            if (result) {
-                postSideEffect(WritePostSideEffect.ClosePage)
-            }
-        }.onNetworkFailure {
-            postSideEffect(it.toSideEffect())
-        }.also {
-            reduce { state.copy(isLoading = false) }
+        viewModelScope.launch(ioDispatcher) {
+            writePostRepository
+                .createPost(
+                    postId = params.postId,
+                    isEditing = params.isEditing,
+                    info = PostInfo(
+                        categoryId = state.selectedCategory.id,
+                        title = state.title.takeIf { it.isNotEmpty() },
+                        description = state.description,
+                        imagesRequest = urls,
+                    ),
+                ).onNetworkFailure {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(it.toSideEffect())
+                }.onSuccess {
+                    reduce { state.copy(isLoading = false) }
+                    if (params.isEditing) {
+                        postSideEffect(WritePostSideEffect.ClosePageWithSuccess)
+                    } else {
+                        postSideEffect(WritePostSideEffect.ClosePage)
+                    }
+                }
         }
     }
 

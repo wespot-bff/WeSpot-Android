@@ -22,6 +22,5 @@ dependencies {
     implementation(libs.androidx.junit)
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.coil.compose)
     implementation(libs.lottie)
 }

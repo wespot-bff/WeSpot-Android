@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.community
 
+import com.bff.wespot.data.remote.model.community.CategoryDetailsPagingDto
 import com.bff.wespot.data.remote.model.community.CommunityContentPagingDto
 import com.bff.wespot.data.remote.model.community.chip.BaseChipDto
 import com.bff.wespot.network.extensions.safeRequest
@@ -23,7 +24,8 @@ class CommunityDataSourceImpl @Inject constructor(
     override suspend fun getCommunityContent(
         target: String,
         inquirySize: Int,
-        cursorId: Int?
+        cursorId: Int?,
+        countOfPostsViewed: Int?
     ): Result<CommunityContentPagingDto> =
         httpClient.safeRequest {
             url {
@@ -32,6 +34,7 @@ class CommunityDataSourceImpl @Inject constructor(
                 cursorId?.let { parameter("cursorId", it) }
                 parameter("inquirySize", inquirySize)
                 parameter("majorCategoryName", target)
+                countOfPostsViewed?.let { parameter("countOfPostsViewed", it) }
             }
         }
 
@@ -56,6 +59,19 @@ class CommunityDataSourceImpl @Inject constructor(
             url {
                 method = HttpMethod.Get
                 path("api/v1/post/${menuType.lowercase()}")
+                cursorId?.let { parameter("cursorId", it) }
+            }
+        }
+
+    override suspend fun getCategoryPosts(
+        categoryId: String,
+        cursorId: Int?
+    ): Result<CategoryDetailsPagingDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/post/details")
+                parameter("categoryId", categoryId)
                 cursorId?.let { parameter("cursorId", it) }
             }
         }

@@ -1,5 +1,7 @@
 package com.bff.wespot.community.all.screen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -31,6 +33,8 @@ fun AllPostsScreen(
     LazyColumn(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        contentPadding = PaddingValues(bottom = 86.dp),
     ) {
         items(
             count = pagingItems.itemCount,
@@ -44,8 +48,23 @@ fun AllPostsScreen(
                                 reactions = item.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                                            reaction.copy(selected = uiState.likedPosts.contains(item.id))
+                                            val isLiked = uiState.likedPosts.contains(item.id)
+                                            val currentCount =
+                                                reaction.count.text.toIntOrNull() ?: 0
+                                            val wasLikedBefore = reaction.selected
+
+                                            val newCount = when {
+                                                isLiked && !wasLikedBefore -> currentCount + 1
+                                                !isLiked && wasLikedBefore -> currentCount - 1
+                                                else -> currentCount
+                                            }
+
+                                            reaction.copy(
+                                                selected = isLiked,
+                                                count = reaction.count.copy(text = newCount.toString()),
+                                            )
                                         }
+
                                         else -> reaction
                                     }
                                 },
@@ -59,11 +78,26 @@ fun AllPostsScreen(
                             navigateToPost = {
                                 action(CommunityAllAction.NavigateToDetail(item.id))
                             },
-                            reactionClick = {
+                            reactionClick = { reaction ->
+                                when (reaction) {
+                                    is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                                        action(CommunityAllAction.NavigateToDetailComments(item.id))
+                                    }
+                                    else -> {
+                                        action(
+                                            CommunityAllAction.OnReactionClick(
+                                                id = item.id,
+                                                reaction = reaction,
+                                            ),
+                                        )
+                                    }
+                                }
+                            },
+                            navigateToCategory = { categoryId, categoryText ->
                                 action(
-                                    CommunityAllAction.OnReactionClick(
-                                        id = item.id,
-                                        reaction = it,
+                                    CommunityAllAction.NavigateToCategory(
+                                        categoryId,
+                                        categoryText,
                                     ),
                                 )
                             },

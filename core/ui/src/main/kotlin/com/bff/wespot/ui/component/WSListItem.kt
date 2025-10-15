@@ -24,8 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -57,8 +58,7 @@ fun WSListItem(
                     WeSpotThemeManager.colors.cardBackgroundColor
                 },
                 shape = WeSpotThemeManager.shapes.medium,
-            )
-            .background(WeSpotThemeManager.colors.cardBackgroundColor)
+            ).background(WeSpotThemeManager.colors.cardBackgroundColor)
             .clickable { onClick.invoke() },
     ) {
         Row(
@@ -131,7 +131,8 @@ private fun SchoolListItemPreview() {
                         backgroundColor = "#FF5733",
                         imageContent = {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
                                     .data("https://avatars.githubusercontent.com/u/89840550?v=4")
                                     .crossfade(true)
                                     .build(),

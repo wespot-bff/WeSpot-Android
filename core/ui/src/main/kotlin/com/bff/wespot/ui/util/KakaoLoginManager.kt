@@ -44,21 +44,18 @@ class KakaoLoginManager {
         }
     }
 
-    private suspend fun UserApiClient.Companion.loginWithKakaoTalk(context: Context): OAuthToken {
-        return suspendCancellableCoroutine { continuation ->
+    private suspend fun UserApiClient.Companion.loginWithKakaoTalk(context: Context): OAuthToken =
+        suspendCancellableCoroutine { continuation ->
             instance.loginWithKakaoTalk(context) { token, error ->
                 continuation.resumeTokenOrException(token, error)
             }
         }
-    }
 
     private suspend fun UserApiClient.Companion.loginWithKakaoAccount(
         context: Context,
-    ): OAuthToken {
-        return suspendCancellableCoroutine { continuation ->
-            instance.loginWithKakaoAccount(context) { token, error ->
-                continuation.resumeTokenOrException(token, error)
-            }
+    ): OAuthToken = suspendCancellableCoroutine { continuation ->
+        instance.loginWithKakaoAccount(context) { token, error ->
+            continuation.resumeTokenOrException(token, error)
         }
     }
 

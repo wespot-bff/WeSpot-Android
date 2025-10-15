@@ -22,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AnonymousProfileViewModel @Inject constructor(
     private val checkProfanityUseCase: CheckProfanityUseCase,
-) : ViewModel(), ContainerHost<AnonymousProfileUiState, AnonymousProfileSideEffect> {
+) : ViewModel(),
+    ContainerHost<AnonymousProfileUiState, AnonymousProfileSideEffect> {
     override val container =
         container<AnonymousProfileUiState, AnonymousProfileSideEffect>(AnonymousProfileUiState())
 

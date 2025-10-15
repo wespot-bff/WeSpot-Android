@@ -23,5 +23,4 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.lottie)
     implementation(libs.paging3)
-    implementation(libs.coil.compose)
 }

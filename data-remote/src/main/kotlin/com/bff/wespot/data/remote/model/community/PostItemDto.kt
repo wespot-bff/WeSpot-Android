@@ -31,7 +31,7 @@ data class PostContentDto(
         val profileImage: ImageTypeDto,
         val nickname: RichTextTypeDto,
         val createdAt: RichTextTypeDto,
-        val category: CategoryDto
+        val category: CategoryDto?
     ) {
         @Serializable
         data class CategoryDto(
@@ -43,7 +43,7 @@ data class PostContentDto(
 
     @Serializable
     data class InfoSectionDto(
-        val title: RichTextTypeDto,
+        val title: RichTextTypeDto?,
         val description: RichTextTypeDto,
         val seeMore: RichTextTypeDto,
         val maxLine: Int
@@ -106,7 +106,7 @@ private fun PostContentDto.HeaderSectionDto.toDomain() = PostItems.PostContent.H
     profileImage = profileImage.url,
     nickname = nickname.toDomain(),
     createdAt = createdAt.toDomain(),
-    category = category.toDomain()
+    category = category?.toDomain()
 )
 
 private fun PostContentDto.HeaderSectionDto.CategoryDto.toDomain() =
@@ -117,7 +117,7 @@ private fun PostContentDto.HeaderSectionDto.CategoryDto.toDomain() =
     )
 
 private fun PostContentDto.InfoSectionDto.toDomain() = PostItems.PostContent.InfoSection(
-    title = title.toDomain(),
+    title = title?.toDomain(),
     description = description.toDomain(),
     seeMore = seeMore.toDomain(),
     maxLine = maxLine

@@ -171,7 +171,7 @@ internal fun MainScreen(
     )
 
     LaunchedEffect(Unit) {
-        val versinName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        val versinName = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
         action(MainAction.OnMainScreenEntered(appVersionName = versinName))
     }
 

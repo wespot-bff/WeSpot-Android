@@ -8,6 +8,8 @@ import com.bff.wespot.data.remote.source.auth.AuthDataSource
 import com.bff.wespot.data.remote.source.auth.AuthDataSourceImpl
 import com.bff.wespot.data.remote.source.community.CommunityDataSource
 import com.bff.wespot.data.remote.source.community.CommunityDataSourceImpl
+import com.bff.wespot.data.remote.source.community.CommunityReportDataSource
+import com.bff.wespot.data.remote.source.community.CommunityReportDataSourceImpl
 import com.bff.wespot.data.remote.source.community.PostDetailDataSource
 import com.bff.wespot.data.remote.source.community.PostDetailDataSourceImpl
 import com.bff.wespot.data.remote.source.community.WritePostDataSource
@@ -128,4 +130,10 @@ abstract class DataRemoteModule {
     abstract fun bindsPostDetailDataSource(
         postDetailDataSourceImpl: PostDetailDataSourceImpl
     ): PostDetailDataSource
+    
+    @Binds
+    @Singleton
+    abstract fun bindsCommunityReportDataSource(
+        communityReportDataSourceImpl: CommunityReportDataSourceImpl
+    ): CommunityReportDataSource
 }

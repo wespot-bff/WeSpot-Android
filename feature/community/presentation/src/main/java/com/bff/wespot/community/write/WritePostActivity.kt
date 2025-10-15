@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import com.bff.wespot.community.write.screen.WritePostScreen
 import com.bff.wespot.community.write.state.WritePostSideEffect
 import com.bff.wespot.designsystem.theme.WeSpotTheme
+import com.bff.wespot.ui.util.handleSideEffect
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -34,8 +35,14 @@ class WritePostActivity : ComponentActivity() {
                     WritePostSideEffect.ClosePage -> {
                         finish()
                     }
+                    WritePostSideEffect.ClosePageWithSuccess -> {
+                        setResult(RESULT_OK)
+                        finish()
+                    }
                 }
             }
+
+            handleSideEffect(viewModel.sideEffect)
         }
     }
 }

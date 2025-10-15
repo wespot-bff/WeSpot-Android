@@ -66,4 +66,28 @@ class PostDetailDataSourceImpl @Inject constructor(
                 path("api/v1/post/comment/${commentId}/like")
             }
         }
+    
+    override suspend fun deleteComment(commentId: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Delete
+                path("api/v1/post/comment/$commentId")
+            }
+        }
+    
+    override suspend fun deletePost(postId: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Delete
+                path("api/v1/post/$postId")
+            }
+        }
+    
+    override suspend fun blockPost(postId: String): Result<Unit> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Post
+                path("api/v1/post/$postId/block")
+            }
+        }
 }

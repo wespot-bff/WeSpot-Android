@@ -1,14 +1,17 @@
 package com.bff.wespot.community.component
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -22,15 +25,20 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel.PostContentUiModel
@@ -45,24 +53,23 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.server.driven.type.toTextStyle
 import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
 internal fun PostContentUiModel.Item(
-    navigateToPost: () -> Unit,
+    navigateToPost: (navigateToComment: Boolean) -> Unit,
     reactionClick: (PostContentUiModel.FooterSectionUiModel.ReactionUiModel) -> Unit,
+    navigateToCategory: (category: String, categoryText: String) -> Unit,
     scrapClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.clickableSingle {
-            navigateToPost.invoke()
+        modifier = modifier.clickableSingle {
+            navigateToPost.invoke(false)
         },
     ) {
-        HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        headerSection.Item()
+        headerSection.Item(navigateToCategory = navigateToCategory)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -70,9 +77,19 @@ internal fun PostContentUiModel.Item(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        contentSection.Item()
+        var hasContent by remember {
+            mutableStateOf(contentSection != PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel)
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        contentSection.Item(
+            onContentVisibilityChanged = { isVisible ->
+                hasContent = isVisible
+            },
+        )
+
+        if (hasContent) {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         footerSection.Item(
             scrapClick = scrapClick,
@@ -80,11 +97,15 @@ internal fun PostContentUiModel.Item(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
     }
 }
 
 @Composable
-private fun PostContentUiModel.HeaderSectionUiModel.Item() {
+private fun PostContentUiModel.HeaderSectionUiModel.Item(
+    navigateToCategory: (target: String, categoryText: String) -> Unit,
+) {
     Column {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -108,12 +129,20 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item() {
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Row {
-                    category.text.Text(StaticTypeScale.Default.badge)
+                category?.let { category ->
+                    Row(
+                        modifier = Modifier.clickableSingle {
+                            navigateToCategory.invoke(category.target, category.text.text)
+                        },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        category.text.Text(StaticTypeScale.Default.badge)
 
-                    category.icon.Icon(
-                        modifier = Modifier.size(16.dp),
-                    )
+                        category.icon.Icon(
+                            modifier = Modifier.size(10.dp),
+                        )
+                    }
                 }
 
                 Row(
@@ -133,65 +162,117 @@ private fun PostContentUiModel.HeaderSectionUiModel.Item() {
 
 @Composable
 private fun PostContentUiModel.InfoSectionUiModel.Item() {
-    Column {
-        title.Text(
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    val textMeasurer = rememberTextMeasurer()
+    val lineCount = textMeasurer
+        .measure(
+            text = description.text,
+            style = description.typography.toTextStyle() ?: StaticTypeScale.Default.body6,
+        ).lineCount
+
+    Column(
+        modifier = Modifier.animateContentSize(),
+    ) {
+        title?.Text(
             textStyle = StaticTypeScale.Default.body4,
             maxLines = 1,
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        description.Text(StaticTypeScale.Default.body6)
+        description.Text(
+            textStyle = StaticTypeScale.Default.body6,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        seeMore.Text(
-            textStyle = StaticTypeScale.Default.body6,
-            maxLines = 1,
-        )
+        if (lineCount > 5 && !isExpanded) {
+            seeMore.Text(
+                textStyle = StaticTypeScale.Default.body6,
+                maxLines = 1,
+                modifier = Modifier.clickableSingle {
+                    isExpanded = !isExpanded
+                },
+            )
+        }
     }
 }
 
 @Composable
-private fun PostContentUiModel.ContentSectionUiModel.Item() {
+private fun PostContentUiModel.ContentSectionUiModel.Item(
+    onContentVisibilityChanged: (Boolean) -> Unit = {},
+) {
     when (this) {
         is PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel -> {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(images) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(White, RoundedCornerShape(8.dp)),
-                    ) {
-                        AsyncImage(
-                            model = it,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .widthIn(min = 200.dp, max = 226.dp)
-                                .heightIn(min = 226.dp, max = 266.dp),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
+            val validImages by remember(images) { mutableStateOf(images.toMutableList()) }
+
+            if (validImages.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(validImages) { imageUrl ->
+                        var isImageVisible by remember { mutableStateOf(true) }
+
+                        if (isImageVisible) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(White, RoundedCornerShape(8.dp)),
+                            ) {
+                                AsyncImage(
+                                    model = imageUrl,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .widthIn(min = 200.dp, max = 226.dp)
+                                        .heightIn(min = 226.dp, max = 266.dp),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    onError = {
+                                        isImageVisible = false
+                                        validImages.remove(imageUrl)
+                                        if (validImages.isEmpty()) {
+                                            onContentVisibilityChanged(false)
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
                 }
+            } else {
+                onContentVisibilityChanged(false)
             }
         }
 
         is PostContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
-            AsyncImage(
-                model = image,
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .fillMaxWidth()
-                    .heightIn(min = 155.dp, max = 718.dp),
-                contentScale = ContentScale.Crop,
-            )
+            var isImageVisible by remember { mutableStateOf(true) }
+
+            if (isImageVisible) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .fillMaxWidth()
+                        .heightIn(min = 155.dp, max = 718.dp),
+                    contentScale = ContentScale.Crop,
+                    onError = {
+                        isImageVisible = false
+                        onContentVisibilityChanged(false)
+                    },
+                )
+            } else {
+                onContentVisibilityChanged(false)
+            }
         }
 
-        is PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel -> {}
+        is PostContentUiModel.ContentSectionUiModel.EmptySectionUiModel -> {
+            onContentVisibilityChanged(false)
+        }
     }
 }
 
@@ -206,20 +287,23 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
         verticalArrangement = Arrangement.Center,
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             reactions.forEach {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickableSingle {
-                        reactionClick.invoke(it)
-                    },
+                    modifier = Modifier
+                        .clickableSingle {
+                            reactionClick.invoke(it)
+                        }.fillMaxHeight(),
                 ) {
                     AsyncImage(
                         model = it.icon.url,
-                        modifier = Modifier.size(14.dp),
+                        modifier = Modifier.size(20.dp),
                         colorFilter = ColorFilter.tint(
                             color = if (it.selected) {
                                 Primary300
@@ -230,7 +314,9 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
                         contentDescription = null,
                     )
 
-                    it.count.Text(StaticTypeScale.Default.badge)
+                    if (it.count.text.toIntOrNull() != 0) {
+                        it.count.Text(StaticTypeScale.Default.badge)
+                    }
                 }
             }
         }
@@ -243,7 +329,7 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
         ) {
             AsyncImage(
                 model = scrap.icon.url,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(
                     color = if (scrap.selected) {
                         Primary300
@@ -445,7 +531,12 @@ private object PostItemPreviewData {
 private fun PostItemPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItem.content.Item({}, {}, {})
+            PostItemPreviewData.samplePostItem.content.Item(
+                {},
+                {},
+                { _, _ -> },
+                {},
+            )
         }
     }
 }
@@ -455,7 +546,12 @@ private fun PostItemPreview() {
 private fun PostItemEmptyPreview() {
     WeSpotTheme {
         Surface {
-            PostItemPreviewData.samplePostItemEmpty.content.Item({}, {}, {})
+            PostItemPreviewData.samplePostItemEmpty.content.Item(
+                {},
+                {},
+                { _, _ -> },
+                {},
+            )
         }
     }
 }
