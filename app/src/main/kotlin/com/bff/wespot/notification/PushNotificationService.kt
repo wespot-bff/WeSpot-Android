@@ -73,15 +73,15 @@ class PushNotificationService : FirebaseMessagingService() {
         val content = message.notification?.body
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat
+            .Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_push_notification)
             .setColor(
                 ContextCompat.getColor(
                     applicationContext,
                     R.color.ic_launcher_background,
                 ),
-            )
-            .setContentTitle(title)
+            ).setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)

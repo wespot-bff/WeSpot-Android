@@ -11,5 +11,7 @@ sealed interface ReceiverSideEffect : MessageSendSideEffect {
     data object NavigateToMessage : ReceiverSideEffect
     data object DismissExitDialog : ReceiverSideEffect
     data object NavigateUp : ReceiverSideEffect
-    data class NavigateToMessageRoomScreen(val roomId: Int) : ReceiverSideEffect
+    data class NavigateToMessageRoomScreen(
+        val roomId: Int,
+    ) : ReceiverSideEffect
 }

@@ -27,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 internal class SearchViewModel @Inject constructor(
     private val communityRepository: CommunityRepository,
-) : BaseViewModel(), ContainerHost<SearchUiState, SearchSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<SearchUiState, SearchSideEffect> {
     override val container: Container<SearchUiState, SearchSideEffect> = container(
         SearchUiState(),
     )
@@ -102,7 +103,8 @@ internal class SearchViewModel @Inject constructor(
             intent {
                 reduce {
                     state.copy(
-                        searches = communityRepository.getCommunitySearchStream(keyword)
+                        searches = communityRepository
+                            .getCommunitySearchStream(keyword)
                             .map { it.map { content -> content.toUiModel() } },
                     )
                 }

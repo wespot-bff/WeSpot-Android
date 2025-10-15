@@ -8,6 +8,10 @@ sealed class EntireAction {
     data object OnRevokeButtonClicked : EntireAction()
     data object OnSettingScreenEntered : EntireAction()
     data object OnInputRevokeReasonSelected : EntireAction()
-    data class OnRevokeReasonSelected(val reason: String) : EntireAction()
-    data class OnRevokeReasonChanged(val reason: String) : EntireAction()
+    data class OnRevokeReasonSelected(
+        val reason: String,
+    ) : EntireAction()
+    data class OnRevokeReasonChanged(
+        val reason: String,
+    ) : EntireAction()
 }

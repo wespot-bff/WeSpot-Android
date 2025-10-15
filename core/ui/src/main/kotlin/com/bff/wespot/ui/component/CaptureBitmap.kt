@@ -29,9 +29,7 @@ fun CaptureBitmap(
         ComposeView(context)
     }
 
-    fun captureBitmap(): Bitmap {
-        return composeView.drawToBitmap()
-    }
+    fun captureBitmap(): Bitmap = composeView.drawToBitmap()
 
     AndroidView(
         factory = {

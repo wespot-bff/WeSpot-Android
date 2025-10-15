@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.uimodel.PostItemUiModel
 import com.bff.wespot.community.uimodel.PostItemUiModel.PostContentUiModel
@@ -167,10 +167,11 @@ private fun PostContentUiModel.InfoSectionUiModel.Item() {
     }
 
     val textMeasurer = rememberTextMeasurer()
-    val lineCount = textMeasurer.measure(
-        text = description.text,
-        style = description.typography.toTextStyle() ?: StaticTypeScale.Default.body6,
-    ).lineCount
+    val lineCount = textMeasurer
+        .measure(
+            text = description.text,
+            style = description.typography.toTextStyle() ?: StaticTypeScale.Default.body6,
+        ).lineCount
 
     Column(
         modifier = Modifier.animateContentSize(),
@@ -298,8 +299,7 @@ private fun PostContentUiModel.FooterSectionUiModel.Item(
                     modifier = Modifier
                         .clickableSingle {
                             reactionClick.invoke(it)
-                        }
-                        .fillMaxHeight(),
+                        }.fillMaxHeight(),
                 ) {
                     AsyncImage(
                         model = it.icon.url,

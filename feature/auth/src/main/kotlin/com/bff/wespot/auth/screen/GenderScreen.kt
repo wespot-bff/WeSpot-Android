@@ -128,8 +128,7 @@ private fun RowScope.GenderBox(
                 width = 1.dp,
                 color = if (selected) WeSpotThemeManager.colors.primaryColor else Color.Transparent,
                 shape = WeSpotThemeManager.shapes.medium,
-            )
-            .clickable { onClicked() }
+            ).clickable { onClicked() }
             .background(WeSpotThemeManager.colors.cardBackgroundColor),
         contentAlignment = Alignment.Center,
     ) {

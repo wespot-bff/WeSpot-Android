@@ -24,7 +24,8 @@ import javax.inject.Inject
 class MessageRoomViewModel @Inject constructor(
     private val repository: MessageStorageRepository,
     private val savedStateHandle: SavedStateHandle,
-) : BaseViewModel(), ContainerHost<RoomUiState, RoomSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<RoomUiState, RoomSideEffect> {
     override val container = container<RoomUiState, RoomSideEffect>(RoomUiState())
 
     fun onAction(action: RoomAction) = intent {
@@ -43,7 +44,8 @@ class MessageRoomViewModel @Inject constructor(
         val roomId: Int = savedStateHandle["roomId"] ?: return@intent
 
         viewModelScope.launch {
-            repository.getMessageRoom(roomId)
+            repository
+                .getMessageRoom(roomId)
                 .onSuccess {
                     val lastItem = it.messageDetails.lastOrNull()
                     reduce {
@@ -52,11 +54,9 @@ class MessageRoomViewModel @Inject constructor(
                             selectedMessageDetail = lastItem,
                         )
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     Timber.d(it)
                 }
         }

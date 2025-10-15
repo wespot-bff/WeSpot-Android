@@ -59,8 +59,7 @@ fun WSSelectionItem(
                         WeSpotThemeManager.colors.cardBackgroundColor
                     },
                     shape = WeSpotThemeManager.shapes.medium,
-                )
-                .background(WeSpotThemeManager.colors.cardBackgroundColor)
+                ).background(WeSpotThemeManager.colors.cardBackgroundColor)
                 .clickable { onClick() },
         ) {
             Row(

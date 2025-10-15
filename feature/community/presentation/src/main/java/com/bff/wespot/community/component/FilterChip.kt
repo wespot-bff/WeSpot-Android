@@ -90,8 +90,7 @@ internal fun FilterChip(
                                         Gray700
                                     },
                                     shape = RoundedCornerShape(80.dp),
-                                )
-                                .clickableSingle {
+                                ).clickableSingle {
                                     if (selected) {
                                         onSameChipClicked.invoke()
                                     } else {
@@ -134,8 +133,7 @@ internal fun FilterChip(
                             startX = 0f,
                             endX = 100f,
                         ),
-                    )
-                    .width(70.dp),
+                    ).width(70.dp),
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Box(
@@ -144,8 +142,7 @@ internal fun FilterChip(
                         .background(
                             color = WeSpotThemeManager.colors.cardBackgroundColor,
                             shape = CircleShape,
-                        )
-                        .size(30.dp)
+                        ).size(30.dp)
                         .clickableSingle {
                             onMoreClicked.invoke()
                         },

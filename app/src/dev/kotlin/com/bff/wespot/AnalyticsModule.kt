@@ -13,7 +13,5 @@ import javax.inject.Singleton
 object AnalyticsModule {
     @Provides
     @Singleton
-    fun provideAnalyticsHelper(): AnalyticsHelper {
-        return DebugAnalyticsHelper()
-    }
+    fun provideAnalyticsHelper(): AnalyticsHelper = DebugAnalyticsHelper()
 }

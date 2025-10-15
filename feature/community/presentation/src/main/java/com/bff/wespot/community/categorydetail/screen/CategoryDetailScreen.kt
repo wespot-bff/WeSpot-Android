@@ -43,8 +43,8 @@ import androidx.compose.ui.zIndex
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.categorydetail.state.CategoryDetailAction
 import com.bff.wespot.community.categorydetail.state.CategoryDetailUiState
 import com.bff.wespot.community.component.Item
@@ -147,8 +147,7 @@ internal fun CategoryScreen(
                         modifier = Modifier
                             .clickableSingle {
                                 showCategoryBottomSheet = true
-                            }
-                            .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
+                            }.padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {

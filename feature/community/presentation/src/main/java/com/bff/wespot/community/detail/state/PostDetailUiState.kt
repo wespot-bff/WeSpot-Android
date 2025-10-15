@@ -21,30 +21,28 @@ data class PostDetailUiState(
     val showBlockDialog: Boolean = false,
 ) {
     @Composable
-    fun getSheetList(): List<SheetItem> {
-        return if (detail.isMyPost) {
-            listOf(
-                SheetItem(
-                    text = stringResource(R.string.bottomsheet_edit),
-                    type = SheetItem.SheetType.EDIT,
-                ),
-                SheetItem(
-                    text = stringResource(R.string.bottomsheet_delete),
-                    type = SheetItem.SheetType.DELETE,
-                ),
-            )
-        } else {
-            listOf(
-                SheetItem(
-                    text = stringResource(R.string.bottomsheet_report),
-                    type = SheetItem.SheetType.REPORT,
-                ),
-                SheetItem(
-                    text = stringResource(R.string.bottomsheet_block),
-                    type = SheetItem.SheetType.BLOCK,
-                ),
-            )
-        }
+    fun getSheetList(): List<SheetItem> = if (detail.isMyPost) {
+        listOf(
+            SheetItem(
+                text = stringResource(R.string.bottomsheet_edit),
+                type = SheetItem.SheetType.EDIT,
+            ),
+            SheetItem(
+                text = stringResource(R.string.bottomsheet_delete),
+                type = SheetItem.SheetType.DELETE,
+            ),
+        )
+    } else {
+        listOf(
+            SheetItem(
+                text = stringResource(R.string.bottomsheet_report),
+                type = SheetItem.SheetType.REPORT,
+            ),
+            SheetItem(
+                text = stringResource(R.string.bottomsheet_block),
+                type = SheetItem.SheetType.BLOCK,
+            ),
+        )
     }
 
     data class SheetItem(

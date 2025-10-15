@@ -35,7 +35,10 @@ import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
 import com.bff.wespot.designsystem.util.OrientationPreviews
 
-data class HeightRange(val minHeight: Dp, val maxHeight: Dp)
+data class HeightRange(
+    val minHeight: Dp,
+    val maxHeight: Dp,
+)
 
 @Composable
 fun WSButton(

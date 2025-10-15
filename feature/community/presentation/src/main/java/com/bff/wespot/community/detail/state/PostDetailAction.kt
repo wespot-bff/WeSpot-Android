@@ -4,18 +4,31 @@ import com.bff.wespot.community.uimodel.PostDetailUiModel
 
 sealed interface PostDetailAction {
     data object OnBackClick : PostDetailAction
-    data class OnCategoryClick(val target: String, val categoryText: String) : PostDetailAction
+    data class OnCategoryClick(
+        val target: String,
+        val categoryText: String,
+    ) : PostDetailAction
     data object OnNotificationClick : PostDetailAction
     data class OnReactionClick(
         val reaction: PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel,
     ) : PostDetailAction
 
     data object OnScrapClick : PostDetailAction
-    data class OnCommentChange(val content: String) : PostDetailAction
-    data class OnCommentSend(val content: String) : PostDetailAction
-    data class OnCommentLike(val commentId: String) : PostDetailAction
-    data class OnCommentReport(val commentId: String) : PostDetailAction
-    data class OnCommentDelete(val commentId: String) : PostDetailAction
+    data class OnCommentChange(
+        val content: String,
+    ) : PostDetailAction
+    data class OnCommentSend(
+        val content: String,
+    ) : PostDetailAction
+    data class OnCommentLike(
+        val commentId: String,
+    ) : PostDetailAction
+    data class OnCommentReport(
+        val commentId: String,
+    ) : PostDetailAction
+    data class OnCommentDelete(
+        val commentId: String,
+    ) : PostDetailAction
     data object RefreshPost : PostDetailAction
 
     // Bottom sheet actions

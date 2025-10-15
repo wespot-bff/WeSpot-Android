@@ -31,7 +31,8 @@ class PostDetailViewModel @Inject constructor(
     private val postDetailRepository: PostDetailRepository,
     private val communityRepository: CommunityRepository,
     private val ioDispatcher: CoroutineDispatcher,
-) : BaseViewModel(), ContainerHost<PostDetailUiState, PostDetailSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<PostDetailUiState, PostDetailSideEffect> {
     override val container = container<PostDetailUiState, PostDetailSideEffect>(
         PostDetailUiState(scrollToComments = param.scrollToComment),
     )
@@ -44,11 +45,11 @@ class PostDetailViewModel @Inject constructor(
 
     private fun loadPostDetails() {
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.getPostDetail(postId = postId)
+            postDetailRepository
+                .getPostDetail(postId = postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     intent {
                         val postDetail = it.toUiModel()
                         val likeReaction = postDetail.content.footerSection.reactions
@@ -74,11 +75,11 @@ class PostDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.getPostComments(postId)
+            postDetailRepository
+                .getPostComments(postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     intent {
                         reduce {
                             state.copy(comments = it.map { it.toUiModel() })
@@ -254,7 +255,8 @@ class PostDetailViewModel @Inject constructor(
                     }
                 }
 
-                postDetailRepository.getPostComments(state.detail.id)
+                postDetailRepository
+                    .getPostComments(state.detail.id)
                     .onSuccess { comments ->
                         intent {
                             reduce {
@@ -346,11 +348,11 @@ class PostDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.deletePost(postId)
+            postDetailRepository
+                .deletePost(postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     postSideEffect(PostDetailSideEffect.OnPostDeletedOrBlocked)
                 }
         }
@@ -358,11 +360,11 @@ class PostDetailViewModel @Inject constructor(
 
     private fun onCommentDelete(commentId: String) = intent {
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.deleteComment(commentId)
+            postDetailRepository
+                .deleteComment(commentId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     reduce {
                         state.copy(
                             comments = state.comments.filter { it.id != commentId },
@@ -379,11 +381,11 @@ class PostDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            postDetailRepository.blockPost(postId)
+            postDetailRepository
+                .blockPost(postId)
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     postSideEffect(PostDetailSideEffect.OnPostDeletedOrBlocked)
                 }
         }

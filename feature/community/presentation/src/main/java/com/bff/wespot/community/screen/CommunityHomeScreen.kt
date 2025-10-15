@@ -45,7 +45,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.component.FilterChip
 import com.bff.wespot.community.component.Item
 import com.bff.wespot.community.presentation.R

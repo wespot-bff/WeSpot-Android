@@ -236,7 +236,9 @@ private fun BlockStateChip(
 sealed interface MessageItemType {
     data object Normal : MessageItemType
 
-    data class Blocked(val isBlocked: Boolean) : MessageItemType
+    data class Blocked(
+        val isBlocked: Boolean,
+    ) : MessageItemType
 
     data object Ever : MessageItemType
 }

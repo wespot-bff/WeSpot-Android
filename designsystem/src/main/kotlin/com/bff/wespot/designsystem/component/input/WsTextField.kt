@@ -110,8 +110,7 @@ fun WsTextField(
                     .heightIn(
                         min = textFieldType.minHeight(),
                         max = textFieldType.maxHeight(),
-                    )
-                    .fillMaxWidth()
+                    ).fillMaxWidth()
                     .focusRequester(focusRequester)
                     .onFocusChanged { focusState -> onFocusChanged(focusState) },
                 onValueChange = { newTextFieldValue ->

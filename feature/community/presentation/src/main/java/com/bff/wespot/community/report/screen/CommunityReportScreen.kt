@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.report.state.CommunityReportAction
 import com.bff.wespot.community.report.state.CommunityReportUiState
@@ -173,13 +173,24 @@ fun CommunityReportScreen(
                                         placeholder = reason.reason,
                                         value = uiState.customReportTexts[reason.id] ?: "",
                                         onValueChange = { text ->
-                                            onAction(CommunityReportAction.OnCustomTextChanged(reason.id, text))
+                                            onAction(
+                                                CommunityReportAction.OnCustomTextChanged(
+                                                    reason.id,
+                                                    text,
+                                                ),
+                                            )
                                         },
                                         focusRequester = focusRequester,
                                         onSelect = {
-                                            val currentText = uiState.customReportTexts[reason.id] ?: ""
+                                            val currentText =
+                                                uiState.customReportTexts[reason.id] ?: ""
                                             if (currentText.isNotEmpty()) {
-                                                onAction(CommunityReportAction.OnCustomTextChanged(reason.id, ""))
+                                                onAction(
+                                                    CommunityReportAction.OnCustomTextChanged(
+                                                        reason.id,
+                                                        "",
+                                                    ),
+                                                )
                                             }
                                         },
                                     )
@@ -209,12 +220,10 @@ fun CommunityReportScreen(
 @Composable
 private fun toggleCheckIcon(
     checked: Boolean,
-): Painter {
-    return if (checked) {
-        rememberAsyncImagePainter(model = R.drawable.checked)
-    } else {
-        rememberAsyncImagePainter(model = R.drawable.unchecked)
-    }
+): Painter = if (checked) {
+    rememberAsyncImagePainter(model = R.drawable.checked)
+} else {
+    rememberAsyncImagePainter(model = R.drawable.unchecked)
 }
 
 @Composable
@@ -229,8 +238,7 @@ private fun ReportReasonItem(
             .background(
                 color = WeSpotThemeManager.colors.cardBackgroundColor,
                 shape = RoundedCornerShape(size = 12.dp),
-            )
-            .clickable {
+            ).clickable {
                 onSelect.invoke()
             },
     ) {
@@ -271,8 +279,7 @@ private fun CustomReportReasonItem(
             .background(
                 color = colors.cardBackgroundColor,
                 shape = RoundedCornerShape(size = 12.dp),
-            )
-            .then(
+            ).then(
                 if (isFocused) {
                     Modifier.border(
                         width = 1.dp,
@@ -282,8 +289,7 @@ private fun CustomReportReasonItem(
                 } else {
                     Modifier
                 },
-            )
-            .clickable(
+            ).clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
             ) {
