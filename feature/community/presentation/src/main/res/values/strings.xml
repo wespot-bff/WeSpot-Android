@@ -12,4 +12,5 @@
     <string name="write_select_category">카테고리 선택</string>
     <string name="postdetail_report">신고</string>
     <string name="postdetail_delete">삭제</string>
+    <string name="search_placeholder">글 제목 내용을 검색해 주세요</string>
 </resources>

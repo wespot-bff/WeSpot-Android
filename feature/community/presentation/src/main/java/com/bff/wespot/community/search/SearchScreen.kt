@@ -7,10 +7,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.bff.wespot.community.component.Item
+import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.search.state.SearchAction
 import com.bff.wespot.community.search.state.SearchUiState
 import com.bff.wespot.community.uimodel.PostItemUiModel
@@ -47,7 +49,7 @@ internal fun SearchScreen(
                     onValueChange = {
                         action(SearchAction.HandleSearchChange(it))
                     },
-                    placeholder = "글 제목 내용을 검색해 주세요",
+                    placeholder = stringResource(R.string.search_placeholder),
                     textFieldType = WsTextFieldType.Search,
                 )
             }
