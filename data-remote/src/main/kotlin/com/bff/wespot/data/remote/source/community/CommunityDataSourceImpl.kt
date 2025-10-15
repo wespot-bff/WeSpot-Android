@@ -28,4 +28,14 @@ class CommunityDataSourceImpl @Inject constructor(
                 cursorId?.let { parameter("cursorId", it) }
             }
         }
+
+    override suspend fun getCommunitySearchContent(keyword: String, cursorId: Int?): Result<CommunityContentPagingDto> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v1/post/search")
+                parameter("keyword", keyword)
+                cursorId?.let { parameter("cursorId", it) }
+            }
+        }
 }

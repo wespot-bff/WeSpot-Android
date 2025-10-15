@@ -44,4 +44,6 @@ interface Navigator {
     fun navigateToWriteActivity(context: Context): Intent
 
     fun navigateToPostDetailActivity(context: Context, postId: String): Intent
+
+    fun navigateToCommunitySearch(context: Context): Intent
 }

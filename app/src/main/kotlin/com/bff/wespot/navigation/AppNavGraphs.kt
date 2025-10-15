@@ -183,7 +183,7 @@ internal fun NavDestination.checkDestination(position: NavigationBarPosition): B
         NavigationBarPosition.TOP -> {
             hierarchy.forEach { destination ->
                 when (destination.route) {
-                    "community/community_home_screen" -> return BarType.ENTIRE
+                    "community/community_home_screen" -> return BarType.COMMUNITY
                     "entire/entire_screen" -> return BarType.ENTIRE
                     "vote/vote_home_screen" -> return BarType.DEFAULT
                     "message/message_screen?tab={tab}" -> return BarType.MESSAGE
