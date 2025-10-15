@@ -56,7 +56,7 @@ internal fun CommunityHomeScreen(
             )
         },
         floatingActionButton = {
-            CommunityFABButton(
+            CommunityFAB(
                 onFABClicked = {
                     onAction(CommunityAction.OnWritePostClicked)
                 },
@@ -111,7 +111,7 @@ internal fun CommunityHomeScreen(
 }
 
 @Composable
-private fun CommunityFABButton(
+private fun CommunityFAB(
     onFABClicked: () -> Unit,
 ) {
     FloatingActionButton(
