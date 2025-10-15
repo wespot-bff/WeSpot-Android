@@ -50,4 +50,12 @@ class MessageStorageDataSourceImpl @Inject constructor(
                 path("api/v2/messages/$roomId/details")
             }
         }
+
+    override suspend fun hasSentReply(): Result<Boolean> =
+        httpClient.safeRequest {
+            url {
+                method = HttpMethod.Get
+                path("api/v2/messages/answer/first")
+            }
+        }
 }

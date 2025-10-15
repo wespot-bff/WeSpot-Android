@@ -29,8 +29,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -190,11 +190,11 @@ fun ReceiverSelectionScreen(
                     singleLine = true,
                 )
 
-                if (
-                    pagingData.itemCount == 0 &&
+                val isUserListEmpty = pagingData.itemCount == 0 &&
                     state.isInputInitialized &&
-                    state.receiver.isInitialized().not()
-                ) {
+                    pagingData.loadState.refresh is LoadState.NotLoading
+
+                if (isUserListEmpty) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -232,9 +232,11 @@ fun ReceiverSelectionScreen(
                 LazyColumn(
                     modifier = Modifier.padding(top = 16.dp),
                 ) {
-                    /** 선택된 유저는 상위로 고정해야 하며, 처음 선택한 경우에는 고정하지 않는다. */
-                    if (state.receiver.isInitialized() && state.isSelectedContext.not()) {
-                        item {
+                    val shouldShowSelectedItemOnTop = state.receiver.isInitialized() && state.isSelectedContext.not()
+
+                    /** 선택된 유저가 있고 처음 선택이 아닌 경우 상위에 고정 표시 */
+                    if (shouldShowSelectedItemOnTop) {
+                        item(key = "selected_${state.receiver.id}") {
                             ReceiverItem(
                                 receiver = state.receiver,
                                 selected = true,
@@ -247,13 +249,23 @@ fun ReceiverSelectionScreen(
                     }
 
                     items(
-                        pagingData.itemCount,
-                        key = pagingData.itemKey { key -> key.id },
+                        count = pagingData.itemCount,
+                        key = { index ->
+                            val item = pagingData[index]
+                            item?.let { "item_${it.id}" } ?: "empty_$index"
+                        },
                     ) { index ->
                         val item = pagingData[index]
 
                         item?.let {
-                            if (item.id != state.receiver.id || state.isSelectedContext) {
+                            /** 상위 고정된 선택 아이템은 리스트에서 제외, 선택된 아이템이 없는 경우 모든 리스트 노출 */
+                            val shouldShowItem = if (shouldShowSelectedItemOnTop) {
+                                item.id != state.receiver.id
+                            } else {
+                                true
+                            }
+
+                            if (shouldShowItem) {
                                 ReceiverItem(
                                     receiver = item,
                                     selected = state.receiver.id == item.id,
@@ -320,7 +332,7 @@ fun ReceiverSelectionScreen(
 
     LaunchedEffect(focusRequester) {
         focusRequester.requestFocus()
-        delay(10)
+        delay(100)
         keyboard?.show()
     }
 

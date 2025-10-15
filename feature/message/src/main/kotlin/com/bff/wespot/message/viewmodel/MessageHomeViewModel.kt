@@ -45,27 +45,14 @@ class MessageHomeViewModel @Inject constructor(
     val remainingTimeMillis: StateFlow<Long> = _remainingTimeMillis.asStateFlow()
 
     private var previousTimeMills: Long = 0
-    private val timerJob: Job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-        withContext(coroutineDispatcher) {
-            previousTimeMills = System.currentTimeMillis()
-            while (isActive) {
-                val delayMills = System.currentTimeMillis() - previousTimeMills
-                if (delayMills == 1000L) {
-                    intent {
-                        _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
-                    }
-                    previousTimeMills = System.currentTimeMillis()
-                }
-            }
-        }
-    }
+    private var timerJob: Job? = null
 
     fun onAction(action: MessageHomeAction) {
         when (action) {
             MessageHomeAction.OnScreenEntered -> {
                 getMessageStatus()
             }
-            MessageHomeAction.OnLifecycleStart -> {
+            MessageHomeAction.OnLifecycleResume -> {
                 checkAndStartTimer()
             }
             MessageHomeAction.OnLifecycleStop -> {
@@ -135,23 +122,38 @@ class MessageHomeViewModel @Inject constructor(
         }
     }
 
-    private fun startTimer() = intent {
-        if (!timerJob.isActive) {
-            _remainingTimeMillis.value = getRemainingTimeMillis()
-            timerJob.start()
-        }
-    }
-
     private fun checkAndStartTimer() = intent {
         if (state.messageStatus.countRemainingMessages <= 0) {
             startTimer()
         }
     }
 
-    private fun checkAndCancelTimer() = intent {
-        if (timerJob.isActive) {
-            timerJob.cancel()
+    private fun startTimer() = intent {
+        if (timerJob?.isActive == true) {
+            return@intent
         }
+
+        _remainingTimeMillis.value = getRemainingTimeMillis()
+        timerJob = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            withContext(coroutineDispatcher) {
+                previousTimeMills = System.currentTimeMillis()
+                while (isActive) {
+                    val delayMills = System.currentTimeMillis() - previousTimeMills
+                    if (delayMills == 1000L) {
+                        intent {
+                            _remainingTimeMillis.value = (_remainingTimeMillis.value - delayMills)
+                        }
+                        previousTimeMills = System.currentTimeMillis()
+                    }
+                }
+            }
+        }
+        timerJob?.start()
+    }
+
+    private fun checkAndCancelTimer() = intent {
+        timerJob?.cancel()
+        timerJob = null
     }
 
     private fun getRemainingTimeMillis(): Long {

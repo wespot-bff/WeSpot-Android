@@ -1,13 +1,10 @@
 name: CI
 on:
   pull_request:
-    branches:
-      - develop
-      - release
-      - main
     types:
       - opened
       - reopened
+      - synchronize
 
 env:
   CACHE_VERSION: 1 # Increment this to invalidate the cache.

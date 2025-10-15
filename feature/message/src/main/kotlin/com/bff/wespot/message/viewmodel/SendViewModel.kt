@@ -108,6 +108,7 @@ class SendViewModel @Inject constructor(
             ReceiverAction.OnAnonymousProfileModalDismiss -> {
                 intent {
                     postSideEffect(ReceiverSideEffect.DismissAnonymousProfileModal)
+                    postSideEffect(ReceiverSideEffect.ShowProfileSelectBottomSheet)
                 }
             }
         }
@@ -156,6 +157,11 @@ class SendViewModel @Inject constructor(
      */
     fun onAction(action: SendAction) {
         when (action) {
+            SendAction.OnMessageContentClick -> {
+                intent {
+                    postSideEffect(SendSideEffect.NavigateToMessageWriteScreen)
+                }
+            }
             is SendAction.OnSendButtonClicked -> handleMessageSend()
             SendAction.OnSenderClicked -> handleSenderClicked()
             SendAction.OnExitDialogCancelButtonClicked -> {

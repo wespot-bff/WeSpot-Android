@@ -95,10 +95,7 @@ class StorageViewModel @Inject constructor(
                 .getBookmarkedMessages()
                 .onSuccess {
                     reduce {
-                        state.copy(
-                            messageList = it,
-                            showEmptyBookmarkScreen = it.isEmpty(),
-                        )
+                        state.copy(messageList = it)
                     }
                 }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())

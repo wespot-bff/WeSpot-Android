@@ -12,4 +12,6 @@ sealed interface RoomAction {
     data object OnDeleteButtonClicked : RoomAction
     data object OnDeleteConfirmed : RoomAction
     data object OnClosedModalButtonClicked : RoomAction
+    data object OnNoticeModalCloseButtonClicked : RoomAction
+    data object OnNoticeModalOkButtonClicked : RoomAction
 }

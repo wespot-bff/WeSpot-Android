@@ -29,4 +29,7 @@ class MessageStorageRepositoryImpl @Inject constructor(
         messageStorageDataSource.getMessageRoom(roomId).mapCatching {
             it.toDomain()
         }
+
+    override suspend fun hasSentReply(): Result<Boolean> =
+        messageStorageDataSource.hasSentReply()
 }

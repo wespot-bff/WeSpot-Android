@@ -8,14 +8,9 @@ data class MessageRoom(
     val isReceiverAnonymous: Boolean = false,
     val messageDetails: List<MessageDetail> = listOf(),
 ) {
-    fun showReplyButton(message: MessageDetail): Boolean {
+    fun isLastReceivedMessage(message: MessageDetail): Boolean {
         val isLastItem = messageDetails.lastOrNull()?.id == message.id
-
-        if (message.isReceived) {
-            return isLastItem
-        } else {
-            return isLastItem.not()
-        }
+        return isLastItem && message.isReceived
     }
 
     fun isSingleMessage(): Boolean = messageDetails.size <= 1

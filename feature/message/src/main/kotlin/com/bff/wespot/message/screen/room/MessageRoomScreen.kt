@@ -89,6 +89,7 @@ internal fun MessageRoomScreen(
     navigator: MessageRoomNavigator,
 ) {
     var showDeleteConfirmModal by remember { mutableStateOf(false) }
+    var showReplyNoticeModal by remember { mutableStateOf(false) }
 
     val state = viewModel.collectAsState().value
     val action = viewModel::onAction
@@ -104,17 +105,20 @@ internal fun MessageRoomScreen(
                     ),
                 )
             }
-
             RoomSideEffect.NavigateUp -> {
                 navigator.navigateUp()
             }
-
             RoomSideEffect.ShowMessageDeleteConfirmModal -> {
                 showDeleteConfirmModal = true
             }
-
             RoomSideEffect.CloseMessageDeleteConfirmModal -> {
                 showDeleteConfirmModal = false
+            }
+            RoomSideEffect.ShowReplyNoticeModal -> {
+                showReplyNoticeModal = true
+            }
+            RoomSideEffect.CloseReplyNoticeModal -> {
+                showReplyNoticeModal = false
             }
         }
     }
@@ -141,7 +145,7 @@ internal fun MessageRoomScreen(
             MessageCard(
                 type = if (state.selectedMessageDetail.isSend) MessageCardType.SENT else MessageCardType.RECEIVED,
                 detail = state.selectedMessageDetail,
-                showReplyButton = state.messageRoom.showReplyButton(state.selectedMessageDetail),
+                showReplyButton = state.messageRoom.isLastReceivedMessage(state.selectedMessageDetail),
                 showDeleteButton = !state.messageRoom.isSingleMessage(),
                 onReplyButtonClicked = {
                     action(RoomAction.OnReplyButtonClicked)
@@ -176,6 +180,22 @@ internal fun MessageRoomScreen(
             cancelButtonClick = {
                 action(RoomAction.OnClosedModalButtonClicked)
             },
+        )
+    }
+
+    if (showReplyNoticeModal) {
+        WSDialog(
+            title = stringResource(R.string.message_reply_notice_modal_title),
+            subTitle = stringResource(R.string.message_reply_notice_modal_subtitle),
+            okButtonText = stringResource(R.string.message_reply_notice_modal_ok_button),
+            cancelButtonText = stringResource(id = R.string.cancel),
+            okButtonClick = {
+                action(RoomAction.OnNoticeModalOkButtonClicked)
+            },
+            cancelButtonClick = {
+                action(RoomAction.OnNoticeModalCloseButtonClicked)
+            },
+            onDismissRequest = { },
         )
     }
 
@@ -394,7 +414,7 @@ private fun MessageHorizontalList(
                             id = if (data.isSend) {
                                 R.drawable.sent
                             } else {
-                                R.drawable.receive
+                                R.drawable.received
                             },
                         ),
                         contentDescription = stringResource(R.string.message_type_icon),
