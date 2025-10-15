@@ -1,9 +1,11 @@
 package com.bff.wespot.community.categorydetail.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,11 +43,12 @@ import androidx.compose.ui.zIndex
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.categorydetail.state.CategoryDetailAction
 import com.bff.wespot.community.categorydetail.state.CategoryDetailUiState
 import com.bff.wespot.community.component.Item
+import com.bff.wespot.community.screen.CommunityFABButton
 import com.bff.wespot.community.uimodel.BannerItemUiModel
 import com.bff.wespot.community.uimodel.BaseCommunityContentUiModel
 import com.bff.wespot.community.uimodel.HotPostItemUiModel
@@ -56,6 +59,7 @@ import com.bff.wespot.community.write.screen.CategoryBottomSheet
 import com.bff.wespot.designsystem.theme.Gray600
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
+import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.ui.util.clickableSingle
 
 @Composable
@@ -63,7 +67,6 @@ internal fun CategoryScreen(
     uiState: CategoryDetailUiState,
     paging: LazyPagingItems<BaseCommunityContentUiModel>,
     onAction: (CategoryDetailAction) -> Unit,
-    navigateToPost: (String) -> Unit,
 ) {
     val lazyColumnState = rememberLazyListState()
     val density = LocalDensity.current
@@ -109,6 +112,7 @@ internal fun CategoryScreen(
                 .fillMaxSize()
                 .background(WeSpotThemeManager.colors.backgroundColor),
             state = lazyColumnState,
+            contentPadding = PaddingValues(bottom = 86.dp),
         ) {
             item {
                 Column {
@@ -117,7 +121,7 @@ internal fun CategoryScreen(
                         contentAlignment = Alignment.BottomStart,
                     ) {
                         AsyncImage(
-                            model = "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
+                            model = uiState.backgroundImage?.url,
                             contentScale = ContentScale.Crop,
                             contentDescription = null,
                             modifier = Modifier
@@ -126,14 +130,15 @@ internal fun CategoryScreen(
                         )
 
                         AsyncImage(
-                            model = "https://picsum.photos/80/80",
+                            model = uiState.thumbnailImage?.url,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .padding(start = 20.dp)
                                 .size(50.dp)
-                                .offset(y = 25.dp)
+                                .offset(y = 28.dp)
                                 .clip(CircleShape)
+                                .border(3.dp, White, CircleShape)
                                 .zIndex(1f),
                         )
                     }
@@ -142,8 +147,7 @@ internal fun CategoryScreen(
                         modifier = Modifier
                             .clickableSingle {
                                 showCategoryBottomSheet = true
-                            }
-                            .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
+                            }.padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
@@ -189,7 +193,8 @@ internal fun CategoryScreen(
                                     when (reaction) {
                                         is ReactionUiModel.LikeUiModel -> {
                                             val isLiked = uiState.likedPosts.contains(post.id)
-                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val currentCount =
+                                                reaction.count.text.toIntOrNull() ?: 0
                                             val wasLikedBefore = reaction.selected
 
                                             val newCount = when {
@@ -215,13 +220,13 @@ internal fun CategoryScreen(
 
                         updatedContent.Item(
                             navigateToPost = {
-                                navigateToPost(post.id)
+                                onAction(CategoryDetailAction.NavigateToDetail(post.id))
                             },
-                            reactionClick = {
+                            reactionClick = { reaction ->
                                 onAction(
                                     CategoryDetailAction.OnReactionClick(
                                         id = post.id,
-                                        reaction = it,
+                                        reaction = reaction,
                                     ),
                                 )
                             },
@@ -264,15 +269,12 @@ internal fun CategoryScreen(
             }
         }
 
-        // Top bar with dynamic opacity
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .background(
-                    topbarColor,
-                ),
+                .background(topbarColor),
         ) {
             Row(
                 modifier = Modifier
@@ -295,6 +297,12 @@ internal fun CategoryScreen(
                     )
                 }
 
+                Text(
+                    text = uiState.currentCategory.text,
+                    color = WeSpotThemeManager.colors.txtTitleColor.copy(alpha = topBarAlpha),
+                    style = StaticTypeScale.Default.header2,
+                )
+
                 IconButton(
                     onClick = { /* TODO: Add search functionality */ },
                 ) {
@@ -309,6 +317,15 @@ internal fun CategoryScreen(
                 }
             }
         }
+
+        CommunityFABButton(
+            onFABClicked = {
+                onAction(CategoryDetailAction.OnFABClicked)
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp),
+        )
     }
 
     if (showCategoryBottomSheet) {

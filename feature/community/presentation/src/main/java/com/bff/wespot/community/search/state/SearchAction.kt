@@ -3,8 +3,12 @@ package com.bff.wespot.community.search.state
 import com.bff.wespot.community.uimodel.PostItemUiModel
 
 sealed interface SearchAction {
-    data class HandleSearchChange(val keyword: String) : SearchAction
-    data class NavigateToDetail(val postId: String) : SearchAction
+    data class HandleSearchChange(
+        val keyword: String,
+    ) : SearchAction
+    data class NavigateToDetail(
+        val postId: String,
+    ) : SearchAction
     data object MonitorUserInput : SearchAction
     data class OnReactionClick(
         val id: String,
@@ -16,5 +20,8 @@ sealed interface SearchAction {
     data class NavigateToCategory(
         val categoryId: String,
         val categoryText: String,
+    ) : SearchAction
+    data class NavigateToDetailComments(
+        val postId: String,
     ) : SearchAction
 }

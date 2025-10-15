@@ -2,6 +2,7 @@ package com.bff.wespot.community.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +43,7 @@ internal fun SearchScreen(
                 .padding(it)
                 .padding(start = 20.dp, end = 20.dp, top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
+            contentPadding = PaddingValues(bottom = 86.dp),
         ) {
             stickyHeader {
                 WsTextField(
@@ -66,7 +68,8 @@ internal fun SearchScreen(
                                     when (reaction) {
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
                                             val isLiked = state.likedPosts.contains(post.id)
-                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val currentCount =
+                                                reaction.count.text.toIntOrNull() ?: 0
                                             val wasLikedBefore = reaction.selected
 
                                             val newCount = when {
@@ -94,13 +97,22 @@ internal fun SearchScreen(
                             navigateToPost = {
                                 action(SearchAction.NavigateToDetail(post.id))
                             },
-                            reactionClick = {
-                                action(
-                                    SearchAction.OnReactionClick(
-                                        id = post.id,
-                                        reaction = it,
-                                    ),
-                                )
+                            reactionClick = { reaction ->
+                                when (reaction) {
+                                    is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                                        // Navigate to PostDetail comment section
+                                        action(SearchAction.NavigateToDetailComments(post.id))
+                                    }
+                                    else -> {
+                                        // Handle other reactions (like)
+                                        action(
+                                            SearchAction.OnReactionClick(
+                                                id = post.id,
+                                                reaction = reaction,
+                                            ),
+                                        )
+                                    }
+                                }
                             },
                             navigateToCategory = { categoryId, categoryText ->
                                 action(SearchAction.NavigateToCategory(categoryId, categoryText))

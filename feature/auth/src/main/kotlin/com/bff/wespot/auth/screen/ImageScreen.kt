@@ -29,8 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.error
+import coil3.request.placeholder
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -91,7 +93,8 @@ internal fun ImageScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context)
+                    model = ImageRequest
+                        .Builder(context)
                         .data(uiState.imagePath)
                         .error(R.drawable.default_character)
                         .placeholder(R.drawable.default_character)
@@ -106,8 +109,7 @@ internal fun ImageScreen(
                                     ),
                                 ),
                             )
-                        }
-                        .clip(CircleShape)
+                        }.clip(CircleShape)
                         .size(110.dp),
                     contentScale = ContentScale.Crop,
                 )

@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -29,16 +32,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.detail.state.PostDetailUiState
 import com.bff.wespot.community.presentation.R
@@ -46,6 +56,7 @@ import com.bff.wespot.community.uimodel.PostCommentUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel
 import com.bff.wespot.designsystem.component.header.WSTopBar
+import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.Gray100
 import com.bff.wespot.designsystem.theme.Gray200
 import com.bff.wespot.designsystem.theme.Gray300
@@ -62,6 +73,8 @@ import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
+import com.bff.wespot.server.driven.type.color
+import com.bff.wespot.ui.component.WSBottomSheet
 import com.bff.wespot.ui.util.clickableSingle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +84,7 @@ internal fun PostDetailScreen(
     onAction: (PostDetailAction) -> Unit,
 ) {
     val uiModel = uiState.detail.content
+    val lazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -90,16 +104,7 @@ internal fun PostDetailScreen(
                     ) {
                         uiModel.category.text.Text(StaticTypeScale.Default.body6)
 
-                        Box(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(
-                                    WeSpotThemeManager.colors.cardBackgroundColor,
-                                    CircleShape,
-                                ),
-                        ) {
-                            uiModel.category.icon.Icon(modifier = Modifier.size(16.dp))
-                        }
+                        uiModel.category.icon.Icon(modifier = Modifier.size(18.dp))
                     }
                 },
                 title = "",
@@ -113,7 +118,8 @@ internal fun PostDetailScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 16.dp)
-                            .clickableSingle { onAction(PostDetailAction.OnEditPost) },
+                            .clickableSingle { onAction(PostDetailAction.OnMoreOptionClicked) }
+                            .size(40.dp),
                     )
                 },
             )
@@ -130,11 +136,14 @@ internal fun PostDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
+            state = lazyListState,
         ) {
             item {
-                Column {
-                    HorizontalDivider(color = WeSpotThemeManager.colors.bottomSheetColor)
+                var hasContent by remember {
+                    mutableStateOf(uiModel.contentSection != null)
+                }
 
+                Column {
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Column(
@@ -151,12 +160,22 @@ internal fun PostDetailScreen(
 
                         uiModel.contentSection?.let {
                             Spacer(modifier = Modifier.height(24.dp))
-                            it.Item()
+                            it.Item(
+                                onContentVisibilityChanged = { isVisible ->
+                                    hasContent = isVisible
+                                },
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        uiModel.footerSection.Item(onAction, uiState.isLiked, uiState.isScrapped)
+                        uiModel.footerSection.Item(
+                            onAction,
+                            uiState.isLiked,
+                            uiState.likeCount,
+                            uiState.commentCount,
+                            uiState.isScrapped,
+                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -165,21 +184,56 @@ internal fun PostDetailScreen(
                         thickness = 8.dp,
                         color = Gray700,
                     )
+
+                    Spacer(Modifier.height(24.dp))
                 }
             }
 
             items(uiState.comments) { comment ->
-                Spacer(modifier = Modifier.height(24.dp))
-
                 comment.Item(
                     onAction = onAction,
                     isLiked = comment.pushedLike,
                 )
                 if (comment != uiState.comments.last()) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
+    }
+
+    LaunchedEffect(uiState.scrollToComments) {
+        lazyListState.animateScrollToItem(1)
+    }
+
+    if (uiState.showPostOptionsBottomSheet) {
+        PostOptionsBottomSheet(
+            sheetItems = uiState.getSheetList(),
+            onAction = onAction,
+        )
+    }
+
+    if (uiState.showDeleteDialog) {
+        WSDialog(
+            title = stringResource(R.string.delete_dialog_title),
+            subTitle = stringResource(R.string.delete_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmDelete) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissDeleteDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissDeleteDialog) },
+        )
+    }
+
+    if (uiState.showBlockDialog) {
+        WSDialog(
+            title = stringResource(R.string.block_dialog_title),
+            subTitle = stringResource(R.string.block_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmBlock) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissBlockDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissBlockDialog) },
+        )
     }
 }
 
@@ -276,42 +330,69 @@ private fun PostDetailContentUiModel.InfoSectionUiModel.Item() {
 }
 
 @Composable
-private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
+private fun PostDetailContentUiModel.ContentSectionUiModel.Item(
+    onContentVisibilityChanged: (Boolean) -> Unit = {},
+) {
     when (this) {
         is PostDetailContentUiModel.ContentSectionUiModel.ImagesContentUiModel -> {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(images) { image ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(White, RoundedCornerShape(12.dp)),
-                    ) {
-                        AsyncImage(
-                            model = image,
+            val validImages by remember(images) { mutableStateOf(images.toMutableList()) }
+
+            if (validImages.isNotEmpty()) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(images) { image ->
+                        var isImageVisible by remember { mutableStateOf(true) }
+
+                        Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .widthIn(min = 200.dp, max = 226.dp)
-                                .heightIn(min = 226.dp, max = 266.dp),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                        )
+                                .background(White, RoundedCornerShape(12.dp)),
+                        ) {
+                            AsyncImage(
+                                model = image,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .widthIn(min = 200.dp, max = 226.dp)
+                                    .heightIn(min = 226.dp, max = 266.dp),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                onError = {
+                                    isImageVisible = false
+                                    validImages.remove(image)
+                                    if (validImages.isEmpty()) {
+                                        onContentVisibilityChanged(false)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
+            } else {
+                onContentVisibilityChanged(false)
             }
         }
 
         is PostDetailContentUiModel.ContentSectionUiModel.SingleImageUiModel -> {
-            AsyncImage(
-                model = image,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .fillMaxWidth()
-                    .heightIn(min = 155.dp, max = 718.dp),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-            )
+            var isImageVisible by remember { mutableStateOf(true) }
+
+            if (isImageVisible) {
+                AsyncImage(
+                    model = image,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .fillMaxWidth()
+                        .heightIn(min = 155.dp, max = 718.dp),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    onError = {
+                        isImageVisible = false
+                        onContentVisibilityChanged(false)
+                    },
+                )
+            } else {
+                onContentVisibilityChanged(false)
+            }
         }
     }
 }
@@ -321,6 +402,8 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item() {
 private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
     onAction: (PostDetailAction) -> Unit,
     isLiked: Boolean = false,
+    likeCount: Int = 0,
+    commentCount: Int = 0,
     isScrapped: Boolean = false,
 ) {
     FlowRow(
@@ -328,7 +411,9 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         verticalArrangement = Arrangement.Center,
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             reactions.forEach { reaction ->
@@ -338,19 +423,16 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                 }
 
                 Row(
-                    modifier = Modifier.clickableSingle {
-                        val type = when (reaction) {
-                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> "chat"
-                            is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> "like"
-                        }
-                        onAction(PostDetailAction.OnReactionClick(type))
-                    },
+                    modifier = Modifier
+                        .clickableSingle {
+                            onAction(PostDetailAction.OnReactionClick(reaction))
+                        }.fillMaxHeight(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AsyncImage(
                         model = reaction.icon.url,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(20.dp),
                         colorFilter = ColorFilter.tint(
                             if (isSelected) {
                                 Primary300
@@ -360,7 +442,17 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                         ),
                         contentDescription = null,
                     )
-                    reaction.count.Text(StaticTypeScale.Default.body6)
+                    val displayCount = when (reaction) {
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> likeCount
+                        is PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> commentCount
+                    }
+                    if (displayCount != 0) {
+                        Text(
+                            text = displayCount.toString(),
+                            style = StaticTypeScale.Default.body6,
+                            color = reaction.count.color.color(),
+                        )
+                    }
                 }
             }
         }
@@ -372,7 +464,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
         ) {
             AsyncImage(
                 model = scrap.icon.url,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(20.dp),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     if (isScrapped) {
@@ -408,6 +500,7 @@ private fun PostCommentUiModel.Item(
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.8f),
         ) {
             if (!isMe) {
                 Box(
@@ -440,12 +533,22 @@ private fun PostCommentUiModel.Item(
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = if (isMe) {
+                        Arrangement.End
+                    } else {
+                        Arrangement.Start
+                    },
                 ) {
+                    val corner = RoundedCornerShape(
+                        topEnd = if (isMe) 0.dp else 16.dp,
+                        topStart = if (isMe) 16.dp else 0.dp,
+                        bottomEnd = 16.dp,
+                        bottomStart = 16.dp,
+                    )
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Gray600, RoundedCornerShape(16.dp)),
+                            .clip(corner)
+                            .background(Gray600, corner),
                     ) {
                         Text(
                             text = message,
@@ -499,6 +602,9 @@ private fun PostCommentUiModel.Item(
                             text = stringResource(R.string.postdetail_delete),
                             style = StaticTypeScale.Default.body9,
                             color = Gray400,
+                            modifier = Modifier.clickableSingle {
+                                onAction(PostDetailAction.OnCommentDelete(id))
+                            },
                         )
                     } else {
                         Text(
@@ -530,30 +636,36 @@ private fun CommentInputBox(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                vertical = 12.dp,
+                vertical = 40.dp,
                 horizontal = 20.dp,
             ),
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
+                .height(IntrinsicSize.Min)
                 .background(
                     color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
-                )
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                ).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(
                 value = value,
                 onValueChange = onValueChanged,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 textStyle = StaticTypeScale.Default.body3.copy(
                     color = WeSpotThemeManager.colors.txtTitleColor,
                 ),
                 decorationBox = @Composable { innerTextField ->
-                    Box {
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
                         if (value.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.post_detail_comment_placeholder),
@@ -579,9 +691,63 @@ private fun CommentInputBox(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PostOptionsBottomSheet(
+    sheetItems: List<PostDetailUiState.SheetItem>,
+    onAction: (PostDetailAction) -> Unit,
+) {
+    WSBottomSheet(closeSheet = { onAction(PostDetailAction.OnDismissPostOptions) }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 28.dp),
+        ) {
+            sheetItems.forEachIndexed { index, item ->
+                PostOptionItem(
+                    text = item.text,
+                    textColor = WeSpotThemeManager.colors.txtTitleColor,
+                    onClick = {
+                        onAction(PostDetailAction.OnSheetItemClicked(item.type))
+                    },
+                )
+
+                if (index < sheetItems.lastIndex) {
+                    HorizontalDivider(
+                        color = Color(0xFF4F5157),
+                        modifier = Modifier.padding(vertical = 8.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PostOptionItem(
+    text: String,
+    textColor: Color = WeSpotThemeManager.colors.txtTitleColor,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickableSingle { onClick() }
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = StaticTypeScale.Default.body3,
+            color = textColor,
+        )
+    }
+}
+
 private object PostDetailPreviewData {
     val samplePostDetail = PostDetailUiModel(
         id = "post_detail_1",
+        isMyPost = false,
         content = PostDetailContentUiModel(
             category = PostDetailContentUiModel.CategoryUiModel(
                 text = RichTextType(
@@ -709,6 +875,7 @@ private fun PostDetailScreenPreview() {
             uiState = PostDetailUiState(
                 comments = sampleComment,
                 detail = PostDetailPreviewData.samplePostDetail,
+                scrollToComments = false,
             ),
             onAction = {},
         )

@@ -10,5 +10,18 @@ sealed interface PostDetailSideEffect {
 
     data object OnBackClick : PostDetailSideEffect
 
-    data class OnCategoryClick(val target: String, val categoryText: String) : PostDetailSideEffect
+    data class OnCategoryClick(
+        val target: String,
+        val categoryText: String,
+    ) : PostDetailSideEffect
+
+    data class NavigateToPostReportScreen(
+        val postId: String,
+    ) : PostDetailSideEffect
+
+    data class NavigateToCommentReportScreen(
+        val commentId: String,
+    ) : PostDetailSideEffect
+
+    data object OnPostDeletedOrBlocked : PostDetailSideEffect
 }

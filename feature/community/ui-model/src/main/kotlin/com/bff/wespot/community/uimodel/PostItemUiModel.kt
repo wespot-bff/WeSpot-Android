@@ -18,7 +18,7 @@ data class PostItemUiModel(
             val profileImage: String,
             val nickname: RichTextType,
             val createdAt: RichTextType,
-            val category: CategoryUiModel,
+            val category: CategoryUiModel?,
         ) {
             data class CategoryUiModel(
                 val text: RichTextType,
@@ -94,7 +94,7 @@ private fun PostItems.PostContent.HeaderSection.toUiModel() =
         profileImage = profileImage,
         nickname = nickname,
         createdAt = createdAt,
-        category = category.toUiModel(),
+        category = category?.toUiModel(),
     )
 
 private fun PostItems.PostContent.HeaderSection.Category.toUiModel() =

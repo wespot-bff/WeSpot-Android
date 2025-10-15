@@ -5,6 +5,7 @@ import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostDetail(
     val id: String,
+    val isMyPost: Boolean,
     val content: PostDetailContent,
 ) {
     data class PostDetailContent(

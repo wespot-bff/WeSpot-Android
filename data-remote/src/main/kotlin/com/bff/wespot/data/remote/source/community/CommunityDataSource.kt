@@ -1,5 +1,6 @@
 package com.bff.wespot.data.remote.source.community
 
+import com.bff.wespot.data.remote.model.community.CategoryDetailsPagingDto
 import com.bff.wespot.data.remote.model.community.CommunityContentPagingDto
 import com.bff.wespot.data.remote.model.community.chip.BaseChipDto
 
@@ -8,7 +9,8 @@ interface CommunityDataSource {
     suspend fun getCommunityContent(
         target: String,
         inquirySize: Int,
-        cursorId: Int?
+        cursorId: Int?,
+        countOfPostsViewed: Int? = null
     ): Result<CommunityContentPagingDto>
 
     suspend fun getCommunitySearchContent(
@@ -24,7 +26,7 @@ interface CommunityDataSource {
     suspend fun getCategoryPosts(
         categoryId: String,
         cursorId: Int?
-    ): Result<CommunityContentPagingDto>
+    ): Result<CategoryDetailsPagingDto>
 
     suspend fun onLikeClicked(postId: String): Result<Unit>
 

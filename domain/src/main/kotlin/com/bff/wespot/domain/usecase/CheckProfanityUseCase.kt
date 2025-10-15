@@ -7,8 +7,8 @@ import javax.inject.Inject
 class CheckProfanityUseCase @Inject constructor(
     private val commonRepository: CommonRepository,
 ) {
-    suspend operator fun invoke(content: String): Boolean {
-        return commonRepository.checkProfanity(content).fold(
+    suspend operator fun invoke(content: String): Boolean =
+        commonRepository.checkProfanity(content).fold(
             onSuccess = { false },
             onFailure = { exception ->
                 val networkException = exception as? NetworkException
@@ -19,5 +19,4 @@ class CheckProfanityUseCase @Inject constructor(
                 }
             },
         )
-    }
 }

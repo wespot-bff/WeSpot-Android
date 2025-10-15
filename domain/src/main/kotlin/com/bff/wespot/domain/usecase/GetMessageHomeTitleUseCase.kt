@@ -29,16 +29,18 @@ class GetMessageHomeTitleUseCase @Inject constructor(
     }
 
     private suspend fun checkAndCacheMessageHomeTitle() {
-        val cachedTimeString = dataStoreRepository.getString(
-            DataStoreKey.MESSAGE_HOME_TITLE_CACHED_TIME,
-        ).firstOrNull()
+        val cachedTimeString = dataStoreRepository
+            .getString(
+                DataStoreKey.MESSAGE_HOME_TITLE_CACHED_TIME,
+            ).firstOrNull()
         val cachedTime = cachedTimeString?.toLongOrNull() ?: 0L
         val currentTime = System.currentTimeMillis()
 
         /** 아직 캐싱 유효 시간이 지나지 않았다면 바로 반환한다. */
         if ((currentTime - cachedTime) <= CACHE_EXPIRATION_TIME_MILLIS) return
 
-        messageRepository.getMessageHomeTitle()
+        messageRepository
+            .getMessageHomeTitle()
             .onSuccess {
                 dataStoreRepository.saveString(DataStoreKey.MESSAGE_HOME_TITLE, it.title)
                 dataStoreRepository.saveString(

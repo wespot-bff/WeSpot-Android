@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostCommentDto(
+    val id: String,
     val isMe: Boolean,
     @SerialName("authorName")
     val nickname: String,
@@ -19,7 +20,7 @@ data class PostCommentDto(
     val pushedLike: Boolean,
     val isReported: Boolean,
 ) {
-    fun toDomain(id: String): PostComment {
+    fun toDomain(): PostComment {
         return PostComment(
             id = id,
             isMe = isMe,

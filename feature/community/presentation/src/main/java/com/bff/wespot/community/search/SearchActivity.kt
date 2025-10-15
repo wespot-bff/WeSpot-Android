@@ -42,6 +42,7 @@ class SearchActivity : ComponentActivity() {
                         val intent = navigator.navigateToPostDetailActivity(
                             this@SearchActivity,
                             it.postId,
+                            it.navigateToComment,
                         )
 
                         startActivity(intent)

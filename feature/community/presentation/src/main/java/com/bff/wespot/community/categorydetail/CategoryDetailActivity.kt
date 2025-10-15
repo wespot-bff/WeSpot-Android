@@ -38,13 +38,6 @@ class CategoryDetailActivity : ComponentActivity() {
                     uiState = uiState,
                     paging = paging,
                     onAction = viewModel::onAction,
-                    navigateToPost = { postId ->
-                        val intent = navigator.navigateToPostDetailActivity(
-                            context = this,
-                            postId = postId,
-                        )
-                        startActivity(intent)
-                    },
                 )
 
                 viewModel.collectSideEffect { sideEffect ->
@@ -53,11 +46,21 @@ class CategoryDetailActivity : ComponentActivity() {
                             val intent = navigator.navigateToPostDetailActivity(
                                 context = this,
                                 postId = sideEffect.postId,
+                                scrollToComments = sideEffect.navigateToComment,
                             )
                             startActivity(intent)
                         }
+
                         is CategoryDetailSideEffect.NavigateBack -> {
                             finish()
+                        }
+
+                        is CategoryDetailSideEffect.NavigateToCreate -> {
+                            val intent = navigator.navigateToWriteActivity(
+                                context = this,
+                                category = sideEffect.category.text,
+                            )
+                            startActivity(intent)
                         }
                     }
                 }

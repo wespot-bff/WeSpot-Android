@@ -1,5 +1,6 @@
 package com.bff.wespot.community.detail
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -68,6 +69,14 @@ class PostDetailActivity : ComponentActivity() {
                         finish()
                     }
 
+                    is PostDetailSideEffect.OnPostDeletedOrBlocked -> {
+                        val resultIntent = Intent().apply {
+                            putExtra("refresh", true)
+                        }
+                        setResult(RESULT_OK, resultIntent)
+                        finish()
+                    }
+
                     is PostDetailSideEffect.OnCategoryClick -> {
                         val intent = navigator.navigateToCategoryDetail(
                             this@PostDetailActivity,
@@ -75,6 +84,24 @@ class PostDetailActivity : ComponentActivity() {
                             sideEffect.categoryText,
                         )
 
+                        startActivity(intent)
+                    }
+
+                    is PostDetailSideEffect.NavigateToPostReportScreen -> {
+                        val intent = navigator.navigateToCommunityReport(
+                            context = this@PostDetailActivity,
+                            targetId = sideEffect.postId,
+                            reportType = "POST",
+                        )
+                        startActivity(intent)
+                    }
+
+                    is PostDetailSideEffect.NavigateToCommentReportScreen -> {
+                        val intent = navigator.navigateToCommunityReport(
+                            context = this@PostDetailActivity,
+                            targetId = sideEffect.commentId,
+                            reportType = "COMMENT",
+                        )
                         startActivity(intent)
                     }
                 }

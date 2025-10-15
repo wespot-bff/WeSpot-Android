@@ -10,6 +10,7 @@ import com.bff.wespot.auth.AuthActivity
 import com.bff.wespot.community.all.CommunityAllActivity
 import com.bff.wespot.community.categorydetail.CategoryDetailActivity
 import com.bff.wespot.community.detail.PostDetailActivity
+import com.bff.wespot.community.report.CommunityReportActivity
 import com.bff.wespot.community.search.SearchActivity
 import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
@@ -201,8 +202,14 @@ class NavigatorImpl @Inject constructor() : Navigator {
             ),
         )
 
-    override fun navigateToWriteActivity(context: Context): Intent {
+    override fun navigateToWriteActivity(
+        context: Context,
+        category: String?,
+    ): Intent {
         val intent = context.buildIntent<WritePostActivity>()
+        category?.let {
+            intent.putExtra("category", category)
+        }
         return intent
     }
 
@@ -226,9 +233,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return intent
     }
 
-    override fun navigateToPostDetailActivity(context: Context, postId: String): Intent {
+    override fun navigateToPostDetailActivity(context: Context, postId: String, scrollToComments: Boolean): Intent {
         val intent = context.buildIntent<PostDetailActivity>()
         intent.putExtra("postId", postId)
+        intent.putExtra("scrollToComments", scrollToComments)
         return intent
     }
 
@@ -240,10 +248,25 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return context.buildIntent<CommunityAllActivity>()
     }
 
-    override fun navigateToCategoryDetail(context: Context, categoryId: String, categoryText: String): Intent {
+    override fun navigateToCategoryDetail(
+        context: Context,
+        categoryId: String,
+        categoryText: String,
+    ): Intent {
         val intent = context.buildIntent<CategoryDetailActivity>()
         intent.putExtra("categoryId", categoryId)
         intent.putExtra("categoryText", categoryText)
+        return intent
+    }
+
+    override fun navigateToCommunityReport(
+        context: Context,
+        targetId: String,
+        reportType: String,
+    ): Intent {
+        val intent = context.buildIntent<CommunityReportActivity>()
+        intent.putExtra("targetId", targetId)
+        intent.putExtra("reportType", reportType)
         return intent
     }
 }

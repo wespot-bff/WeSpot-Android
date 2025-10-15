@@ -36,7 +36,8 @@ class VoteHomeViewModel @Inject constructor(
     private val voteRepository: VoteRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val commonRepository: CommonRepository,
-) : BaseViewModel(), ContainerHost<VoteUiState, VoteSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<VoteUiState, VoteSideEffect> {
     override val container = container<VoteUiState, VoteSideEffect>(
         VoteUiState(
             playStoreLink = remoteConfigRepository.fetchFromRemoteConfig(RemoteConfigKey.PLAY_STORE_URL),
@@ -84,14 +85,13 @@ class VoteHomeViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
         viewModelScope.launch(coroutineDispatcher) {
             try {
-                voteRepository.getFirstVoteResults(date)
+                voteRepository
+                    .getFirstVoteResults(date)
                     .onSuccess {
                         reduce { state.copy(voteResults = it.voteResults, isLoading = false) }
-                    }
-                    .onNetworkFailure {
+                    }.onNetworkFailure {
                         postSideEffect(it.toSideEffect())
-                    }
-                    .onFailure {
+                    }.onFailure {
                         reduce { state.copy(isLoading = false) }
                         Timber.e(it)
                     }
@@ -108,11 +108,11 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getKakaoContent() = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            commonRepository.getKakaoContent(KakaoSharingType.TELL.name)
+            commonRepository
+                .getKakaoContent(KakaoSharingType.TELL.name)
                 .onSuccess {
                     reduce { state.copy(kakaoContent = it) }
-                }
-                .onFailure {
+                }.onFailure {
                     Timber.e(it)
                 }
         }

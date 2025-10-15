@@ -15,9 +15,11 @@ object PostDetailModule {
         savedStateHandle: SavedStateHandle,
     ): PostDetailParams {
         val postId = savedStateHandle.get<String>("postId") ?: ""
+        val scrollToComment = savedStateHandle.get<Boolean>("scrollToComments") ?: false
 
         return PostDetailParams(
             postId = postId,
+            scrollToComment = scrollToComment,
         )
     }
 }

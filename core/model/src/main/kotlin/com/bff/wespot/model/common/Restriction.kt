@@ -6,9 +6,8 @@ data class Restriction(
     val restrictionType: RestrictionType,
     val releaseDate: LocalDate,
 ) {
-    fun toKoreanDate(): String {
-        return "${releaseDate.year}년 ${releaseDate.monthValue}월 ${releaseDate.dayOfMonth}일"
-    }
+    fun toKoreanDate(): String =
+        "${releaseDate.year}년 ${releaseDate.monthValue}월 ${releaseDate.dayOfMonth}일"
 
     companion object {
         val Empty = Restriction(

@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.bff.wespot.community.uimodel.BaseCommunityContentUiModel
 import com.bff.wespot.model.community.chip.CategoryChips
 import com.bff.wespot.model.community.chip.CategoryItem
+import com.bff.wespot.model.serverDriven.type.ImageType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -14,4 +15,6 @@ data class CategoryDetailUiState(
     val isRefreshing: Boolean = false,
     val categories: List<CategoryChips> = emptyList(),
     val currentCategory: CategoryItem = CategoryItem.EMPTY,
+    val backgroundImage: ImageType? = null,
+    val thumbnailImage: ImageType? = null,
 )

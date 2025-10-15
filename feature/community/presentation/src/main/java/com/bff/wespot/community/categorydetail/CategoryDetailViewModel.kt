@@ -70,13 +70,33 @@ class CategoryDetailViewModel @Inject constructor(
                 loadCategories()
                 loadCategoryPosts()
             }
+
+            is CategoryDetailAction.OnFABClicked -> {
+                onFABClicked()
+            }
+
+            is CategoryDetailAction.NavigateToDetail -> {
+                postSideEffect(CategoryDetailSideEffect.NavigateToPostDetail(action.postId))
+            }
         }
     }
 
     private fun loadCategoryPosts() = intent {
         viewModelScope.launch(ioDispatcher) {
-            val paging = communityRepository.getCategoryPostsStream(categoryId)
-                .map {
+            val paging = communityRepository
+                .getCategoryPostsStreamWithImages(
+                    categoryId = categoryId,
+                    onImagesLoaded = { background, thumbnail ->
+                        intent {
+                            reduce {
+                                state.copy(
+                                    backgroundImage = background,
+                                    thumbnailImage = thumbnail,
+                                )
+                            }
+                        }
+                    },
+                ).map {
                     it.map { content ->
                         content.toUiModel()
                     }
@@ -120,6 +140,10 @@ class CategoryDetailViewModel @Inject constructor(
                     }
                 }
 
+                is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
+                    postSideEffect(CategoryDetailSideEffect.NavigateToPostDetail(postId, true))
+                }
+
                 else -> {}
             }
         }
@@ -155,11 +179,11 @@ class CategoryDetailViewModel @Inject constructor(
 
     private fun loadCategories() = intent {
         viewModelScope.launch(ioDispatcher) {
-            writePostRepository.getCategories()
+            writePostRepository
+                .getCategories()
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     reduce {
                         state.copy(categories = it)
                     }
@@ -181,5 +205,9 @@ class CategoryDetailViewModel @Inject constructor(
 
             loadCategoryPosts()
         }
+    }
+
+    private fun onFABClicked() = intent {
+        postSideEffect(CategoryDetailSideEffect.NavigateToCreate(state.currentCategory))
     }
 }

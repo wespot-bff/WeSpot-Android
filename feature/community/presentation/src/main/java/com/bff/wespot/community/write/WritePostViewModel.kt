@@ -29,36 +29,33 @@ internal class WritePostViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val params: WritePostParams,
     private val ioDispatcher: CoroutineDispatcher,
-) : BaseViewModel(), ContainerHost<WritePostUiState, WritePostSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<WritePostUiState, WritePostSideEffect> {
     override val container = container<WritePostUiState, WritePostSideEffect>(
         WritePostUiState(),
     )
 
     init {
         intent {
-            writePostRepository.getCategories()
+            writePostRepository
+                .getCategories()
                 .onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess { categories ->
+                }.onSuccess { categories ->
                     reduce {
                         val updatedState = state.copy(categories = categories)
 
-                        if (params.isEditing) {
-                            val selectedCategory = categories
-                                .flatMap { it.chips }
-                                .find { it.text == params.category }
-                                ?: CategoryItem.EMPTY
+                        val selectedCategory = categories
+                            .flatMap { it.chips }
+                            .find { it.text == params.category }
+                            ?: CategoryItem.EMPTY
 
-                            updatedState.copy(
-                                title = params.title,
-                                description = params.description,
-                                images = params.images,
-                                selectedCategory = selectedCategory,
-                            )
-                        } else {
-                            updatedState
-                        }
+                        updatedState.copy(
+                            title = params.title,
+                            description = params.description,
+                            images = params.images,
+                            selectedCategory = selectedCategory,
+                        )
                     }
                 }
         }
@@ -150,21 +147,20 @@ internal class WritePostViewModel @Inject constructor(
 
     private fun uploadPost(urls: List<String>) = intent {
         viewModelScope.launch(ioDispatcher) {
-            writePostRepository.createPost(
-                postId = params.postId,
-                isEditing = params.isEditing,
-                info = PostInfo(
-                    categoryId = state.selectedCategory.id,
-                    title = state.title.takeIf { it.isNotEmpty() },
-                    description = state.description,
-                    imagesRequest = urls,
-                ),
-            )
-                .onNetworkFailure {
+            writePostRepository
+                .createPost(
+                    postId = params.postId,
+                    isEditing = params.isEditing,
+                    info = PostInfo(
+                        categoryId = state.selectedCategory.id,
+                        title = state.title.takeIf { it.isNotEmpty() },
+                        description = state.description,
+                        imagesRequest = urls,
+                    ),
+                ).onNetworkFailure {
                     reduce { state.copy(isLoading = false) }
                     postSideEffect(it.toSideEffect())
-                }
-                .onSuccess {
+                }.onSuccess {
                     reduce { state.copy(isLoading = false) }
                     if (params.isEditing) {
                         postSideEffect(WritePostSideEffect.ClosePageWithSuccess)

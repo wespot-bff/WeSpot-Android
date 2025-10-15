@@ -1,6 +1,7 @@
 package com.bff.wespot.navigation.navigator
 
 import androidx.navigation.NavController
+import com.bff.wespot.community.screen.CommunityNavigator
 import com.bff.wespot.entire.screen.EntireNavigator
 import com.bff.wespot.entire.screen.destinations.AccountSettingScreenDestination
 import com.bff.wespot.entire.screen.destinations.EntireScreenDestination
@@ -34,6 +35,7 @@ import com.bff.wespot.message.screen.setting.BlockedMessageNavigator
 import com.bff.wespot.message.screen.setting.MessageNotificationSettingNavigator
 import com.bff.wespot.message.screen.setting.MessageSettingNavigator
 import com.bff.wespot.message.screen.setting.MessageUsageSettingNavigator
+import com.bff.wespot.navigation.AppNavGraphs
 import com.bff.wespot.vote.screen.IndividualVoteArgs
 import com.bff.wespot.vote.screen.IndividualVoteNavigator
 import com.bff.wespot.vote.screen.VoteNavigator
@@ -42,6 +44,7 @@ import com.bff.wespot.vote.screen.VoteResultScreenArgs
 import com.bff.wespot.vote.screen.VoteStorageNavigator
 import com.bff.wespot.vote.screen.VotingNavigator
 import com.bff.wespot.vote.screen.destinations.IndividualVoteScreenDestination
+import com.bff.wespot.vote.screen.destinations.VoteHomeScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteResultScreenDestination
 import com.bff.wespot.vote.screen.destinations.VoteStorageScreenDestination
 import com.bff.wespot.vote.screen.destinations.VotingScreenDestination
@@ -72,7 +75,8 @@ class CommonNavGraphNavigator(
     MessageSettingNavigator,
     BlockedMessageNavigator,
     MessageNotificationSettingNavigator,
-    MessageUsageSettingNavigator {
+    MessageUsageSettingNavigator,
+    CommunityNavigator {
     override fun navigateUp() {
         navController.navigateUp()
     }
@@ -162,5 +166,9 @@ class CommonNavGraphNavigator(
 
     override fun navigateToMessageUsageSettingScreen() {
         navController.navigate(MessageUsageSettingScreenDestination within navGraph)
+    }
+
+    override fun navigateToVote() {
+        navController.navigate(VoteHomeScreenDestination within AppNavGraphs.vote)
     }
 }
