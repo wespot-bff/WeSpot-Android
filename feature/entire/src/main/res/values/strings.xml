@@ -17,10 +17,10 @@
     <string name="account_setting">계정 관리</string>
     <string name="vote">투표</string>
     <string name="vote_notification_title">비밀 투표</string>
-    <string name="vote_notification_subTitle">우리 반 투표 관련 알림</string>
-    <string name="message">쪽지</string>
-    <string name="message_notification_title">익명 쪽지 관련 알림</string>
-    <string name="event_benefit">이벤트 혜택</string>
+    <string name="vote_notification_subtitle">투표 결과 등 우리 반 비밀 투표 관련 알림</string>
+    <string name="message">쪽지 알림</string>
+    <string name="message_notification_title">쪽지, 쪽지 답장 등 쪽지 관련 알림</string>
+    <string name="event_benefit">이벤트 알림</string>
     <string name="event_benefit_notification_title">광고성 정보 수신 동의에 의한 이벤트 혜택 알림</string>
     <string name="sign_out">로그아웃</string>
     <string name="user_revoke">회원 탈퇴</string>
@@ -63,4 +63,6 @@
     <string name="request">신청</string>
     <string name="change_image">앨범에서 사진 선택</string>
     <string name="remove_image">기본 이미지 적용</string>
+    <string name="community_notification_title">커뮤니티 알림</string>
+    <string name="community_notification_subtitle">인기 게시글, 댓글 등 게시판 관련 알림</string>
 </resources>

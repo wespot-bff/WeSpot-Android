@@ -87,8 +87,17 @@ fun NotificationSettingScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
             SettingSwitchItem(
+                title = stringResource(R.string.community_notification_title),
+                subTitle = stringResource(R.string.community_notification_subtitle),
+                switchValue = state.isEnableCommunityNotification,
+                onSwitched = {
+                    action(NotificationSettingAction.OnCommunityNotificationSwitched)
+                },
+            )
+
+            SettingSwitchItem(
                 title = stringResource(R.string.vote_notification_title),
-                subTitle = stringResource(R.string.vote_notification_subTitle),
+                subTitle = stringResource(R.string.vote_notification_subtitle),
                 switchValue = state.isEnableVoteNotification,
                 onSwitched = {
                     action(NotificationSettingAction.OnVoteNotificationSwitched)

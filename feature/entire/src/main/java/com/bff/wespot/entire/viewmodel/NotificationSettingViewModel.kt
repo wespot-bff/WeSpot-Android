@@ -32,6 +32,9 @@ class NotificationSettingViewModel @Inject constructor(
             NotificationSettingAction.OnNotificationSettingScreenEntered -> {
                 handleScreenEntered()
             }
+            NotificationSettingAction.OnCommunityNotificationSwitched -> {
+                handleCommunityNotificationSwitched()
+            }
             is NotificationSettingAction.OnVoteNotificationSwitched -> {
                 handleVoteNotificationSwitched()
             }
@@ -78,6 +81,10 @@ class NotificationSettingViewModel @Inject constructor(
                     reduce { state.copy(isLoading = false) }
                 }
         }
+    }
+
+    private fun handleCommunityNotificationSwitched() = intent {
+        reduce { state.copy(isEnableCommunityNotification = state.isEnableCommunityNotification.not()) }
     }
 
     private fun handleVoteNotificationSwitched() = intent {
