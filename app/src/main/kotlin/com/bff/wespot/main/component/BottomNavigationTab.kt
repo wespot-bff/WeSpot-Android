@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -39,7 +40,7 @@ internal fun BottomNavigationTab(
 ) {
     NavigationBar(
         containerColor = WeSpotThemeManager.colors.naviColor,
-        modifier = modifier,
+        modifier = modifier.height(69.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
