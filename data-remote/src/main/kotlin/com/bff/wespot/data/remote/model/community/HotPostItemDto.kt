@@ -5,6 +5,7 @@ import com.bff.wespot.data.remote.model.serverDriven.type.IconTypeDto
 import com.bff.wespot.data.remote.model.serverDriven.type.ImageTypeDto
 import com.bff.wespot.data.remote.model.serverDriven.type.RichTextTypeDto
 import com.bff.wespot.model.community.HotPostItem
+import com.bff.wespot.model.serverDriven.type.GradationType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -76,17 +77,19 @@ private fun HotPostContentDto.PostDto.toDomain() = HotPostItem.HotPostContent.Po
     gradation = gradation.toDomain()
 )
 
-private fun HotPostContentDto.PostDto.HeaderSectionDto.toDomain() = HotPostItem.HotPostContent.Post.HeaderSection(
-    profileImage = profileImage.toDomain(),
-    nickname = nickname.toDomain()
-)
+private fun HotPostContentDto.PostDto.HeaderSectionDto.toDomain() =
+    HotPostItem.HotPostContent.Post.HeaderSection(
+        profileImage = profileImage.toDomain(),
+        nickname = nickname.toDomain()
+    )
 
-private fun HotPostContentDto.PostDto.InfoSectionDto.toDomain() = HotPostItem.HotPostContent.Post.InfoSection(
-    title = title.toDomain(),
-    description = description.toDomain()
-)
+private fun HotPostContentDto.PostDto.InfoSectionDto.toDomain() =
+    HotPostItem.HotPostContent.Post.InfoSection(
+        title = title.toDomain(),
+        description = description.toDomain()
+    )
 
-private fun HotPostContentDto.PostDto.GradationDto.toDomain() = HotPostItem.HotPostContent.Post.Gradation(
+private fun HotPostContentDto.PostDto.GradationDto.toDomain() = GradationType(
     startColor = startColor.toDomain(),
     endColor = endColor.toDomain(),
     angle = angle

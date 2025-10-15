@@ -6,10 +6,12 @@ import com.bff.wespot.model.community.BaseCommunityContent
 import com.bff.wespot.model.community.CommunityContentPaging
 
 class CommunityContentPagingSource(
-    private val communityDataSource: CommunityDataSource
+    private val communityDataSource: CommunityDataSource,
+    private val inquirySize: Int,
+    private val target: String,
 ) : BasePagingSource<BaseCommunityContent, CommunityContentPaging>() {
     override suspend fun fetchItems(cursorId: Int?): CommunityContentPaging {
-        val response = communityDataSource.getCommunityContent(cursorId)
+        val response = communityDataSource.getCommunityContent(target, inquirySize, cursorId)
         val data = response.getOrThrow()
         return data.toCommunityContentPaging()
     }

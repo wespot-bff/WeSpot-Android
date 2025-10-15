@@ -10,7 +10,9 @@ import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityDataSource: CommunityDataSource,
-    private val communityContentPagingRepository: CommunityContentPagingRepository
+    private val communityContentPagingRepository: CommunityContentPagingRepository,
+    private val communitySearchPagingRepository: CommunitySearchPagingRepository,
+    private val communityAllPostsPagingRepository: CommunityAllPostsPagingRepository
 ) : CommunityRepository {
     override suspend fun getCommunityChips(): Result<List<BaseChip>> =
         communityDataSource.getCommunityChips()
@@ -18,6 +20,28 @@ class CommunityRepositoryImpl @Inject constructor(
                 chips.map { it.toDomain() }
             }
 
-    override fun getCommunityContentStream(): Flow<PagingData<BaseCommunityContent>> =
-        communityContentPagingRepository.fetchResultStream()
+    override fun getCommunityContentStream(
+        target: String,
+        inquirySize: Int,
+    ): Flow<PagingData<BaseCommunityContent>> =
+        communityContentPagingRepository.fetchResultStream(
+            mapOf(
+                "target" to target,
+                "inquiry_size" to inquirySize.toString(),
+            )
+        )
+
+    override fun getCommunitySearchStream(keyword: String): Flow<PagingData<BaseCommunityContent>> =
+        communitySearchPagingRepository.fetchResultStream(mapOf("keyword" to keyword))
+
+    override fun getCommunityAllPostsStream(menuType: String): Flow<PagingData<BaseCommunityContent>> =
+        communityAllPostsPagingRepository.fetchResultStream(mapOf("menuType" to menuType))
+
+    override suspend fun onLikeClicked(postId: String): Boolean {
+        return communityDataSource.onLikeClicked(postId).isSuccess
+    }
+
+    override suspend fun onScrapClicked(postId: String): Boolean {
+        return communityDataSource.onScrapClicked(postId).isSuccess
+    }
 }

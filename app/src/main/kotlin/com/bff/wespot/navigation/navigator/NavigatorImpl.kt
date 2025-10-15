@@ -7,6 +7,10 @@ import android.content.Intent
 import android.net.Uri
 import com.bff.wespot.BuildConfig
 import com.bff.wespot.auth.AuthActivity
+import com.bff.wespot.community.all.CommunityAllActivity
+import com.bff.wespot.community.detail.PostDetailActivity
+import com.bff.wespot.community.search.SearchActivity
+import com.bff.wespot.community.write.WritePostActivity
 import com.bff.wespot.main.MainActivity
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.buildIntent
@@ -195,4 +199,39 @@ class NavigatorImpl @Inject constructor() : Navigator {
                 ),
             ),
         )
+
+    override fun navigateToWriteActivity(context: Context): Intent {
+        val intent = context.buildIntent<WritePostActivity>()
+        return intent
+    }
+
+    override fun navigateToEditPostActivity(
+        context: Context,
+        title: String,
+        description: String,
+        category: String,
+        images: List<String>,
+    ): Intent {
+        val intent = context.buildIntent<WritePostActivity>()
+        intent.putExtra("isEditing", true)
+        intent.putExtra("title", title)
+        intent.putExtra("description", description)
+        intent.putExtra("category", category)
+        intent.putStringArrayListExtra("images", ArrayList(images))
+        return intent
+    }
+
+    override fun navigateToPostDetailActivity(context: Context, postId: String): Intent {
+        val intent = context.buildIntent<PostDetailActivity>()
+        intent.putExtra("postId", postId)
+        return intent
+    }
+
+    override fun navigateToCommunitySearch(context: Context): Intent {
+        return context.buildIntent<SearchActivity>()
+    }
+
+    override fun navigateToCommunityAll(context: Context): Intent {
+        return context.buildIntent<CommunityAllActivity>()
+    }
 }

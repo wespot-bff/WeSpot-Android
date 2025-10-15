@@ -4,6 +4,8 @@ import com.bff.wespot.data.repository.CommonRepositoryImpl
 import com.bff.wespot.data.repository.DataStoreRepositoryImpl
 import com.bff.wespot.data.repository.auth.AuthRepositoryImpl
 import com.bff.wespot.data.repository.community.CommunityRepositoryImpl
+import com.bff.wespot.data.repository.community.PostDetailRepositoryImpl
+import com.bff.wespot.data.repository.community.WritePostRepositoryImpl
 import com.bff.wespot.data.repository.firebase.config.RemoteConfigRepositoryImpl
 import com.bff.wespot.data.repository.firebase.messaging.MessagingRepositoryImpl
 import com.bff.wespot.data.repository.message.MessageRepositoryImpl
@@ -18,6 +20,8 @@ import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.auth.AuthRepository
 import com.bff.wespot.domain.repository.community.CommunityRepository
+import com.bff.wespot.domain.repository.community.PostDetailRepository
+import com.bff.wespot.domain.repository.community.WritePostRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
 import com.bff.wespot.domain.repository.firebase.messaging.MessagingRepository
 import com.bff.wespot.domain.repository.message.MessageRepository
@@ -120,4 +124,16 @@ abstract class DataModule {
     abstract fun bindsCommunityRepository(
         communityRepositoryImpl: CommunityRepositoryImpl
     ): CommunityRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsWritePostRepository(
+        writePostRepositoryImpl: WritePostRepositoryImpl
+    ): WritePostRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsPostDetailRepository(
+        postDetailRepositoryImpl: PostDetailRepositoryImpl
+    ): PostDetailRepository
 }

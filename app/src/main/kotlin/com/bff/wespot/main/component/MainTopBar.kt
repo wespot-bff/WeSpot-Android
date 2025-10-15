@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.bff.wespot.entire.screen.destinations.SettingScreenDestination
 import com.bff.wespot.main.model.BarType
 import com.bff.wespot.message.screen.destinations.MessageSettingScreenDestination
 import com.bff.wespot.navigation.AppNavGraphs
+import com.bff.wespot.navigation.Navigator
 import com.ramcosta.composedestinations.dynamic.within
 import com.ramcosta.composedestinations.navigation.navigate
 
@@ -34,7 +36,10 @@ import com.ramcosta.composedestinations.navigation.navigate
 internal fun MainTopBar(
     isTopNavigationScreen: BarType,
     navController: NavController,
+    navigator: Navigator,
 ) {
+    val context = LocalContext.current
+
     AnimatedContent(
         targetState = isTopNavigationScreen,
         transitionSpec = {
@@ -77,6 +82,7 @@ internal fun MainTopBar(
                                 )
                             }
                         }
+
                         BarType.ENTIRE -> {
                             IconButton(
                                 modifier = Modifier.padding(end = 8.dp),
@@ -94,6 +100,7 @@ internal fun MainTopBar(
                                 )
                             }
                         }
+
                         BarType.MESSAGE -> {
                             Row(modifier = Modifier.padding(end = 16.dp)) {
                                 IconButton(
@@ -127,7 +134,55 @@ internal fun MainTopBar(
                                 }
                             }
                         }
-                        BarType.NONE -> { }
+
+                        BarType.COMMUNITY -> {
+                            Row {
+                                IconButton(
+                                    onClick = {
+                                        context.startActivity(
+                                            navigator.navigateToCommunitySearch(
+                                                context,
+                                            ),
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(drawable.search),
+                                        contentDescription = stringResource(R.string.main_search),
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        navController.navigateToNavGraph(
+                                            navGraph = AppNavGraphs.notification,
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = drawable.icn_alarm),
+                                        contentDescription = stringResource(
+                                            id = com.bff.wespot.designsystem.R.string.notification_icon,
+                                        ),
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        context.startActivity(
+                                            navigator.navigateToCommunityAll(context),
+                                        )
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(drawable.all_menu),
+                                        contentDescription = stringResource(R.string.main_all),
+                                    )
+                                }
+                            }
+                        }
+
+                        BarType.NONE -> {}
                     }
                 },
             )

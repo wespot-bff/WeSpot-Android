@@ -40,4 +40,20 @@ interface Navigator {
     fun redirectToPlayStoreForInstagram(context: Context)
 
     fun navigateToWebLink(context: Context, webLink: String)
+
+    fun navigateToWriteActivity(context: Context): Intent
+
+    fun navigateToEditPostActivity(
+        context: Context,
+        title: String,
+        description: String,
+        category: String,
+        images: List<String>
+    ): Intent
+
+    fun navigateToPostDetailActivity(context: Context, postId: String): Intent
+
+    fun navigateToCommunitySearch(context: Context): Intent
+
+    fun navigateToCommunityAll(context: Context): Intent
 }
