@@ -17,6 +17,7 @@ data class MessageRoomDto(
         name = name,
         thumbnail = thumbnail,
         isBookmarked = isBookmarked,
+        isReceiverAnonymous = isReceiverAnonymous,
         messageDetails = messageDetails.map { it.toDomain() },
     )
 }
