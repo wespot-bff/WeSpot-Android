@@ -2,6 +2,6 @@ package com.bff.wespot.navigation.util
 
 const val EXTRA_TOAST_MESSAGE = "extra_toast_message"
 const val EXTRA_TYPE = "extra_type"
-const val EXTRA_FROM = "extra_type"
+const val EXTRA_FROM = "extra_from"
 const val EXTRA_DATE = "extra_date"
 const val EXTRA_DEEP_LINK = "extra_deep_link"
