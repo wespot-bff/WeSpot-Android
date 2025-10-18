@@ -255,8 +255,8 @@ fun MessageWriteScreen(
         action(WritingAction.OnWriteScreenEntered(args))
     }
 
-    LaunchedEffect(state.isReplyContext) {
-        val screenName = if (state.isReplyContext) {
+    LaunchedEffect(Unit) {
+        val screenName = if (args.isReplyContext) {
             "reply_message_content"
         } else {
             "write_message_content"
