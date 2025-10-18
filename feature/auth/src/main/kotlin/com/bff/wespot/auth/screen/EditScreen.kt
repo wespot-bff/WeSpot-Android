@@ -41,8 +41,6 @@ import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClickAction
-import com.bff.wespot.analytics.params.AnalyticsArea
-import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthUiState
@@ -171,9 +169,6 @@ fun EditScreen(
             ) {
                 analyticsHelper.logClickAction(
                     name = "click_join_complete_sign_up",
-                    service = AnalyticsService.SIGNUP,
-                    screen = "edit",
-                    area = AnalyticsArea.BOTTOM_SHEET,
                 )
                 action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
@@ -182,7 +177,6 @@ fun EditScreen(
 
     TrackScreenViewEvent(
         name = "view_join_edit_profile",
-        service = AnalyticsService.SIGNUP,
     )
 }
 

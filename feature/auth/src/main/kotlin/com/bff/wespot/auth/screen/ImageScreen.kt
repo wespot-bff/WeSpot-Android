@@ -38,8 +38,6 @@ import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClickAction
-import com.bff.wespot.analytics.params.AnalyticsArea
-import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -196,9 +194,6 @@ internal fun ImageScreen(
             onClick = {
                 analyticsHelper.logClickAction(
                     name = "click_join_set_profile_complete",
-                    service = AnalyticsService.SIGNUP,
-                    screen = "profile",
-                    area = AnalyticsArea.BOTTOM,
                     extras = listOf(
                         AnalyticsEvent.Param("introduce_contents", uiState.introduction),
                     ),
@@ -217,6 +212,5 @@ internal fun ImageScreen(
 
     TrackScreenViewEvent(
         name = "view_join_set_profile",
-        service = AnalyticsService.SIGNUP,
     )
 }

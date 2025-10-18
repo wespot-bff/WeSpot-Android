@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -172,7 +171,6 @@ fun GradeScreen(
 
     TrackScreenViewEvent(
         name = "view_join_select_grade",
-        service = AnalyticsService.SIGNUP,
     )
 }
 

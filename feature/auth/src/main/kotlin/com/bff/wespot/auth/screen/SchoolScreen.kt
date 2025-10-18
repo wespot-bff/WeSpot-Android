@@ -32,7 +32,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.params.AnalyticsService
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -236,6 +235,5 @@ fun SchoolScreen(
 
     TrackScreenViewEvent(
         name = "view_join_select_school",
-        service = AnalyticsService.SIGNUP,
     )
 }
