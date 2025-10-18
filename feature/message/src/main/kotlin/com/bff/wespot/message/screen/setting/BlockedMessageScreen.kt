@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
 import com.bff.wespot.analytics.logClick
-import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -52,6 +52,7 @@ fun BlockedMessageScreen(
     val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val state by viewModel.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var showUnblockToast by remember { mutableStateOf(false) }
     val action = viewModel::onAction
 
     handleSideEffect(viewModel.sideEffect)
@@ -68,7 +69,7 @@ fun BlockedMessageScreen(
 
             is BlockedMessageSideEffect.ShowToast -> {
                 if (it.toastState.message == R.string.unblock_done) {
-                    analyticsHelper.logImpression("message_room_unblock_complete")
+                    showUnblockToast = true
                 }
                 showToast(it.toastState)
             }
@@ -138,5 +139,9 @@ fun BlockedMessageScreen(
             },
             onDismissRequest = {},
         )
+    }
+
+    if (showUnblockToast) {
+        TrackImpressionEvent("message_room_unblock_complete")
     }
 }

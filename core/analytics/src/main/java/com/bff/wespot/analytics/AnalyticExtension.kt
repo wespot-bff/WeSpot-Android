@@ -56,3 +56,16 @@ fun TrackScreenViewEvent(
     )
     onDispose {}
 }
+
+@Composable
+fun TrackImpressionEvent(
+    name: String,
+    extras: List<Param> = emptyList(),
+    analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current,
+) = DisposableEffect(Unit) {
+    analyticsHelper.logImpression(
+        name = name,
+        extras = extras,
+    )
+    onDispose {}
+}

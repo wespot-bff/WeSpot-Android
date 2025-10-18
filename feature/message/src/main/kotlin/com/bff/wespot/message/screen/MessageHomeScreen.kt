@@ -44,9 +44,9 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
 import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
-import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -266,7 +266,7 @@ private fun ReplyMessageBanner(
                 },
                 bannerType = WSBannerType.Primary,
             )
-            analyticsHelper.logImpression("message_home_top_banner")
+            TrackImpressionEvent("message_home_top_banner")
         }
     }
 }
