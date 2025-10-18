@@ -29,7 +29,7 @@ import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
-import com.bff.wespot.analytics.logScreenView
+import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -193,7 +193,7 @@ fun RevokeConfirmScreen(
                     action(EntireAction.OnRevokeConfirmed)
                 },
             )
-            analyticsHelper.logScreenView("complete_sucession")
+            analyticsHelper.logImpression("complete_sucession")
         }
     }
 
