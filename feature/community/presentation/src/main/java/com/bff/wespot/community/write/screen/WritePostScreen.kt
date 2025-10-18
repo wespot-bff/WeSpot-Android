@@ -44,6 +44,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.write.state.WritePostAction
 import com.bff.wespot.community.write.state.WritePostUiState
@@ -69,6 +74,7 @@ internal fun WritePostScreen(
     uiState: WritePostUiState,
     onAction: (WritePostAction) -> Unit,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val pickImage =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickMultipleVisualMedia(
@@ -104,6 +110,7 @@ internal fun WritePostScreen(
         bottomBar = {
             WSButton(
                 onClick = {
+                    analyticsHelper.logClick("upload_post")
                     onAction(WritePostAction.UploadPost)
                 },
                 text = stringResource(R.string.write_upload_post),
@@ -293,6 +300,8 @@ internal fun WritePostScreen(
             },
         )
     }
+
+    TrackScreenViewEvent("community_write_post")
 }
 
 @Composable
@@ -433,6 +442,8 @@ internal fun CategoryBottomSheet(
             }
         }
     }
+
+    TrackImpressionEvent("community_category")
 }
 
 private object WritePostPreviewData {
