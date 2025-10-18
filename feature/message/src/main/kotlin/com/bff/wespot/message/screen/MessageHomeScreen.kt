@@ -45,8 +45,8 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackImpressionEvent
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
-import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -134,6 +134,7 @@ fun MessageHomeScreen(
                     navigateToReceiverSelectionScreen()
                 },
             )
+            TrackScreenViewEvent("open_message_home")
         } else {
             MessageCard(
                 canSendMessage = false,
@@ -146,6 +147,7 @@ fun MessageHomeScreen(
                     MessageTimer(viewModel)
                 },
             )
+            TrackScreenViewEvent("close_message_home")
         }
     }
 
@@ -175,15 +177,6 @@ fun MessageHomeScreen(
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
         action(MessageHomeAction.OnLifecycleStop)
-    }
-
-    LaunchedEffect(state.messageStatus.countRemainingMessages > 0) {
-        val screenName = if (state.messageStatus.countRemainingMessages > 0) {
-            "open_message_home"
-        } else {
-            "close_message_home"
-        }
-        analyticsHelper.logScreenView(screenName)
     }
 }
 
