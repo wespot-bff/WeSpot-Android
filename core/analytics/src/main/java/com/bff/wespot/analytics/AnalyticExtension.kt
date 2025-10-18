@@ -20,6 +20,17 @@ fun AnalyticsHelper.logScreenView(
     logEvent(AnalyticsEvent(name, params))
 }
 
+fun AnalyticsHelper.logImpression(
+    name: String,
+    extras: List<Param> = emptyList(),
+) {
+    val params = buildList {
+        addAll(extras)
+    }
+
+    logEvent(AnalyticsEvent(name, params))
+}
+
 fun AnalyticsHelper.logClickAction(
     name: String,
     extras: List<Param> = listOf(),

@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
-import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.auth.screen.AuthNavGraph
 import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
@@ -161,9 +161,7 @@ class AuthActivity : ComponentActivity() {
                         showToast = false
                     }
                     if (from == "Revoke") {
-                        analyticsHelper.logEvent(
-                            AnalyticsEvent("impression_sucession_complete"),
-                        )
+                        analyticsHelper.logImpression("impression_sucession_complete")
                     }
                 }
                 if (state.loading) {
