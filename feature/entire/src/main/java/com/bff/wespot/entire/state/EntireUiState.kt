@@ -10,4 +10,10 @@ data class EntireUiState(
     val revokeConfirmed: Boolean = false,
     val isLoading: Boolean = false,
     val webLinkMap: Map<String, String> = mapOf(),
-)
+) {
+    fun getRevokeReasonResult(): List<String> = if (isInputRevokeReasonSelected) {
+        revokeReasonList + inputRevokeReason
+    } else {
+        revokeReasonList
+    }
+}

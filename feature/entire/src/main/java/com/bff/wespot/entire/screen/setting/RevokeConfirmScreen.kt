@@ -24,6 +24,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -35,6 +41,7 @@ import com.bff.wespot.entire.state.EntireAction
 import com.bff.wespot.entire.state.EntireSideEffect
 import com.bff.wespot.entire.viewmodel.EntireViewModel
 import com.bff.wespot.navigation.Navigator
+import com.bff.wespot.navigation.util.EXTRA_FROM
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.ui.component.BottomButtonLayout
 import com.bff.wespot.ui.component.LoadingAnimation
@@ -62,6 +69,7 @@ fun RevokeConfirmScreen(
     val scrollState = rememberScrollState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
@@ -73,6 +81,7 @@ fun RevokeConfirmScreen(
             is EntireSideEffect.NavigateToAuth -> {
                 val intent = activityNavigator.navigateToAuth(context)
                 intent.putExtra(EXTRA_TOAST_MESSAGE, context.getString(R.string.revoke_done))
+                intent.putExtra(EXTRA_FROM, "Revoke")
                 context.startActivity(intent)
             }
 
@@ -102,7 +111,18 @@ fun RevokeConfirmScreen(
                     buttonType = WSButtonType.Primary,
                     enabled = state.revokeReasonList.isNotEmpty(),
                     content = { it() },
-                    onClick = { showBottomSheet = true },
+                    onClick = {
+                        analyticsHelper.logClickAction(
+                            name = "click_choose_sucession_reason",
+                            extras = state.getRevokeReasonResult().mapIndexed { index, value ->
+                                AnalyticsEvent.Param(
+                                    "sucession_reason${index + 1}",
+                                    value,
+                                )
+                            },
+                        )
+                        showBottomSheet = true
+                    },
                 )
             },
         ) {
@@ -132,6 +152,15 @@ fun RevokeConfirmScreen(
                         title = reason,
                         selected = reason in state.revokeReasonList,
                         onClick = {
+                            analyticsHelper.logClickAction(
+                                name = "click_sucession_reason",
+                                extras = listOf(
+                                    AnalyticsEvent.Param(
+                                        "sucession_reason",
+                                        reason,
+                                    ),
+                                ),
+                            )
                             action(EntireAction.OnRevokeReasonSelected(reason))
                         },
                     )
@@ -159,8 +188,12 @@ fun RevokeConfirmScreen(
                     showBottomSheet = false
                     showDialog = true
                 },
-                onRevokeConfirmed = { action(EntireAction.OnRevokeConfirmed) },
+                onRevokeConfirmed = {
+                    analyticsHelper.logClickAction("click_complete_secession")
+                    action(EntireAction.OnRevokeConfirmed)
+                },
             )
+            analyticsHelper.logScreenView("view_complete_sucession")
         }
     }
 
@@ -181,6 +214,8 @@ fun RevokeConfirmScreen(
     if (state.isLoading) {
         LoadingAnimation()
     }
+
+    TrackScreenViewEvent("view_sucession_reason")
 }
 
 @Composable
