@@ -26,6 +26,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logScreenView
+import com.bff.wespot.analytics.params.AreaParams
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.message.R
@@ -64,6 +69,7 @@ fun MessageStorageScreen(
             icon = ImageVector.vectorResource(id = R.drawable.bookmark_chip),
         ),
     )
+    val analyticsHelper = LocalAnalyticsHelper.current
 
     var showOptionBottomSheet by remember { mutableStateOf(false) }
     var showBlockDialog by remember { mutableStateOf(false) }
@@ -116,6 +122,7 @@ fun MessageStorageScreen(
         } else {
             MessageStorageContent(
                 data = state.messageList,
+                analyticsHelper = analyticsHelper,
                 itemClick = { item ->
                     action(StorageAction.OnMessageClicked(message = item))
                 },
@@ -137,6 +144,10 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.do_block),
                     onClick = {
+                        analyticsHelper.logClickAction(
+                            name = "click_message_room_block",
+                            area = AreaParams.BOTTOM_SHEET,
+                        )
                         action(StorageAction.OnBlockBottomSheetItemClicked)
                     },
                 )
@@ -165,7 +176,10 @@ fun MessageStorageScreen(
             subTitle = stringResource(id = R.string.message_block_dialog_subtitle),
             okButtonText = stringResource(id = R.string.message_block_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
-            okButtonClick = { action(StorageAction.OnBlockButtonClicked) },
+            okButtonClick = {
+                analyticsHelper.logClickAction("click_message_room_block_complete")
+                action(StorageAction.OnBlockButtonClicked)
+            },
             onDismissRequest = { action(StorageAction.OnBlockDialogClosed) },
             cancelButtonClick = { action(StorageAction.OnBlockDialogClosed) },
         )
@@ -178,6 +192,12 @@ fun MessageStorageScreen(
     NetworkDialog(context = context, networkState = networkState)
 
     LaunchedEffect(state.selectedChipIndex) {
+        if (state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX) {
+            analyticsHelper.logScreenView("view_bookmarked_message_storage")
+        } else {
+            analyticsHelper.logScreenView("view_all_message_storage")
+        }
+
         action(StorageAction.OnStorageChipSelected(state.selectedChipIndex))
     }
 }
@@ -185,6 +205,7 @@ fun MessageStorageScreen(
 @Composable
 internal fun MessageStorageContent(
     data: List<Message>,
+    analyticsHelper: AnalyticsHelper,
     itemClick: (Message) -> Unit,
     optionButtonClick: (Message) -> Unit,
 ) {
@@ -205,9 +226,11 @@ internal fun MessageStorageContent(
                     itemType = MessageItemType.Normal,
                     message = message,
                     itemClick = {
+                        analyticsHelper.logClickAction("click_message_storage_item")
                         itemClick(message)
                     },
                     optionButtonClick = {
+                        analyticsHelper.logClickAction("click_message_storage_item_option")
                         optionButtonClick(message)
                     },
                 )

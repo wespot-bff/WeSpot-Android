@@ -29,6 +29,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.button.HeightRange
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -72,6 +77,7 @@ fun MessageSendScreen(
     var showSendConfirmModal by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val state by viewModel.collectAsState()
     val action: (SendAction) -> Unit = viewModel::onAction
@@ -94,6 +100,9 @@ fun MessageSendScreen(
                     navigator.popUpToMessageScreen()
                 }
                 is SendSideEffect.ShowToast -> {
+                    if (it.message == R.string.message_send_success) {
+                        analyticsHelper.logImpression("impression_message_send_success")
+                    }
                     showToast(
                         ToastState(
                             message = it.message,
@@ -144,6 +153,7 @@ fun MessageSendScreen(
             button = {
                 WSButton(
                     onClick = {
+                        analyticsHelper.logClickAction(name = "click_send_message")
                         showSendConfirmModal = true
                     },
                     text = stringResource(R.string.message_send),
@@ -209,7 +219,10 @@ fun MessageSendScreen(
                 subTitle = stringResource(R.string.message_send_dialog_subtitle),
                 okButtonText = stringResource(R.string.message_send_dialog_button_text),
                 cancelButtonText = stringResource(R.string.cancel),
-                okButtonClick = { action(SendAction.OnSendButtonClicked) },
+                okButtonClick = {
+                    analyticsHelper.logClickAction(name = "click_send_message_complete")
+                    action(SendAction.OnSendButtonClicked)
+                },
                 cancelButtonClick = { showSendConfirmModal = false },
                 onDismissRequest = { },
             )
@@ -222,6 +235,7 @@ fun MessageSendScreen(
                     imageUrl = state.senderProfile.image,
                 ),
                 onProfileSelected = {
+                    analyticsHelper.logClickAction("click_edit_anonymous_message_profile")
                     action(SendAction.OnAnonymousProfileSelected(it))
                 },
                 onDismiss = {
@@ -288,6 +302,8 @@ private fun MessageProfileItem(
             }
         }
     }
+
+    TrackScreenViewEvent("view_send_message")
 }
 
 @Composable

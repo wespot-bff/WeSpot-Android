@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -74,6 +75,8 @@ internal fun ProfileSelectBottomSheet(
             }
         }
     }
+
+    TrackScreenViewEvent("view_message_profile_selection")
 }
 
 @Composable

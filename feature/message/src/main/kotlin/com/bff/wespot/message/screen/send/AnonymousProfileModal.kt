@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotThemeManager
@@ -195,6 +196,8 @@ internal fun AnonymousProfileModal(
     LaunchedEffect(Unit) {
         action(AnonymousProfileAction.OnProfileModalOpened(profile))
     }
+
+    TrackScreenViewEvent("view_create_anonymous_message_profile")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -237,7 +240,6 @@ private fun ProfileImageOptionBottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileNameTextField(
     value: String,

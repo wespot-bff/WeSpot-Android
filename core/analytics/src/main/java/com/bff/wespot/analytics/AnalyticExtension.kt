@@ -33,9 +33,11 @@ fun AnalyticsHelper.logImpression(
 
 fun AnalyticsHelper.logClickAction(
     name: String,
+    area: String = "",
     extras: List<Param> = listOf(),
 ) {
     val params = buildList {
+        add(Param("area", area))
         addAll(extras)
     }
 
