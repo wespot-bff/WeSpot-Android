@@ -45,7 +45,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -122,8 +122,8 @@ fun MessageHomeScreen(
                     MessageImage(state.messageStatus.countRemainingMessages)
                 },
                 onButtonClick = {
-                    analyticsHelper.logClickAction(
-                        name = "click_send_message",
+                    analyticsHelper.logClick(
+                        name = "send_message",
                         extras = listOf(
                             AnalyticsEvent.Param(
                                 "available_message_count",
@@ -255,8 +255,8 @@ private fun ReplyMessageBanner(
                 subTitle = subTitle,
                 image = painterResource(id = R.drawable.received_message),
                 onBannerClick = {
-                    analyticsHelper.logClickAction(
-                        name = "click_message_home_top_banner",
+                    analyticsHelper.logClick(
+                        name = "message_home_top_banner",
                         extras = listOf(
                             AnalyticsEvent.Param("message_banner_title", title),
                             AnalyticsEvent.Param("message_banner_contents", subTitle),
@@ -266,7 +266,7 @@ private fun ReplyMessageBanner(
                 },
                 bannerType = WSBannerType.Primary,
             )
-            analyticsHelper.logImpression("impression_message_home_top_banner")
+            analyticsHelper.logImpression("message_home_top_banner")
         }
     }
 }

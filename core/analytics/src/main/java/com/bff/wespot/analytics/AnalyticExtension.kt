@@ -17,7 +17,7 @@ fun AnalyticsHelper.logScreenView(
         addAll(extras)
     }
 
-    logEvent(AnalyticsEvent(name, params))
+    logEvent(AnalyticsEvent("view_$name", params))
 }
 
 fun AnalyticsHelper.logImpression(
@@ -28,10 +28,10 @@ fun AnalyticsHelper.logImpression(
         addAll(extras)
     }
 
-    logEvent(AnalyticsEvent(name, params))
+    logEvent(AnalyticsEvent("impression_$name", params))
 }
 
-fun AnalyticsHelper.logClickAction(
+fun AnalyticsHelper.logClick(
     name: String,
     area: String = "",
     extras: List<Param> = listOf(),
@@ -41,7 +41,7 @@ fun AnalyticsHelper.logClickAction(
         addAll(extras)
     }
 
-    logEvent(AnalyticsEvent(name, params))
+    logEvent(AnalyticsEvent("click_$name", params))
 }
 
 @Composable

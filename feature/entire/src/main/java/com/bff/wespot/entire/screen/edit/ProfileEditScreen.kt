@@ -59,7 +59,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -155,8 +155,8 @@ fun ProfileEditScreen(
                     state.profilePath != state.profile.profileCharacter.iconUrl
                 WSButton(
                     onClick = {
-                        analyticsHelper.logClickAction(
-                            name = "click_mypage_edit_profile_complete",
+                        analyticsHelper.logClick(
+                            name = "mypage_edit_profile_complete",
                             extras = listOf(
                                 AnalyticsEvent.Param(
                                     "introduce_edit_contents",

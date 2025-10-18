@@ -161,7 +161,7 @@ class AuthActivity : ComponentActivity() {
                         showToast = false
                     }
                     if (from == "Revoke") {
-                        analyticsHelper.logImpression("impression_sucession_complete")
+                        analyticsHelper.logImpression("sucession_complete")
                     }
                 }
                 if (state.loading) {

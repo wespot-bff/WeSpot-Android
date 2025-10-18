@@ -3,7 +3,7 @@ package com.bff.wespot.message.component
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.bff.wespot.analytics.LocalAnalyticsHelper
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.message.R
 
@@ -20,7 +20,7 @@ fun SendExitDialog(
         okButtonText = stringResource(R.string.send_exit_dialog_ok_button),
         cancelButtonText = stringResource(id = R.string.close),
         okButtonClick = {
-            analyticsHelper.logClickAction("click_exit_message_send")
+            analyticsHelper.logClick("exit_message_send")
             okButtonClick.invoke()
         },
         cancelButtonClick = cancelButtonClick,

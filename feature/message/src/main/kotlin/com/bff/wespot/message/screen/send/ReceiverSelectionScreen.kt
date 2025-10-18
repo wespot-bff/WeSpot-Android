@@ -35,7 +35,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -167,7 +167,7 @@ fun ReceiverSelectionScreen(
                 WSButton(
                     onClick = {
                         action(ReceiverAction.OnSelectDoneButtonClicked)
-                        analyticsHelper.logClickAction("click_receiver_selection")
+                        analyticsHelper.logClick("receiver_selection")
                     },
                     enabled = state.receiver.name.isNotBlank(),
                     text = stringResource(R.string.next),
@@ -277,7 +277,7 @@ fun ReceiverSelectionScreen(
                                     receiver = item,
                                     selected = state.receiver.id == item.id,
                                     onClick = {
-                                        analyticsHelper.logClickAction("click_message_receiver")
+                                        analyticsHelper.logClick("message_receiver")
                                         keyboard?.hide()
                                         action(ReceiverAction.OnUserSelected(item))
                                     },
@@ -308,12 +308,12 @@ fun ReceiverSelectionScreen(
                 action(ReceiverAction.OnProfileBottomSheetClosed)
             },
             onProfileAddButtonClicked = {
-                analyticsHelper.logClickAction("click_create_message_profile")
+                analyticsHelper.logClick("create_message_profile")
                 action(ReceiverAction.OnProfileAddButtonClicked)
             },
             onProfileSelected = {
-                analyticsHelper.logClickAction(
-                    name = "click_message_profile",
+                analyticsHelper.logClick(
+                    name = "message_profile",
                     extras = listOf(
                         AnalyticsEvent.Param(
                             "isAnonymous",
@@ -334,7 +334,7 @@ fun ReceiverSelectionScreen(
                 imageUrl = state.senderProfile.image,
             ),
             onProfileSelected = {
-                analyticsHelper.logClickAction("click_create_anonymous_message_profile")
+                analyticsHelper.logClick("create_anonymous_message_profile")
                 action(ReceiverAction.OnAnonymousProfileSelected(it))
             },
             onDismiss = {

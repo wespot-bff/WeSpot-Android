@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -132,7 +132,7 @@ fun RevokeScreen(
                 buttonType = WSButtonType.Primary,
                 content = { it() },
                 onClick = {
-                    analyticsHelper.logClickAction("click_want_secession")
+                    analyticsHelper.logClick("want_secession")
                     navigator.navigateToRevokeConfirmScreen()
                 },
             )

@@ -28,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.analytics.params.AreaParams
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -144,8 +144,8 @@ fun MessageStorageScreen(
                 BottomSheetText(
                     text = stringResource(R.string.do_block),
                     onClick = {
-                        analyticsHelper.logClickAction(
-                            name = "click_message_room_block",
+                        analyticsHelper.logClick(
+                            name = "message_room_block",
                             area = AreaParams.BOTTOM_SHEET,
                         )
                         action(StorageAction.OnBlockBottomSheetItemClicked)
@@ -177,7 +177,7 @@ fun MessageStorageScreen(
             okButtonText = stringResource(id = R.string.message_block_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                analyticsHelper.logClickAction("click_message_room_block_complete")
+                analyticsHelper.logClick("message_room_block_complete")
                 action(StorageAction.OnBlockButtonClicked)
             },
             onDismissRequest = { action(StorageAction.OnBlockDialogClosed) },
@@ -193,9 +193,9 @@ fun MessageStorageScreen(
 
     LaunchedEffect(state.selectedChipIndex) {
         if (state.selectedChipIndex == BOOKMARKED_MESSAGE_INDEX) {
-            analyticsHelper.logScreenView("view_bookmarked_message_storage")
+            analyticsHelper.logScreenView("bookmarked_message_storage")
         } else {
-            analyticsHelper.logScreenView("view_all_message_storage")
+            analyticsHelper.logScreenView("all_message_storage")
         }
 
         action(StorageAction.OnStorageChipSelected(state.selectedChipIndex))
@@ -226,11 +226,11 @@ internal fun MessageStorageContent(
                     itemType = MessageItemType.Normal,
                     message = message,
                     itemClick = {
-                        analyticsHelper.logClickAction("click_message_storage_item")
+                        analyticsHelper.logClick("message_storage_item")
                         itemClick(message)
                     },
                     optionButtonClick = {
-                        analyticsHelper.logClickAction("click_message_storage_item_option")
+                        analyticsHelper.logClick("message_storage_item_option")
                         optionButtonClick(message)
                     },
                 )

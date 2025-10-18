@@ -27,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -140,9 +140,9 @@ fun MessageWriteScreen(
                 WSButton(
                     onClick = {
                         if (state.isReplyContext) {
-                            analyticsHelper.logClickAction("click_reply_message_content")
+                            analyticsHelper.logClick("reply_message_content")
                         } else {
-                            analyticsHelper.logClickAction("click_write_message_content")
+                            analyticsHelper.logClick("write_message_content")
                         }
                         action(WritingAction.OnWriteDoneButtonClicked)
                     },
@@ -235,7 +235,7 @@ fun MessageWriteScreen(
             okButtonText = stringResource(R.string.message_send_dialog_button_text),
             cancelButtonText = stringResource(R.string.cancel),
             okButtonClick = {
-                analyticsHelper.logClickAction("click_reply_message_complete")
+                analyticsHelper.logClick("reply_message_complete")
                 action(WritingAction.OnReplyButtonClicked)
             },
             cancelButtonClick = { action(WritingAction.OnReplyCancelButtonClicked) },

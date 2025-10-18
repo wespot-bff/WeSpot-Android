@@ -37,7 +37,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -192,8 +192,8 @@ internal fun ImageScreen(
         WSButton(
             enabled = error.not() && uiState.hasProfanity.not(),
             onClick = {
-                analyticsHelper.logClickAction(
-                    name = "click_join_set_profile_complete",
+                analyticsHelper.logClick(
+                    name = "join_set_profile_complete",
                     extras = listOf(
                         AnalyticsEvent.Param("introduce_contents", uiState.introduction),
                     ),

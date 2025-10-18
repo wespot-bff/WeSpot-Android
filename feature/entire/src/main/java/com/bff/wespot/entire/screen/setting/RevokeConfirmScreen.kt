@@ -28,7 +28,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -112,8 +112,8 @@ fun RevokeConfirmScreen(
                     enabled = state.revokeReasonList.isNotEmpty(),
                     content = { it() },
                     onClick = {
-                        analyticsHelper.logClickAction(
-                            name = "click_choose_sucession_reason",
+                        analyticsHelper.logClick(
+                            name = "choose_sucession_reason",
                             extras = state.getRevokeReasonResult().mapIndexed { index, value ->
                                 AnalyticsEvent.Param(
                                     "sucession_reason${index + 1}",
@@ -152,8 +152,8 @@ fun RevokeConfirmScreen(
                         title = reason,
                         selected = reason in state.revokeReasonList,
                         onClick = {
-                            analyticsHelper.logClickAction(
-                                name = "click_sucession_reason",
+                            analyticsHelper.logClick(
+                                name = "sucession_reason",
                                 extras = listOf(
                                     AnalyticsEvent.Param(
                                         "sucession_reason",
@@ -189,11 +189,11 @@ fun RevokeConfirmScreen(
                     showDialog = true
                 },
                 onRevokeConfirmed = {
-                    analyticsHelper.logClickAction("click_complete_secession")
+                    analyticsHelper.logClick("complete_secession")
                     action(EntireAction.OnRevokeConfirmed)
                 },
             )
-            analyticsHelper.logScreenView("view_complete_sucession")
+            analyticsHelper.logScreenView("complete_sucession")
         }
     }
 
@@ -215,7 +215,7 @@ fun RevokeConfirmScreen(
         LoadingAnimation()
     }
 
-    TrackScreenViewEvent("view_sucession_reason")
+    TrackScreenViewEvent("sucession_reason")
 }
 
 @Composable

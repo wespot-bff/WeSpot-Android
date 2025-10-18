@@ -47,7 +47,7 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.analytics.params.AreaParams
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -156,11 +156,11 @@ internal fun MessageRoomScreen(
                 showReplyButton = state.messageRoom.isLastReceivedMessage(state.selectedMessageDetail),
                 showDeleteButton = !state.messageRoom.isSingleMessage(),
                 onReplyButtonClicked = {
-                    analyticsHelper.logClickAction("click_reply_message")
+                    analyticsHelper.logClick("reply_message")
                     action(RoomAction.OnReplyButtonClicked)
                 },
                 onDeleteButtonClicked = {
-                    analyticsHelper.logClickAction("click_delete_message")
+                    analyticsHelper.logClick("delete_message")
                     action(RoomAction.OnDeleteButtonClicked)
                 },
             )
@@ -185,8 +185,8 @@ internal fun MessageRoomScreen(
             okButtonText = stringResource(R.string.message_delete_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
-                analyticsHelper.logClickAction(
-                    name = "click_delete_message",
+                analyticsHelper.logClick(
+                    name = "delete_message",
                     area = AreaParams.MODAL,
                 )
                 action(RoomAction.OnDeleteConfirmed)
@@ -479,7 +479,7 @@ private fun logMessageListImpression(
         .orEmpty()
 
     analyticsHelper.logImpression(
-        name = "impression_message_list",
+        name = "message_list",
         extras = buildList {
             add(AnalyticsEvent.Param("size", messageDetails.size.toString()))
             add(AnalyticsEvent.Param("first_send_time", firstSendTime))

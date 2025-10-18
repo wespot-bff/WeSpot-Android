@@ -34,7 +34,7 @@ import coil3.request.crossfade
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackScreenViewEvent
-import com.bff.wespot.analytics.logClickAction
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -75,7 +75,7 @@ internal fun EntireScreen(
             ProfileContent(
                 profile = state.profile,
                 onClick = {
-                    analyticsHelper.logClickAction("click_mypage_edit_profile")
+                    analyticsHelper.logClick("mypage_edit_profile")
                     navigator.navigateToProfileEditScreen()
                 },
             )
