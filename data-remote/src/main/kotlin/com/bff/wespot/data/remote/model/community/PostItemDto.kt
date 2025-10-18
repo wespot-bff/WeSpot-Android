@@ -28,10 +28,10 @@ data class PostContentDto(
 ) {
     @Serializable
     data class HeaderSectionDto(
-        val profileImage: String,
+        val profileImage: ImageTypeDto,
         val nickname: RichTextTypeDto,
         val createdAt: RichTextTypeDto,
-        val category: CategoryDto
+        val category: CategoryDto?
     ) {
         @Serializable
         data class CategoryDto(
@@ -43,7 +43,7 @@ data class PostContentDto(
 
     @Serializable
     data class InfoSectionDto(
-        val title: RichTextTypeDto,
+        val title: RichTextTypeDto?,
         val description: RichTextTypeDto,
         val seeMore: RichTextTypeDto,
         val maxLine: Int
@@ -54,14 +54,14 @@ data class PostContentDto(
         @Serializable
         @SerialName("Images")
         data class ImagesSectionDto(
-            @SerialName("content")
-            val images: List<ImageTypeDto>
+            val images: List<String>
         ) : ContentSectionDto()
     }
 
     @Serializable
     data class FooterSectionDto(
-        val reactions: List<ReactionDto>
+        val reactions: List<ReactionDto>,
+        val scrap: ScrapDto
     ) {
         @Serializable
         sealed class ReactionDto {
@@ -75,7 +75,7 @@ data class PostContentDto(
                 override val icon: IconTypeDto,
                 override val count: RichTextTypeDto,
                 override val selected: Boolean
-            ): ReactionDto()
+            ) : ReactionDto()
 
             @Serializable
             @SerialName("Like")
@@ -83,57 +83,75 @@ data class PostContentDto(
                 override val icon: IconTypeDto,
                 override val count: RichTextTypeDto,
                 override val selected: Boolean
-            ): ReactionDto()
+            ) : ReactionDto()
         }
+
+        @Serializable
+        data class ScrapDto(
+            val icon: IconTypeDto,
+            val selected: Boolean,
+        )
     }
 }
 
 private fun PostContentDto.toDomain() = PostItems.PostContent(
     headerSection = headerSection.toDomain(),
     infoSection = infoSection.toDomain(),
-    contentSection = contentSection?.toDomain() ?: PostItems.PostContent.ContentSection.EmptySection,
+    contentSection = contentSection?.toDomain()
+        ?: PostItems.PostContent.ContentSection.EmptySection,
     footerSection = footerSection.toDomain()
 )
 
 private fun PostContentDto.HeaderSectionDto.toDomain() = PostItems.PostContent.HeaderSection(
-    profileImage = profileImage,
+    profileImage = profileImage.url,
     nickname = nickname.toDomain(),
     createdAt = createdAt.toDomain(),
-    category = category.toDomain()
+    category = category?.toDomain()
 )
 
-private fun PostContentDto.HeaderSectionDto.CategoryDto.toDomain() = PostItems.PostContent.HeaderSection.Category(
-    text = text.toDomain(),
-    target = target,
-    icon = icon.toDomain()
-)
+private fun PostContentDto.HeaderSectionDto.CategoryDto.toDomain() =
+    PostItems.PostContent.HeaderSection.Category(
+        text = text.toDomain(),
+        target = target,
+        icon = icon.toDomain()
+    )
 
 private fun PostContentDto.InfoSectionDto.toDomain() = PostItems.PostContent.InfoSection(
-    title = title.toDomain(),
+    title = title?.toDomain(),
     description = description.toDomain(),
     seeMore = seeMore.toDomain(),
     maxLine = maxLine
 )
 
-private fun PostContentDto.ContentSectionDto.toDomain(): PostItems.PostContent.ContentSection = when (this) {
-    is PostContentDto.ContentSectionDto.ImagesSectionDto -> PostItems.PostContent.ContentSection.ImagesSection(
-        images = images.map { it.toDomain() }
-    )
-}
+private fun PostContentDto.ContentSectionDto.toDomain(): PostItems.PostContent.ContentSection =
+    when (this) {
+        is PostContentDto.ContentSectionDto.ImagesSectionDto -> PostItems.PostContent.ContentSection.ImagesSection(
+            images = images
+        )
+    }
 
 private fun PostContentDto.FooterSectionDto.toDomain() = PostItems.PostContent.FooterSection(
-    reactions = reactions.map { it.toDomain() }
+    reactions = reactions.map { it.toDomain() },
+    scrap = scrap.toDomain(),
 )
 
-private fun PostContentDto.FooterSectionDto.ReactionDto.toDomain(): PostItems.PostContent.FooterSection.Reaction = when (this) {
-    is PostContentDto.FooterSectionDto.ReactionDto.ChatDto -> PostItems.PostContent.FooterSection.Reaction.Chat(
+private fun PostContentDto.FooterSectionDto.ReactionDto.toDomain(): PostItems.PostContent.FooterSection.Reaction =
+    when (this) {
+        is PostContentDto.FooterSectionDto.ReactionDto.ChatDto -> PostItems.PostContent.FooterSection.Reaction.Chat(
+            icon = icon.toDomain(),
+            count = count.toDomain(),
+            selected = selected
+        )
+
+        is PostContentDto.FooterSectionDto.ReactionDto.LikeDto -> PostItems.PostContent.FooterSection.Reaction.Like(
+            icon = icon.toDomain(),
+            count = count.toDomain(),
+            selected = selected
+        )
+    }
+
+private fun PostContentDto.FooterSectionDto.ScrapDto.toDomain() =
+    PostItems.PostContent.FooterSection.Scrap(
         icon = icon.toDomain(),
-        count = count.toDomain(),
-        selected = selected
+        selected = selected,
     )
-    is PostContentDto.FooterSectionDto.ReactionDto.LikeDto -> PostItems.PostContent.FooterSection.Reaction.Like(
-        icon = icon.toDomain(),
-        count = count.toDomain(),
-        selected = selected
-    )
-}

@@ -23,7 +23,8 @@ import javax.inject.Inject
 class MessageUsageViewModel @Inject constructor(
     private val repository: MessageRepository,
     private val settingRepository: MessageSettingRepository,
-) : BaseViewModel(), ContainerHost<MessageUsageSettingUiState, NoneSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<MessageUsageSettingUiState, NoneSideEffect> {
     override val container: Container<MessageUsageSettingUiState, NoneSideEffect> =
         container(MessageUsageSettingUiState()) {
             getMessageStatus()
@@ -42,7 +43,8 @@ class MessageUsageViewModel @Inject constructor(
 
     private fun getMessageStatus() = intent {
         viewModelScope.launch {
-            repository.getMessageStatus()
+            repository
+                .getMessageStatus()
                 .onSuccess {
                     reduce {
                         state.copy(
@@ -50,11 +52,9 @@ class MessageUsageViewModel @Inject constructor(
                             isUsageEnabled = it.isReceivedAllowed,
                         )
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .also {
+                }.also {
                     reduce {
                         state.copy(isLoading = false)
                     }
@@ -74,11 +74,12 @@ class MessageUsageViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            settingRepository.updateMessageUsageStatus(
-                enabled = state.isUsageEnabled,
-            ).onFailure {
-                Timber.e(it)
-            }
+            settingRepository
+                .updateMessageUsageStatus(
+                    enabled = state.isUsageEnabled,
+                ).onFailure {
+                    Timber.e(it)
+                }
         }
     }
 }

@@ -8,11 +8,9 @@ data class MessageProfile(
     val grade: Int = -1,
     val classNumber: Int = -1,
 ) {
-    fun toDescription(): String {
-        return if (isAnonymous) {
-            name
-        } else {
-            "$schoolName ${grade}학년 ${classNumber}반 $name"
-        }
+    fun toDescription(): String = if (isAnonymous) {
+        name
+    } else {
+        "$schoolName ${grade}학년 ${classNumber}반 $name"
     }
 }

@@ -1,6 +1,6 @@
 package com.bff.wespot.model.community
 
-import com.bff.wespot.model.serverDriven.type.ColorType
+import com.bff.wespot.model.serverDriven.type.GradationType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
@@ -19,10 +19,11 @@ data class HotPostItem(
         )
 
         data class Post(
+            val targetId: String,
             val headerSection: HeaderSection,
             val infoSection: InfoSection,
             val createdAt: RichTextType,
-            val gradation: Gradation,
+            val gradation: GradationType,
         ) {
             data class HeaderSection(
                 val profileImage: ImageType,
@@ -30,14 +31,8 @@ data class HotPostItem(
             )
 
             data class InfoSection(
-                val title: RichTextType,
+                val title: RichTextType?,
                 val description: RichTextType,
-            )
-
-            data class Gradation(
-                val startColor: ColorType,
-                val endColor: ColorType,
-                val angle: Int,
             )
         }
     }

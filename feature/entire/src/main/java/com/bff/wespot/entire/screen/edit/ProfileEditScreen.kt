@@ -49,8 +49,12 @@ import androidx.compose.ui.zIndex
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -177,7 +181,8 @@ fun ProfileEditScreen(
                         modifier = Modifier
                             .size(90.dp)
                             .clip(CircleShape),
-                        model = ImageRequest.Builder(LocalContext.current)
+                        model = ImageRequest
+                            .Builder(LocalContext.current)
                             .data(state.profilePath)
                             .error(com.bff.wespot.ui.R.drawable.default_profile)
                             .fallback(com.bff.wespot.ui.R.drawable.default_profile)
@@ -317,8 +322,7 @@ fun ProfileEditScreen(
                         .clickableSingle {
                             action(ProfileEditAction.OpenPicker)
                             action(ProfileEditAction.ChangeBottomSheetState(false))
-                        }
-                        .fillMaxWidth()
+                        }.fillMaxWidth()
                         .padding(vertical = 16.dp, horizontal = 28.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     textAlign = TextAlign.Center,
@@ -333,8 +337,7 @@ fun ProfileEditScreen(
                         .clickableSingle {
                             action(ProfileEditAction.OnProfileImagePicked(null))
                             action(ProfileEditAction.ChangeBottomSheetState(false))
-                        }
-                        .fillMaxWidth()
+                        }.fillMaxWidth()
                         .padding(vertical = 16.dp, horizontal = 28.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     textAlign = TextAlign.Center,

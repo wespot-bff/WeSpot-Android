@@ -19,6 +19,8 @@ class AndroidComposePlugin : Plugin<Project> {
             dependencies {
                 "implementation"(platform(libs.findLibrary("androidx-compose-bom").get()))
                 "implementation"(libs.findBundle("androidx-compose").get())
+                "implementation"(libs.findLibrary("coil-compose").get())
+                "implementation"(libs.findLibrary("coil-network").get())
                 "ksp"(libs.findLibrary("androidx-compose-destination-compiler").get())
             }
 

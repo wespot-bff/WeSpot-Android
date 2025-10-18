@@ -45,7 +45,7 @@ class CommonRepositoryImpl @Inject constructor(
         val result = commonDataSource.uploadImage(url.url, decodeImage)
 
         return if (result) {
-            Result.success(url.imageUrl)
+            Result.success(url.imageName)
         } else {
             Result.failure(
                 ImageUploadFailedException.UploadFailedException("Failed to upload image")

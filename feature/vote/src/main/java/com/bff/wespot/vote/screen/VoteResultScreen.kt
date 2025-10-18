@@ -56,8 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -157,8 +158,7 @@ fun VoteResultScreen(
                             }
                         }
                     }
-                }
-                .zIndex(1f)
+                }.zIndex(1f)
                 .padding(top = 180.dp),
         ) {
             val composition by rememberLottieComposition(
@@ -273,7 +273,9 @@ fun VoteResultScreen(
                     WSCarousel(pagerState = pagerState) { page ->
                         VoteResultItem(
                             result = state.voteResults.voteResults[page],
-                            empty = state.voteResults.voteResults[page].results.isEmpty(),
+                            empty = state.voteResults.voteResults[page]
+                                .results
+                                .isEmpty(),
                         )
                     }
                 }
@@ -540,7 +542,8 @@ private fun RankCard(
                     },
                 )
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest
+                        .Builder(LocalContext.current)
                         .data(user.profile.iconUrl)
                         .allowHardware(false)
                         .build(),

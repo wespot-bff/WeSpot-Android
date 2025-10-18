@@ -31,7 +31,8 @@ class EntireViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
     private val dataStoreRepository: DataStoreRepository,
-) : BaseViewModel(), ContainerHost<EntireUiState, EntireSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<EntireUiState, EntireSideEffect> {
     override val container = container<EntireUiState, EntireSideEffect>(EntireUiState())
 
     fun onAction(action: EntireAction) {
@@ -57,8 +58,7 @@ class EntireViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .catch { exception ->
                     Timber.e(exception)
-                }
-                .collect {
+                }.collect {
                     reduce { state.copy(profile = it) }
                 }
         }
@@ -94,16 +94,15 @@ class EntireViewModel @Inject constructor(
         }
 
         viewModelScope.launch(coroutineDispatcher) {
-            authRepository.revoke(revokeReason)
+            authRepository
+                .revoke(revokeReason)
                 .onSuccess {
                     KakaoLoginManager.revoke()
                     clearCachedData()
                     postSideEffect(EntireSideEffect.NavigateToAuth)
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     reduce { state.copy(isLoading = false) }
                     Timber.e(it)
                 }
@@ -115,16 +114,15 @@ class EntireViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch(coroutineDispatcher) {
-            authRepository.signOut()
+            authRepository
+                .signOut()
                 .onSuccess {
                     KakaoLoginManager.logout()
                     clearCachedData()
                     postSideEffect(EntireSideEffect.NavigateToAuth)
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     reduce { state.copy(isLoading = false) }
                     Timber.e(it)
                 }
