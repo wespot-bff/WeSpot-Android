@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -46,6 +45,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.rememberAsyncImagePainter
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.community.component.FilterChip
 import com.bff.wespot.community.component.Item
 import com.bff.wespot.community.presentation.R
@@ -73,7 +73,6 @@ interface CommunityNavigator {
     fun navigateToVote()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 internal fun CommunityHomeScreen(
@@ -180,6 +179,8 @@ internal fun CommunityHomeScreen(
     LaunchedEffect(Unit) {
         onAction(CommunityAction.OnCommunityEnter)
     }
+
+    TrackScreenViewEvent("view_community_home_feed")
 }
 
 @Composable
