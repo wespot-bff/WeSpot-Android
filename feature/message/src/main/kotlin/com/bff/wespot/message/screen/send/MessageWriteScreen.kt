@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
-import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -255,9 +255,12 @@ fun MessageWriteScreen(
         action(WritingAction.OnWriteScreenEntered(args))
     }
 
-    if (state.isReplyContext) {
-        TrackScreenViewEvent("reply_message_content")
-    } else {
-        TrackScreenViewEvent("write_message_content")
+    LaunchedEffect(state.isReplyContext) {
+        val screenName = if (state.isReplyContext) {
+            "reply_message_content"
+        } else {
+            "write_message_content"
+        }
+        analyticsHelper.logScreenView(screenName)
     }
 }

@@ -45,8 +45,8 @@ import com.bff.wespot.analytics.AnalyticsEvent
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
 import com.bff.wespot.analytics.TrackImpressionEvent
-import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -177,10 +177,13 @@ fun MessageHomeScreen(
         action(MessageHomeAction.OnLifecycleStop)
     }
 
-    if (state.messageStatus.countRemainingMessages > 0) {
-        TrackScreenViewEvent("open_message_home")
-    } else {
-        TrackScreenViewEvent("close_message_home")
+    LaunchedEffect(state.messageStatus.countRemainingMessages > 0) {
+        val screenName = if (state.messageStatus.countRemainingMessages > 0) {
+            "open_message_home"
+        } else {
+            "close_message_home"
+        }
+        analyticsHelper.logScreenView(screenName)
     }
 }
 
