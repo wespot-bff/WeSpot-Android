@@ -63,6 +63,10 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
@@ -121,6 +125,7 @@ fun VoteResultScreen(
     val action = viewModel::onAction
     val context = LocalContext.current
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val pagerState = rememberPagerState(pageCount = { state.voteResults.voteResults.size })
 
@@ -290,6 +295,7 @@ fun VoteResultScreen(
                         WSButton(
                             enabled = state.isLoading.not(),
                             onClick = {
+                                analyticsHelper.logClick("share_vote_result_kakao")
                                 if (state.kakaoContent != KakaoContent.EMPTY) {
                                     navigator.navigateToKakao(
                                         context,
@@ -319,6 +325,7 @@ fun VoteResultScreen(
                         Button(
                             enabled = state.isLoading.not(),
                             onClick = {
+                                analyticsHelper.logClick("share_vote_result_instagram")
                                 MainScope().launch {
                                     val bitmap = snapshot.invoke()
                                     val uri = saveBitmap(context, bitmap)
@@ -394,6 +401,8 @@ fun VoteResultScreen(
             voteNavigator.navigateToVoteHome()
         }
     }
+
+    TrackScreenViewEvent("vote_result")
 }
 
 @Composable

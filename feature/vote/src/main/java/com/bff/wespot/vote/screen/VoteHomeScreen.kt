@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -131,6 +132,8 @@ internal fun VoteHomeScreen(
             else -> {}
         }
     }
+
+    TrackScreenViewEvent("vote_home")
 }
 
 @Composable

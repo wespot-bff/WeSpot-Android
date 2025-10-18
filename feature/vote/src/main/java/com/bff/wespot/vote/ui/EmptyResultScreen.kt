@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.designsystem.theme.StaticTypeScale
 import com.bff.wespot.designsystem.theme.WeSpotTheme
 import com.bff.wespot.vote.R
@@ -53,6 +54,8 @@ fun EmptyResultScreen() {
             )
         }
     }
+
+    TrackScreenViewEvent("view_empty_vote_result")
 }
 
 @Preview

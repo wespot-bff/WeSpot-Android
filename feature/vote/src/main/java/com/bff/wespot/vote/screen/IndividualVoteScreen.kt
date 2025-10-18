@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.indicator.WSToastType
@@ -201,4 +202,6 @@ fun IndividualVoteScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
+
+    TrackScreenViewEvent("view_individual_vote_result")
 }
