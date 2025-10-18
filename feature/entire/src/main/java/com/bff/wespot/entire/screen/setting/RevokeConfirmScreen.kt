@@ -113,10 +113,10 @@ fun RevokeConfirmScreen(
                     content = { it() },
                     onClick = {
                         analyticsHelper.logClick(
-                            name = "choose_sucession_reason",
+                            name = "choose_secession_reason",
                             extras = state.getRevokeReasonResult().mapIndexed { index, value ->
                                 AnalyticsEvent.Param(
-                                    "sucession_reason${index + 1}",
+                                    "secession_reason${index + 1}",
                                     value,
                                 )
                             },
@@ -153,10 +153,10 @@ fun RevokeConfirmScreen(
                         selected = reason in state.revokeReasonList,
                         onClick = {
                             analyticsHelper.logClick(
-                                name = "sucession_reason",
+                                name = "secession_reason",
                                 extras = listOf(
                                     AnalyticsEvent.Param(
-                                        "sucession_reason",
+                                        "secession_reason",
                                         reason,
                                     ),
                                 ),
@@ -193,7 +193,7 @@ fun RevokeConfirmScreen(
                     action(EntireAction.OnRevokeConfirmed)
                 },
             )
-            analyticsHelper.logImpression("complete_sucession")
+            analyticsHelper.logImpression("complete_secession")
         }
     }
 
@@ -215,7 +215,7 @@ fun RevokeConfirmScreen(
         LoadingAnimation()
     }
 
-    TrackScreenViewEvent("sucession_reason")
+    TrackScreenViewEvent("secession_reason")
 }
 
 @Composable

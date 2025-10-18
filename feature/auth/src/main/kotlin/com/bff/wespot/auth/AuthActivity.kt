@@ -161,7 +161,7 @@ class AuthActivity : ComponentActivity() {
                         showToast = false
                     }
                     if (from == "Revoke") {
-                        TrackImpressionEvent("sucession_complete")
+                        TrackImpressionEvent("secession_complete")
                     }
                 }
                 if (state.loading) {
