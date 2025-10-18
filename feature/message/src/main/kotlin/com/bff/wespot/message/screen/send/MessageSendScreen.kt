@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
-import com.bff.wespot.analytics.TrackImpressionEvent
 import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logImpression
 import com.bff.wespot.designsystem.component.button.HeightRange
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
@@ -77,7 +77,6 @@ fun MessageSendScreen(
     var showSendConfirmModal by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
-    var showSuccessToast by remember { mutableStateOf(false) }
     val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val state by viewModel.collectAsState()
@@ -102,7 +101,7 @@ fun MessageSendScreen(
                 }
                 is SendSideEffect.ShowToast -> {
                     if (it.message == R.string.message_send_success) {
-                        showSuccessToast = true
+                        analyticsHelper.logImpression("message_send_success")
                     }
                     showToast(
                         ToastState(
@@ -251,10 +250,6 @@ fun MessageSendScreen(
     }
 
     NetworkDialog(context = context, networkState = networkState)
-
-    if (showSuccessToast) {
-        TrackImpressionEvent("message_send_success")
-    }
 }
 
 @Composable
