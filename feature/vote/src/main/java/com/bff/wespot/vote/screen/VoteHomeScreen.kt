@@ -132,8 +132,6 @@ internal fun VoteHomeScreen(
             else -> {}
         }
     }
-
-    TrackScreenViewEvent("vote_home")
 }
 
 @Composable
@@ -269,6 +267,8 @@ private fun VoteHomeContent(
             }
         }
     }
+
+    TrackScreenViewEvent("vote_home")
 }
 
 @Composable
@@ -364,6 +364,8 @@ private fun CardResultContent(
     LaunchedEffect(Unit) {
         action(VoteAction.GetFirst(LocalDate.now().toDateString()))
     }
+
+    TrackScreenViewEvent("vote_result")
 }
 
 private const val HOME_SCREEN = 0

@@ -65,8 +65,8 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.analytics.LocalAnalyticsHelper
-import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSTextButton
@@ -387,6 +387,11 @@ fun VoteResultScreen(
         )
     }
 
+    LaunchedEffect(voteType) {
+        val name = if (voteType == TODAY) "vote_realtime_result" else "vote_pasttime_result"
+        analyticsHelper.logScreenView(name)
+    }
+
     LaunchedEffect(Unit) {
         if (state.isVoting) {
             action(ResultAction.GetOnBoarding)
@@ -401,8 +406,6 @@ fun VoteResultScreen(
             voteNavigator.navigateToVoteHome()
         }
     }
-
-    TrackScreenViewEvent("vote_result")
 }
 
 @Composable
