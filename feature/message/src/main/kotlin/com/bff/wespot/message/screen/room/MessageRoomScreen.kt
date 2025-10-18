@@ -383,12 +383,16 @@ private fun MessageHorizontalList(
     onItemClicked: (MessageDetail) -> Unit,
 ) {
     val listState = rememberLazyListState()
+    var hasLoggedImpression by remember { mutableStateOf(false) }
 
     LaunchedEffect(messageRoom.messageDetails.size) {
         val selectedIndex = messageRoom.messageDetails.indexOf(selectedItem)
         if (selectedIndex >= 0) {
             listState.animateScrollToItem(selectedIndex)
-            logMessageListImpression(messageRoom, analyticsHelper)
+            if (!hasLoggedImpression && messageRoom.messageDetails.isNotEmpty()) {
+                logMessageListImpression(messageRoom, analyticsHelper)
+                hasLoggedImpression = true
+            }
         }
     }
 
