@@ -143,5 +143,5 @@ fun RevokeScreen(
         action(EntireAction.OnRevokeScreenEntered)
     }
 
-    TrackScreenViewEvent("view_want_secession")
+    TrackScreenViewEvent("want_secession")
 }

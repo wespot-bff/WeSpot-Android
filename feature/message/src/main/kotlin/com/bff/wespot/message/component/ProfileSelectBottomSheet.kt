@@ -76,7 +76,7 @@ internal fun ProfileSelectBottomSheet(
         }
     }
 
-    TrackScreenViewEvent("view_message_profile_selection")
+    TrackScreenViewEvent("message_profile_selection")
 }
 
 @Composable

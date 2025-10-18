@@ -359,7 +359,7 @@ fun ReceiverSelectionScreen(
         action(ReceiverAction.OnReceiverScreenEntered)
     }
 
-    TrackScreenViewEvent("view_receiver_selection")
+    TrackScreenViewEvent("receiver_selection")
 }
 
 @Composable

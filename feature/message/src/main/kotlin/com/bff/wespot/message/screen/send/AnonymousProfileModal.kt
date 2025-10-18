@@ -197,7 +197,7 @@ internal fun AnonymousProfileModal(
         action(AnonymousProfileAction.OnProfileModalOpened(profile))
     }
 
-    TrackScreenViewEvent("view_create_anonymous_message_profile")
+    TrackScreenViewEvent("create_anonymous_message_profile")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

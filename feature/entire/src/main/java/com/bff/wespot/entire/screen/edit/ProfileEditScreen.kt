@@ -366,7 +366,7 @@ fun ProfileEditScreen(
         action(ProfileEditAction.OnProfileEditScreenEntered)
     }
 
-    TrackScreenViewEvent("view_mypage_edit_profile")
+    TrackScreenViewEvent("mypage_edit_profile")
 }
 
 @Composable

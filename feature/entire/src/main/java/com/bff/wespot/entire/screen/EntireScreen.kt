@@ -187,7 +187,7 @@ internal fun EntireScreen(
         action(EntireAction.OnEntireScreenEntered)
     }
 
-    TrackScreenViewEvent("view_mypage")
+    TrackScreenViewEvent("mypage")
 }
 
 @Composable

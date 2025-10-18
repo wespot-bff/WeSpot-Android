@@ -256,8 +256,8 @@ fun MessageWriteScreen(
     }
 
     if (state.isReplyContext) {
-        TrackScreenViewEvent("view_reply_message_content")
+        TrackScreenViewEvent("reply_message_content")
     } else {
-        TrackScreenViewEvent("view_write_message_content")
+        TrackScreenViewEvent("write_message_content")
     }
 }

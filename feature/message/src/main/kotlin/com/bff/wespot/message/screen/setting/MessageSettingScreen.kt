@@ -57,5 +57,5 @@ fun MessageSettingScreen(
         }
     }
 
-    TrackScreenViewEvent("view_message_setting")
+    TrackScreenViewEvent("message_setting")
 }

@@ -170,7 +170,7 @@ fun GradeScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_select_grade",
+        name = "join_select_grade",
     )
 }
 

@@ -121,6 +121,6 @@ fun CompleteScreen(
     NetworkDialog(context = context, networkState = networkState)
 
     TrackScreenViewEvent(
-        name = "view_join_complete_sign_up",
+        name = "join_complete_sign_up",
     )
 }

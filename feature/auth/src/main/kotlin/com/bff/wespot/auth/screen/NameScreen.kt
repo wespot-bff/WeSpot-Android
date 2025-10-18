@@ -173,6 +173,6 @@ fun NameScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_fill_name",
+        name = "join_fill_name",
     )
 }

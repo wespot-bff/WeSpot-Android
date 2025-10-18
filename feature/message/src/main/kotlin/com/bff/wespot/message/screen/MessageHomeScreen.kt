@@ -178,9 +178,9 @@ fun MessageHomeScreen(
     }
 
     if (state.messageStatus.countRemainingMessages > 0) {
-        TrackScreenViewEvent("view_open_message_home")
+        TrackScreenViewEvent("open_message_home")
     } else {
-        TrackScreenViewEvent("view_close_message_home")
+        TrackScreenViewEvent("close_message_home")
     }
 }
 

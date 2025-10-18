@@ -176,7 +176,7 @@ fun EditScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_edit_profile",
+        name = "join_edit_profile",
     )
 }
 

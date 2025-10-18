@@ -144,6 +144,6 @@ fun ClassScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_select_class",
+        name = "join_select_class",
     )
 }

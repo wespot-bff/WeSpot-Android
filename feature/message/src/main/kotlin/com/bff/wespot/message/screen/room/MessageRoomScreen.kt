@@ -218,7 +218,7 @@ internal fun MessageRoomScreen(
         action(RoomAction.OnScreenEntered)
     }
 
-    TrackScreenViewEvent("view_message_room")
+    TrackScreenViewEvent("message_room")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

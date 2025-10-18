@@ -180,7 +180,7 @@ internal fun CommunityHomeScreen(
         onAction(CommunityAction.OnCommunityEnter)
     }
 
-    TrackScreenViewEvent("view_community_home_feed")
+    TrackScreenViewEvent("community_home_feed")
 }
 
 @Composable

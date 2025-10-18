@@ -234,6 +234,6 @@ fun SchoolScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_select_school",
+        name = "join_select_school",
     )
 }

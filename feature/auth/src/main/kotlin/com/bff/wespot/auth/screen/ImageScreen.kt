@@ -211,6 +211,6 @@ internal fun ImageScreen(
     }
 
     TrackScreenViewEvent(
-        name = "view_join_set_profile",
+        name = "join_set_profile",
     )
 }

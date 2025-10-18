@@ -303,7 +303,7 @@ private fun MessageProfileItem(
         }
     }
 
-    TrackScreenViewEvent("view_send_message")
+    TrackScreenViewEvent("send_message")
 }
 
 @Composable
