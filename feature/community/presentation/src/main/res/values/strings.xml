@@ -18,6 +18,8 @@
     <string name="bottomsheet_edit">편집하기</string>
     <string name="delete_dialog_title">게시글을 삭제할까요?</string>
     <string name="delete_dialog_subtitle">삭제한 게시글은 되돌릴 수 없어요.</string>
+    <string name="comment_delete_dialog_title">댓글을 삭제할까요?</string>
+    <string name="comment_delete_dialog_subtitle">삭제한 댓글은 되돌릴 수 없어요.</string>
     <string name="block_dialog_title">해당 유저를 차단할까요?</string>
     <string name="block_dialog_subtitle">해당 유저가 작성한 게시글이 보이지 않도록 숨겨드릴게요. 다만, 차단 해제는 불가해요.</string>
     <string name="all_post_written">작성한 글</string>

@@ -126,7 +126,33 @@ class PostDetailViewModel @Inject constructor(
                 }
 
                 is PostDetailAction.OnCommentDelete -> {
-                    onCommentDelete(action.commentId)
+                    reduce {
+                        state.copy(
+                            showCommentDeleteDialog = true,
+                            commentIdToDelete = action.commentId,
+                        )
+                    }
+                }
+
+                is PostDetailAction.OnDismissCommentDeleteDialog -> {
+                    reduce {
+                        state.copy(
+                            showCommentDeleteDialog = false,
+                            commentIdToDelete = null,
+                        )
+                    }
+                }
+
+                is PostDetailAction.OnConfirmCommentDelete -> {
+                    state.commentIdToDelete?.let { commentId ->
+                        onCommentDelete(commentId)
+                    }
+                    reduce {
+                        state.copy(
+                            showCommentDeleteDialog = false,
+                            commentIdToDelete = null,
+                        )
+                    }
                 }
 
                 is PostDetailAction.RefreshPost -> {

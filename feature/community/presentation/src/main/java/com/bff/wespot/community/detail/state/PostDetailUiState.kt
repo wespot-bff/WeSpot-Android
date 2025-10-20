@@ -19,6 +19,8 @@ data class PostDetailUiState(
     val showPostOptionsBottomSheet: Boolean = false,
     val showDeleteDialog: Boolean = false,
     val showBlockDialog: Boolean = false,
+    val showCommentDeleteDialog: Boolean = false,
+    val commentIdToDelete: String? = null,
 ) {
     @Composable
     fun getSheetList(): List<SheetItem> = if (detail.isMyPost) {

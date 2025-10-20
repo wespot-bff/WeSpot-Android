@@ -238,6 +238,18 @@ internal fun PostDetailScreen(
             onDismissRequest = { onAction(PostDetailAction.OnDismissBlockDialog) },
         )
     }
+
+    if (uiState.showCommentDeleteDialog) {
+        WSDialog(
+            title = stringResource(R.string.delete_dialog_title),
+            subTitle = stringResource(R.string.comment_delete_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmCommentDelete) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissCommentDeleteDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissCommentDeleteDialog) },
+        )
+    }
 }
 
 @Composable
