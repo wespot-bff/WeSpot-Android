@@ -71,7 +71,6 @@ import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
-import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
 import com.bff.wespot.server.driven.type.color
 import com.bff.wespot.ui.component.WSBottomSheet
@@ -104,7 +103,11 @@ internal fun PostDetailScreen(
                     ) {
                         uiModel.category.text.Text(StaticTypeScale.Default.body6)
 
-                        uiModel.category.icon.Icon(modifier = Modifier.size(18.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(uiModel.category.icon.url),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 },
                 title = "",
