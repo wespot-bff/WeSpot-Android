@@ -1,7 +1,7 @@
 package com.bff.wespot
 
-import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.analytic.DebugAnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.DebugAnalyticsHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

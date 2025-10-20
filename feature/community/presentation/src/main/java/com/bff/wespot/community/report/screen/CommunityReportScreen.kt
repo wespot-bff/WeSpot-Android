@@ -41,6 +41,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.community.presentation.R
 import com.bff.wespot.community.report.state.CommunityReportAction
 import com.bff.wespot.community.report.state.CommunityReportUiState
@@ -58,6 +62,7 @@ fun CommunityReportScreen(
     uiState: CommunityReportUiState,
     onAction: (CommunityReportAction) -> Unit,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val colors = WeSpotThemeManager.colors
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -85,7 +90,13 @@ fun CommunityReportScreen(
             val canSubmit = (hasSelectedReasons || hasCustomReport) && !uiState.isSubmitting
 
             WSButton(
-                onClick = { onAction(CommunityReportAction.OnSubmitReport) },
+                onClick = {
+                    analyticsHelper.logClick(
+                        name = "click_choose_report_reason",
+                        extras = uiState.getSelectedReasonParams(),
+                    )
+                    onAction(CommunityReportAction.OnSubmitReport)
+                },
                 enabled = canSubmit,
                 text = stringResource(com.bff.wespot.ui.R.string.complete),
             ) {
@@ -215,6 +226,8 @@ fun CommunityReportScreen(
             }
         }
     }
+
+    TrackScreenViewEvent("community_report")
 }
 
 @Composable

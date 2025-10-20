@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -49,6 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.community.detail.state.PostDetailAction
 import com.bff.wespot.community.detail.state.PostDetailUiState
 import com.bff.wespot.community.presentation.R
@@ -83,6 +85,7 @@ internal fun PostDetailScreen(
     uiState: PostDetailUiState,
     onAction: (PostDetailAction) -> Unit,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val uiModel = uiState.detail.content
     val lazyListState = rememberLazyListState()
 
@@ -218,7 +221,10 @@ internal fun PostDetailScreen(
             subTitle = stringResource(R.string.delete_dialog_subtitle),
             okButtonText = stringResource(R.string.write_post_warning_ok),
             cancelButtonText = stringResource(R.string.write_post_warning_no),
-            okButtonClick = { onAction(PostDetailAction.OnConfirmDelete) },
+            okButtonClick = {
+                analyticsHelper.logClick("delete_post")
+                onAction(PostDetailAction.OnConfirmDelete)
+            },
             cancelButtonClick = { onAction(PostDetailAction.OnDismissDeleteDialog) },
             onDismissRequest = { onAction(PostDetailAction.OnDismissDeleteDialog) },
         )
@@ -230,7 +236,10 @@ internal fun PostDetailScreen(
             subTitle = stringResource(R.string.block_dialog_subtitle),
             okButtonText = stringResource(R.string.write_post_warning_ok),
             cancelButtonText = stringResource(R.string.write_post_warning_no),
-            okButtonClick = { onAction(PostDetailAction.OnConfirmBlock) },
+            okButtonClick = {
+                analyticsHelper.logClick("click_block_user_post")
+                onAction(PostDetailAction.OnConfirmBlock)
+            },
             cancelButtonClick = { onAction(PostDetailAction.OnDismissBlockDialog) },
             onDismissRequest = { onAction(PostDetailAction.OnDismissBlockDialog) },
         )
@@ -397,7 +406,6 @@ private fun PostDetailContentUiModel.ContentSectionUiModel.Item(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
     onAction: (PostDetailAction) -> Unit,

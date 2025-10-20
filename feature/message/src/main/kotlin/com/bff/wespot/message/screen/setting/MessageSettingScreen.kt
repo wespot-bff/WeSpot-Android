@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.message.R
 import com.bff.wespot.ui.component.SettingListItem
@@ -55,4 +56,6 @@ fun MessageSettingScreen(
             }
         }
     }
+
+    TrackScreenViewEvent("message_setting")
 }

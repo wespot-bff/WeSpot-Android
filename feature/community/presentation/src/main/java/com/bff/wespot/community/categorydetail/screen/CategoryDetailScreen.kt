@@ -46,6 +46,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.community.categorydetail.state.CategoryDetailAction
 import com.bff.wespot.community.categorydetail.state.CategoryDetailUiState
 import com.bff.wespot.community.component.Item
@@ -336,4 +337,6 @@ internal fun CategoryScreen(
     LaunchedEffect(Unit) {
         onAction(CategoryDetailAction.LoadData)
     }
+
+    TrackScreenViewEvent("community_category_${uiState.currentCategory.text}")
 }

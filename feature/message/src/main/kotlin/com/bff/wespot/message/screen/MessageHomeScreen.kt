@@ -41,6 +41,12 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.component.button.WSButton
@@ -70,6 +76,7 @@ fun MessageHomeScreen(
     restricted: RestrictionArg,
 ) {
     var showMessageUsageSettingDialog by remember { mutableStateOf(false) }
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
@@ -93,6 +100,7 @@ fun MessageHomeScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         ReplyMessageBanner(
             visible = state.messageStatus.shouldShowReplyBanner(),
+            analyticsHelper = analyticsHelper,
             onBannerClick = navigateToMessageStorageScreen,
         )
 
@@ -114,9 +122,19 @@ fun MessageHomeScreen(
                     MessageImage(state.messageStatus.countRemainingMessages)
                 },
                 onButtonClick = {
+                    analyticsHelper.logClick(
+                        name = "send_message",
+                        extras = listOf(
+                            AnalyticsEvent.Param(
+                                "available_message_count",
+                                state.messageStatus.countRemainingMessages.toString(),
+                            ),
+                        ),
+                    )
                     navigateToReceiverSelectionScreen()
                 },
             )
+            TrackScreenViewEvent("open_message_home")
         } else {
             MessageCard(
                 canSendMessage = false,
@@ -129,6 +147,7 @@ fun MessageHomeScreen(
                     MessageTimer(viewModel)
                 },
             )
+            TrackScreenViewEvent("close_message_home")
         }
     }
 
@@ -215,19 +234,35 @@ private fun MessageCard(
 }
 
 @Composable
-private fun ReplyMessageBanner(visible: Boolean, onBannerClick: () -> Unit) {
+private fun ReplyMessageBanner(
+    visible: Boolean,
+    analyticsHelper: AnalyticsHelper,
+    onBannerClick: () -> Unit,
+) {
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically { initialOffsetY -> -initialOffsetY },
     ) {
         Box(modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp)) {
+            val title = stringResource(R.string.received_message_banner_title)
+            val subTitle = stringResource(R.string.received_message_banner_subtitle)
             WSBanner(
-                title = stringResource(R.string.received_message_banner_title),
-                subTitle = stringResource(R.string.received_message_banner_subtitle),
+                title = title,
+                subTitle = subTitle,
                 image = painterResource(id = R.drawable.received_message),
-                onBannerClick = { onBannerClick() },
+                onBannerClick = {
+                    analyticsHelper.logClick(
+                        name = "message_home_top_banner",
+                        extras = listOf(
+                            AnalyticsEvent.Param("message_banner_title", title),
+                            AnalyticsEvent.Param("message_banner_contents", subTitle),
+                        ),
+                    )
+                    onBannerClick()
+                },
                 bannerType = WSBannerType.Primary,
             )
+            TrackImpressionEvent("message_home_top_banner")
         }
     }
 }

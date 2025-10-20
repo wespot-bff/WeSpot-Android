@@ -2,13 +2,14 @@ package com.bff.wespot.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
 import com.bff.wespot.common.util.AppVersionUtils.versionCompare
 import com.bff.wespot.domain.repository.CommonRepository
 import com.bff.wespot.domain.repository.DataStoreRepository
 import com.bff.wespot.domain.repository.firebase.config.RemoteConfigRepository
+import com.bff.wespot.domain.repository.user.ProfileRepository
 import com.bff.wespot.domain.repository.user.UserRepository
-import com.bff.wespot.domain.usecase.CacheProfileUseCase
 import com.bff.wespot.domain.util.DataStoreKey
 import com.bff.wespot.domain.util.RemoteConfigKey
 import com.bff.wespot.main.model.VersionUpdateType
@@ -31,12 +32,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val cacheProfileUseCase: CacheProfileUseCase,
     private val dataStoreRepository: DataStoreRepository,
     private val userRepository: UserRepository,
+    private val profileRepository: ProfileRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
+    private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel(),
     ContainerHost<MainUiState, MainSideEffect> {
     override val container = container<MainUiState, MainSideEffect>(
@@ -79,7 +81,7 @@ class MainViewModel @Inject constructor(
 
     private fun handleMainScreenEntered(appVersion: String) = intent {
         viewModelScope.launch(coroutineDispatcher) {
-            cacheProfileUseCase()
+            setUserProfile()
 
             checkAppVersionWithLatestVersion(appVersion)
 
@@ -90,6 +92,15 @@ class MainViewModel @Inject constructor(
                         state.copy(restriction = it)
                     }
                 }
+        }
+    }
+
+    private fun setUserProfile() {
+        viewModelScope.launch {
+            userRepository.getProfile().mapCatching { profile ->
+                profileRepository.setProfile(profile)
+                analyticsHelper.updateUserId(profile.id.toString())
+            }
         }
     }
 

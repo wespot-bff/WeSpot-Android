@@ -18,8 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
-import com.bff.wespot.analytic.AnalyticsHelper
-import com.bff.wespot.analytic.LocalAnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
 import com.bff.wespot.auth.screen.AuthNavGraph
 import com.bff.wespot.auth.screen.destinations.ClassScreenDestination
 import com.bff.wespot.auth.screen.destinations.CompleteScreenDestination
@@ -40,6 +41,7 @@ import com.bff.wespot.model.constants.LoginState
 import com.bff.wespot.navigation.Navigator
 import com.bff.wespot.navigation.util.EXTRA_DATE
 import com.bff.wespot.navigation.util.EXTRA_DEEP_LINK
+import com.bff.wespot.navigation.util.EXTRA_FROM
 import com.bff.wespot.navigation.util.EXTRA_TOAST_MESSAGE
 import com.bff.wespot.navigation.util.EXTRA_TYPE
 import com.bff.wespot.ui.component.LoadingAnimation
@@ -67,6 +69,10 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val toastMessage = intent.getStringExtra(EXTRA_TOAST_MESSAGE)
+        val from = intent.getStringExtra(EXTRA_FROM)
+        intent.removeExtra(EXTRA_TOAST_MESSAGE)
+        intent.removeExtra(EXTRA_FROM)
+
         viewModel.onAction(AuthAction.OnActivityCreated(getAppVersionName(this)))
 
         setContent {
@@ -153,6 +159,9 @@ class AuthActivity : ComponentActivity() {
                         showToast = showToast,
                     ) {
                         showToast = false
+                    }
+                    if (from == "Revoke") {
+                        TrackImpressionEvent("secession_complete")
                     }
                 }
                 if (state.loading) {

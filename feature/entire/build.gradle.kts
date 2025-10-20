@@ -14,6 +14,7 @@ ksp {
 }
 
 dependencies {
+    implementation(project(":core:analytics"))
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.bundles.androidx.compose)
     implementation(libs.bundles.orbit)

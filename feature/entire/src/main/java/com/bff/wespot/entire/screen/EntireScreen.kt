@@ -31,6 +31,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -58,6 +62,7 @@ internal fun EntireScreen(
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
 
@@ -69,7 +74,10 @@ internal fun EntireScreen(
         ) {
             ProfileContent(
                 profile = state.profile,
-                onClick = { navigator.navigateToProfileEditScreen() },
+                onClick = {
+                    analyticsHelper.logClick("mypage_edit_profile")
+                    navigator.navigateToProfileEditScreen()
+                },
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -178,6 +186,8 @@ internal fun EntireScreen(
     LaunchedEffect(Unit) {
         action(EntireAction.OnEntireScreenEntered)
     }
+
+    TrackScreenViewEvent("mypage")
 }
 
 @Composable

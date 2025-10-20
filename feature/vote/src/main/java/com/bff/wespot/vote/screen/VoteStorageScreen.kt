@@ -42,6 +42,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.common.util.timeDifference
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -218,6 +219,8 @@ private fun ReceivedVoteScreen(
     LaunchedEffect(Unit) {
         action(StorageAction.GetReceivedVotes)
     }
+
+    TrackScreenViewEvent("received_vote_storage")
 }
 
 @Composable
@@ -264,6 +267,8 @@ private fun SentVoteScreen(state: StorageUiState, action: (StorageAction) -> Uni
     LaunchedEffect(Unit) {
         action(StorageAction.GetSentVotes)
     }
+
+    TrackScreenViewEvent("sent_vote_storage")
 }
 
 @Composable

@@ -1,6 +1,6 @@
 package com.bff.wespot
 
-import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase

@@ -17,6 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackImpressionEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
 import com.bff.wespot.designsystem.theme.StaticTypeScale
@@ -45,8 +49,10 @@ fun BlockedMessageScreen(
     navigator: BlockedMessageNavigator,
     showToast: (ToastState) -> Unit,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val state by viewModel.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var showUnblockToast by remember { mutableStateOf(false) }
     val action = viewModel::onAction
 
     handleSideEffect(viewModel.sideEffect)
@@ -62,6 +68,9 @@ fun BlockedMessageScreen(
             }
 
             is BlockedMessageSideEffect.ShowToast -> {
+                if (it.toastState.message == R.string.unblock_done) {
+                    showUnblockToast = true
+                }
                 showToast(it.toastState)
             }
         }
@@ -105,6 +114,7 @@ fun BlockedMessageScreen(
                             itemClick = { },
                             optionButtonClick = {
                                 if (item.isBlocked) {
+                                    analyticsHelper.logClick("message_room_unblock")
                                     action(BlockedMessageAction.OnUnBlockButtonClicked(item.id))
                                 }
                             },
@@ -121,6 +131,7 @@ fun BlockedMessageScreen(
             okButtonText = stringResource(id = R.string.unblock),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
+                analyticsHelper.logClick("message_room_unblock_complete")
                 action(BlockedMessageAction.OnDialogUnBlockButtonClicked)
             },
             cancelButtonClick = {
@@ -128,5 +139,9 @@ fun BlockedMessageScreen(
             },
             onDismissRequest = {},
         )
+    }
+
+    if (showUnblockToast) {
+        TrackImpressionEvent("message_room_unblock_complete")
     }
 }

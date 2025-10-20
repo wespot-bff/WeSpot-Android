@@ -35,6 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
@@ -76,6 +81,7 @@ fun VotingScreen(
     restricted: RestrictionArg,
     navigator: Navigator,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
@@ -162,6 +168,7 @@ fun VotingScreen(
                 action = action,
                 votingNavigator = votingNavigator,
                 submitButton = submitButton,
+                analyticsHelper = analyticsHelper,
                 changeSubmitButton = { submitButton = it },
             )
         }
@@ -188,10 +195,12 @@ fun VotingScreen(
             ),
             optionsClickable = persistentListOf(
                 {
+                    analyticsHelper.logClick("vote_not_my_classmate")
                     showReportSheet = false
                     showReportDialog = true
                 },
                 {
+                    analyticsHelper.logClick("vote_need_more_option")
                 },
             ),
         )
@@ -241,6 +250,7 @@ private fun VotingProgressScreen(
     action: (VotingAction) -> Unit,
     votingNavigator: VotingNavigator,
     submitButton: Boolean,
+    analyticsHelper: AnalyticsHelper,
     changeSubmitButton: (Boolean) -> Unit,
 ) {
     val heightDp = LocalConfiguration.current.screenHeightDp.dp
@@ -323,6 +333,7 @@ private fun VotingProgressScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             WSButton(
                 onClick = {
+                    analyticsHelper.logClick("submit_vote")
                     action(VotingAction.SubmitVoteResult)
                 },
                 text = stringResource(id = R.string.submit_vote_and_check_result),
@@ -330,6 +341,12 @@ private fun VotingProgressScreen(
             ) {
                 it.invoke()
             }
+        }
+    }
+
+    LaunchedEffect(state.pageNumber) {
+        if (state.pageNumber != -1) {
+            analyticsHelper.logScreenView("voting_${state.pageNumber}")
         }
     }
 }
@@ -375,4 +392,6 @@ private fun VotingGuideScreen(
             it.invoke()
         }
     }
+
+    TrackScreenViewEvent("vote_guide")
 }

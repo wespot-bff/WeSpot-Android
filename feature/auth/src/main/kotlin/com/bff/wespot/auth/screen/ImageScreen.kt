@@ -33,6 +33,11 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.error
 import coil3.request.placeholder
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.NavigationAction
@@ -54,6 +59,7 @@ internal fun ImageScreen(
 ) {
     val action = viewModel::onAction
     val uiState by viewModel.collectAsState()
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val context = LocalContext.current
     var error by remember {
         mutableStateOf(false)
@@ -186,6 +192,12 @@ internal fun ImageScreen(
         WSButton(
             enabled = error.not() && uiState.hasProfanity.not(),
             onClick = {
+                analyticsHelper.logClick(
+                    name = "join_set_profile_complete",
+                    extras = listOf(
+                        AnalyticsEvent.Param("introduce_contents", uiState.introduction),
+                    ),
+                )
                 action(AuthAction.UploadImage)
             },
             text = stringResource(id = R.string.next),
@@ -197,4 +209,8 @@ internal fun ImageScreen(
     LaunchedEffect(Unit) {
         action(AuthAction.OnStartImageScreen)
     }
+
+    TrackScreenViewEvent(
+        name = "join_set_profile",
+    )
 }

@@ -24,6 +24,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logScreenView
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -72,6 +76,7 @@ fun MessageWriteScreen(
     var showReplyDialog by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     val state by viewModel.collectAsState()
     val action: (WritingAction) -> Unit = viewModel::onAction
@@ -134,6 +139,11 @@ fun MessageWriteScreen(
             button = {
                 WSButton(
                     onClick = {
+                        if (state.isReplyContext) {
+                            analyticsHelper.logClick("reply_message_content")
+                        } else {
+                            analyticsHelper.logClick("write_message_content")
+                        }
                         action(WritingAction.OnWriteDoneButtonClicked)
                     },
                     enabled = state.messageInput.length in 1..MESSAGE_MAX_LENGTH && state.hasProfanity.not(),
@@ -224,7 +234,10 @@ fun MessageWriteScreen(
             subTitle = stringResource(R.string.reply_dialog_subtitle),
             okButtonText = stringResource(R.string.message_send_dialog_button_text),
             cancelButtonText = stringResource(R.string.cancel),
-            okButtonClick = { action(WritingAction.OnReplyButtonClicked) },
+            okButtonClick = {
+                analyticsHelper.logClick("reply_message_complete")
+                action(WritingAction.OnReplyButtonClicked)
+            },
             cancelButtonClick = { action(WritingAction.OnReplyCancelButtonClicked) },
             onDismissRequest = { },
         )
@@ -240,5 +253,14 @@ fun MessageWriteScreen(
 
     LaunchedEffect(Unit) {
         action(WritingAction.OnWriteScreenEntered(args))
+    }
+
+    LaunchedEffect(Unit) {
+        val screenName = if (args.isReplyContext) {
+            "reply_message_content"
+        } else {
+            "write_message_content"
+        }
+        analyticsHelper.logScreenView(screenName)
     }
 }

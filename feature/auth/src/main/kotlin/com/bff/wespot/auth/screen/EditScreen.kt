@@ -37,6 +37,10 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.error
 import coil3.request.placeholder
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.auth.R
 import com.bff.wespot.auth.state.AuthAction
 import com.bff.wespot.auth.state.AuthUiState
@@ -62,6 +66,7 @@ fun EditScreen(
 ) {
     val state by viewModel.collectAsState()
     val action = viewModel::onAction
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
     var firstEnter by remember {
         mutableStateOf(true)
@@ -162,10 +167,17 @@ fun EditScreen(
                 state = state,
                 navigator = navigator,
             ) {
+                analyticsHelper.logClick(
+                    name = "join_complete_sign_up",
+                )
                 action(AuthAction.Navigation(NavigationAction.NavigateToCompleteScreen))
             }
         }
     }
+
+    TrackScreenViewEvent(
+        name = "join_edit_profile",
+    )
 }
 
 @Composable

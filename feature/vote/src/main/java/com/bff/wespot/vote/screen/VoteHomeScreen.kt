@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.common.util.toDateString
 import com.bff.wespot.designsystem.component.banner.WSBanner
 import com.bff.wespot.designsystem.component.banner.WSBannerType
@@ -266,6 +267,8 @@ private fun VoteHomeContent(
             }
         }
     }
+
+    TrackScreenViewEvent("vote_home")
 }
 
 @Composable
@@ -361,6 +364,8 @@ private fun CardResultContent(
     LaunchedEffect(Unit) {
         action(VoteAction.GetFirst(LocalDate.now().toDateString()))
     }
+
+    TrackScreenViewEvent("vote_result")
 }
 
 private const val HOME_SCREEN = 0

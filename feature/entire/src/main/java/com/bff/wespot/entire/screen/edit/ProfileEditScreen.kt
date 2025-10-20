@@ -55,6 +55,11 @@ import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.fallback
 import coil3.request.placeholder
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -98,6 +103,7 @@ fun ProfileEditScreen(
     var toast by remember { mutableStateOf(ToastState()) }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val focusManager = LocalFocusManager.current
     val view = LocalView.current
     val viewTreeObserver = view.viewTreeObserver
@@ -149,6 +155,15 @@ fun ProfileEditScreen(
                     state.profilePath != state.profile.profileCharacter.iconUrl
                 WSButton(
                     onClick = {
+                        analyticsHelper.logClick(
+                            name = "mypage_edit_profile_complete",
+                            extras = listOf(
+                                AnalyticsEvent.Param(
+                                    "introduce_edit_contents",
+                                    state.introductionInput,
+                                ),
+                            ),
+                        )
                         action(ProfileEditAction.OnProfileEditDoneButtonClicked)
                     },
                     enabled =
@@ -350,6 +365,8 @@ fun ProfileEditScreen(
     LaunchedEffect(Unit) {
         action(ProfileEditAction.OnProfileEditScreenEntered)
     }
+
+    TrackScreenViewEvent("mypage_edit_profile")
 }
 
 @Composable

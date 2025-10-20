@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.bff.wespot.analytics.TrackScreenViewEvent
 import com.bff.wespot.community.component.Item
 import com.bff.wespot.community.search.state.SearchAction
 import com.bff.wespot.community.search.state.SearchUiState
@@ -132,4 +133,6 @@ internal fun SearchScreen(
             }
         }
     }
+
+    TrackScreenViewEvent("community_search_post")
 }

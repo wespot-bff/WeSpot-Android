@@ -31,6 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.input.WsTextField
@@ -81,6 +86,7 @@ fun ReceiverSelectionScreen(
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
     val context = LocalContext.current
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     var dialogState by remember { mutableStateOf(false) }
     var showAnonymousProfileModal by remember { mutableStateOf(false) }
     var showProfileSelectBottomSheet by remember { mutableStateOf(false) }
@@ -161,6 +167,7 @@ fun ReceiverSelectionScreen(
                 WSButton(
                     onClick = {
                         action(ReceiverAction.OnSelectDoneButtonClicked)
+                        analyticsHelper.logClick("receiver_selection")
                     },
                     enabled = state.receiver.name.isNotBlank(),
                     text = stringResource(R.string.next),
@@ -270,6 +277,7 @@ fun ReceiverSelectionScreen(
                                     receiver = item,
                                     selected = state.receiver.id == item.id,
                                     onClick = {
+                                        analyticsHelper.logClick("message_receiver")
                                         keyboard?.hide()
                                         action(ReceiverAction.OnUserSelected(item))
                                     },
@@ -300,9 +308,19 @@ fun ReceiverSelectionScreen(
                 action(ReceiverAction.OnProfileBottomSheetClosed)
             },
             onProfileAddButtonClicked = {
+                analyticsHelper.logClick("create_message_profile")
                 action(ReceiverAction.OnProfileAddButtonClicked)
             },
             onProfileSelected = {
+                analyticsHelper.logClick(
+                    name = "message_profile",
+                    extras = listOf(
+                        AnalyticsEvent.Param(
+                            "isAnonymous",
+                            it.isAnonymous.toString(),
+                        ),
+                    ),
+                )
                 action(ReceiverAction.OnProfileBottomSheetSelected(it))
             },
             showToast = showToast,
@@ -316,6 +334,7 @@ fun ReceiverSelectionScreen(
                 imageUrl = state.senderProfile.image,
             ),
             onProfileSelected = {
+                analyticsHelper.logClick("create_anonymous_message_profile")
                 action(ReceiverAction.OnAnonymousProfileSelected(it))
             },
             onDismiss = {
@@ -339,6 +358,8 @@ fun ReceiverSelectionScreen(
     LaunchedEffect(Unit) {
         action(ReceiverAction.OnReceiverScreenEntered)
     }
+
+    TrackScreenViewEvent("receiver_selection")
 }
 
 @Composable

@@ -43,6 +43,13 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
+import com.bff.wespot.analytics.logImpression
+import com.bff.wespot.analytics.params.AreaParams
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.header.WSTopBar
 import com.bff.wespot.designsystem.component.modal.WSDialog
@@ -88,6 +95,7 @@ internal fun MessageRoomScreen(
     viewModel: MessageRoomViewModel = hiltViewModel(),
     navigator: MessageRoomNavigator,
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     var showDeleteConfirmModal by remember { mutableStateOf(false) }
     var showReplyNoticeModal by remember { mutableStateOf(false) }
 
@@ -148,9 +156,11 @@ internal fun MessageRoomScreen(
                 showReplyButton = state.messageRoom.isLastReceivedMessage(state.selectedMessageDetail),
                 showDeleteButton = !state.messageRoom.isSingleMessage(),
                 onReplyButtonClicked = {
+                    analyticsHelper.logClick("reply_message")
                     action(RoomAction.OnReplyButtonClicked)
                 },
                 onDeleteButtonClicked = {
+                    analyticsHelper.logClick("delete_message")
                     action(RoomAction.OnDeleteButtonClicked)
                 },
             )
@@ -159,6 +169,7 @@ internal fun MessageRoomScreen(
 
             MessageHorizontalList(
                 messageRoom = state.messageRoom,
+                analyticsHelper = analyticsHelper,
                 onItemClicked = {
                     action(RoomAction.OnMessageDetailSelected(it))
                 },
@@ -174,6 +185,10 @@ internal fun MessageRoomScreen(
             okButtonText = stringResource(R.string.message_delete_dialog_ok_button),
             cancelButtonText = stringResource(id = R.string.close),
             okButtonClick = {
+                analyticsHelper.logClick(
+                    name = "delete_message",
+                    area = AreaParams.MODAL,
+                )
                 action(RoomAction.OnDeleteConfirmed)
             },
             onDismissRequest = { },
@@ -202,6 +217,8 @@ internal fun MessageRoomScreen(
     LaunchedEffect(Unit) {
         action(RoomAction.OnScreenEntered)
     }
+
+    TrackScreenViewEvent("message_room")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -362,14 +379,20 @@ private fun MessageCard(
 private fun MessageHorizontalList(
     messageRoom: MessageRoom,
     selectedItem: MessageDetail,
+    analyticsHelper: AnalyticsHelper,
     onItemClicked: (MessageDetail) -> Unit,
 ) {
     val listState = rememberLazyListState()
+    var hasLoggedImpression by remember { mutableStateOf(false) }
 
     LaunchedEffect(messageRoom.messageDetails.size) {
         val selectedIndex = messageRoom.messageDetails.indexOf(selectedItem)
         if (selectedIndex >= 0) {
             listState.animateScrollToItem(selectedIndex)
+            if (!hasLoggedImpression && messageRoom.messageDetails.isNotEmpty()) {
+                logMessageListImpression(messageRoom, analyticsHelper)
+                hasLoggedImpression = true
+            }
         }
     }
 
@@ -441,4 +464,30 @@ private fun MessageHorizontalList(
             Spacer(modifier = Modifier.width(16.dp))
         }
     }
+}
+
+private fun logMessageListImpression(
+    messageRoom: MessageRoom,
+    analyticsHelper: AnalyticsHelper,
+) {
+    val messageDetails = messageRoom.messageDetails
+    val firstSendTime = messageDetails
+        .firstOrNull()
+        ?.createdAt
+        ?.toStringWithDotSeparator()
+        .orEmpty()
+    val lastSendTime = messageDetails
+        .lastOrNull()
+        ?.createdAt
+        ?.toStringWithDotSeparator()
+        .orEmpty()
+
+    analyticsHelper.logImpression(
+        name = "message_list",
+        extras = buildList {
+            add(AnalyticsEvent.Param("size", messageDetails.size.toString()))
+            add(AnalyticsEvent.Param("first_send_time", firstSendTime))
+            add(AnalyticsEvent.Param("last_send_time", lastSendTime))
+        },
+    )
 }

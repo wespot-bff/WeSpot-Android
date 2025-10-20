@@ -1,7 +1,7 @@
 package com.bff.wespot
 
-import com.bff.wespot.analytic.AnalyticsEvent
-import com.bff.wespot.analytic.AnalyticsHelper
+import com.bff.wespot.analytics.AnalyticsEvent
+import com.bff.wespot.analytics.AnalyticsHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import javax.inject.Inject
@@ -12,9 +12,9 @@ class FirebaseAnalyticsHelper @Inject constructor(
     private var userId: String = ""
 
     override fun logEvent(event: AnalyticsEvent) {
-        firebaseAnalytics.logEvent(event.type) {
+        firebaseAnalytics.logEvent(event.name) {
             param("userId", userId)
-            event.extras.forEach { (key, value) ->
+            event.params.forEach { (key, value) ->
                 param(
                     key = key.take(40),
                     value = value.take(100),

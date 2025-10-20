@@ -24,6 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bff.wespot.analytics.AnalyticsHelper
+import com.bff.wespot.analytics.LocalAnalyticsHelper
+import com.bff.wespot.analytics.TrackScreenViewEvent
+import com.bff.wespot.analytics.logClick
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSButtonType
 import com.bff.wespot.designsystem.component.header.WSTopBar
@@ -47,6 +51,7 @@ fun RevokeScreen(
     navigator: RevokeNavigator,
     viewModel: EntireViewModel = hiltViewModel(),
 ) {
+    val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
     val action = viewModel::onAction
     val state by viewModel.collectAsState()
 
@@ -127,6 +132,7 @@ fun RevokeScreen(
                 buttonType = WSButtonType.Primary,
                 content = { it() },
                 onClick = {
+                    analyticsHelper.logClick("want_secession")
                     navigator.navigateToRevokeConfirmScreen()
                 },
             )
@@ -136,4 +142,6 @@ fun RevokeScreen(
     LaunchedEffect(Unit) {
         action(EntireAction.OnRevokeScreenEntered)
     }
+
+    TrackScreenViewEvent("want_secession")
 }
