@@ -48,20 +48,25 @@ fun AllPostsScreen(
                                 reactions = item.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                                            val isLiked = uiState.likedPosts.contains(item.id)
-                                            val currentCount =
-                                                reaction.count.text.toIntOrNull() ?: 0
-                                            val wasLikedBefore = reaction.selected
+                                            val isLikedLocally =
+                                                uiState.likedPosts.contains(item.id)
+                                            val actualSelected = if (isLikedLocally) {
+                                                !reaction.selected
+                                            } else {
+                                                reaction.selected
+                                            }
 
-                                            val newCount = when {
-                                                isLiked && !wasLikedBefore -> currentCount + 1
-                                                !isLiked && wasLikedBefore -> currentCount - 1
+                                            val serverSelected = reaction.selected
+                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val adjustedCount = when {
+                                                isLikedLocally && serverSelected -> currentCount - 1
+                                                isLikedLocally && !serverSelected -> currentCount + 1
                                                 else -> currentCount
                                             }
 
                                             reaction.copy(
-                                                selected = isLiked,
-                                                count = reaction.count.copy(text = newCount.toString()),
+                                                selected = actualSelected,
+                                                count = reaction.count.copy(text = adjustedCount.toString()),
                                             )
                                         }
 
@@ -69,7 +74,11 @@ fun AllPostsScreen(
                                     }
                                 },
                                 scrap = item.content.footerSection.scrap.copy(
-                                    selected = uiState.scrappedPosts.contains(item.id),
+                                    selected = if (uiState.scrappedPosts.contains(item.id)) {
+                                        !item.content.footerSection.scrap.selected
+                                    } else {
+                                        item.content.footerSection.scrap.selected
+                                    },
                                 ),
                             ),
                         )
@@ -83,6 +92,7 @@ fun AllPostsScreen(
                                     is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel -> {
                                         action(CommunityAllAction.NavigateToDetailComments(item.id))
                                     }
+
                                     else -> {
                                         action(
                                             CommunityAllAction.OnReactionClick(
@@ -103,7 +113,10 @@ fun AllPostsScreen(
                             },
                             scrapClick = {
                                 action(
-                                    CommunityAllAction.OnScrapClick(item.id),
+                                    CommunityAllAction.OnScrapClick(
+                                        id = item.id,
+                                        isCurrentlyScrapped = updatedContent.footerSection.scrap.selected,
+                                    ),
                                 )
                             },
                         )

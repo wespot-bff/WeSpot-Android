@@ -33,6 +33,7 @@ data class PostDetailUiModel(
                 val type: String,
                 val icon: IconType,
                 val text: RichTextType,
+                val isSelected: Boolean,
             )
         }
 
@@ -121,6 +122,7 @@ data class PostDetailUiModel(
                             color = ColorType.Token(""),
                             typography = "",
                         ),
+                        isSelected = false,
                     ),
                 ),
                 infoSection = PostDetailContentUiModel.InfoSectionUiModel(
@@ -177,6 +179,7 @@ private fun PostDetail.PostDetailContent.HeaderSection.Button.toUiModel() =
         type = type,
         icon = icon,
         text = text,
+        isSelected = isSelected,
     )
 
 private fun PostDetail.PostDetailContent.InfoSection.toUiModel() =

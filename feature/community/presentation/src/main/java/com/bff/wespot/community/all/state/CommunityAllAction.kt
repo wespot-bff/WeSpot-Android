@@ -22,6 +22,7 @@ sealed interface CommunityAllAction {
 
     data class OnScrapClick(
         val id: String,
+        val isCurrentlyScrapped: Boolean,
     ) : CommunityAllAction
 
     data class NavigateToDetailComments(

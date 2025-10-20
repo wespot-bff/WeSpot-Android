@@ -16,6 +16,7 @@ sealed interface CommunityAction {
     ) : CommunityAction
     data class OnScrapClick(
         val id: String,
+        val isCurrentlyScrapped: Boolean,
     ) : CommunityAction
     data object OnRefresh : CommunityAction
 }

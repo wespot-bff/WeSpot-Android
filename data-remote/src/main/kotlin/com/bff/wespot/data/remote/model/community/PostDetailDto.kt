@@ -40,6 +40,7 @@ data class PostDetailDto(
                 val type: String,
                 val icon: IconTypeDto,
                 val text: RichTextTypeDto,
+                val isSelected: Boolean,
             )
         }
 
@@ -133,6 +134,7 @@ private fun PostDetailDto.PostDetailContentDto.HeaderSectionDto.ButtonDto.toDoma
         type = type,
         icon = icon.toDomain(),
         text = text.toDomain(),
+        isSelected = isSelected,
     )
 
 private fun PostDetailDto.PostDetailContentDto.InfoSectionDto.toDomain() =

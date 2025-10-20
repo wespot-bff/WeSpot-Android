@@ -29,6 +29,8 @@ sealed interface PostDetailAction {
     data class OnCommentDelete(
         val commentId: String,
     ) : PostDetailAction
+    data object OnDismissCommentDeleteDialog : PostDetailAction
+    data object OnConfirmCommentDelete : PostDetailAction
     data object RefreshPost : PostDetailAction
 
     // Bottom sheet actions

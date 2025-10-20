@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -73,7 +74,6 @@ import com.bff.wespot.designsystem.theme.White
 import com.bff.wespot.model.serverDriven.type.ColorType
 import com.bff.wespot.model.serverDriven.type.IconType
 import com.bff.wespot.model.serverDriven.type.RichTextType
-import com.bff.wespot.server.driven.type.Icon
 import com.bff.wespot.server.driven.type.Text
 import com.bff.wespot.server.driven.type.color
 import com.bff.wespot.ui.component.WSBottomSheet
@@ -107,7 +107,11 @@ internal fun PostDetailScreen(
                     ) {
                         uiModel.category.text.Text(StaticTypeScale.Default.body6)
 
-                        uiModel.category.icon.Icon(modifier = Modifier.size(18.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(uiModel.category.icon.url),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
                     }
                 },
                 title = "",
@@ -242,6 +246,18 @@ internal fun PostDetailScreen(
             },
             cancelButtonClick = { onAction(PostDetailAction.OnDismissBlockDialog) },
             onDismissRequest = { onAction(PostDetailAction.OnDismissBlockDialog) },
+        )
+    }
+
+    if (uiState.showCommentDeleteDialog) {
+        WSDialog(
+            title = stringResource(R.string.comment_delete_dialog_title),
+            subTitle = stringResource(R.string.comment_delete_dialog_subtitle),
+            okButtonText = stringResource(R.string.write_post_warning_ok),
+            cancelButtonText = stringResource(R.string.write_post_warning_no),
+            okButtonClick = { onAction(PostDetailAction.OnConfirmCommentDelete) },
+            cancelButtonClick = { onAction(PostDetailAction.OnDismissCommentDeleteDialog) },
+            onDismissRequest = { onAction(PostDetailAction.OnDismissCommentDeleteDialog) },
         )
     }
 }
@@ -434,7 +450,8 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     modifier = Modifier
                         .clickableSingle {
                             onAction(PostDetailAction.OnReactionClick(reaction))
-                        }.fillMaxHeight(),
+                        }
+                        .fillMaxHeight(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -643,6 +660,7 @@ private fun CommentInputBox(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .imePadding()
             .padding(
                 vertical = 40.dp,
                 horizontal = 20.dp,
@@ -657,7 +675,8 @@ private fun CommentInputBox(
                 .background(
                     color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
-                ).padding(horizontal = 16.dp, vertical = 12.dp),
+                )
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(
@@ -792,6 +811,7 @@ private object PostDetailPreviewData {
                         color = ColorType.Token("gray400"),
                         typography = "body7",
                     ),
+                    isSelected = false,
                 ),
             ),
             infoSection = PostDetailContentUiModel.InfoSectionUiModel(
@@ -802,8 +822,8 @@ private object PostDetailPreviewData {
                 ),
                 description = RichTextType(
                     text = "React 18에서 도입된 Concurrent Features는 사용자 경험을 크게 개선할 수 있는 강력한 기능들입니다. " +
-                        "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
-                        "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
+                            "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
+                            "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
                     color = ColorType.Token("white"),
                     typography = "body6",
                 ),

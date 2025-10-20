@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -107,7 +108,9 @@ internal fun CategoryScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
     ) {
         LazyColumn(
             modifier = Modifier
@@ -194,20 +197,26 @@ internal fun CategoryScreen(
                                 reactions = post.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is ReactionUiModel.LikeUiModel -> {
-                                            val isLiked = uiState.likedPosts.contains(post.id)
+                                            val isLikedLocally =
+                                                uiState.likedPosts.contains(post.id)
+                                            val actualSelected = if (isLikedLocally) {
+                                                !reaction.selected
+                                            } else {
+                                                reaction.selected
+                                            }
+
+                                            val serverSelected = reaction.selected
                                             val currentCount =
                                                 reaction.count.text.toIntOrNull() ?: 0
-                                            val wasLikedBefore = reaction.selected
-
-                                            val newCount = when {
-                                                isLiked && !wasLikedBefore -> currentCount + 1
-                                                !isLiked && wasLikedBefore -> currentCount - 1
+                                            val adjustedCount = when {
+                                                isLikedLocally && serverSelected -> currentCount - 1
+                                                isLikedLocally && !serverSelected -> currentCount + 1
                                                 else -> currentCount
                                             }
 
                                             reaction.copy(
-                                                selected = isLiked,
-                                                count = reaction.count.copy(text = newCount.toString()),
+                                                selected = actualSelected,
+                                                count = reaction.count.copy(text = adjustedCount.toString()),
                                             )
                                         }
 
@@ -215,7 +224,11 @@ internal fun CategoryScreen(
                                     }
                                 },
                                 scrap = post.content.footerSection.scrap.copy(
-                                    selected = uiState.scrappedPosts.contains(post.id),
+                                    selected = if (uiState.scrappedPosts.contains(post.id)) {
+                                        !post.content.footerSection.scrap.selected
+                                    } else {
+                                        post.content.footerSection.scrap.selected
+                                    },
                                 ),
                             ),
                         )
@@ -236,7 +249,12 @@ internal fun CategoryScreen(
                                 // Do Nothing
                             },
                             scrapClick = {
-                                onAction(CategoryDetailAction.OnScrapClick(post.id))
+                                onAction(
+                                    CategoryDetailAction.OnScrapClick(
+                                        id = post.id,
+                                        isCurrentlyScrapped = updatedContent.footerSection.scrap.selected,
+                                    ),
+                                )
                             },
                             modifier = Modifier.padding(horizontal = 20.dp),
                         )

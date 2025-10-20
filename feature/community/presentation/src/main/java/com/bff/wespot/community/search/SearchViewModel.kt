@@ -50,7 +50,7 @@ internal class SearchViewModel @Inject constructor(
             }
 
             is SearchAction.OnScrapClick -> {
-                onScrapClick(action.id)
+                onScrapClick(action.id, action.isCurrentlyScrapped)
             }
 
             is SearchAction.NavigateToCategory -> {
@@ -115,10 +115,10 @@ internal class SearchViewModel @Inject constructor(
     private fun onReactionClick(postId: String, reaction: ReactionUiModel) = intent {
         when (reaction) {
             is ReactionUiModel.LikeUiModel -> {
-                val isCurrentlyLiked = state.likedPosts.contains(postId)
+                val isInToggleSet = state.likedPosts.contains(postId)
                 reduce {
                     state.copy(
-                        likedPosts = if (isCurrentlyLiked) {
+                        likedPosts = if (isInToggleSet) {
                             state.likedPosts - postId
                         } else {
                             state.likedPosts + postId
@@ -130,7 +130,7 @@ internal class SearchViewModel @Inject constructor(
                 if (!result) {
                     reduce {
                         state.copy(
-                            likedPosts = if (isCurrentlyLiked) {
+                            likedPosts = if (isInToggleSet) {
                                 state.likedPosts + postId
                             } else {
                                 state.likedPosts - postId
@@ -145,11 +145,11 @@ internal class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun onScrapClick(postId: String) = intent {
-        val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+    private fun onScrapClick(postId: String, isCurrentlyScrapped: Boolean) = intent {
+        val isInToggleSet = state.scrappedPosts.contains(postId)
         reduce {
             state.copy(
-                scrappedPosts = if (isCurrentlyScrapped) {
+                scrappedPosts = if (isInToggleSet) {
                     state.scrappedPosts - postId
                 } else {
                     state.scrappedPosts + postId
@@ -161,7 +161,7 @@ internal class SearchViewModel @Inject constructor(
         if (!result) {
             reduce {
                 state.copy(
-                    scrappedPosts = if (isCurrentlyScrapped) {
+                    scrappedPosts = if (isInToggleSet) {
                         state.scrappedPosts + postId
                     } else {
                         state.scrappedPosts - postId
