@@ -11,6 +11,7 @@ sealed interface CategoryDetailAction {
 
     data class OnScrapClick(
         val id: String,
+        val isCurrentlyScrapped: Boolean,
     ) : CategoryDetailAction
 
     data object OnRefresh : CategoryDetailAction

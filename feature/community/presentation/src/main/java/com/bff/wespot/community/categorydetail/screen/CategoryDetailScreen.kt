@@ -148,7 +148,8 @@ internal fun CategoryScreen(
                         modifier = Modifier
                             .clickableSingle {
                                 showCategoryBottomSheet = true
-                            }.padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
+                            }
+                            .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
@@ -193,20 +194,25 @@ internal fun CategoryScreen(
                                 reactions = post.content.footerSection.reactions.map { reaction ->
                                     when (reaction) {
                                         is ReactionUiModel.LikeUiModel -> {
-                                            val isLiked = uiState.likedPosts.contains(post.id)
-                                            val currentCount =
-                                                reaction.count.text.toIntOrNull() ?: 0
-                                            val wasLikedBefore = reaction.selected
+                                            val isLikedLocally =
+                                                uiState.likedPosts.contains(post.id)
+                                            val actualSelected = if (isLikedLocally) {
+                                                !reaction.selected
+                                            } else {
+                                                reaction.selected
+                                            }
 
-                                            val newCount = when {
-                                                isLiked && !wasLikedBefore -> currentCount + 1
-                                                !isLiked && wasLikedBefore -> currentCount - 1
+                                            val serverSelected = reaction.selected
+                                            val currentCount = reaction.count.text.toIntOrNull() ?: 0
+                                            val adjustedCount = when {
+                                                isLikedLocally && serverSelected -> currentCount - 1
+                                                isLikedLocally && !serverSelected -> currentCount + 1
                                                 else -> currentCount
                                             }
 
                                             reaction.copy(
-                                                selected = isLiked,
-                                                count = reaction.count.copy(text = newCount.toString()),
+                                                selected = actualSelected,
+                                                count = reaction.count.copy(text = adjustedCount.toString()),
                                             )
                                         }
 
@@ -214,7 +220,11 @@ internal fun CategoryScreen(
                                     }
                                 },
                                 scrap = post.content.footerSection.scrap.copy(
-                                    selected = uiState.scrappedPosts.contains(post.id),
+                                    selected = if (uiState.scrappedPosts.contains(post.id)) {
+                                        !post.content.footerSection.scrap.selected
+                                    } else {
+                                        post.content.footerSection.scrap.selected
+                                    },
                                 ),
                             ),
                         )
@@ -235,7 +245,12 @@ internal fun CategoryScreen(
                                 // Do Nothing
                             },
                             scrapClick = {
-                                onAction(CategoryDetailAction.OnScrapClick(post.id))
+                                onAction(
+                                    CategoryDetailAction.OnScrapClick(
+                                        id = post.id,
+                                        isCurrentlyScrapped = updatedContent.footerSection.scrap.selected,
+                                    ),
+                                )
                             },
                             modifier = Modifier.padding(horizontal = 20.dp),
                         )

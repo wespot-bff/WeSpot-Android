@@ -74,7 +74,7 @@ class CommunityHomeViewModel @Inject constructor(
             }
 
             is CommunityAction.OnScrapClick -> {
-                onScrapClick(action.id)
+                onScrapClick(action.id, action.isCurrentlyScrapped)
             }
 
             is CommunityAction.OnRefresh -> {
@@ -105,10 +105,10 @@ class CommunityHomeViewModel @Inject constructor(
     ) = intent {
         when (reaction) {
             is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                val isCurrentlyLiked = state.likedPosts.contains(postId)
+                val isInToggleSet = state.likedPosts.contains(postId)
                 reduce {
                     state.copy(
-                        likedPosts = if (isCurrentlyLiked) {
+                        likedPosts = if (isInToggleSet) {
                             state.likedPosts - postId
                         } else {
                             state.likedPosts + postId
@@ -120,7 +120,7 @@ class CommunityHomeViewModel @Inject constructor(
                 if (!result) {
                     reduce {
                         state.copy(
-                            likedPosts = if (isCurrentlyLiked) {
+                            likedPosts = if (isInToggleSet) {
                                 state.likedPosts + postId
                             } else {
                                 state.likedPosts - postId
@@ -135,11 +135,11 @@ class CommunityHomeViewModel @Inject constructor(
         }
     }
 
-    private fun onScrapClick(postId: String) = intent {
-        val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+    private fun onScrapClick(postId: String, isCurrentlyScrapped: Boolean) = intent {
+        val isInToggleSet = state.scrappedPosts.contains(postId)
         reduce {
             state.copy(
-                scrappedPosts = if (isCurrentlyScrapped) {
+                scrappedPosts = if (isInToggleSet) {
                     state.scrappedPosts - postId
                 } else {
                     state.scrappedPosts + postId
@@ -151,7 +151,7 @@ class CommunityHomeViewModel @Inject constructor(
         if (!result) {
             reduce {
                 state.copy(
-                    scrappedPosts = if (isCurrentlyScrapped) {
+                    scrappedPosts = if (isInToggleSet) {
                         state.scrappedPosts + postId
                     } else {
                         state.scrappedPosts - postId

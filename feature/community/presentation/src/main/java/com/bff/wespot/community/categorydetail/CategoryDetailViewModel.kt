@@ -55,7 +55,7 @@ class CategoryDetailViewModel @Inject constructor(
             }
 
             is CategoryDetailAction.OnScrapClick -> {
-                onScrapClick(action.id)
+                onScrapClick(action.id, action.isCurrentlyScrapped)
             }
 
             is CategoryDetailAction.OnRefresh -> {
@@ -115,10 +115,10 @@ class CategoryDetailViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             when (reaction) {
                 is PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                    val isCurrentlyLiked = state.likedPosts.contains(postId)
+                    val isInToggleSet = state.likedPosts.contains(postId)
                     reduce {
                         state.copy(
-                            likedPosts = if (isCurrentlyLiked) {
+                            likedPosts = if (isInToggleSet) {
                                 state.likedPosts - postId
                             } else {
                                 state.likedPosts + postId
@@ -130,7 +130,7 @@ class CategoryDetailViewModel @Inject constructor(
                     if (!result) {
                         reduce {
                             state.copy(
-                                likedPosts = if (isCurrentlyLiked) {
+                                likedPosts = if (isInToggleSet) {
                                     state.likedPosts + postId
                                 } else {
                                     state.likedPosts - postId
@@ -149,12 +149,12 @@ class CategoryDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onScrapClick(postId: String) = intent {
+    private fun onScrapClick(postId: String, isCurrentlyScrapped: Boolean) = intent {
         viewModelScope.launch(ioDispatcher) {
-            val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+            val isInToggleSet = state.scrappedPosts.contains(postId)
             reduce {
                 state.copy(
-                    scrappedPosts = if (isCurrentlyScrapped) {
+                    scrappedPosts = if (isInToggleSet) {
                         state.scrappedPosts - postId
                     } else {
                         state.scrappedPosts + postId
@@ -166,7 +166,7 @@ class CategoryDetailViewModel @Inject constructor(
             if (!result) {
                 reduce {
                     state.copy(
-                        scrappedPosts = if (isCurrentlyScrapped) {
+                        scrappedPosts = if (isInToggleSet) {
                             state.scrappedPosts + postId
                         } else {
                             state.scrappedPosts - postId

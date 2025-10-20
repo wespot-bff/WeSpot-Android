@@ -16,6 +16,7 @@ sealed interface SearchAction {
     ) : SearchAction
     data class OnScrapClick(
         val id: String,
+        val isCurrentlyScrapped: Boolean,
     ) : SearchAction
     data class NavigateToCategory(
         val categoryId: String,

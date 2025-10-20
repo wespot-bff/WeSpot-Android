@@ -61,6 +61,7 @@ class PostDetailViewModel @Inject constructor(
                         val initialLikeCount = likeReaction?.count?.text?.toIntOrNull() ?: 0
                         val initialCommentCount = chatReaction?.count?.text?.toIntOrNull() ?: 0
                         val isLiked = likeReaction?.selected ?: false
+                        val isScrapped = postDetail.content.footerSection.scrap.selected
 
                         reduce {
                             state.copy(
@@ -68,6 +69,7 @@ class PostDetailViewModel @Inject constructor(
                                 likeCount = initialLikeCount,
                                 commentCount = initialCommentCount,
                                 isLiked = isLiked,
+                                isScrapped = isScrapped,
                             )
                         }
                     }

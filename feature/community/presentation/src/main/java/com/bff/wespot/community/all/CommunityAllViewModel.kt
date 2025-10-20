@@ -51,12 +51,13 @@ class CommunityAllViewModel @Inject constructor(
             }
 
             is CommunityAllAction.OnScrapClick -> {
-                onScrapClick(action.id)
+                onScrapClick(action.id, action.isCurrentlyScrapped)
             }
 
             is CommunityAllAction.OnReactionClick -> {
                 onReactionClick(action.reaction, action.id)
             }
+
             is CommunityAllAction.NavigateToDetailComments -> {
                 postSideEffect(CommunityAllSideEffect.NavigateToDetail(action.id, true))
             }
@@ -76,11 +77,11 @@ class CommunityAllViewModel @Inject constructor(
         }
     }
 
-    private fun onScrapClick(postId: String) = intent {
-        val isCurrentlyScrapped = state.scrappedPosts.contains(postId)
+    private fun onScrapClick(postId: String, isCurrentlyScrapped: Boolean) = intent {
+        val isInToggleSet = state.scrappedPosts.contains(postId)
         reduce {
             state.copy(
-                scrappedPosts = if (isCurrentlyScrapped) {
+                scrappedPosts = if (isInToggleSet) {
                     state.scrappedPosts - postId
                 } else {
                     state.scrappedPosts + postId
@@ -93,7 +94,7 @@ class CommunityAllViewModel @Inject constructor(
             if (!result) {
                 reduce {
                     state.copy(
-                        scrappedPosts = if (isCurrentlyScrapped) {
+                        scrappedPosts = if (isInToggleSet) {
                             state.scrappedPosts + postId
                         } else {
                             state.scrappedPosts - postId
@@ -110,10 +111,10 @@ class CommunityAllViewModel @Inject constructor(
     ) = intent {
         when (reaction) {
             is FooterSectionUiModel.ReactionUiModel.LikeUiModel -> {
-                val isCurrentlyLiked = state.likedPosts.contains(postId)
+                val isInToggleSet = state.likedPosts.contains(postId)
                 reduce {
                     state.copy(
-                        likedPosts = if (isCurrentlyLiked) {
+                        likedPosts = if (isInToggleSet) {
                             state.likedPosts - postId
                         } else {
                             state.likedPosts + postId
@@ -126,7 +127,7 @@ class CommunityAllViewModel @Inject constructor(
                     if (!result) {
                         reduce {
                             state.copy(
-                                likedPosts = if (isCurrentlyLiked) {
+                                likedPosts = if (isInToggleSet) {
                                     state.likedPosts + postId
                                 } else {
                                     state.likedPosts - postId
