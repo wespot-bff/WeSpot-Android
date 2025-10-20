@@ -148,8 +148,7 @@ internal fun CategoryScreen(
                         modifier = Modifier
                             .clickableSingle {
                                 showCategoryBottomSheet = true
-                            }
-                            .padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
+                            }.padding(start = 20.dp, top = 55.dp, bottom = 32.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {

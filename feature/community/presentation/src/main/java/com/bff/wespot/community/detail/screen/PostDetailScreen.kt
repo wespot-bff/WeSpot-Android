@@ -106,7 +106,7 @@ internal fun PostDetailScreen(
                         Image(
                             painter = rememberAsyncImagePainter(uiModel.category.icon.url),
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                     }
                 },
@@ -429,8 +429,7 @@ private fun PostDetailContentUiModel.FooterSectionUiModel.Item(
                     modifier = Modifier
                         .clickableSingle {
                             onAction(PostDetailAction.OnReactionClick(reaction))
-                        }
-                        .fillMaxHeight(),
+                        }.fillMaxHeight(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -653,8 +652,7 @@ private fun CommentInputBox(
                 .background(
                     color = WeSpotThemeManager.colors.cardBackgroundColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(20.dp),
-                )
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                ).padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BasicTextField(
@@ -800,8 +798,8 @@ private object PostDetailPreviewData {
                 ),
                 description = RichTextType(
                     text = "React 18에서 도입된 Concurrent Features는 사용자 경험을 크게 개선할 수 있는 강력한 기능들입니다. " +
-                            "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
-                            "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
+                        "이번 포스트에서는 Suspense, useTransition, useDeferredValue 등의 새로운 기능들을 실제 예제와 함께 자세히 살펴보겠습니다. " +
+                        "각 기능의 사용법부터 실무에서의 활용 방안까지 포괄적으로 다루어보겠습니다.",
                     color = ColorType.Token("white"),
                     typography = "body6",
                 ),
