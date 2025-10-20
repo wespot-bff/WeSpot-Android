@@ -2,8 +2,6 @@ package com.bff.wespot.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bff.wespot.analytic.AnalyticsEvent
-import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.util.AppVersionUtils.VersionCompareResult
 import com.bff.wespot.common.util.AppVersionUtils.versionCompare
 import com.bff.wespot.domain.repository.CommonRepository
@@ -37,7 +35,6 @@ class MainViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val userRepository: UserRepository,
     private val coroutineDispatcher: CoroutineDispatcher,
-    private val analyticsHelper: AnalyticsHelper,
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
 ) : ViewModel(),
@@ -153,19 +150,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun handleEnteredFromPushNotification(data: PushNotificationData) = intent {
-        trackPushNotificationClicked(data)
         postSideEffect(MainSideEffect.NavigateFromPushNotification(data))
-    }
-
-    private fun trackPushNotificationClicked(data: PushNotificationData) {
-        analyticsHelper.logEvent(
-            event = AnalyticsEvent(
-                type = "push_notification_clicked",
-                extras = listOf(
-                    AnalyticsEvent.Param("type", data.type.name),
-                ),
-            ),
-        )
     }
 
     private fun handleOnBoardingClose(category: OnBoardingCategory) = intent {

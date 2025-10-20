@@ -2,8 +2,6 @@ package com.bff.wespot.message.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.bff.wespot.analytic.AnalyticsEvent
-import com.bff.wespot.analytic.AnalyticsHelper
 import com.bff.wespot.common.extension.onNetworkFailure
 import com.bff.wespot.designsystem.component.indicator.WSToastType
 import com.bff.wespot.domain.repository.BasePagingRepository
@@ -44,9 +42,6 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import timber.log.Timber
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +51,6 @@ class SendViewModel @Inject constructor(
     private val commonRepository: CommonRepository,
     private val userListRepository: BasePagingRepository<User, Paging<User>>,
     private val checkProfanityUseCase: CheckProfanityUseCase,
-    private val analyticsHelper: AnalyticsHelper,
 ) : BaseViewModel(),
     ContainerHost<MessageSendUiState, MessageSendSideEffect> {
     override val container = container<MessageSendUiState, MessageSendSideEffect>(MessageSendUiState())
@@ -437,7 +431,6 @@ class SendViewModel @Inject constructor(
                         anonymousProfileName = state.senderProfile.name,
                     ),
                 ).onSuccess {
-                    trackMessageSendEvent()
                     reduce { state.copy(isLoading = false) }
                     postSideEffect(SendSideEffect.ShowToast(R.string.message_send_success))
                     postSideEffect(SendSideEffect.NavigateToMessage)
@@ -456,21 +449,6 @@ class SendViewModel @Inject constructor(
             if (!uploadResult.isSuccess) throw NetworkException()
             uploadResult.getOrThrow()
         }
-
-    private fun trackMessageSendEvent() = intent {
-        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-        val sendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter)
-
-        analyticsHelper.logEvent(
-            event = AnalyticsEvent(
-                type = "message_send",
-                extras = listOf(
-                    AnalyticsEvent.Param("userId", state.profile.id.toString()),
-                    AnalyticsEvent.Param("time", sendTime),
-                ),
-            ),
-        )
-    }
 
     fun clearUiState() = intent {
         reduce {
