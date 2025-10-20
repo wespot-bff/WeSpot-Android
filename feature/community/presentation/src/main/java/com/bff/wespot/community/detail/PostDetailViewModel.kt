@@ -8,7 +8,6 @@ import com.bff.wespot.community.detail.state.PostDetailSideEffect
 import com.bff.wespot.community.detail.state.PostDetailUiState
 import com.bff.wespot.community.detail.state.PostDetailUiState.SheetItem.SheetType
 import com.bff.wespot.community.uimodel.PostCommentUiModel.Companion.toUiModel
-import com.bff.wespot.community.uimodel.PostDetailUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.Companion.toUiModel
 import com.bff.wespot.community.uimodel.PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel
 import com.bff.wespot.domain.repository.community.CommunityRepository
@@ -53,15 +52,16 @@ class PostDetailViewModel @Inject constructor(
                     intent {
                         val postDetail = it.toUiModel()
                         val likeReaction = postDetail.content.footerSection.reactions
-                            .filterIsInstance<PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.LikeUiModel>()
+                            .filterIsInstance<ReactionUiModel.LikeUiModel>()
                             .firstOrNull()
                         val chatReaction = postDetail.content.footerSection.reactions
-                            .filterIsInstance<PostDetailUiModel.PostDetailContentUiModel.FooterSectionUiModel.ReactionUiModel.ChatUiModel>()
+                            .filterIsInstance<ReactionUiModel.ChatUiModel>()
                             .firstOrNull()
                         val initialLikeCount = likeReaction?.count?.text?.toIntOrNull() ?: 0
                         val initialCommentCount = chatReaction?.count?.text?.toIntOrNull() ?: 0
                         val isLiked = likeReaction?.selected ?: false
                         val isScrapped = postDetail.content.footerSection.scrap.selected
+                        val isRegistered = postDetail.content.headerSection.button.isSelected
 
                         reduce {
                             state.copy(
@@ -70,6 +70,7 @@ class PostDetailViewModel @Inject constructor(
                                 commentCount = initialCommentCount,
                                 isLiked = isLiked,
                                 isScrapped = isScrapped,
+                                registered = isRegistered,
                             )
                         }
                     }

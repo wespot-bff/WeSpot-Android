@@ -31,6 +31,7 @@ data class PostDetail(
                 val type: String,
                 val icon: IconType,
                 val text: RichTextType,
+                val isSelected: Boolean,
             )
         }
 
