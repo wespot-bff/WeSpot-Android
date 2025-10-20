@@ -1,7 +1,7 @@
 package com.bff.wespot.auth.screen
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +46,7 @@ fun CompleteScreen(
 
     val state by viewModel.collectAsState()
 
-    val activity = (LocalContext.current as? Activity)
+    val activity = LocalActivity.current
     val context = LocalContext.current
     val networkState by viewModel.networkState.collectAsStateWithLifecycle()
 

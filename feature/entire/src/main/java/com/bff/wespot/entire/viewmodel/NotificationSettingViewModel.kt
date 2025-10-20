@@ -22,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationSettingViewModel @Inject constructor(
     private val userRepository: UserRepository,
-) : BaseViewModel(), ContainerHost<NotificationSettingUiState, NotificationSettingSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<NotificationSettingUiState, NotificationSettingSideEffect> {
     override val container = container<NotificationSettingUiState, NotificationSettingSideEffect>(
         NotificationSettingUiState(),
     )
@@ -31,6 +32,9 @@ class NotificationSettingViewModel @Inject constructor(
         when (action) {
             NotificationSettingAction.OnNotificationSettingScreenEntered -> {
                 handleScreenEntered()
+            }
+            NotificationSettingAction.OnPostNotificationSwitched -> {
+                handlePostNotificationSwitched()
             }
             is NotificationSettingAction.OnVoteNotificationSwitched -> {
                 handleVoteNotificationSwitched()
@@ -59,25 +63,29 @@ class NotificationSettingViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            userRepository.getNotificationSetting()
+            userRepository
+                .getNotificationSetting()
                 .onSuccess { setting ->
                     reduce {
                         state.copy(
                             isLoading = false,
                             initialNotificationSetting = setting,
+                            isEnablePostNotification = setting.isEnablePostNotification,
                             isEnableVoteNotification = setting.isEnableVoteNotification,
                             isEnableMessageNotification = setting.isEnableMessageNotification,
                             isEnableMarketingNotification = setting.isEnableMarketingNotification,
                         )
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .onFailure {
+                }.onFailure {
                     reduce { state.copy(isLoading = false) }
                 }
         }
+    }
+
+    private fun handlePostNotificationSwitched() = intent {
+        reduce { state.copy(isEnablePostNotification = state.isEnablePostNotification.not()) }
     }
 
     private fun handleVoteNotificationSwitched() = intent {
@@ -110,6 +118,7 @@ class NotificationSettingViewModel @Inject constructor(
 
     private fun postNotificationSetting() = intent {
         val updatedNotificationSetting = NotificationSetting(
+            isEnablePostNotification = state.isEnablePostNotification,
             isEnableVoteNotification = state.isEnableVoteNotification,
             isEnableMessageNotification = state.isEnableMessageNotification,
             isEnableMarketingNotification = state.isEnableMarketingNotification,
@@ -117,7 +126,8 @@ class NotificationSettingViewModel @Inject constructor(
 
         if (updatedNotificationSetting != state.initialNotificationSetting) {
             viewModelScope.launch {
-                userRepository.updateNotificationSetting(updatedNotificationSetting)
+                userRepository
+                    .updateNotificationSetting(updatedNotificationSetting)
                     .onFailure {
                         Timber.e(it)
                     }

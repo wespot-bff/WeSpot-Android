@@ -33,8 +33,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.bff.wespot.designsystem.component.button.WSButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButton
 import com.bff.wespot.designsystem.component.button.WSOutlineButtonType
@@ -269,7 +269,8 @@ private fun VotingProgressScreen(
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest
+                    .Builder(LocalContext.current)
                     .data(state.currentVote.voteUser.profile.iconUrl)
                     .build(),
                 contentDescription = stringResource(R.string.male),
@@ -353,7 +354,9 @@ private fun VotingGuideScreen(
                 state.profile.classNumber,
             ),
             style = StaticTypeScale.Default.header1,
-            modifier = Modifier.padding(paddingValues).padding(horizontal = 24.dp),
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp),
         )
         Image(
             painter = painterResource(id = R.drawable.no_friends),

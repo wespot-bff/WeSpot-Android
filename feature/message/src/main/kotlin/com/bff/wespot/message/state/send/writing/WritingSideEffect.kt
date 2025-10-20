@@ -10,5 +10,7 @@ sealed interface WritingSideEffect : MessageSendSideEffect {
     data object ShowReplyDialog : WritingSideEffect
     data object DismissReplyDialog : WritingSideEffect
     data object NavigateUp : WritingSideEffect
-    data class ShowToast(val toastState: ToastState) : WritingSideEffect
+    data class ShowToast(
+        val toastState: ToastState,
+    ) : WritingSideEffect
 }

@@ -21,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MessageNotificationSettingViewModel @Inject constructor(
     private val repository: UserRepository,
-) : BaseViewModel(), ContainerHost<MessageNotificationSettingUiState, NoneSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<MessageNotificationSettingUiState, NoneSideEffect> {
     override val container: Container<MessageNotificationSettingUiState, NoneSideEffect> =
         container(MessageNotificationSettingUiState()) {
             getNotificationSetting()
@@ -40,7 +41,8 @@ class MessageNotificationSettingViewModel @Inject constructor(
 
     private fun getNotificationSetting() = intent {
         viewModelScope.launch {
-            repository.getNotificationSetting()
+            repository
+                .getNotificationSetting()
                 .onSuccess {
                     reduce {
                         state.copy(
@@ -48,11 +50,9 @@ class MessageNotificationSettingViewModel @Inject constructor(
                             isEnableMessageNotification = it.isEnableMessageNotification,
                         )
                     }
-                }
-                .onNetworkFailure {
+                }.onNetworkFailure {
                     postSideEffect(it.toSideEffect())
-                }
-                .also {
+                }.also {
                     reduce {
                         state.copy(isLoading = false)
                     }
@@ -71,11 +71,12 @@ class MessageNotificationSettingViewModel @Inject constructor(
             return@intent
         }
         viewModelScope.launch {
-            repository.updateNotificationSetting(
-                state.initialSetting.copy(isEnableMessageNotification = state.isEnableMessageNotification),
-            ).onFailure {
-                Timber.e(it)
-            }
+            repository
+                .updateNotificationSetting(
+                    state.initialSetting.copy(isEnableMessageNotification = state.isEnableMessageNotification),
+                ).onFailure {
+                    Timber.e(it)
+                }
         }
     }
 }

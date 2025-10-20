@@ -3,6 +3,7 @@ package com.bff.wespot.entire.state.notification
 sealed class NotificationSettingAction {
     data object OnNotificationSettingScreenEntered : NotificationSettingAction()
     data object OnNotificationSettingScreenExited : NotificationSettingAction()
+    data object OnPostNotificationSwitched : NotificationSettingAction()
     data object OnVoteNotificationSwitched : NotificationSettingAction()
     data object OnMessageNotificationSwitched : NotificationSettingAction()
     data object OnMarketingNotificationSwitched : NotificationSettingAction()

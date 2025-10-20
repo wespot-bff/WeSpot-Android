@@ -9,3 +9,9 @@ sealed interface ColorType {
         val token: String,
     ) : ColorType
 }
+
+data class GradationType(
+    val startColor: ColorType,
+    val endColor: ColorType,
+    val angle: Int,
+)

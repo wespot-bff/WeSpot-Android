@@ -1,3 +1,5 @@
 package com.bff.wespot.community.state
 
-sealed class CommunitySideEffect
+sealed interface CommunitySideEffect {
+    data object NavigateToWriteActivity : CommunitySideEffect
+}

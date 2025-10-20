@@ -67,7 +67,7 @@ internal fun MessageItem(
             MessageUserItem(
                 imageUrl = message.senderProfile.iconUrl,
                 type = stringResource(R.string.me),
-                name = message.senderProfile.toDescription(),
+                name = message.senderProfile.name,
                 isBookmarked = false,
             )
 
@@ -87,11 +87,7 @@ internal fun MessageItem(
                 } else {
                     stringResource(R.string.real_name)
                 },
-                name = if (itemType == MessageItemType.Ever) {
-                    message.receiverProfile.name
-                } else {
-                    message.receiverProfile.toDescription()
-                },
+                name = message.receiverProfile.name,
                 isBookmarked = message.isBookmarked,
             )
         }
@@ -236,7 +232,9 @@ private fun BlockStateChip(
 sealed interface MessageItemType {
     data object Normal : MessageItemType
 
-    data class Blocked(val isBlocked: Boolean) : MessageItemType
+    data class Blocked(
+        val isBlocked: Boolean,
+    ) : MessageItemType
 
     data object Ever : MessageItemType
 }

@@ -34,7 +34,8 @@ class MessageHomeViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
     private val profileRepository: ProfileRepository,
     private val getMessageHomeTitle: GetMessageHomeTitleUseCase,
-) : BaseViewModel(), ContainerHost<MessageHomeUiState, MessageHomeSideEffect> {
+) : BaseViewModel(),
+    ContainerHost<MessageHomeUiState, MessageHomeSideEffect> {
     override val container = container<MessageHomeUiState, MessageHomeSideEffect>(MessageHomeUiState()) {
         observeProfileFlow()
         getMessageHomeTitle()
@@ -77,8 +78,7 @@ class MessageHomeViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .catch { exception ->
                     Timber.e(exception)
-                }
-                .collect {
+                }.collect {
                     reduce { state.copy(profile = it) }
                 }
         }
@@ -88,7 +88,8 @@ class MessageHomeViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
-            messageRepository.getMessageStatus()
+            messageRepository
+                .getMessageStatus()
                 .onSuccess { messageStatus ->
                     /** 작성할 수 있는 쪽지가 없는 경우, 타이머를 노출한다. */
                     if (messageStatus.countRemainingMessages <= 0) {

@@ -1,7 +1,6 @@
 package com.bff.wespot.model.community
 
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostItems(
@@ -18,7 +17,7 @@ data class PostItems(
             val profileImage: String,
             val nickname: RichTextType,
             val createdAt: RichTextType,
-            val category: Category,
+            val category: Category?,
         ) {
             data class Category(
                 val text: RichTextType,
@@ -28,7 +27,7 @@ data class PostItems(
         }
 
         data class InfoSection(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val seeMore: RichTextType,
             val maxLine: Int,
@@ -36,7 +35,7 @@ data class PostItems(
 
         sealed interface ContentSection {
             data class ImagesSection(
-                val images: List<ImageType>,
+                val images: List<String>,
             ) : ContentSection
 
             data object EmptySection : ContentSection
@@ -44,6 +43,7 @@ data class PostItems(
 
         data class FooterSection(
             val reactions: List<Reaction>,
+            val scrap: Scrap,
         ) {
             sealed class Reaction(
                 open val icon: IconType,
@@ -62,6 +62,11 @@ data class PostItems(
                     override val selected: Boolean,
                 ) : Reaction(icon, count, selected)
             }
+
+            data class Scrap(
+                val icon: IconType,
+                val selected: Boolean,
+            )
         }
     }
 }

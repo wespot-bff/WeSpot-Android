@@ -102,8 +102,7 @@ private fun WSIconChip(
                 } else {
                     WeSpotThemeManager.colors.backgroundColor
                 },
-            )
-            .then(
+            ).then(
                 if (!selected) {
                     Modifier.border(
                         width = 1.dp,
@@ -113,8 +112,7 @@ private fun WSIconChip(
                 } else {
                     Modifier
                 },
-            )
-            .padding(horizontal = 12.dp, vertical = 5.dp),
+            ).padding(horizontal = 12.dp, vertical = 5.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -149,9 +147,13 @@ sealed interface WSChipGroupType {
         val label: String,
     )
 
-    data class Normal(val items: List<String>) : WSChipGroupType
+    data class Normal(
+        val items: List<String>,
+    ) : WSChipGroupType
 
-    data class LeadingIcon(val items: List<WSIconChipItem>) : WSChipGroupType
+    data class LeadingIcon(
+        val items: List<WSIconChipItem>,
+    ) : WSChipGroupType
 }
 
 @Preview

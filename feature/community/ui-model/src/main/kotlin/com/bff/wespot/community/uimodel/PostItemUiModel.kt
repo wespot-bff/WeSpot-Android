@@ -2,7 +2,6 @@ package com.bff.wespot.community.uimodel
 
 import com.bff.wespot.model.community.PostItems
 import com.bff.wespot.model.serverDriven.type.IconType
-import com.bff.wespot.model.serverDriven.type.ImageType
 import com.bff.wespot.model.serverDriven.type.RichTextType
 
 data class PostItemUiModel(
@@ -19,7 +18,7 @@ data class PostItemUiModel(
             val profileImage: String,
             val nickname: RichTextType,
             val createdAt: RichTextType,
-            val category: CategoryUiModel,
+            val category: CategoryUiModel?,
         ) {
             data class CategoryUiModel(
                 val text: RichTextType,
@@ -29,7 +28,7 @@ data class PostItemUiModel(
         }
 
         data class InfoSectionUiModel(
-            val title: RichTextType,
+            val title: RichTextType?,
             val description: RichTextType,
             val seeMore: RichTextType,
             val maxLine: Int,
@@ -37,7 +36,11 @@ data class PostItemUiModel(
 
         sealed interface ContentSectionUiModel {
             data class ImagesSectionUiModel(
-                val images: List<ImageType>,
+                val images: List<String>,
+            ) : ContentSectionUiModel
+
+            data class SingleImageUiModel(
+                val image: String,
             ) : ContentSectionUiModel
 
             data object EmptySectionUiModel : ContentSectionUiModel
@@ -45,6 +48,7 @@ data class PostItemUiModel(
 
         data class FooterSectionUiModel(
             val reactions: List<ReactionUiModel>,
+            val scrap: ScrapUiModel,
         ) {
             sealed class ReactionUiModel(
                 open val icon: IconType,
@@ -63,6 +67,11 @@ data class PostItemUiModel(
                     override val selected: Boolean,
                 ) : ReactionUiModel(icon, count, selected)
             }
+
+            data class ScrapUiModel(
+                val icon: IconType,
+                val selected: Boolean,
+            )
         }
     }
 }
@@ -85,7 +94,7 @@ private fun PostItems.PostContent.HeaderSection.toUiModel() =
         profileImage = profileImage,
         nickname = nickname,
         createdAt = createdAt,
-        category = category.toUiModel(),
+        category = category?.toUiModel(),
     )
 
 private fun PostItems.PostContent.HeaderSection.Category.toUiModel() =
@@ -106,9 +115,15 @@ private fun PostItems.PostContent.InfoSection.toUiModel() =
 private fun PostItems.PostContent.ContentSection.toUiModel() =
     when (this) {
         is PostItems.PostContent.ContentSection.ImagesSection -> {
-            PostItemUiModel.PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel(
-                images = images,
-            )
+            if (images.size == 1) {
+                PostItemUiModel.PostContentUiModel.ContentSectionUiModel.SingleImageUiModel(
+                    image = images.first(),
+                )
+            } else {
+                PostItemUiModel.PostContentUiModel.ContentSectionUiModel.ImagesSectionUiModel(
+                    images = images,
+                )
+            }
         }
 
         PostItems.PostContent.ContentSection.EmptySection -> {
@@ -119,6 +134,7 @@ private fun PostItems.PostContent.ContentSection.toUiModel() =
 private fun PostItems.PostContent.FooterSection.toUiModel() =
     PostItemUiModel.PostContentUiModel.FooterSectionUiModel(
         reactions = reactions.map { it.toUiModel() },
+        scrap = scrap.toUiModel(),
     )
 
 private fun PostItems.PostContent.FooterSection.Reaction.toUiModel() =
@@ -139,3 +155,9 @@ private fun PostItems.PostContent.FooterSection.Reaction.toUiModel() =
             )
         }
     }
+
+private fun PostItems.PostContent.FooterSection.Scrap.toUiModel() =
+    PostItemUiModel.PostContentUiModel.FooterSectionUiModel.ScrapUiModel(
+        icon = icon,
+        selected = selected,
+    )

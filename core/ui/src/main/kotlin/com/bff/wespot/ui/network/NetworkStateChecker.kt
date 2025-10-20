@@ -48,23 +48,26 @@ class NetworkStateChecker @Inject constructor(
 
     @SuppressLint("MissingPermission")
     private fun initiateNetworkState(manager: ConnectivityManager) {
-        _networkState.value = manager.activeNetwork?.let {
-            manager.getNetworkCapabilities(it)
-        }?.let { networkCapabilities ->
-            if (validTransportTypes.any { networkCapabilities.hasTransport(it) }) {
-                NetworkState.Connected
-            } else {
-                NetworkState.NotConnected
-            }
-        } ?: NetworkState.NotConnected
+        _networkState.value = manager.activeNetwork
+            ?.let {
+                manager.getNetworkCapabilities(it)
+            }?.let { networkCapabilities ->
+                if (validTransportTypes.any { networkCapabilities.hasTransport(it) }) {
+                    NetworkState.Connected
+                } else {
+                    NetworkState.NotConnected
+                }
+            } ?: NetworkState.NotConnected
     }
 
     @SuppressLint("MissingPermission")
     private fun registerNetworkCallback(manager: ConnectivityManager) {
-        NetworkRequest.Builder().apply {
-            validTransportTypes.onEach { addTransportType(it) }
-        }.let {
-            manager.requestNetwork(it.build(), networkCallback)
-        }
+        NetworkRequest
+            .Builder()
+            .apply {
+                validTransportTypes.onEach { addTransportType(it) }
+            }.let {
+                manager.requestNetwork(it.build(), networkCallback)
+            }
     }
 }

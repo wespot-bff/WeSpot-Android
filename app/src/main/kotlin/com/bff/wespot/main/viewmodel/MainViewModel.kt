@@ -37,7 +37,8 @@ class MainViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher,
     private val commonRepository: CommonRepository,
     private val remoteConfigRepository: RemoteConfigRepository,
-) : ViewModel(), ContainerHost<MainUiState, MainSideEffect> {
+) : ViewModel(),
+    ContainerHost<MainUiState, MainSideEffect> {
     override val container = container<MainUiState, MainSideEffect>(
         MainUiState(
             kakaoChannel = remoteConfigRepository.fetchFromRemoteConfig(
@@ -82,7 +83,8 @@ class MainViewModel @Inject constructor(
 
             checkAppVersionWithLatestVersion(appVersion)
 
-            commonRepository.getRestriction()
+            commonRepository
+                .getRestriction()
                 .onSuccess {
                     reduce {
                         state.copy(restriction = it)
@@ -139,7 +141,8 @@ class MainViewModel @Inject constructor(
 
     private fun handleNotificationSet(isEnableNotification: Boolean) = intent {
         viewModelScope.launch {
-            userRepository.setFeatureNotificationSetting(isEnableNotification)
+            userRepository
+                .setFeatureNotificationSetting(isEnableNotification)
                 .onFailure {
                     Timber.e(it)
                 }

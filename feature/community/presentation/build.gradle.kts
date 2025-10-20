@@ -16,6 +16,7 @@ ksp {
 dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":feature:community:ui-model"))
+    implementation(project(":feature:server-driven"))
 
     implementation(libs.paging3)
     implementation(libs.bundles.orbit)
@@ -23,6 +24,5 @@ dependencies {
     implementation(libs.androidx.junit)
     implementation(libs.timber)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.coil.compose)
     implementation(libs.lottie)
 }
