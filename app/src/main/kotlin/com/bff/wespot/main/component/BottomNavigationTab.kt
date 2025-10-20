@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
@@ -39,7 +40,7 @@ internal fun BottomNavigationTab(
 ) {
     NavigationBar(
         containerColor = WeSpotThemeManager.colors.naviColor,
-        modifier = modifier,
+        modifier = modifier.height(69.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -94,7 +95,6 @@ private fun RowScope.TabItem(
 
     Box(
         modifier = Modifier
-            .size(80.dp)
             .weight(1f)
             .clickableSingle {
                 hapticEngine?.let {
@@ -106,6 +106,7 @@ private fun RowScope.TabItem(
         contentAlignment = Alignment.Center,
     ) {
         Column(
+            modifier = Modifier.padding(top = 10.dp, bottom = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
@@ -119,7 +120,7 @@ private fun RowScope.TabItem(
 
             Text(
                 text = title,
-                style = StaticTypeScale.Default.body9,
+                style = StaticTypeScale.Default.body10,
                 color = if (selected) {
                     WeSpotThemeManager.colors.abledIconColor
                 } else {
