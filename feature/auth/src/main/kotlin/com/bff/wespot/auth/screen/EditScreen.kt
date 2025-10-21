@@ -364,9 +364,9 @@ private fun RegisterBottomSheetContent(
                     },
                     modifier = Modifier.clickable {
                         if (checked[0]) {
-                            action(AuthAction.OnConsentChanged(listOf(false, false, false, false)))
+                            action(AuthAction.OnConsentChanged(listOf(false, false, false, false, false)))
                         } else {
-                            action(AuthAction.OnConsentChanged(listOf(true, true, true, true)))
+                            action(AuthAction.OnConsentChanged(listOf(true, true, true, true, true)))
                         }
                     },
                 )
@@ -381,6 +381,31 @@ private fun RegisterBottomSheetContent(
         Column(
             modifier = Modifier.padding(top = 14.dp, bottom = 38.dp, start = 30.dp, end = 20.dp),
         ) {
+            TermRow(
+                title = stringResource(R.string.over_14),
+                checked = checked[4],
+                navigateToWebLink = {
+                    navigator.navigateToWebLink(
+                        context = context,
+                        webLink = state.termsOfServiceLink,
+                    )
+                },
+                onClicked = {
+                    action(
+                        AuthAction.OnConsentChanged(
+                            checked.toMutableList().apply {
+                                if (this[4]) {
+                                    this[4] = false
+                                    this[0] = false
+                                } else {
+                                    this[4] = true
+                                }
+                            },
+                        ),
+                    )
+                },
+            )
+
             TermRow(
                 title = stringResource(id = R.string.service_term),
                 checked = checked[1],
@@ -460,7 +485,7 @@ private fun RegisterBottomSheetContent(
         WSButton(
             onClick = onClicked,
             text = stringResource(id = R.string.accept_and_start),
-            enabled = checked.drop(1).take(2).all { it },
+            enabled = checked[1] && checked[2] && checked[4],
         ) {
             it.invoke()
         }
@@ -481,7 +506,8 @@ private fun TermRow(
             .clip(RoundedCornerShape(8.dp))
             .clickableSingle {
                 navigateToWebLink.invoke()
-            }.padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
+            }
+            .padding(start = 8.dp, end = 22.dp, top = 12.dp, bottom = 12.dp),
     ) {
         Icon(
             painter = painterResource(id = com.bff.wespot.ui.R.drawable.exclude),
