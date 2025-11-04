@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -115,7 +116,8 @@ internal fun ImageScreen(
                                     ),
                                 ),
                             )
-                        }.clip(CircleShape)
+                        }
+                        .clip(CircleShape)
                         .size(110.dp),
                     contentScale = ContentScale.Crop,
                 )
@@ -186,7 +188,8 @@ internal fun ImageScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding(),
+            .imePadding()
+            .navigationBarsPadding(),
         contentAlignment = Alignment.BottomCenter,
     ) {
         WSButton(

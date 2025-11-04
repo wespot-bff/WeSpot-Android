@@ -2,11 +2,11 @@ package com.bff.wespot.community.categorydetail
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
-import androidx.core.view.WindowCompat
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bff.wespot.community.categorydetail.screen.CategoryScreen
 import com.bff.wespot.community.categorydetail.state.CategoryDetailSideEffect
@@ -26,8 +26,14 @@ class CategoryDetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(
+                scrim = android.graphics.Color.TRANSPARENT,
+            ),
+            navigationBarStyle = SystemBarStyle.dark(
+                scrim = android.graphics.Color.TRANSPARENT,
+            ),
+        )
 
         setContent {
             WeSpotTheme {
