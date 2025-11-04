@@ -3,6 +3,8 @@ package com.bff.wespot.splash
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -30,6 +32,14 @@ class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(
+                scrim = android.graphics.Color.TRANSPARENT,
+            ),
+            navigationBarStyle = SystemBarStyle.dark(
+                scrim = android.graphics.Color.TRANSPARENT,
+            ),
+        )
 
         // Push Notification으로 접근 시, setOnExitAnimationListener이 호출되지 않는다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !isNavigateFromPushNotification) {

@@ -12,4 +12,5 @@
     <string name="introduction_placeholder">(ex. 귀염둥이 엥뿌삐 ENFP)</string>
     <string name="line_limit_20">%1$s / 20</string>
     <string name="profile_image">프로필 이미지</string>
+    <string name="over_14">(필수) 만 14세 이상입니다</string>
 </resources>

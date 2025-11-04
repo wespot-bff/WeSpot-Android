@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,6 +101,10 @@ internal fun VoteHomeScreen(
                 onTabSelected = { action(VoteAction.OnTabChanged(it)) },
             )
         },
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.navigationBars)
+            .exclude(
+                WindowInsets.statusBars
+            )
     ) {
         Crossfade(targetState = state.selectedTabIndex, label = "") { index ->
             Box(modifier = Modifier.padding(it)) {
@@ -176,8 +185,7 @@ private fun VoteHomeContent(
     val message = context.getString(com.bff.wespot.designsystem.R.string.invite_message)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
         val context = LocalContext.current
 
